@@ -133,49 +133,60 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     frame_path = "frame.png"
     img.save(frame_path)
 
+    # Instagram strict format: baseline h264, yuv420p, faststart, 30fps
     cmd = [
         "ffmpeg", "-y",
         "-loop", "1", "-i", frame_path,
         "-i", audio_file,
-        "-c:v", "libx264", "-tune", "stillimage",
-        "-c:a", "aac", "-b:a", "192k",
+        "-c:v", "libx264",
+        "-profile:v", "main",
+        "-level:v", "4.0",
+        "-r", "30",
+        "-g", "60",
         "-pix_fmt", "yuv420p",
+        "-c:a", "aac",
+        "-b:a", "128k",
+        "-ar", "44100",
+        "-movflags", "+faststart",
         "-shortest", output_video
     ]
-    # FFmpeg frames ko silent karke clean render
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-    print("✅ FFmpeg Video Render Completed.")
+    print("✅ Video encoded strictly for Instagram Reels.")
 
-def upload_to_instagram(video_path, caption):
-    print("🔍 Checking Instagram Secrets...")
-    if not IG_ACCESS_TOKEN or not IG_USER_ID:
-        raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID Secrets me missing hai!")
-
-    print("📤 Uploading video to public host (Catbox)...")
-    video_url = None
+# Meta-friendly CDN upload
+def get_direct_video_url(video_path):
+    print("📤 Uploading video to reliable direct host (0x0.st)...")
     try:
         with open(video_path, "rb") as f:
-            res = requests.post("https://catbox.moe/user/api.php", data={"reqtype": "fileupload"}, files={"fileToUpload": f}, timeout=90)
+            res = requests.post("https://0x0.st", files={"file": f}, timeout=120)
             if res.status_code == 200 and res.text.strip().startswith("http"):
-                video_url = res.text.strip()
+                url = res.text.strip()
+                print(f"✅ Primary Host (0x0.st): {url}")
+                return url
     except Exception as e:
-        print(f"Catbox warning: {e}")
+        print(f"0x0.st failed: {e}")
 
-    if not video_url:
-        print("📤 Retrying on secondary host (Tmpfiles)...")
+    print("📤 Trying secondary host (filepush)...")
+    try:
         with open(video_path, "rb") as f:
-            res = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=90)
-            data = res.json()
-            raw_url = data.get("data", {}).get("url", "")
-            if raw_url:
-                video_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
+            res = requests.put(f"https://transfer.sh/{os.path.basename(video_path)}", data=f, timeout=120)
+            if res.status_code == 200 and res.text.strip().startswith("http"):
+                url = res.text.strip()
+                print(f"✅ Secondary Host (transfer.sh): {url}")
+                return url
+    except Exception as e:
+        print(f"transfer.sh failed: {e}")
 
-    if not video_url:
-        raise RuntimeError("Video host link fail ho gaya!")
+    raise RuntimeError("Direct video host unavailable. All CDNs failed.")
 
-    print(f"✅ Video Link: {video_url}")
+def upload_to_instagram(video_path, caption):
+    if not IG_ACCESS_TOKEN or not IG_USER_ID:
+        raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    print("📦 Creating Instagram Container...")
+    video_url = get_direct_video_url(video_path)
+
+    # 1. Create Media Container
+    print("📦 Creating Instagram Reel Container...")
     url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     payload = {
         "media_type": "REELS",
@@ -188,24 +199,41 @@ def upload_to_instagram(video_path, caption):
     container_id = res_json.get("id")
 
     if not container_id:
-        raise RuntimeError(f"Instagram Container Error: {res_json}")
+        raise RuntimeError(f"Instagram Container Creation Failed: {res_json}")
 
     print(f"✅ Container ID: {container_id}")
-    print("⏳ Processing on Instagram servers (60s)...")
-    time.sleep(60)
 
-    print("🚀 Publishing Reel...")
+    # 2. Wait until Instagram servers download and transcode video
+    print("⏳ Waiting for Instagram transcode (Polling status)...")
+    status_url = f"https://graph.facebook.com/v19.0/{container_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
+
+    for attempt in range(1, 30):
+        time.sleep(8)
+        status_res = requests.get(status_url).json()
+        code = status_res.get("status_code")
+        print(f"🔄 Check {attempt}: {code}")
+
+        if code == "FINISHED":
+            print("✅ Transcoding FINISHED on Instagram servers!")
+            break
+        elif code in ["ERROR", "EXPIRED"]:
+            raise RuntimeError(f"Instagram rejected transcoding: {status_res}")
+    else:
+        print("⚠️ Status polling timed out, attempting publish...")
+
+    # 3. Publish Reel
+    print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": container_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
 
     if "id" in pub_json:
-        print(f"🎉 SUCCESS! Reel Published! ID: {pub_json['id']}")
+        print(f"🎉 SUCCESS! Reel Live on Instagram! Post ID: {pub_json['id']}")
     else:
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Automation Running...")
+    print("🚀 Postal Wala Automation Starting...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
@@ -225,5 +253,4 @@ if __name__ == "__main__":
         "final_reel.mp4"
     )
 
-    # Yeh call pichle code me missing tha
     upload_to_instagram("final_reel.mp4", script_data.get("caption", ""))
