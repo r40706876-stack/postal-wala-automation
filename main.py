@@ -56,7 +56,7 @@ def get_current_reading_window(pdf_path):
     with open(STATE_FILE, "w") as f:
         json.dump({"last_page": next_page}, f)
 
-    return extracted_text[:1500], current_page + 1
+    return extracted_text[:2000], current_page + 1
 
 def generate_clause_script(pdf_content, page_num):
     if not GROQ_API_KEY:
@@ -72,7 +72,7 @@ def generate_clause_script(pdf_content, page_num):
     Teach the next specific rule/clause from this departmental PDF section (Around Page {page_num}).
 
     REEL GUIDELINES:
-    1. Duration: 60 SECONDS of spoken audio (around 120-140 words in simple Hindi).
+    1. Duration: 60 SECONDS of spoken audio (around 120-140 words in simple conversational Hindi).
     2. Language: Super simple everyday conversational Hindi (बोलचाल की बिल्कुल सरल देसी हिंदी).
     3. Structure:
        - Hook: Rule/Topic name.
@@ -82,35 +82,33 @@ def generate_clause_script(pdf_content, page_num):
     PDF Content:
     {pdf_content}
 
-    Return ONLY raw valid JSON (no markdown ticks, no backticks, no codeblocks):
-    {{
-        "rule_title": "Topic Name",
-        "voiceover": "Conversational Hindi voiceover of 120-140 words covering explanation and quiz question.",
-        "question": "Question text",
-        "options": "A) ... B) ... C) ... D) ...",
-        "caption": "Instagram Caption with Topic, Easy Explanation, MCQ Question, Options, and hashtags #PostalWala #MTSExam #IndiaPost #Khand02"
-    }}
+    Return a valid JSON object with exactly these keys:
+    - "rule_title": "Topic Name",
+    - "voiceover": "Hindi voiceover text around 120-140 words.",
+    - "question": "Question text",
+    - "options": "A) ... B) ... C) ... D) ...",
+    - "caption": "Instagram Caption with Topic, Easy Explanation, MCQ Question, Options, and hashtags #PostalWala #MTSExam #IndiaPost #Khand02"
     """
 
     payload = {
-        "model": "qwen/qwen3.8-27b",
+        "model": "llama-3.3-70b-versatile",
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.6,
-        "max_tokens": 500
+        "temperature": 0.5,
+        "response_format": {"type": "json_object"}
     }
     
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
     res_json = res.json()
 
     if res.status_code != 200 or "choices" not in res_json:
-        raise RuntimeError(f"Groq API Error ({res.status_code}): {res_json}")
+        # Fallback to 8b if 70b rate-limited
+        payload["model"] = "llama-3.1-8b-instant"
+        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+        res_json = res.json()
+        if res.status_code != 200 or "choices" not in res_json:
+            raise RuntimeError(f"Groq API Error: {res_json}")
 
     raw = res_json["choices"][0]["message"]["content"].strip()
-    if "```" in raw:
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-        raw = raw.strip()
     return json.loads(raw)
 
 def generate_voice(text, filename="voice.mp3"):
