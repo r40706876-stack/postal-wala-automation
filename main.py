@@ -64,7 +64,7 @@ def get_current_reading_window(pdf_path):
 
     return extracted_text[:3500], current_page + 1
 
-# 2. Groq Llama-3 से 60-80s की आसान देसी हिंदी स्क्रिप्ट और क्विज़
+# 2. Groq Llama-3.3-70b से 60-80s की आसान देसी हिंदी स्क्रिप्ट और क्विज़
 def generate_clause_script(pdf_content, page_num):
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
@@ -98,7 +98,7 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
     payload = {
-        "model": "llama3-8b-8192",
+        "model": "llama-3.3-70b-versatile",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.6
     }
