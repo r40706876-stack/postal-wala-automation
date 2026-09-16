@@ -2,28 +2,26 @@ import os
 import glob
 import json
 import time
-import asyncio
 import subprocess
 import requests
 from pypdf import PdfReader
-import edge_tts
+from gtts import gTTS
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
 STATE_FILE = "progress_state.json"
-FONT_NAME = "NotoSansDevanagari-Bold.ttf"
+FONT_FILE = "NotoSansDevanagari-Bold.ttf"
 
 def ensure_hindi_font():
-    """Download Noto Sans Devanagari directly to avoid fallback to square boxes."""
-    if not os.path.exists(FONT_NAME):
-        print("📥 Downloading Noto Sans Devanagari font locally...")
+    if not os.path.exists(FONT_FILE):
+        print("📥 Downloading Noto Sans Devanagari font...")
         url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
         r = requests.get(url, timeout=30)
-        with open(FONT_NAME, "wb") as f:
+        with open(FONT_FILE, "wb") as f:
             f.write(r.content)
-        print("✅ Hindi font cached locally.")
+        print("✅ Font cached locally.")
 
 def get_target_pdf():
     pdf_files = glob.glob("*.pdf") + glob.glob("data/*.pdf")
@@ -86,15 +84,15 @@ def generate_clause_script(pdf_content, page_num):
     Teach and test the rule from this departmental section (Around Page {page_num}).
 
     DURATION & WORD COUNT:
-    Total 95 to 110 words in spoken Hindi (~50 seconds audio).
+    Total around 95-105 words in spoken Hindi (~45-50 seconds audio).
 
     STRUCTURE:
-    1. EXPLANATION (~35 seconds, ~70 words):
-       - Clear topic hook.
-       - Explain the core rule with daily life example in simple Hindi.
-    2. QUIZ (~15 seconds, ~30 words):
-       - 1 crisp exam MCQ question with 4 options.
-       - Tell listener they have 5 seconds, reveal answer, and invite them to follow Postal Wala.
+    1. EXPLANATION (~32 seconds):
+       - Direct hook.
+       - Explain the core rule in simple everyday conversational Hindi.
+    2. QUIZ (~15 seconds):
+       - 1 crisp exam MCQ with 4 options.
+       - End line: "सही उत्तर है ऑप्शन [X]! रोज़ाना ऐसी तैयारी के लिए अभी फॉलो करें Postal Wala को!"
 
     PDF Content:
     {pdf_content}
@@ -109,7 +107,7 @@ def generate_clause_script(pdf_content, page_num):
     OPT_C: [Option C text]
     OPT_D: [Option D text]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Full 95-110 words spoken script covering 35s explanation + 15s quiz]
+    VOICEOVER: [Spoken Hindi Script of 95-105 words]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
@@ -169,9 +167,9 @@ def generate_clause_script(pdf_content, page_num):
 
     return data
 
-async def generate_voice_edge(text, filename="voice.mp3"):
-    communicate = edge_tts.Communicate(text, voice="hi-IN-MadhurNeural", rate="+4%")
-    await communicate.save(filename)
+def generate_voice(text, filename="voice.mp3"):
+    tts = gTTS(text=text, lang="hi", slow=False)
+    tts.save(filename)
 
 def get_audio_duration(audio_file):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", audio_file]
@@ -184,7 +182,6 @@ def generate_ass_subtitles(script_data, total_duration, output_ass="subs.ass"):
     correct_opt = script_data.get("correct", "B")
     green_c = "\\c&H00FF00&\\b1"
 
-    # Strict ASS subtitle layout matching Noto Sans Devanagari font
     ass_content = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: 1080
@@ -204,13 +201,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 Dialogue: 0,0:00:00.00,0:00:{total_duration:05.2f},Header,,0,0,0,,POSTAL WALA\\N{{\\fs32\\c&H94A3B8&}}@POSTAL_WALA
 Dialogue: 0,0:00:00.00,0:00:{total_duration:05.2f},Footer,,0,0,0,,पूरी तैयारी के लिए FOLLOW करें 👉 @POSTAL_WALA
 
-# 0 to 35s: EXPLANATION
 Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},Topic,,0,0,0,,📌 आज का नियम: {script_data['rule_title']}
 Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyHead,,0,0,680,,💡 नियम को ध्यान से समझें:
 Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyText,,0,0,500,,👉 1. {script_data['rule_p1']}
 Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyText,,0,0,320,,👉 2. {script_data['rule_p2']}
 
-# 35 to 50s: QUIZ & QUESTION
 Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{total_duration:05.2f},Topic,,0,0,0,,🎯 परीक्षा क्विज़ (Quiz Time)
 Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{total_duration:05.2f},BodyHead,,0,0,680,,{script_data['question']}
 
@@ -219,7 +214,6 @@ Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,350,,{scri
 Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,250,,{script_data['opt_c']}
 Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,150,,{script_data['opt_d']}
 
-# REVEAL PHASE
 Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,450,,{{{green_c if correct_opt=='A' else ''}}}{script_data['opt_a']}
 Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,350,,{{{green_c if correct_opt=='B' else ''}}}{script_data['opt_b']}
 Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,250,,{{{green_c if correct_opt=='C' else ''}}}{script_data['opt_c']}
@@ -233,7 +227,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     total_dur = get_audio_duration(audio_file)
     generate_ass_subtitles(script_data, total_dur, "subs.ass")
 
-    # fontsdir=. guarantees FFmpeg uses our downloaded NotoSansDevanagari font directly
     cmd = [
         "ffmpeg", "-y",
         "-f", "lavfi",
@@ -333,7 +326,7 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Automation Starting (50s Concept + Quiz, No Boxes)...")
+    print("🚀 Postal Wala Automation Starting (50s Concept + Quiz)...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
@@ -342,8 +335,8 @@ if __name__ == "__main__":
     script_data = generate_clause_script(pdf_content, page_num)
     print("✅ AI Script Ready.")
 
-    asyncio.run(generate_voice_edge(script_data["voiceover"], "voice.mp3"))
-    print("✅ Natural Human Voiceover Ready.")
+    generate_voice(script_data["voiceover"], "voice.mp3")
+    print("✅ Voiceover Ready.")
 
     create_video_ffmpeg(script_data, "voice.mp3", "final_reel.mp4")
 
