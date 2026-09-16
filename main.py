@@ -23,7 +23,6 @@ def get_target_pdf():
             return f
     return pdf_files[0]
 
-# 1. 'खंड - 02' से शुरू करके क्रमवार पढ़ना
 def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
@@ -59,7 +58,6 @@ def get_current_reading_window(pdf_path):
 
     return extracted_text[:3000], current_page + 1
 
-# 2. AI Script & Magic Quiz Generator (Verified Working Model)
 def generate_clause_script(pdf_content, page_num):
     if not GROQ_API_KEY:
         raise ValueError("GROQ_API_KEY missing in GitHub Secrets!")
@@ -114,12 +112,10 @@ def generate_clause_script(pdf_content, page_num):
         raw = raw.strip()
     return json.loads(raw)
 
-# 3. Hindi Voiceover
 def generate_voice(text, filename="voice.mp3"):
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
-# 4. FFmpeg Video Creation (1080x1920 9:16)
 def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output_video="final_reel.mp4"):
     img = Image.new("RGB", (1080, 1920), color="#0F172A")
     draw = ImageDraw.Draw(img)
@@ -146,14 +142,14 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
         "-pix_fmt", "yuv420p",
         "-shortest", output_video
     ]
-    subprocess.run(cmd, check=True)
-    print("✅ FFmpeg Reel Created Successfully.")
+    # FFmpeg frames ko silent karke clean render
+    subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    print("✅ FFmpeg Video Render Completed.")
 
-# 5. Instagram Direct Auto-Upload
 def upload_to_instagram(video_path, caption):
+    print("🔍 Checking Instagram Secrets...")
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
-        print("⚠️ IG_ACCESS_TOKEN ya IG_USER_ID missing hai! Upload skip ho raha hai.")
-        return
+        raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID Secrets me missing hai!")
 
     print("📤 Uploading video to public host (Catbox)...")
     video_url = None
@@ -175,10 +171,11 @@ def upload_to_instagram(video_path, caption):
                 video_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
 
     if not video_url:
-        raise RuntimeError("Video public link generate nahi ho paya. Dono hosts fail ho gaye.")
+        raise RuntimeError("Video host link fail ho gaya!")
 
-    print(f"✅ Public URL: {video_url}")
+    print(f"✅ Video Link: {video_url}")
 
+    print("📦 Creating Instagram Container...")
     url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     payload = {
         "media_type": "REELS",
@@ -191,27 +188,34 @@ def upload_to_instagram(video_path, caption):
     container_id = res_json.get("id")
 
     if not container_id:
-        raise RuntimeError(f"Error creating IG container: {r.text}")
+        raise RuntimeError(f"Instagram Container Error: {res_json}")
 
-    print("⏳ Processing on Instagram servers (45s)...")
-    time.sleep(45)
+    print(f"✅ Container ID: {container_id}")
+    print("⏳ Processing on Instagram servers (60s)...")
+    time.sleep(60)
 
+    print("🚀 Publishing Reel...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": container_id, "access_token": IG_ACCESS_TOKEN})
-    print("🚀 Reel Published Successfully:", pub_res.text)
+    pub_json = pub_res.json()
+
+    if "id" in pub_json:
+        print(f"🎉 SUCCESS! Reel Published! ID: {pub_json['id']}")
+    else:
+        raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Automation Starting...")
+    print("🚀 Postal Wala Automation Running...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
-    print(f"✅ Reading Page {page_num}...")
+    print(f"✅ Read Page {page_num}.")
 
     script_data = generate_clause_script(pdf_content, page_num)
-    print("✅ Script Generated.")
+    print("✅ AI Script Ready.")
 
     generate_voice(script_data["voiceover"], "voice.mp3")
-    print("✅ Audio Generated.")
+    print("✅ Audio Voiceover Ready.")
 
     create_video_ffmpeg(
         script_data.get("rule_title", "Postal Manual"),
@@ -221,4 +225,5 @@ if __name__ == "__main__":
         "final_reel.mp4"
     )
 
+    # Yeh call pichle code me missing tha
     upload_to_instagram("final_reel.mp4", script_data.get("caption", ""))
