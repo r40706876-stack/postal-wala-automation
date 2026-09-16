@@ -56,7 +56,7 @@ def get_current_reading_window(pdf_path):
     with open(STATE_FILE, "w") as f:
         json.dump({"last_page": next_page}, f)
 
-    return extracted_text[:3000], current_page + 1
+    return extracted_text[:1500], current_page + 1
 
 def generate_clause_script(pdf_content, page_num):
     if not GROQ_API_KEY:
@@ -72,20 +72,20 @@ def generate_clause_script(pdf_content, page_num):
     Teach the next specific rule/clause from this departmental PDF section (Around Page {page_num}).
 
     REEL GUIDELINES:
-    1. Duration: 60 to 80 SECONDS of spoken audio (around 160-190 words in spoken Hindi).
-    2. Language: Super simple, everyday conversational Hindi (बोलचाल की बिल्कुल सरल देसी हिंदी).
-    3. Step-by-step Structure:
-       - Hook: Rule/Topic name clearly mention karo.
-       - Detailed Explanation: Rule ko daily life practical example se samjhao.
-       - Magic Question (Quiz): End me 1 exam-style MCQ pucho aur bolo comments me answer dene ko.
+    1. Duration: 60 SECONDS of spoken audio (around 120-140 words in simple Hindi).
+    2. Language: Super simple everyday conversational Hindi (बोलचाल की बिल्कुल सरल देसी हिंदी).
+    3. Structure:
+       - Hook: Rule/Topic name.
+       - Explanation: Rule ko daily life example se samjhao (2-3 lines).
+       - Quiz: End me 1 MCQ pucho aur bolo comment me answer de.
 
     PDF Content:
     {pdf_content}
 
     Return ONLY raw valid JSON (no markdown ticks, no backticks, no codeblocks):
     {{
-        "rule_title": "Topic / Clause Name",
-        "voiceover": "Detailed conversational Hindi voiceover of around 160-190 words covering explanation and quiz question clearly.",
+        "rule_title": "Topic Name",
+        "voiceover": "Conversational Hindi voiceover of 120-140 words covering explanation and quiz question.",
         "question": "Question text",
         "options": "A) ... B) ... C) ... D) ...",
         "caption": "Instagram Caption with Topic, Easy Explanation, MCQ Question, Options, and hashtags #PostalWala #MTSExam #IndiaPost #Khand02"
@@ -95,7 +95,8 @@ def generate_clause_script(pdf_content, page_num):
     payload = {
         "model": "qwen/qwen3.8-27b",
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.6
+        "temperature": 0.6,
+        "max_tokens": 500
     }
     
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
@@ -159,7 +160,6 @@ def upload_to_instagram_direct(video_path, caption):
     file_size = os.path.getsize(video_path)
     print(f"📦 Video file size: {file_size / (1024*1024):.2f} MB")
 
-    # Step 1: Session init
     print("🚀 Initializing Instagram Resumable Upload Session...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
@@ -180,7 +180,6 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
-    # Step 2: Meta Resumable Protocol (Exact required headers)
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
         "Offset": "0",
@@ -197,7 +196,6 @@ def upload_to_instagram_direct(video_path, caption):
 
     print("✅ Video uploaded directly to Instagram servers.")
 
-    # Step 3: Transcode Status Check
     print("⏳ Processing on Instagram servers...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
@@ -215,7 +213,6 @@ def upload_to_instagram_direct(video_path, caption):
     else:
         print("⚠️ Polling timeout, trying to publish...")
 
-    # Step 4: Publish
     print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
