@@ -2,28 +2,36 @@ import os
 import glob
 import json
 import time
+import textwrap
 import subprocess
 import requests
 from pypdf import PdfReader
 from gtts import gTTS
+from PIL import Image, ImageDraw, ImageFont
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
 STATE_FILE = "progress_state.json"
-FONTS_DIR = os.path.abspath("custom_fonts")
-FONT_FILE = os.path.join(FONTS_DIR, "NotoSansDevanagari-Bold.ttf")
+FONT_PATH = "NotoSansDevanagari-Bold.ttf"
 
 def ensure_hindi_font():
-    os.makedirs(FONTS_DIR, exist_ok=True)
-    if not os.path.exists(FONT_FILE):
+    if not os.path.exists(FONT_PATH):
         print("📥 Downloading Noto Sans Devanagari font...")
         url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
         r = requests.get(url, timeout=30)
-        with open(FONT_FILE, "wb") as f:
+        with open(FONT_PATH, "wb") as f:
             f.write(r.content)
-        print("✅ Font cached in dedicated folder.")
+        print("✅ Font cached locally.")
+
+def get_font(size):
+    if os.path.exists(FONT_PATH):
+        try:
+            return ImageFont.truetype(FONT_PATH, size)
+        except Exception:
+            pass
+    return ImageFont.load_default()
 
 def get_target_pdf():
     pdf_files = glob.glob("*.pdf") + glob.glob("data/*.pdf")
@@ -87,10 +95,11 @@ def generate_clause_script(pdf_content, page_num):
 
     DURATION & WORD COUNT:
     Total around 95-105 words in spoken Hindi (~45-50 seconds audio).
+    STRICT RULE: NO EMOJIS, NO SYMBOLS (Pure clean text only).
 
     STRUCTURE:
     1. EXPLANATION (~32 seconds):
-       - Direct hook.
+       - Direct topic name.
        - Explain the core rule in simple everyday conversational Hindi.
     2. QUIZ (~15 seconds):
        - 1 crisp exam MCQ with 4 options.
@@ -101,15 +110,15 @@ def generate_clause_script(pdf_content, page_num):
 
     Format strictly matching these lines:
     TITLE: [Short Topic Name in Hindi]
-    RULE_P1: [Rule point 1 in 8-10 words]
-    RULE_P2: [Rule point 2 in 8-10 words]
+    RULE_P1: [Rule point 1 in 8-10 Hindi words]
+    RULE_P2: [Rule point 2 in 8-10 Hindi words]
     QUESTION: [1 short exam question in Hindi]
     OPT_A: [Option A text]
     OPT_B: [Option B text]
     OPT_C: [Option C text]
     OPT_D: [Option D text]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Spoken Hindi Script of 95-105 words]
+    VOICEOVER: [Spoken Hindi Script of 95-105 words without emojis]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
@@ -167,6 +176,11 @@ def generate_clause_script(pdf_content, page_num):
         elif line_clean.startswith("CAPTION:"):
             data["caption"] = line_clean.replace("CAPTION:", "").strip()
 
+    # Clean out any non-BMP characters / emojis
+    for k in data:
+        if isinstance(data[k], str):
+            data[k] = "".join(c for c in data[k] if ord(c) < 0x10000)
+
     return data
 
 def generate_voice(text, filename="voice.mp3"):
@@ -178,65 +192,94 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-def generate_ass_subtitles(script_data, total_duration, output_ass="subs.ass"):
-    quiz_start = max(15.0, total_duration - 15.0)
-    reveal_time = total_duration - 5.0
-    correct_opt = script_data.get("correct", "B")
-    green_c = "\\c&H00FF00&\\b1"
-
-    ass_content = f"""[Script Info]
-ScriptType: v4.00+
-PlayResX: 1080
-PlayResY: 1920
-
-[V4+ Styles]
-Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Header,Noto Sans Devanagari,50,&H00481DE1,&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,3,0,8,60,60,150,1
-Style: Topic,Noto Sans Devanagari,40,&H00F8BD38,&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,2,0,8,60,60,250,1
-Style: BodyHead,Noto Sans Devanagari,44,&H00FBBF24,&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,3,0,5,80,80,680,1
-Style: BodyText,Noto Sans Devanagari,38,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,5,90,90,520,1
-Style: Opt,Noto Sans Devanagari,38,&H00F8FAFC,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,5,80,80,300,1
-Style: Footer,Noto Sans Devanagari,36,&H00FFFFFF,&H000000FF,&H00E11D48,&H00000000,1,0,0,0,100,100,0,0,1,3,0,2,60,60,140,1
-
-[Events]
-Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:00.00,0:00:{total_duration:05.2f},Header,,0,0,0,,POSTAL WALA\\N{{\\fs32\\c&H94A3B8&}}@POSTAL_WALA
-Dialogue: 0,0:00:00.00,0:00:{total_duration:05.2f},Footer,,0,0,0,,पूरी तैयारी के लिए FOLLOW करें 👉 @POSTAL_WALA
-
-Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},Topic,,0,0,0,,📌 आज का नियम: {script_data['rule_title']}
-Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyHead,,0,0,680,,💡 नियम को ध्यान से समझें:
-Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyText,,0,0,500,,👉 1. {script_data['rule_p1']}
-Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyText,,0,0,320,,👉 2. {script_data['rule_p2']}
-
-Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{total_duration:05.2f},Topic,,0,0,0,,🎯 परीक्षा क्विज़ (Quiz Time)
-Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{total_duration:05.2f},BodyHead,,0,0,680,,{script_data['question']}
-
-Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,450,,{script_data['opt_a']}
-Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,350,,{script_data['opt_b']}
-Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,250,,{script_data['opt_c']}
-Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,150,,{script_data['opt_d']}
-
-Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,450,,{{{green_c if correct_opt=='A' else ''}}}{script_data['opt_a']}
-Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,350,,{{{green_c if correct_opt=='B' else ''}}}{script_data['opt_b']}
-Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,250,,{{{green_c if correct_opt=='C' else ''}}}{script_data['opt_c']}
-Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,150,,{{{green_c if correct_opt=='D' else ''}}}{script_data['opt_d']}
-"""
-    with open(output_ass, "w", encoding="utf-8") as f:
-        f.write(ass_content)
-
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_hindi_font()
     total_dur = get_audio_duration(audio_file)
-    generate_ass_subtitles(script_data, total_dur, "subs.ass")
+    split_time = max(10.0, total_dur - 15.0)
+
+    font_header = get_font(52)
+    font_sub = get_font(32)
+    font_title = get_font(44)
+    font_h2 = get_font(42)
+    font_body = get_font(38)
+    font_cta = get_font(36)
+
+    # --- SLIDE 1: EXPLANATION (0 to 35s) ---
+    img1 = Image.new("RGB", (1080, 1920), color="#0F172A")
+    d1 = ImageDraw.Draw(img1)
+    d1.rounded_rectangle([45, 90, 1035, 1830], radius=35, fill="#1E293B", outline="#E11D48", width=6)
+    d1.text((90, 140), "POSTAL WALA", fill="#F43F5E", font=font_header)
+    d1.text((90, 220), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
+
+    # Topic Card
+    d1.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#0F172A", outline="#38BDF8", width=3)
+    d1.text((115, 315), "आज का नियम:", fill="#38BDF8", font=font_sub)
+    d1.text((115, 365), textwrap.fill(script_data["rule_title"], width=28), fill="#FFFFFF", font=font_title)
+
+    # Content
+    d1.rounded_rectangle([85, 520, 995, 1550], radius=30, fill="#0F172A")
+    d1.text((120, 560), "नियम को ध्यान से समझें:", fill="#FBBF24", font=font_h2)
+
+    d1.rounded_rectangle([115, 680, 965, 880], radius=20, fill="#1E293B")
+    d1.text((140, 700), "1. मुख्य बिंदु:", fill="#38BDF8", font=font_sub)
+    d1.text((140, 750), textwrap.fill(script_data["rule_p1"], width=28), fill="#F8FAFC", font=font_body)
+
+    d1.rounded_rectangle([115, 940, 965, 1140], radius=20, fill="#1E293B")
+    d1.text((140, 960), "2. मुख्य बिंदु:", fill="#38BDF8", font=font_sub)
+    d1.text((140, 1010), textwrap.fill(script_data["rule_p2"], width=28), fill="#F8FAFC", font=font_body)
+
+    d1.rounded_rectangle([85, 1610, 995, 1750], radius=25, fill="#E11D48")
+    d1.text((220, 1655), "पूरी तैयारी के लिए फॉलो करें:\n@POSTAL_WALA", fill="#FFFFFF", font=font_cta, align="center")
+    img1.save("slide1.png")
+
+    # --- SLIDE 2: QUIZ & ANSWER (35s to End) ---
+    img2 = Image.new("RGB", (1080, 1920), color="#0F172A")
+    d2 = ImageDraw.Draw(img2)
+    d2.rounded_rectangle([45, 90, 1035, 1830], radius=35, fill="#1E293B", outline="#E11D48", width=6)
+    d2.text((90, 140), "POSTAL WALA", fill="#F43F5E", font=font_header)
+    d2.text((90, 220), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
+
+    d2.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#0F172A", outline="#FBBF24", width=3)
+    d2.text((115, 315), "परीक्षा क्विज़:", fill="#FBBF24", font=font_sub)
+    d2.text((115, 365), "सवाल का जवाब सोचें!", fill="#FFFFFF", font=font_title)
+
+    d2.rounded_rectangle([85, 520, 995, 1550], radius=30, fill="#0F172A")
+    d2.text((120, 560), "सवाल:", fill="#FBBF24", font=font_h2)
+    d2.text((120, 640), textwrap.fill(script_data["question"], width=28), fill="#F8FAFC", font=font_body)
+
+    opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
+    correct = script_data.get("correct", "B")
+    oy = 960
+    for idx, opt in enumerate(opts):
+        is_ans = (correct == chr(65 + idx))
+        box_bg = "#064E3B" if is_ans else "#1E293B"
+        border_c = "#10B981" if is_ans else "#38BDF8"
+        text_c = "#34D399" if is_ans else "#FFFFFF"
+
+        d2.rounded_rectangle([115, oy, 965, oy + 95], radius=18, fill=box_bg, outline=border_c, width=2)
+        d2.text((150, oy + 25), opt, fill=text_c, font=font_body)
+        oy += 125
+
+    d2.rounded_rectangle([85, 1610, 995, 1750], radius=25, fill="#E11D48")
+    d2.text((220, 1655), "पूरी तैयारी के लिए फॉलो करें:\n@POSTAL_WALA", fill="#FFFFFF", font=font_cta, align="center")
+    img2.save("slide2.png")
+
+    # Clean Concat in FFmpeg without any libass or subtitles filter
+    filter_complex = (
+        f"[0:v]loop=loop=-1:size=1:start=0,trim=duration={split_time}[v0]; "
+        f"[1:v]loop=loop=-1:size=1:start=0,trim=duration={total_dur - split_time}[v1]; "
+        f"[v0][v1]concat=n=2:v=1:a=0,format=yuv420p[v]"
+    )
 
     cmd = [
         "ffmpeg", "-y",
-        "-f", "lavfi",
-        "-i", f"color=c=#0F172A:s=1080x1920:d={total_dur}",
+        "-i", "slide1.png",
+        "-i", "slide2.png",
         "-i", audio_file,
-        "-vf", f"subtitles=subs.ass:fontsdir={FONTS_DIR}",
+        "-filter_complex", filter_complex,
+        "-map", "[v]",
+        "-map", "2:a",
         "-c:v", "libx264",
-        "-preset", "veryfast",
         "-profile:v", "main",
         "-level:v", "4.0",
         "-r", "30",
@@ -248,7 +291,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ]
     subprocess.run(cmd, check=True)
-    print("✅ Video generated cleanly with proper font isolation.")
+    print("✅ 2-Slide Visual Reel Created Cleanly (No ASS/Glyph errors).")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
@@ -257,7 +300,6 @@ def upload_to_instagram_direct(video_path, caption):
     file_size = os.path.getsize(video_path)
     print(f"📦 Video size: {file_size / (1024*1024):.2f} MB")
 
-    # Step 1: Session Init
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
@@ -277,7 +319,6 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
-    # Step 2: Meta standard resumable upload
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
         "file_offset": "0"
@@ -291,7 +332,6 @@ def upload_to_instagram_direct(video_path, caption):
 
     print("✅ Video uploaded directly to Instagram servers.")
 
-    # Step 3: Polling for transcode status
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 35):
@@ -308,7 +348,6 @@ def upload_to_instagram_direct(video_path, caption):
     else:
         print("⚠️ Polling timeout, trying to publish...")
 
-    # Step 4: Publish
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
@@ -319,7 +358,7 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Automation Starting (50s Concept + Quiz)...")
+    print("🚀 Postal Wala Automation Starting...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
