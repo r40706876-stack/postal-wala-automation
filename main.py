@@ -95,7 +95,7 @@ def generate_clause_script(pdf_content, page_num):
 
     DURATION & WORD COUNT:
     Total around 95-105 words in spoken Hindi (~45-50 seconds audio).
-    STRICT RULE: NO EMOJIS, NO SYMBOLS (Pure clean text only).
+    STRICT RULE: NO EMOJIS, NO SYMBOLS.
 
     STRUCTURE:
     1. EXPLANATION (~32 seconds):
@@ -176,7 +176,6 @@ def generate_clause_script(pdf_content, page_num):
         elif line_clean.startswith("CAPTION:"):
             data["caption"] = line_clean.replace("CAPTION:", "").strip()
 
-    # Clean out any non-BMP characters / emojis
     for k in data:
         if isinstance(data[k], str):
             data[k] = "".join(c for c in data[k] if ord(c) < 0x10000)
@@ -204,19 +203,17 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_body = get_font(38)
     font_cta = get_font(36)
 
-    # --- SLIDE 1: EXPLANATION (0 to 35s) ---
+    # --- SLIDE 1: EXPLANATION ---
     img1 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d1 = ImageDraw.Draw(img1)
     d1.rounded_rectangle([45, 90, 1035, 1830], radius=35, fill="#1E293B", outline="#E11D48", width=6)
     d1.text((90, 140), "POSTAL WALA", fill="#F43F5E", font=font_header)
     d1.text((90, 220), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
-    # Topic Card
     d1.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#0F172A", outline="#38BDF8", width=3)
     d1.text((115, 315), "आज का नियम:", fill="#38BDF8", font=font_sub)
     d1.text((115, 365), textwrap.fill(script_data["rule_title"], width=28), fill="#FFFFFF", font=font_title)
 
-    # Content
     d1.rounded_rectangle([85, 520, 995, 1550], radius=30, fill="#0F172A")
     d1.text((120, 560), "नियम को ध्यान से समझें:", fill="#FBBF24", font=font_h2)
 
@@ -232,7 +229,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     d1.text((220, 1655), "पूरी तैयारी के लिए फॉलो करें:\n@POSTAL_WALA", fill="#FFFFFF", font=font_cta, align="center")
     img1.save("slide1.png")
 
-    # --- SLIDE 2: QUIZ & ANSWER (35s to End) ---
+    # --- SLIDE 2: QUIZ & ANSWER ---
     img2 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d2 = ImageDraw.Draw(img2)
     d2.rounded_rectangle([45, 90, 1035, 1830], radius=35, fill="#1E293B", outline="#E11D48", width=6)
@@ -264,7 +261,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     d2.text((220, 1655), "पूरी तैयारी के लिए फॉलो करें:\n@POSTAL_WALA", fill="#FFFFFF", font=font_cta, align="center")
     img2.save("slide2.png")
 
-    # Clean Concat in FFmpeg without any libass or subtitles filter
     filter_complex = (
         f"[0:v]loop=loop=-1:size=1:start=0,trim=duration={split_time}[v0]; "
         f"[1:v]loop=loop=-1:size=1:start=0,trim=duration={total_dur - split_time}[v1]; "
@@ -291,7 +287,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ]
     subprocess.run(cmd, check=True)
-    print("✅ 2-Slide Visual Reel Created Cleanly (No ASS/Glyph errors).")
+    print("✅ 2-Slide Visual Reel Created Cleanly.")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
@@ -300,6 +296,7 @@ def upload_to_instagram_direct(video_path, caption):
     file_size = os.path.getsize(video_path)
     print(f"📦 Video size: {file_size / (1024*1024):.2f} MB")
 
+    # Step 1: Session Init
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
@@ -319,19 +316,25 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
+    # Step 2: Meta Official Binary Resumable Upload
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "file_offset": "0"
+        "Offset": "0",
+        "file_size": str(file_size),
+        "Content-Type": "application/octet-stream"
     }
 
     with open(video_path, "rb") as f:
-        r_upload = requests.post(upload_url, headers=headers, files={"video_file": f}, timeout=180)
+        video_bytes = f.read()
+
+    r_upload = requests.post(upload_url, headers=headers, data=video_bytes, timeout=180)
 
     if r_upload.status_code not in [200, 201]:
         raise RuntimeError(f"Direct byte upload failed ({r_upload.status_code}): {r_upload.text}")
 
     print("✅ Video uploaded directly to Instagram servers.")
 
+    # Step 3: Wait for transcoding
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 35):
@@ -348,6 +351,7 @@ def upload_to_instagram_direct(video_path, caption):
     else:
         print("⚠️ Polling timeout, trying to publish...")
 
+    # Step 4: Live Publish
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
