@@ -133,7 +133,6 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     frame_path = "frame.png"
     img.save(frame_path)
 
-    # Instagram strict format: baseline h264, yuv420p, faststart, 30fps
     cmd = [
         "ffmpeg", "-y",
         "-loop", "1", "-i", frame_path,
@@ -153,59 +152,52 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     print("✅ Video encoded strictly for Instagram Reels.")
 
-# Meta-friendly CDN upload
-def get_direct_video_url(video_path):
-    print("📤 Uploading video to reliable direct host (0x0.st)...")
-    try:
-        with open(video_path, "rb") as f:
-            res = requests.post("https://0x0.st", files={"file": f}, timeout=120)
-            if res.status_code == 200 and res.text.strip().startswith("http"):
-                url = res.text.strip()
-                print(f"✅ Primary Host (0x0.st): {url}")
-                return url
-    except Exception as e:
-        print(f"0x0.st failed: {e}")
-
-    print("📤 Trying secondary host (filepush)...")
-    try:
-        with open(video_path, "rb") as f:
-            res = requests.put(f"https://transfer.sh/{os.path.basename(video_path)}", data=f, timeout=120)
-            if res.status_code == 200 and res.text.strip().startswith("http"):
-                url = res.text.strip()
-                print(f"✅ Secondary Host (transfer.sh): {url}")
-                return url
-    except Exception as e:
-        print(f"transfer.sh failed: {e}")
-
-    raise RuntimeError("Direct video host unavailable. All CDNs failed.")
-
-def upload_to_instagram(video_path, caption):
+# NO 3RD-PARTY HOST: DIRECT META RESUMABLE UPLOAD
+def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    video_url = get_direct_video_url(video_path)
+    file_size = os.path.getsize(video_path)
+    print(f"📦 Video file size: {file_size / (1024*1024):.2f} MB")
 
-    # 1. Create Media Container
-    print("📦 Creating Instagram Reel Container...")
-    url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
-    payload = {
+    # Step 1: Instagram Session Start Karein
+    print("🚀 Initializing Instagram Resumable Upload Session...")
+    init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
+    init_payload = {
         "media_type": "REELS",
-        "video_url": video_url,
+        "upload_type": "resumable",
         "caption": caption,
         "access_token": IG_ACCESS_TOKEN
     }
-    r = requests.post(url, data=payload)
-    res_json = r.json()
-    container_id = res_json.get("id")
+    r_init = requests.post(init_url, data=init_payload)
+    init_data = r_init.json()
 
-    if not container_id:
-        raise RuntimeError(f"Instagram Container Creation Failed: {res_json}")
+    video_id = init_data.get("id")
+    upload_url = init_data.get("uri")
 
-    print(f"✅ Container ID: {container_id}")
+    if not video_id or not upload_url:
+        raise RuntimeError(f"Session failed: {init_data}")
 
-    # 2. Wait until Instagram servers download and transcode video
-    print("⏳ Waiting for Instagram transcode (Polling status)...")
-    status_url = f"https://graph.facebook.com/v19.0/{container_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
+    print(f"✅ Container ID: {video_id}")
+    print("📤 Uploading video bytes directly to Instagram...")
+
+    # Step 2: Direct Binary Push to Meta Server
+    headers = {
+        "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
+        "offset": "0",
+        "file_size": str(file_size)
+    }
+    with open(video_path, "rb") as f:
+        r_upload = requests.post(upload_url, headers=headers, data=f, timeout=120)
+
+    if r_upload.status_code not in [200, 201]:
+        raise RuntimeError(f"Direct byte upload failed: {r_upload.text}")
+
+    print("✅ Video uploaded directly to Instagram servers.")
+
+    # Step 3: Transcoding Status Check (Wait for FINISHED)
+    print("⏳ Processing on Instagram servers...")
+    status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 30):
         time.sleep(8)
@@ -214,17 +206,17 @@ def upload_to_instagram(video_path, caption):
         print(f"🔄 Check {attempt}: {code}")
 
         if code == "FINISHED":
-            print("✅ Transcoding FINISHED on Instagram servers!")
+            print("✅ Transcoding FINISHED!")
             break
         elif code in ["ERROR", "EXPIRED"]:
-            raise RuntimeError(f"Instagram rejected transcoding: {status_res}")
+            raise RuntimeError(f"Instagram rejected video: {status_res}")
     else:
-        print("⚠️ Status polling timed out, attempting publish...")
+        print("⚠️ Polling timeout, trying to publish...")
 
-    # 3. Publish Reel
+    # Step 4: Publish Reel
     print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
-    pub_res = requests.post(pub_url, data={"creation_id": container_id, "access_token": IG_ACCESS_TOKEN})
+    pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
 
     if "id" in pub_json:
@@ -253,4 +245,4 @@ if __name__ == "__main__":
         "final_reel.mp4"
     )
 
-    upload_to_instagram("final_reel.mp4", script_data.get("caption", ""))
+    upload_to_instagram_direct("final_reel.mp4", script_data.get("caption", ""))
