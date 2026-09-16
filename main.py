@@ -12,16 +12,18 @@ IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
 STATE_FILE = "progress_state.json"
-FONT_FILE = "NotoSansDevanagari-Bold.ttf"
+FONTS_DIR = os.path.abspath("custom_fonts")
+FONT_FILE = os.path.join(FONTS_DIR, "NotoSansDevanagari-Bold.ttf")
 
 def ensure_hindi_font():
+    os.makedirs(FONTS_DIR, exist_ok=True)
     if not os.path.exists(FONT_FILE):
         print("📥 Downloading Noto Sans Devanagari font...")
         url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
         r = requests.get(url, timeout=30)
         with open(FONT_FILE, "wb") as f:
             f.write(r.content)
-        print("✅ Font cached locally.")
+        print("✅ Font cached in dedicated folder.")
 
 def get_target_pdf():
     pdf_files = glob.glob("*.pdf") + glob.glob("data/*.pdf")
@@ -227,12 +229,13 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     total_dur = get_audio_duration(audio_file)
     generate_ass_subtitles(script_data, total_dur, "subs.ass")
 
+    # Fixed: dedicated custom_fonts directory prevents FFmpeg from parsing non-font repo files
     cmd = [
         "ffmpeg", "-y",
         "-f", "lavfi",
         "-i", f"color=c=#0F172A:s=1080x1920:d={total_dur}",
         "-i", audio_file,
-        "-vf", "subtitles=subs.ass:fontsdir=.",
+        "-vf", f"subtitles=subs.ass:fontsdir={FONTS_DIR}",
         "-c:v", "libx264",
         "-preset", "veryfast",
         "-profile:v", "main",
@@ -246,7 +249,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ]
     subprocess.run(cmd, check=True)
-    print("✅ Video generated cleanly without square boxes.")
+    print("✅ Video generated cleanly with proper font isolation.")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
