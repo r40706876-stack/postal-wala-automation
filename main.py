@@ -18,14 +18,12 @@ FONT_PATH = "NotoSansDevanagari-Bold.ttf"
 
 def ensure_hindi_font():
     if not os.path.exists(FONT_PATH):
-        print("📥 Downloading Noto Sans Devanagari Font...")
         font_url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
         try:
             r = requests.get(font_url, timeout=30)
             if r.status_code == 200:
                 with open(FONT_PATH, "wb") as f:
                     f.write(r.content)
-                print("✅ Font downloaded successfully.")
         except Exception as e:
             print(f"Font download warning: {e}")
 
@@ -97,34 +95,36 @@ def generate_clause_script(pdf_content, page_num):
     print(f"🚀 Using Groq model: {target_model}")
 
     prompt = f"""
-    You are an energetic tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
-    Teach the next specific rule/clause from this departmental PDF section (Around Page {page_num}).
+    You are an expert postal exam teacher for 'Postal Wala' Instagram page.
+    Create a crisp reel script based on this postal manual section (Around Page {page_num}).
 
-    REEL GUIDELINES:
-    1. Tone: Fast-paced, engaging, sharp, conversational Hindi (बोलचाल की सरल व जोश भरी हिंदी).
-    2. Word Count: 85 to 110 words total.
-    3. Mandatory Structure:
-       - Hook: Rule/Topic name clearly mention karo.
-       - Explanation: Rule ko practical example se 2-3 short lines me samjhao.
-       - Quiz: End me 1 MCQ pucho aur bolo comment me answer de.
-       - Outro (COMPULSORY): Last line must strictly be: "इससे आगे की जानकारी और परीक्षा से जुड़े महत्वपूर्ण प्रश्नों के लिए अभी फॉलो करें Postal Wala को!"
+    GUIDELINES:
+    1. Language: Simple, energetic spoken Hindi (शुद्ध बोलचाल की सरल हिंदी).
+    2. Voiceover: Around 85-95 words explaining the core rule + 1 MCQ + Outro: "आगे की तैयारी के लिए अभी फॉलो करें Postal Wala को!"
+    3. Points: Give 3 short bullet points summarizing what is being taught (to display on screen).
 
     PDF Content:
     {pdf_content}
 
     Output format strictly matching these lines:
-    TITLE: [Short Topic Name in Hindi]
-    VOICEOVER: [Spoken Hindi explanation with quiz and compulsory Postal Wala follow outro line]
-    QUESTION: [1 Crisp MCQ Question in Hindi]
-    OPTIONS: [A) ... B) ... C) ... D) ...]
-    CAPTION: [Instagram Caption with Topic, Question, Options, and hashtags #PostalWala #MTSExam #IndiaPost #Khand02]
+    TITLE: [Short topic name in Hindi]
+    POINT1: [Key takeaway 1 in 6-8 Hindi words]
+    POINT2: [Key takeaway 2 in 6-8 Hindi words]
+    POINT3: [Key takeaway 3 in 6-8 Hindi words]
+    VOICEOVER: [Complete spoken Hindi script]
+    QUESTION: [1 short MCQ question in Hindi]
+    OPT_A: [Option A]
+    OPT_B: [Option B]
+    OPT_C: [Option C]
+    OPT_D: [Option D]
+    CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
     payload = {
         "model": target_model,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.4,
-        "max_tokens": 350
+        "max_tokens": 400
     }
     
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
@@ -137,111 +137,148 @@ def generate_clause_script(pdf_content, page_num):
     
     data = {
         "rule_title": "डाकघर नियम",
+        "point1": "कामकाज के निश्चित घंटे तय होते हैं",
+        "point2": "शनिवार को काम केवल 3 घंटे होता है",
+        "point3": "दोपहर 1 बजे काम बंद कर दिया जाता है",
         "voiceover": "",
-        "question": "आज का सवाल",
-        "options": "A) HO\nB) SO\nC) BO\nD) इनमें से कोई नहीं",
+        "question": "शनिवार को डाकघर में काउंटर काम कितने घंटे होता है?",
+        "opt_a": "A) 2 घंटे",
+        "opt_b": "B) 3 घंटे",
+        "opt_c": "C) 5 घंटे",
+        "opt_d": "D) पूरा दिन",
         "caption": "डाक विभाग परीक्षा तैयारी #PostalWala #MTSExam"
     }
     
-    current_key = None
     for line in raw_text.splitlines():
         line_clean = line.strip()
         if line_clean.startswith("TITLE:"):
             data["rule_title"] = line_clean.replace("TITLE:", "").strip()
-            current_key = "rule_title"
+        elif line_clean.startswith("POINT1:"):
+            data["point1"] = line_clean.replace("POINT1:", "").strip()
+        elif line_clean.startswith("POINT2:"):
+            data["point2"] = line_clean.replace("POINT2:", "").strip()
+        elif line_clean.startswith("POINT3:"):
+            data["point3"] = line_clean.replace("POINT3:", "").strip()
         elif line_clean.startswith("VOICEOVER:"):
             data["voiceover"] = line_clean.replace("VOICEOVER:", "").strip()
-            current_key = "voiceover"
         elif line_clean.startswith("QUESTION:"):
             data["question"] = line_clean.replace("QUESTION:", "").strip()
-            current_key = "question"
-        elif line_clean.startswith("OPTIONS:"):
-            data["options"] = line_clean.replace("OPTIONS:", "").strip()
-            current_key = "options"
+        elif line_clean.startswith("OPT_A:"):
+            data["opt_a"] = "A) " + line_clean.replace("OPT_A:", "").replace("A)", "").strip()
+        elif line_clean.startswith("OPT_B:"):
+            data["opt_b"] = "B) " + line_clean.replace("OPT_B:", "").replace("B)", "").strip()
+        elif line_clean.startswith("OPT_C:"):
+            data["opt_c"] = "C) " + line_clean.replace("OPT_C:", "").replace("C)", "").strip()
+        elif line_clean.startswith("OPT_D:"):
+            data["opt_d"] = "D) " + line_clean.replace("OPT_D:", "").replace("D)", "").strip()
         elif line_clean.startswith("CAPTION:"):
             data["caption"] = line_clean.replace("CAPTION:", "").strip()
-            current_key = "caption"
-        elif current_key and line_clean:
-            data[current_key] += " " + line_clean
 
-    outro_line = " इससे आगे की जानकारी और परीक्षा से जुड़े महत्वपूर्ण प्रश्नों के लिए अभी फॉलो करें Postal Wala को!"
+    if not data["voiceover"]:
+        data["voiceover"] = raw_text[:250]
+
+    outro_line = " आगे की तैयारी और महत्वपूर्ण प्रश्नों के लिए अभी फॉलो करें Postal Wala को!"
     if "Postal Wala" not in data["voiceover"]:
         data["voiceover"] += outro_line
 
     return data
 
-def generate_voice(text, filename="raw_voice.mp3"):
+def generate_voice(text, filename="voice.mp3"):
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
-def create_video_ffmpeg(title, question, options, raw_audio="raw_voice.mp3", output_video="final_reel.mp4"):
-    ensure_hindi_font()
+def get_audio_duration(audio_file):
+    cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", audio_file]
+    output = subprocess.check_output(cmd).decode().strip()
+    return float(output)
 
-    img = Image.new("RGB", (1080, 1920), color="#0B1120")
-    draw = ImageDraw.Draw(img)
+def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
+    ensure_hindi_font()
+    total_dur = get_audio_duration(audio_file)
+    split_time = max(5.0, total_dur - 16.0)
 
     font_brand = get_font(52)
     font_badge = get_font(34)
-    font_title = get_font(42)
-    font_q_head = get_font(40)
-    font_q_body = get_font(36)
-    font_opts = get_font(34)
-    font_cta = get_font(34)
+    font_title = get_font(46)
+    font_h2 = get_font(40)
+    font_body = get_font(38)
+    font_cta = get_font(36)
 
-    # Outer Neon Border
-    draw.rounded_rectangle([45, 100, 1035, 1820], radius=40, fill="#131D31", outline="#E11D48", width=5)
+    # --- SLIDE 1: RULE EXPLANATION ---
+    img1 = Image.new("RGB", (1080, 1920), color="#0B1120")
+    d1 = ImageDraw.Draw(img1)
+    d1.rounded_rectangle([45, 100, 1035, 1820], radius=40, fill="#131D31", outline="#E11D48", width=6)
+    d1.text((90, 150), "POSTAL WALA", fill="#F43F5E", font=font_brand)
+    d1.text((90, 230), "@POSTAL_WALA", fill="#94A3B8", font=font_badge)
 
-    # Header
-    draw.text((90, 145), "POSTAL WALA", fill="#F43F5E", font=font_brand)
-    draw.text((90, 220), "@POSTAL_WALA", fill="#94A3B8", font=font_badge)
+    d1.rounded_rectangle([85, 310, 995, 480], radius=25, fill="#1E293B", outline="#38BDF8", width=3)
+    d1.text((120, 335), "📌 आज का नियम:", fill="#38BDF8", font=font_badge)
+    wrapped_title = textwrap.fill(script_data["rule_title"], width=28)
+    d1.text((120, 385), wrapped_title, fill="#FFFFFF", font=font_title)
 
-    # Topic Card
-    draw.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#1E293B", outline="#38BDF8", width=2)
-    draw.text((115, 315), "टॉपिक / नियम:", fill="#38BDF8", font=font_badge)
-    wrapped_title = textwrap.fill(title, width=30)
-    draw.text((115, 365), wrapped_title, fill="#FFFFFF", font=font_title)
+    d1.rounded_rectangle([85, 520, 995, 1550], radius=30, fill="#0F172A", outline="#E2E8F0", width=2)
+    d1.text((120, 560), "💡 मुख्य बातें समझें:", fill="#FBBF24", font=font_h2)
 
-    # Quiz Card
-    draw.rounded_rectangle([85, 510, 995, 1550], radius=30, fill="#0F172A", outline="#E2E8F0", width=2)
-    draw.text((120, 545), "🎯 आज का सवाल (Quiz):", fill="#FBBF24", font=font_q_head)
+    points = [script_data["point1"], script_data["point2"], script_data["point3"]]
+    py = 680
+    for idx, pt in enumerate(points, 1):
+        d1.rounded_rectangle([115, py, 965, py + 180], radius=20, fill="#1E293B")
+        d1.text((140, py + 20), f"👉 नियम {idx}:", fill="#38BDF8", font=font_badge)
+        wrapped_pt = textwrap.fill(pt, width=28)
+        d1.text((140, py + 70), wrapped_pt, fill="#F8FAFC", font=font_body)
+        py += 240
 
-    # Question Text
-    wrapped_q = textwrap.fill(question, width=28)
-    draw.text((120, 625), wrapped_q, fill="#F8FAFC", font=font_q_body)
+    d1.rounded_rectangle([85, 1610, 995, 1750], radius=25, fill="#E11D48")
+    d1.text((220, 1655), "पूरी तैयारी के लिए फॉलो करें\n👉 @POSTAL_WALA", fill="#FFFFFF", font=font_cta, align="center")
+    img1.save("slide1.png")
 
-    # Options Display
-    opts_clean = options.replace("B)", "\nB)").replace("C)", "\nC)").replace("D)", "\nD)")
-    opt_y = 960
-    for line in opts_clean.split("\n"):
-        line_s = line.strip()
-        if line_s:
-            draw.rounded_rectangle([115, opt_y - 10, 965, opt_y + 65], radius=15, fill="#1E293B")
-            draw.text((140, opt_y), line_s, fill="#38BDF8", font=font_opts)
-            opt_y += 95
+    # --- SLIDE 2: QUIZ & OPTIONS ---
+    img2 = Image.new("RGB", (1080, 1920), color="#0B1120")
+    d2 = ImageDraw.Draw(img2)
+    d2.rounded_rectangle([45, 100, 1035, 1820], radius=40, fill="#131D31", outline="#E11D48", width=6)
+    d2.text((90, 150), "POSTAL WALA", fill="#F43F5E", font=font_brand)
+    d2.text((90, 230), "@POSTAL_WALA", fill="#94A3B8", font=font_badge)
 
-    # Comment Prompt Inside Card
-    draw.text((130, 1460), "अपना उत्तर कमेंट बॉक्स में लिखें 👇", fill="#F43F5E", font=font_cta)
+    d2.rounded_rectangle([85, 310, 995, 480], radius=25, fill="#1E293B", outline="#FBBF24", width=3)
+    d2.text((120, 335), "🎯 परीक्षा क्विज़:", fill="#FBBF24", font=font_badge)
+    d2.text((120, 385), "सवाल का जवाब कमेंट में दें!", fill="#FFFFFF", font=font_title)
 
-    # Bottom Banner
-    draw.rounded_rectangle([85, 1600, 995, 1750], radius=25, fill="#E11D48")
-    cta_text = "आगे की तैयारी के लिए FOLLOW करें\n👉 @POSTAL_WALA"
-    draw.text((170, 1630), cta_text, fill="#FFFFFF", font=font_cta, align="center")
+    d2.rounded_rectangle([85, 520, 995, 1550], radius=30, fill="#0F172A", outline="#38BDF8", width=2)
+    d2.text((120, 560), "सवाल:", fill="#FBBF24", font=font_h2)
+    wrapped_q = textwrap.fill(script_data["question"], width=28)
+    d2.text((120, 640), wrapped_q, fill="#F8FAFC", font=font_body)
 
-    frame_path = "frame.png"
-    img.save(frame_path)
+    opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
+    oy = 960
+    for opt in opts:
+        d2.rounded_rectangle([115, oy, 965, oy + 95], radius=18, fill="#1E293B", outline="#38BDF8", width=1)
+        d2.text((150, oy + 25), opt, fill="#FFFFFF", font=font_body)
+        oy += 125
 
-    # atempo=1.22 boosts audio pace cleanly
+    d2.text((130, 1480), "कमेंट में अपना उत्तर बताएं 👇", fill="#F43F5E", font=font_badge)
+    d2.rounded_rectangle([85, 1610, 995, 1750], radius=25, fill="#E11D48")
+    d2.text((220, 1655), "पूरी तैयारी के लिए फॉलो करें\n👉 @POSTAL_WALA", fill="#FFFFFF", font=font_cta, align="center")
+    img2.save("slide2.png")
+
+    filter_complex = (
+        f"[0:v]loop=loop=-1:size=1:start=0,trim=duration={split_time}[v0]; "
+        f"[1:v]loop=loop=-1:size=1:start=0,trim=duration={total_dur - split_time}[v1]; "
+        f"[v0][v1]concat=n=2:v=1:a=0,format=yuv420p[v]"
+    )
+
     cmd = [
         "ffmpeg", "-y",
-        "-loop", "1", "-i", frame_path,
-        "-i", raw_audio,
-        "-filter:a", "atempo=1.22",
+        "-i", "slide1.png",
+        "-i", "slide2.png",
+        "-i", audio_file,
+        "-filter_complex", filter_complex,
+        "-map", "[v]",
+        "-map", "2:a",
         "-c:v", "libx264",
         "-profile:v", "main",
         "-level:v", "4.0",
         "-r", "30",
         "-g", "60",
-        "-pix_fmt", "yuv420p",
         "-c:a", "aac",
         "-b:a", "128k",
         "-ar", "44100",
@@ -249,17 +286,15 @@ def create_video_ffmpeg(title, question, options, raw_audio="raw_voice.mp3", out
         "-shortest", output_video
     ]
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-    print("✅ High-speed, energetic Reel created with clean Hindi fonts.")
+    print("✅ 2-Slide Visual Reel Created Successfully.")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
     file_size = os.path.getsize(video_path)
-    print(f"📦 Video file size: {file_size / (1024*1024):.2f} MB")
+    print(f"📦 Video size: {file_size / (1024*1024):.2f} MB")
 
-    # Step 1: Session Init
-    print("🚀 Initializing Instagram Resumable Upload Session...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
@@ -279,7 +314,6 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
-    # Step 2: Meta Binary Stream with exact headers
     with open(video_path, "rb") as f:
         video_data = f.read()
 
@@ -306,8 +340,6 @@ def upload_to_instagram_direct(video_path, caption):
 
     print("✅ Video uploaded directly to Instagram servers.")
 
-    # Step 3: Wait for transcode
-    print("⏳ Processing on Instagram servers...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 35):
@@ -324,8 +356,6 @@ def upload_to_instagram_direct(video_path, caption):
     else:
         print("⚠️ Polling timeout, trying to publish...")
 
-    # Step 4: Publish Reel
-    print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
@@ -345,15 +375,9 @@ if __name__ == "__main__":
     script_data = generate_clause_script(pdf_content, page_num)
     print("✅ AI Script Ready.")
 
-    generate_voice(script_data["voiceover"], "raw_voice.mp3")
-    print("✅ Audio Voiceover Ready.")
+    generate_voice(script_data["voiceover"], "voice.mp3")
+    print("✅ Natural Audio Voiceover Ready.")
 
-    create_video_ffmpeg(
-        script_data.get("rule_title", "Postal Manual"),
-        script_data.get("question", ""),
-        script_data.get("options", ""),
-        "raw_voice.mp3",
-        "final_reel.mp4"
-    )
+    create_video_ffmpeg(script_data, "voice.mp3", "final_reel.mp4")
 
     upload_to_instagram_direct("final_reel.mp4", script_data.get("caption", ""))
