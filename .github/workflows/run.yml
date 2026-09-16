@@ -17,11 +17,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install FFmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
-
-      - name: Install Dependencies
+      - name: Install System Dependencies, Chromium & Hindi Fonts
         run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg chromium-browser fonts-noto-core fonts-noto-cjk fonts-indic
           pip install -r requirements.txt
 
       - name: Run Script
