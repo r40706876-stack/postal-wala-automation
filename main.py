@@ -8,7 +8,6 @@ from pypdf import PdfReader
 from gtts import gTTS
 from PIL import Image, ImageDraw
 
-# Secrets
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
@@ -24,7 +23,6 @@ def get_target_pdf():
             return f
     return pdf_files[0]
 
-# 1. 'खंड - 02' से शुरू करना और आगे का पेज ट्रैक करना
 def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
@@ -60,7 +58,6 @@ def get_current_reading_window(pdf_path):
 
     return extracted_text[:3500], current_page + 1
 
-# 2. AI Script & Magic Quiz Generator
 def generate_clause_script(pdf_content, page_num):
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -92,31 +89,14 @@ def generate_clause_script(pdf_content, page_num):
     }}
     """
 
-    # Jo model aapke account me 100% chal raha hai
-    models_to_try = [
-        "qwen/qwen3.8-27b",
-        "llama-3.3-70b-versatile",
-        "llama-3.1-8b-instant"
-    ]
+    payload = {
+        "model": "qwen/qwen3.8-27b",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.6
+    }
     
-    raw = None
-    for model_name in models_to_try:
-        payload = {
-            "model": model_name,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.6
-        }
-        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-        res_json = res.json()
-        
-        if "choices" in res_json:
-            raw = res_json["choices"][0]["message"]["content"].strip()
-            print(f"✅ AI Script generated using: {model_name}")
-            break
-
-    if not raw:
-        raise Exception("Groq API se script generate nahi ho payi.")
-
+    res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+    raw = res.json()["choices"][0]["message"]["content"].strip()
     if "```" in raw:
         raw = raw.split("```")[1]
         if raw.startswith("json"):
@@ -124,13 +104,11 @@ def generate_clause_script(pdf_content, page_num):
         raw = raw.strip()
     return json.loads(raw)
 
-# 3. Clean Hindi Audio
 def generate_voice(text, filename="voice.mp3"):
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
-# 4. Reel Video Creation (FFmpeg)
-def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output_video="reel.mp4"):
+def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output_video="final_reel.mp4"):
     img = Image.new("RGB", (1080, 1920), color="#0F172A")
     draw = ImageDraw.Draw(img)
 
@@ -139,7 +117,6 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     draw.text((120, 320), f"Topic: {title[:40]}", fill="#FFFFFF")
     draw.text((120, 550), "RULE BREAKDOWN & QUIZ", fill="#38BDF8")
 
-    # Quiz Box
     draw.rounded_rectangle([100, 720, 980, 1520], radius=30, fill="#0F172A")
     draw.text((130, 780), "सवाल (Comment Your Answer):", fill="#FBBF24")
     draw.text((130, 880), f"{question[:120]}...", fill="#FFFFFF")
@@ -160,43 +137,32 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     subprocess.run(cmd, check=True)
     print("✅ FFmpeg Reel Created Successfully.")
 
-# 5. Instagram Direct Auto-Upload (Catbox + Tmpfiles Fallback)
 def upload_to_instagram(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
-        print("⚠️ IG_ACCESS_TOKEN ya IG_USER_ID missing hai! Upload skip ho raha hai.")
+        print("⚠️ IG_ACCESS_TOKEN ya IG_USER_ID Secrets me nahi mila! Upload skip ho gaya.")
         return
 
-    print("📤 Uploading video to public host...")
+    print("📤 Uploading video to public host (Catbox)...")
     video_url = None
-    
-    # Primary Host: Catbox
     try:
         with open(video_path, "rb") as f:
-            res = requests.post("https://catbox.moe/user/api.php", data={"reqtype": "fileupload"}, files={"fileToUpload": f}, timeout=60)
+            res = requests.post("https://catbox.moe/user/api.php", data={"reqtype": "fileupload"}, files={"fileToUpload": f}, timeout=90)
             if res.status_code == 200 and res.text.strip().startswith("http"):
                 video_url = res.text.strip()
     except Exception as e:
-        print(f"Catbox host warning: {e}")
-
-    # Fallback Host: Tmpfiles
-    if not video_url:
-        print("📤 Retrying upload on secondary host...")
-        try:
-            with open(video_path, "rb") as f:
-                res = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=60)
-                data = res.json()
-                raw_url = data.get("data", {}).get("url", "")
-                if raw_url:
-                    video_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
-        except Exception as e:
-            print(f"Tmpfiles host warning: {e}")
+        print(f"Catbox warning: {e}")
 
     if not video_url:
-        raise Exception("Video public link generate nahi ho paya. Dono host fail ho gaye.")
+        print("📤 Trying secondary host (Tmpfiles)...")
+        with open(video_path, "rb") as f:
+            res = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=90)
+            data = res.json()
+            raw_url = data.get("data", {}).get("url", "")
+            if raw_url:
+                video_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
 
-    print(f"✅ Public video link: {video_url}")
+    print(f"✅ Public URL: {video_url}")
 
-    # Instagram Container Banayein
     url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     payload = {
         "media_type": "REELS",
@@ -212,16 +178,15 @@ def upload_to_instagram(video_path, caption):
         print(f"❌ Error creating IG container: {r.text}")
         return
 
-    print("⏳ Video processing on Instagram servers...")
+    print("⏳ Processing on Instagram servers (45s)...")
     time.sleep(45)
 
-    # Reel Publish Karein
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": container_id, "access_token": IG_ACCESS_TOKEN})
     print("🚀 Reel Published Successfully:", pub_res.text)
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Complete Automation Running...")
+    print("🚀 Postal Wala Automation Starting...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
