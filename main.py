@@ -2,17 +2,28 @@ import os
 import glob
 import json
 import time
+import asyncio
 import subprocess
 import requests
 from pypdf import PdfReader
-from gtts import gTTS
-from html2image import Html2Image
+import edge_tts
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
 STATE_FILE = "progress_state.json"
+FONT_NAME = "NotoSansDevanagari-Bold.ttf"
+
+def ensure_hindi_font():
+    """Download Noto Sans Devanagari directly to avoid fallback to square boxes."""
+    if not os.path.exists(FONT_NAME):
+        print("📥 Downloading Noto Sans Devanagari font locally...")
+        url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
+        r = requests.get(url, timeout=30)
+        with open(FONT_NAME, "wb") as f:
+            f.write(r.content)
+        print("✅ Hindi font cached locally.")
 
 def get_target_pdf():
     pdf_files = glob.glob("*.pdf") + glob.glob("data/*.pdf")
@@ -59,7 +70,7 @@ def get_current_reading_window(pdf_path):
     except Exception:
         pass
 
-    return extracted_text[:1200], current_page + 1
+    return extracted_text[:1400], current_page + 1
 
 def generate_clause_script(pdf_content, page_num):
     if not GROQ_API_KEY:
@@ -70,40 +81,43 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
-    target_model = "qwen/qwen3.8-27b"
-    print(f"🚀 Using Groq model: {target_model}")
-
     prompt = f"""
-    You are an expert postal exam teacher running 'Postal Wala' Instagram page.
-    Explain the rule from this departmental section clearly (Page {page_num}).
+    You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
+    Teach and test the rule from this departmental section (Around Page {page_num}).
 
-    REQUIREMENTS:
-    1. Spoken voiceover: Exactly 75-90 words in clear, easy Hindi. End strictly with: "आगे की तैयारी के लिए अभी फॉलो करें Postal Wala को!"
-    2. Screen summary: 3 easy bullet points explaining the rule in Hindi.
-    3. Quiz: 1 simple question with 4 options.
+    DURATION & WORD COUNT:
+    Total 95 to 110 words in spoken Hindi (~50 seconds audio).
+
+    STRUCTURE:
+    1. EXPLANATION (~35 seconds, ~70 words):
+       - Clear topic hook.
+       - Explain the core rule with daily life example in simple Hindi.
+    2. QUIZ (~15 seconds, ~30 words):
+       - 1 crisp exam MCQ question with 4 options.
+       - Tell listener they have 5 seconds, reveal answer, and invite them to follow Postal Wala.
 
     PDF Content:
     {pdf_content}
 
     Format strictly matching these lines:
     TITLE: [Short Topic Name in Hindi]
-    POINT1: [Key rule point 1]
-    POINT2: [Key rule point 2]
-    POINT3: [Key rule point 3]
-    VOICEOVER: [Spoken text]
-    QUESTION: [Exam Question in Hindi]
+    RULE_P1: [Rule point 1 in 8-10 words]
+    RULE_P2: [Rule point 2 in 8-10 words]
+    QUESTION: [1 short exam question in Hindi]
     OPT_A: [Option A text]
     OPT_B: [Option B text]
     OPT_C: [Option C text]
     OPT_D: [Option D text]
+    CORRECT: [A/B/C/D]
+    VOICEOVER: [Full 95-110 words spoken script covering 35s explanation + 15s quiz]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
     payload = {
-        "model": target_model,
+        "model": "qwen/qwen3.8-27b",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.4,
-        "max_tokens": 400
+        "max_tokens": 550
     }
     
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
@@ -116,30 +130,26 @@ def generate_clause_script(pdf_content, page_num):
     
     data = {
         "rule_title": "डाकघर नियम",
-        "point1": "रविवार और छुट्टियों पर सामान्य डाकघर बंद रहते हैं",
-        "point2": "केवल रात्रि कालीन डाकघर खुले रहते हैं",
-        "point3": "मशीन फ्रैंक किए गए पत्र केवल विशेष बॉक्स में डालें",
-        "voiceover": "",
-        "question": "रविवार को कौन से डाकघर खुले रहते हैं?",
-        "opt_a": "A) प्रधान डाकघर",
-        "opt_b": "B) रात्रि कालीन डाकघर",
-        "opt_c": "C) उप डाकघर",
-        "opt_d": "D) शाखा डाकघर",
-        "caption": "डाक विभाग परीक्षा तैयारी #PostalWala #MTSExam"
+        "rule_p1": "नकद डाक भुगतान बड़े शहरों में न्यूनतम 500 पैकेट पर मिलता है",
+        "rule_p2": "छोटे शहरों में यह सुविधा न्यूनतम 250 पैकेट पर उपलब्ध है",
+        "question": "बड़े शहरों में नकद डाक भुगतान हेतु कम से कम कितने पैकेट चाहिए?",
+        "opt_a": "A) 250 पैकेट",
+        "opt_b": "B) 500 पैकेट",
+        "opt_c": "C) 1000 पैकेट",
+        "opt_d": "D) 100 पैकेट",
+        "correct": "B",
+        "voiceover": "पोस्टल परीक्षा की तैयारी के लिए यह महत्वपूर्ण नियम ध्यान से समझें! डाक विभाग में नकद में डाक शुल्क भुगतान की विशेष सुविधा मिलती है। बड़े शहरों के मुख्य डाकघरों में इसके लिए एक बार में कम से कम 500 पैकेट और छोटे शहरों में न्यूनतम 250 पैकेट पोस्ट करना अनिवार्य है। अब बताइए, बड़े शहरों में नकद डाक भुगतान हेतु न्यूनतम कितने पैकेट चाहिए? आपके पास हैं 5 सेकंड... इसका सही उत्तर है ऑप्शन B, 500 पैकेट! ऐसी सटीक तैयारी के लिए अभी फॉलो करें Postal Wala को!",
+        "caption": "डाक विभाग परीक्षा तैयारी #PostalWala #MTSExam #Khand02"
     }
     
     for line in raw_text.splitlines():
         line_clean = line.strip()
         if line_clean.startswith("TITLE:"):
             data["rule_title"] = line_clean.replace("TITLE:", "").strip()
-        elif line_clean.startswith("POINT1:"):
-            data["point1"] = line_clean.replace("POINT1:", "").strip()
-        elif line_clean.startswith("POINT2:"):
-            data["point2"] = line_clean.replace("POINT2:", "").strip()
-        elif line_clean.startswith("POINT3:"):
-            data["point3"] = line_clean.replace("POINT3:", "").strip()
-        elif line_clean.startswith("VOICEOVER:"):
-            data["voiceover"] = line_clean.replace("VOICEOVER:", "").strip()
+        elif line_clean.startswith("RULE_P1:"):
+            data["rule_p1"] = line_clean.replace("RULE_P1:", "").strip()
+        elif line_clean.startswith("RULE_P2:"):
+            data["rule_p2"] = line_clean.replace("RULE_P2:", "").strip()
         elif line_clean.startswith("QUESTION:"):
             data["question"] = line_clean.replace("QUESTION:", "").strip()
         elif line_clean.startswith("OPT_A:"):
@@ -150,148 +160,88 @@ def generate_clause_script(pdf_content, page_num):
             data["opt_c"] = "C) " + line_clean.replace("OPT_C:", "").replace("C)", "").strip()
         elif line_clean.startswith("OPT_D:"):
             data["opt_d"] = "D) " + line_clean.replace("OPT_D:", "").replace("D)", "").strip()
+        elif line_clean.startswith("CORRECT:"):
+            data["correct"] = line_clean.replace("CORRECT:", "").strip().upper()[:1]
+        elif line_clean.startswith("VOICEOVER:"):
+            data["voiceover"] = line_clean.replace("VOICEOVER:", "").strip()
         elif line_clean.startswith("CAPTION:"):
             data["caption"] = line_clean.replace("CAPTION:", "").strip()
 
-    if not data["voiceover"]:
-        data["voiceover"] = raw_text[:250]
-
-    outro_line = " आगे की तैयारी और महत्वपूर्ण प्रश्नों के लिए अभी फॉलो करें Postal Wala को!"
-    if "Postal Wala" not in data["voiceover"]:
-        data["voiceover"] += outro_line
-
     return data
 
-def generate_voice(text, filename="voice.mp3"):
-    tts = gTTS(text=text, lang="hi", slow=False)
-    tts.save(filename)
+async def generate_voice_edge(text, filename="voice.mp3"):
+    communicate = edge_tts.Communicate(text, voice="hi-IN-MadhurNeural", rate="+4%")
+    await communicate.save(filename)
 
 def get_audio_duration(audio_file):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", audio_file]
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-def render_html_slides(script_data):
-    hti = Html2Image(size=(1080, 1920))
-    hti.browser.flags = ['--no-sandbox', '--disable-gpu']
+def generate_ass_subtitles(script_data, total_duration, output_ass="subs.ass"):
+    quiz_start = max(15.0, total_duration - 15.0)
+    reveal_time = total_duration - 5.0
+    correct_opt = script_data.get("correct", "B")
+    green_c = "\\c&H00FF00&\\b1"
 
-    html1 = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="utf-8">
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@600;800&display=swap');
-      * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans Devanagari', sans-serif; }}
-      body {{ width: 1080px; height: 1920px; background: #0B1120; padding: 80px 60px; color: white; }}
-      .box {{ border: 6px solid #E11D48; border-radius: 45px; background: #131D31; padding: 60px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }}
-      .brand {{ color: #F43F5E; font-size: 58px; font-weight: 800; }}
-      .handle {{ color: #94A3B8; font-size: 36px; margin-top: 5px; }}
-      .topic-card {{ background: #1E293B; border: 3px solid #38BDF8; border-radius: 30px; padding: 40px; margin-top: 40px; }}
-      .tag {{ color: #38BDF8; font-size: 36px; font-weight: 800; }}
-      .title {{ color: #FFFFFF; font-size: 52px; font-weight: 800; margin-top: 15px; line-height: 1.3; }}
-      .content-card {{ background: #0F172A; border-radius: 35px; padding: 50px; margin-top: 40px; flex-grow: 1; }}
-      .heading {{ color: #FBBF24; font-size: 46px; font-weight: 800; margin-bottom: 40px; }}
-      .point {{ background: #1E293B; border-radius: 25px; padding: 35px; margin-bottom: 30px; border-left: 10px solid #38BDF8; }}
-      .p-tag {{ color: #38BDF8; font-size: 34px; font-weight: 800; }}
-      .p-text {{ color: #F8FAFC; font-size: 42px; font-weight: 600; margin-top: 10px; line-height: 1.4; }}
-      .cta {{ background: #E11D48; border-radius: 30px; padding: 40px; text-align: center; font-size: 42px; font-weight: 800; margin-top: 40px; }}
-    </style>
-    </head>
-    <body>
-      <div class="box">
-        <div>
-          <div class="brand">POSTAL WALA</div>
-          <div class="handle">@POSTAL_WALA</div>
-          <div class="topic-card">
-            <div class="tag">📌 आज का नियम:</div>
-            <div class="title">{script_data['rule_title']}</div>
-          </div>
-          <div class="content-card">
-            <div class="heading">💡 मुख्य बातें समझें:</div>
-            <div class="point"><div class="p-tag">👉 नियम 1:</div><div class="p-text">{script_data['point1']}</div></div>
-            <div class="point"><div class="p-tag">👉 नियम 2:</div><div class="p-text">{script_data['point2']}</div></div>
-            <div class="point"><div class="p-tag">👉 नियम 3:</div><div class="p-text">{script_data['point3']}</div></div>
-          </div>
-        </div>
-        <div class="cta">पूरी तैयारी के लिए फॉलो करें<br>👉 @POSTAL_WALA</div>
-      </div>
-    </body>
-    </html>
-    """
+    # Strict ASS subtitle layout matching Noto Sans Devanagari font
+    ass_content = f"""[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
 
-    html2 = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="utf-8">
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@600;800&display=swap');
-      * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans Devanagari', sans-serif; }}
-      body {{ width: 1080px; height: 1920px; background: #0B1120; padding: 80px 60px; color: white; }}
-      .box {{ border: 6px solid #E11D48; border-radius: 45px; background: #131D31; padding: 60px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }}
-      .brand {{ color: #F43F5E; font-size: 58px; font-weight: 800; }}
-      .handle {{ color: #94A3B8; font-size: 36px; margin-top: 5px; }}
-      .topic-card {{ background: #1E293B; border: 3px solid #FBBF24; border-radius: 30px; padding: 40px; margin-top: 40px; }}
-      .tag {{ color: #FBBF24; font-size: 36px; font-weight: 800; }}
-      .title {{ color: #FFFFFF; font-size: 50px; font-weight: 800; margin-top: 15px; }}
-      .content-card {{ background: #0F172A; border: 3px solid #38BDF8; border-radius: 35px; padding: 50px; margin-top: 40px; flex-grow: 1; }}
-      .q-tag {{ color: #FBBF24; font-size: 44px; font-weight: 800; margin-bottom: 20px; }}
-      .q-text {{ color: #F8FAFC; font-size: 46px; font-weight: 700; line-height: 1.4; margin-bottom: 50px; }}
-      .opt {{ background: #1E293B; border: 2px solid #38BDF8; border-radius: 25px; padding: 30px 40px; font-size: 44px; font-weight: 600; margin-bottom: 25px; color: #FFFFFF; }}
-      .comm {{ color: #F43F5E; font-size: 40px; font-weight: 800; text-align: center; margin-top: 20px; }}
-      .cta {{ background: #E11D48; border-radius: 30px; padding: 40px; text-align: center; font-size: 42px; font-weight: 800; margin-top: 40px; }}
-    </style>
-    </head>
-    <body>
-      <div class="box">
-        <div>
-          <div class="brand">POSTAL WALA</div>
-          <div class="handle">@POSTAL_WALA</div>
-          <div class="topic-card">
-            <div class="tag">🎯 परीक्षा क्विज़:</div>
-            <div class="title">सवाल का जवाब कमेंट में दें!</div>
-          </div>
-          <div class="content-card">
-            <div class="q-tag">सवाल:</div>
-            <div class="q-text">{script_data['question']}</div>
-            <div class="opt">{script_data['opt_a']}</div>
-            <div class="opt">{script_data['opt_b']}</div>
-            <div class="opt">{script_data['opt_c']}</div>
-            <div class="opt">{script_data['opt_d']}</div>
-            <div class="comm">अपना उत्तर कमेंट बॉक्स में लिखें 👇</div>
-          </div>
-        </div>
-        <div class="cta">पूरी तैयारी के लिए फॉलो करें<br>👉 @POSTAL_WALA</div>
-      </div>
-    </body>
-    </html>
-    """
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Header,Noto Sans Devanagari,50,&H00481DE1,&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,3,0,8,60,60,150,1
+Style: Topic,Noto Sans Devanagari,40,&H00F8BD38,&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,2,0,8,60,60,250,1
+Style: BodyHead,Noto Sans Devanagari,44,&H00FBBF24,&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,3,0,5,80,80,680,1
+Style: BodyText,Noto Sans Devanagari,38,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,5,90,90,520,1
+Style: Opt,Noto Sans Devanagari,38,&H00F8FAFC,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,5,80,80,300,1
+Style: Footer,Noto Sans Devanagari,36,&H00FFFFFF,&H000000FF,&H00E11D48,&H00000000,1,0,0,0,100,100,0,0,1,3,0,2,60,60,140,1
 
-    hti.screenshot(html_str=html1, save_as='slide1.png')
-    hti.screenshot(html_str=html2, save_as='slide2.png')
-    print("✅ Hindi HTML slides generated without any boxes.")
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:{total_duration:05.2f},Header,,0,0,0,,POSTAL WALA\\N{{\\fs32\\c&H94A3B8&}}@POSTAL_WALA
+Dialogue: 0,0:00:00.00,0:00:{total_duration:05.2f},Footer,,0,0,0,,पूरी तैयारी के लिए FOLLOW करें 👉 @POSTAL_WALA
+
+# 0 to 35s: EXPLANATION
+Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},Topic,,0,0,0,,📌 आज का नियम: {script_data['rule_title']}
+Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyHead,,0,0,680,,💡 नियम को ध्यान से समझें:
+Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyText,,0,0,500,,👉 1. {script_data['rule_p1']}
+Dialogue: 0,0:00:00.00,0:00:{quiz_start:05.2f},BodyText,,0,0,320,,👉 2. {script_data['rule_p2']}
+
+# 35 to 50s: QUIZ & QUESTION
+Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{total_duration:05.2f},Topic,,0,0,0,,🎯 परीक्षा क्विज़ (Quiz Time)
+Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{total_duration:05.2f},BodyHead,,0,0,680,,{script_data['question']}
+
+Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,450,,{script_data['opt_a']}
+Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,350,,{script_data['opt_b']}
+Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,250,,{script_data['opt_c']}
+Dialogue: 0,0:00:{quiz_start:05.2f},0:00:{reveal_time:05.2f},Opt,,0,0,150,,{script_data['opt_d']}
+
+# REVEAL PHASE
+Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,450,,{{{green_c if correct_opt=='A' else ''}}}{script_data['opt_a']}
+Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,350,,{{{green_c if correct_opt=='B' else ''}}}{script_data['opt_b']}
+Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,250,,{{{green_c if correct_opt=='C' else ''}}}{script_data['opt_c']}
+Dialogue: 0,0:00:{reveal_time:05.2f},0:00:{total_duration:05.2f},Opt,,0,0,150,,{{{green_c if correct_opt=='D' else ''}}}{script_data['opt_d']}
+"""
+    with open(output_ass, "w", encoding="utf-8") as f:
+        f.write(ass_content)
 
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
-    render_html_slides(script_data)
+    ensure_hindi_font()
     total_dur = get_audio_duration(audio_file)
-    split_time = max(5.0, total_dur - 18.0)
+    generate_ass_subtitles(script_data, total_dur, "subs.ass")
 
-    filter_complex = (
-        f"[0:v]loop=loop=-1:size=1:start=0,trim=duration={split_time}[v0]; "
-        f"[1:v]loop=loop=-1:size=1:start=0,trim=duration={total_dur - split_time}[v1]; "
-        f"[v0][v1]concat=n=2:v=1:a=0,format=yuv420p[v]"
-    )
-
+    # fontsdir=. guarantees FFmpeg uses our downloaded NotoSansDevanagari font directly
     cmd = [
         "ffmpeg", "-y",
-        "-i", "slide1.png",
-        "-i", "slide2.png",
+        "-f", "lavfi",
+        "-i", f"color=c=#0F172A:s=1080x1920:d={total_dur}",
         "-i", audio_file,
-        "-filter_complex", filter_complex,
-        "-map", "[v]",
-        "-map", "2:a",
+        "-vf", "subtitles=subs.ass:fontsdir=.",
         "-c:v", "libx264",
+        "-preset", "veryfast",
         "-profile:v", "main",
         "-level:v", "4.0",
         "-r", "30",
@@ -302,8 +252,8 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-movflags", "+faststart",
         "-shortest", output_video
     ]
-    subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-    print("✅ High quality 2-Slide Visual Reel Created.")
+    subprocess.run(cmd, check=True)
+    print("✅ Video generated cleanly without square boxes.")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
@@ -383,7 +333,7 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Automation Starting...")
+    print("🚀 Postal Wala Automation Starting (50s Concept + Quiz, No Boxes)...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
@@ -392,8 +342,8 @@ if __name__ == "__main__":
     script_data = generate_clause_script(pdf_content, page_num)
     print("✅ AI Script Ready.")
 
-    generate_voice(script_data["voiceover"], "voice.mp3")
-    print("✅ Voiceover Ready.")
+    asyncio.run(generate_voice_edge(script_data["voiceover"], "voice.mp3"))
+    print("✅ Natural Human Voiceover Ready.")
 
     create_video_ffmpeg(script_data, "voice.mp3", "final_reel.mp4")
 
