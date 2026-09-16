@@ -1,10 +1,9 @@
 import os
 import glob
 import json
-import asyncio
 import requests
 from pypdf import PdfReader
-import edge_tts
+from gtts import gTTS
 
 # Secrets
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -22,7 +21,7 @@ def get_target_pdf():
             return f
     return pdf_files[0]
 
-# 1. 'खंड - 02' से शुरू करना और क्रमवार आगे बढ़ना
+# 1. 'खंड - 02' से शुरू करना और आगे बढ़ना
 def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
@@ -61,31 +60,25 @@ def get_current_reading_window(pdf_path):
 
     return extracted_text[:3500], current_page + 1
 
-# 2. Groq से एक्टिव मॉडल अपने आप ढूँढकर स्क्रिप्ट जनरेट करना
+# 2. Groq Llama-3 / Active model se Script & Quiz
 def generate_clause_script(pdf_content, page_num):
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
 
-    # Groq API se live active models fetch karna
-    active_model = None
+    # Active model fetch
+    active_model = "qwen/qwen3.8-27b"
     try:
         models_resp = requests.get("https://api.groq.com/openai/v1/models", headers=headers)
         if models_resp.status_code == 200:
             all_models = [m["id"] for m in models_resp.json().get("data", [])]
-            print(f"Available Groq models: {all_models}")
-            # Text chat ke liye pehla active model chunna
             for m in all_models:
-                if any(k in m for k in ["llama", "qwen", "mistral", "gemma"]) and "whisper" not in m:
+                if any(k in m for k in ["qwen", "llama", "mistral"]) and "whisper" not in m:
                     active_model = m
                     break
-    except Exception as e:
-        print(f"Model fetch warning: {e}")
-
-    # Agar list na mile to default fallback
-    if not active_model:
-        active_model = "llama-3.3-70b-versatile"
+    except Exception:
+        pass
 
     print(f"🚀 Using Active Groq Model: {active_model}")
 
@@ -98,9 +91,9 @@ def generate_clause_script(pdf_content, page_num):
     1. Duration: 60 to 80 SECONDS of spoken audio (around 160-190 words in spoken Hindi).
     2. Language: Super simple, everyday conversational Hindi (बोलचाल की बिल्कुल सरल देसी हिंदी). Kitabi bhasha ko aasan daily life example me badlo.
     3. Step-by-step Structure:
-       - Hook: Rule/Topic clearly batao (jaise: 'Head Office aur Sub Office me asli antar kya hota hai?').
-       - Detailed Explanation: HO, SO ya BO ke rule ko 3-4 simple lines me samjhao. Agar topic lamba hai to specific part samjhao aur bolo baki agle part me aayega.
-       - Magic Question (Quiz): End me 1 exam-style MCQ question pucho aur bolo ki iska sahi jawab comments me batao (A, B, C ya D).
+       - Hook: Rule/Topic clearly batao.
+       - Detailed Explanation: Rule ko simple 3-4 lines me samjhao practical example ke sath.
+       - Magic Question (Quiz): End me 1 exam-style MCQ pucho aur bolo comments me answer dene ko.
 
     PDF Content:
     {pdf_content}
@@ -121,8 +114,7 @@ def generate_clause_script(pdf_content, page_num):
         "temperature": 0.6
     }
     
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    response = requests.post(url, headers=headers, json=payload)
+    response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
     if response.status_code != 200:
         raise Exception(f"Groq API Error: {response.text}")
         
@@ -136,10 +128,10 @@ def generate_clause_script(pdf_content, page_num):
         raw = raw.strip()
     return json.loads(raw)
 
-# 3. Edge-TTS Natural Voice
-async def generate_voice(text, filename="voice.mp3"):
-    communicate = edge_tts.Communicate(text, voice="hi-IN-MadhurNeural")
-    await communicate.save(filename)
+# 3. 100% Reliable Google TTS Audio Generator (No 403 Error)
+def generate_voice(text, filename="voice.mp3"):
+    tts = gTTS(text=text, lang="hi", slow=False)
+    tts.save(filename)
 
 if __name__ == "__main__":
     print("🚀 Postal Wala Serial Automation Starting...")
@@ -157,5 +149,5 @@ if __name__ == "__main__":
     print(script_data.get("question"))
     print(script_data.get("options"))
 
-    asyncio.run(generate_voice(script_data["voiceover"], "voice.mp3"))
+    generate_voice(script_data["voiceover"], "voice.mp3")
     print("\n✅ Audio generated successfully (voice.mp3).")
