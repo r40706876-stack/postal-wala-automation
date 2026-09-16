@@ -229,7 +229,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     total_dur = get_audio_duration(audio_file)
     generate_ass_subtitles(script_data, total_dur, "subs.ass")
 
-    # Fixed: dedicated custom_fonts directory prevents FFmpeg from parsing non-font repo files
     cmd = [
         "ffmpeg", "-y",
         "-f", "lavfi",
@@ -258,6 +257,7 @@ def upload_to_instagram_direct(video_path, caption):
     file_size = os.path.getsize(video_path)
     print(f"📦 Video size: {file_size / (1024*1024):.2f} MB")
 
+    # Step 1: Session Init
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
@@ -277,32 +277,21 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
-    with open(video_path, "rb") as f:
-        video_data = f.read()
-
+    # Step 2: Meta standard resumable upload
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "Offset": "0",
-        "Content-Length": str(file_size),
-        "X-Entity-Length": str(file_size),
-        "X-Entity-Name": "final_reel.mp4",
-        "X-Entity-Type": "video/mp4"
+        "file_offset": "0"
     }
 
-    s = requests.Session()
-    req = requests.Request("POST", upload_url, data=video_data, headers=headers)
-    prepped = s.prepare_request(req)
-
-    if "Transfer-Encoding" in prepped.headers:
-        del prepped.headers["Transfer-Encoding"]
-
-    r_upload = s.send(prepped, timeout=180)
+    with open(video_path, "rb") as f:
+        r_upload = requests.post(upload_url, headers=headers, files={"video_file": f}, timeout=180)
 
     if r_upload.status_code not in [200, 201]:
         raise RuntimeError(f"Direct byte upload failed ({r_upload.status_code}): {r_upload.text}")
 
     print("✅ Video uploaded directly to Instagram servers.")
 
+    # Step 3: Polling for transcode status
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 35):
@@ -319,6 +308,7 @@ def upload_to_instagram_direct(video_path, caption):
     else:
         print("⚠️ Polling timeout, trying to publish...")
 
+    # Step 4: Publish
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
