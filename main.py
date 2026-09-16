@@ -314,23 +314,27 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Session failed: {init_data}")
 
     print(f"✅ Container ID: {video_id}")
-    print("📤 Uploading video bytes directly to Instagram...")
+    print("📤 Uploading video bytes directly via Native Curl...")
 
-    # Step 2: Meta Official Binary Resumable Upload
-    headers = {
-        "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "Offset": "0",
-        "file_size": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
+    # Step 2: Native Curl byte upload (Bypasses Python requests multipart parsing issue)
+    curl_cmd = [
+        "curl", "-s", "-S", "-X", "POST", upload_url,
+        "-H", f"Authorization: OAuth {IG_ACCESS_TOKEN}",
+        "-H", "offset: 0",
+        "-H", f"file_size: {file_size}",
+        "--data-binary", f"@{video_path}"
+    ]
+    res = subprocess.run(curl_cmd, capture_output=True, text=True)
 
-    with open(video_path, "rb") as f:
-        video_bytes = f.read()
+    if res.returncode != 0:
+        raise RuntimeError(f"Curl upload execution error: {res.stderr}")
 
-    r_upload = requests.post(upload_url, headers=headers, data=video_bytes, timeout=180)
-
-    if r_upload.status_code not in [200, 201]:
-        raise RuntimeError(f"Direct byte upload failed ({r_upload.status_code}): {r_upload.text}")
+    try:
+        curl_json = json.loads(res.stdout)
+        if "success" not in curl_json and "id" not in curl_json and "debug_info" in curl_json:
+            raise RuntimeError(f"Meta rejected bytes: {res.stdout}")
+    except json.JSONDecodeError:
+        pass
 
     print("✅ Video uploaded directly to Instagram servers.")
 
