@@ -23,6 +23,7 @@ def get_target_pdf():
             return f
     return pdf_files[0]
 
+# 1. 'खंड - 02' से शुरू करके क्रमवार पढ़ना
 def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
@@ -56,31 +57,17 @@ def get_current_reading_window(pdf_path):
     with open(STATE_FILE, "w") as f:
         json.dump({"last_page": next_page}, f)
 
-    return extracted_text[:3500], current_page + 1
+    return extracted_text[:3000], current_page + 1
 
+# 2. AI Script & Magic Quiz Generator (Verified Working Model)
 def generate_clause_script(pdf_content, page_num):
     if not GROQ_API_KEY:
-        raise ValueError("GROQ_API_KEY environment variable is missing or empty in GitHub Secrets!")
+        raise ValueError("GROQ_API_KEY missing in GitHub Secrets!")
 
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY.strip()}",
         "Content-Type": "application/json"
     }
-
-    # 1. Check live active models for this account
-    active_model = "qwen/qwen3.8-27b"
-    try:
-        models_resp = requests.get("https://api.groq.com/openai/v1/models", headers=headers, timeout=15)
-        if models_resp.status_code == 200:
-            all_models = [m["id"] for m in models_resp.json().get("data", [])]
-            for m in all_models:
-                if any(k in m.lower() for k in ["qwen", "llama", "deepseek", "mistral"]) and "whisper" not in m:
-                    active_model = m
-                    break
-    except Exception as e:
-        print(f"Model lookup warning: {e}")
-
-    print(f"🚀 Using verified active model: {active_model}")
 
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
@@ -108,7 +95,7 @@ def generate_clause_script(pdf_content, page_num):
     """
 
     payload = {
-        "model": active_model,
+        "model": "qwen/qwen3.8-27b",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.6
     }
@@ -117,7 +104,7 @@ def generate_clause_script(pdf_content, page_num):
     res_json = res.json()
 
     if res.status_code != 200 or "choices" not in res_json:
-        raise RuntimeError(f"Groq API call failed ({res.status_code}): {res_json}")
+        raise RuntimeError(f"Groq API Error ({res.status_code}): {res_json}")
 
     raw = res_json["choices"][0]["message"]["content"].strip()
     if "```" in raw:
@@ -127,10 +114,12 @@ def generate_clause_script(pdf_content, page_num):
         raw = raw.strip()
     return json.loads(raw)
 
+# 3. Hindi Voiceover
 def generate_voice(text, filename="voice.mp3"):
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
+# 4. FFmpeg Video Creation (1080x1920 9:16)
 def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output_video="final_reel.mp4"):
     img = Image.new("RGB", (1080, 1920), color="#0F172A")
     draw = ImageDraw.Draw(img)
@@ -160,6 +149,7 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     subprocess.run(cmd, check=True)
     print("✅ FFmpeg Reel Created Successfully.")
 
+# 5. Instagram Direct Auto-Upload
 def upload_to_instagram(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         print("⚠️ IG_ACCESS_TOKEN ya IG_USER_ID missing hai! Upload skip ho raha hai.")
@@ -185,8 +175,7 @@ def upload_to_instagram(video_path, caption):
                 video_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
 
     if not video_url:
-        print("❌ Video host failed. Instagram upload skipped.")
-        return
+        raise RuntimeError("Video public link generate nahi ho paya. Dono hosts fail ho gaye.")
 
     print(f"✅ Public URL: {video_url}")
 
@@ -202,8 +191,7 @@ def upload_to_instagram(video_path, caption):
     container_id = res_json.get("id")
 
     if not container_id:
-        print(f"❌ Error creating IG container: {r.text}")
-        return
+        raise RuntimeError(f"Error creating IG container: {r.text}")
 
     print("⏳ Processing on Instagram servers (45s)...")
     time.sleep(45)
