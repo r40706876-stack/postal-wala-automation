@@ -61,8 +61,34 @@ def get_current_reading_window(pdf_path):
 
     return extracted_text[:3500], current_page + 1
 
-# 2. मल्टी-मॉडल फॉलबैक के साथ स्क्रिप्ट जनरेटर
+# 2. Groq से एक्टिव मॉडल अपने आप ढूँढकर स्क्रिप्ट जनरेट करना
 def generate_clause_script(pdf_content, page_num):
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    # Groq API se live active models fetch karna
+    active_model = None
+    try:
+        models_resp = requests.get("https://api.groq.com/openai/v1/models", headers=headers)
+        if models_resp.status_code == 200:
+            all_models = [m["id"] for m in models_resp.json().get("data", [])]
+            print(f"Available Groq models: {all_models}")
+            # Text chat ke liye pehla active model chunna
+            for m in all_models:
+                if any(k in m for k in ["llama", "qwen", "mistral", "gemma"]) and "whisper" not in m:
+                    active_model = m
+                    break
+    except Exception as e:
+        print(f"Model fetch warning: {e}")
+
+    # Agar list na mile to default fallback
+    if not active_model:
+        active_model = "llama-3.3-70b-versatile"
+
+    print(f"🚀 Using Active Groq Model: {active_model}")
+
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
     Teach the next specific rule/clause from this departmental PDF section (Around Page {page_num}).
@@ -89,35 +115,16 @@ def generate_clause_script(pdf_content, page_num):
     }}
     """
 
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
-        "Content-Type": "application/json"
+    payload = {
+        "model": active_model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.6
     }
     
-    models_to_try = [
-        "llama-3.1-8b-instant",
-        "mixtral-8x7b-32768",
-        "gemma2-9b-it"
-    ]
-    
-    response = None
-    for model_name in models_to_try:
-        payload = {
-            "model": model_name,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.6
-        }
-        res = requests.post(url, headers=headers, json=payload)
-        if res.status_code == 200:
-            response = res
-            print(f"✅ Successfully used model: {model_name}")
-            break
-        else:
-            print(f"⚠️ Model {model_name} failed ({res.status_code}), trying next...")
-            
-    if not response or response.status_code != 200:
-        raise Exception(f"Groq API Error on all models: {res.text if 'res' in locals() else 'No response'}")
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    response = requests.post(url, headers=headers, json=payload)
+    if response.status_code != 200:
+        raise Exception(f"Groq API Error: {response.text}")
         
     res_data = response.json()
     raw = res_data["choices"][0]["message"]["content"].strip()
@@ -129,7 +136,7 @@ def generate_clause_script(pdf_content, page_num):
         raw = raw.strip()
     return json.loads(raw)
 
-# 3. Edge-TTS Voiceover
+# 3. Edge-TTS Natural Voice
 async def generate_voice(text, filename="voice.mp3"):
     communicate = edge_tts.Communicate(text, voice="hi-IN-MadhurNeural")
     await communicate.save(filename)
