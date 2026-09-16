@@ -67,6 +67,21 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
+    # 1. Check live active models for this account
+    active_model = "qwen/qwen3.8-27b"
+    try:
+        models_resp = requests.get("https://api.groq.com/openai/v1/models", headers=headers, timeout=15)
+        if models_resp.status_code == 200:
+            all_models = [m["id"] for m in models_resp.json().get("data", [])]
+            for m in all_models:
+                if any(k in m.lower() for k in ["qwen", "llama", "deepseek", "mistral"]) and "whisper" not in m:
+                    active_model = m
+                    break
+    except Exception as e:
+        print(f"Model lookup warning: {e}")
+
+    print(f"🚀 Using verified active model: {active_model}")
+
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
     Teach the next specific rule/clause from this departmental PDF section (Around Page {page_num}).
@@ -92,36 +107,19 @@ def generate_clause_script(pdf_content, page_num):
     }}
     """
 
-    models_to_try = [
-        "llama-3.3-70b-versatile",
-        "llama-3.1-8b-instant"
-    ]
+    payload = {
+        "model": active_model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.6
+    }
+    
+    res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+    res_json = res.json()
 
-    raw = None
-    for model_name in models_to_try:
-        payload = {
-            "model": model_name,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.6
-        }
-        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-        
-        try:
-            res_json = res.json()
-        except Exception:
-            print(f"⚠️ Non-JSON response from Groq ({res.status_code}): {res.text}")
-            continue
+    if res.status_code != 200 or "choices" not in res_json:
+        raise RuntimeError(f"Groq API call failed ({res.status_code}): {res_json}")
 
-        if res.status_code == 200 and "choices" in res_json:
-            raw = res_json["choices"][0]["message"]["content"].strip()
-            print(f"✅ Script generated successfully using {model_name}")
-            break
-        else:
-            print(f"⚠️ Groq API issue on {model_name} (Status {res.status_code}): {res_json}")
-
-    if not raw:
-        raise RuntimeError("Groq API failed on all models. Check the logs above for the exact Groq error.")
-
+    raw = res_json["choices"][0]["message"]["content"].strip()
     if "```" in raw:
         raw = raw.split("```")[1]
         if raw.startswith("json"):
