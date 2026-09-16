@@ -6,6 +6,8 @@ on:
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -26,3 +28,11 @@ jobs:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: |
           python main.py
+
+      - name: Save Reading Progress
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add progress_state.json || true
+          git commit -m "Update reading progress [skip ci]" || echo "No changes to commit"
+          git push || echo "Push failed"
