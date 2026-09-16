@@ -180,10 +180,10 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
-    # Step 2: Correct Meta Resumable protocol headers
+    # Step 2: Meta Resumable Protocol (Exact required headers)
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "file_offset": "0",
+        "Offset": "0",
         "Content-Type": "application/octet-stream",
         "Content-Length": str(file_size)
     }
@@ -197,11 +197,11 @@ def upload_to_instagram_direct(video_path, caption):
 
     print("✅ Video uploaded directly to Instagram servers.")
 
-    # Step 3: Status check
+    # Step 3: Transcode Status Check
     print("⏳ Processing on Instagram servers...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
-    for attempt in range(1, 30):
+    for attempt in range(1, 35):
         time.sleep(8)
         status_res = requests.get(status_url).json()
         code = status_res.get("status_code")
