@@ -70,19 +70,7 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
-    # Step 1: Query live available models on this token
     target_model = "qwen/qwen3.8-27b"
-    try:
-        r = requests.get("https://api.groq.com/openai/v1/models", headers=headers, timeout=10)
-        if r.status_code == 200:
-            available = [m["id"] for m in r.json().get("data", [])]
-            for candidate in ["llama-3.3-70b-versatile", "qwen/qwen3.8-27b", "mixtral-8x7b-32768", "llama3-70b-8192"]:
-                if candidate in available:
-                    target_model = candidate
-                    break
-    except Exception as e:
-        print(f"Model selection warning: {e}")
-
     print(f"🚀 Using verified Groq model: {target_model}")
 
     prompt = f"""
@@ -204,7 +192,7 @@ def upload_to_instagram_direct(video_path, caption):
     file_size = os.path.getsize(video_path)
     print(f"📦 Video file size: {file_size / (1024*1024):.2f} MB")
 
-    # Step 1: Start Resumable Upload Session
+    # Step 1: Session Init
     print("🚀 Initializing Instagram Resumable Upload Session...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
@@ -225,22 +213,36 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
-    # Step 2: Binary stream directly to upload_url with Meta-compliant headers
+    # Step 2: Meta Exact Resumable Headers (Offset, Content-Length, X-Entity-Length)
+    with open(video_path, "rb") as f:
+        video_data = f.read()
+
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
         "Offset": "0",
-        "Content-Type": "application/octet-stream",
-        "Content-Length": str(file_size)
+        "Content-Length": str(file_size),
+        "X-Entity-Length": str(file_size),
+        "X-Entity-Name": "final_reel.mp4",
+        "X-Entity-Type": "video/mp4"
     }
-    with open(video_path, "rb") as f:
-        r_upload = requests.post(upload_url, headers=headers, data=f, timeout=180)
+
+    # Use explicit session to prevent requests from injecting conflicting transfer-encoding
+    s = requests.Session()
+    req = requests.Request("POST", upload_url, data=video_data, headers=headers)
+    prepped = s.prepare_request(req)
+
+    # Ensure clean header state
+    if "Transfer-Encoding" in prepped.headers:
+        del prepped.headers["Transfer-Encoding"]
+
+    r_upload = s.send(prepped, timeout=180)
 
     if r_upload.status_code not in [200, 201]:
         raise RuntimeError(f"Direct byte upload failed ({r_upload.status_code}): {r_upload.text}")
 
     print("✅ Video uploaded directly to Instagram servers.")
 
-    # Step 3: Polling for transcode status
+    # Step 3: Poll for FINISHED
     print("⏳ Processing on Instagram servers...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
@@ -256,7 +258,7 @@ def upload_to_instagram_direct(video_path, caption):
         elif code in ["ERROR", "EXPIRED"]:
             raise RuntimeError(f"Instagram rejected video: {status_res}")
     else:
-        print("⚠️ Polling timeout, attempting publish...")
+        print("⚠️ Polling timeout, trying to publish...")
 
     # Step 4: Publish Reel
     print("🚀 Publishing Reel now...")
