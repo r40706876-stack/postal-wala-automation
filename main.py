@@ -6,7 +6,7 @@ import subprocess
 import requests
 from pypdf import PdfReader
 from gtts import gTTS
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 # Secrets
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -24,7 +24,7 @@ def get_target_pdf():
             return f
     return pdf_files[0]
 
-# 1. 'खंड - 02' से पढ़ना और अगली बार के लिए पेज याद रखना
+# 1. 'खंड - 02' से पढ़ना और प्रोग्रेस ट्रैक करना
 def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
@@ -60,7 +60,7 @@ def get_current_reading_window(pdf_path):
 
     return extracted_text[:3500], current_page + 1
 
-# 2. AI Script & Quiz Generator
+# 2. AI Script Generator (Bulletproof Error Check)
 def generate_clause_script(pdf_content, page_num):
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -92,14 +92,34 @@ def generate_clause_script(pdf_content, page_num):
     }}
     """
 
-    payload = {
-        "model": "llama-3.3-70b-versatile",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.6
-    }
+    # Live active models list on Groq
+    models_to_try = [
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+        "qwen/qwen3.8-27b",
+        "meta-llama/llama-guard-4-12b"
+    ]
     
-    res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-    raw = res.json()["choices"][0]["message"]["content"].strip()
+    raw = None
+    for model_name in models_to_try:
+        payload = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.6
+        }
+        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+        res_json = res.json()
+        
+        if "choices" in res_json:
+            raw = res_json["choices"][0]["message"]["content"].strip()
+            print(f"✅ AI Response generated using: {model_name}")
+            break
+        else:
+            print(f"⚠️ Model {model_name} response error: {res_json}")
+
+    if not raw:
+        raise Exception("Groq API se valid response nahi mila. Check API Key or Models.")
+
     if "```" in raw:
         raw = raw.split("```")[1]
         if raw.startswith("json"):
@@ -107,14 +127,13 @@ def generate_clause_script(pdf_content, page_num):
         raw = raw.strip()
     return json.loads(raw)
 
-# 3. Clean Hindi Audio
+# 3. Clean Hindi Audio (gTTS)
 def generate_voice(text, filename="voice.mp3"):
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
 # 4. Reel Video Creation (FFmpeg Image + Audio to 1080x1920 MP4)
 def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output_video="reel.mp4"):
-    # Create 9:16 frame image
     img = Image.new("RGB", (1080, 1920), color="#0F172A")
     draw = ImageDraw.Draw(img)
 
@@ -132,7 +151,6 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     frame_path = "frame.png"
     img.save(frame_path)
 
-    # Use system ffmpeg to merge image + audio
     cmd = [
         "ffmpeg", "-y",
         "-loop", "1", "-i", frame_path,
@@ -145,7 +163,7 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     subprocess.run(cmd, check=True)
     print("✅ FFmpeg Reel Created Successfully.")
 
-# 5. Instagram Direct Auto-Upload
+# 5. Instagram Direct Auto-Upload via File.io
 def upload_to_instagram(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         print("⚠️ IG_ACCESS_TOKEN ya IG_USER_ID missing hai! Upload skip ho raha hai.")
@@ -157,7 +175,6 @@ def upload_to_instagram(video_path, caption):
     video_url = res.json().get("link")
     print(f"Public video link: {video_url}")
 
-    # Create Reel Container
     url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     payload = {
         "media_type": "REELS",
@@ -176,7 +193,6 @@ def upload_to_instagram(video_path, caption):
     print("⏳ Video processing on Instagram servers...")
     time.sleep(35)
 
-    # Publish
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": container_id, "access_token": IG_ACCESS_TOKEN})
     print("🚀 Reel Published Successfully:", pub_res.text)
