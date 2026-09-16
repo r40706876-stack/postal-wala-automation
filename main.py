@@ -152,7 +152,6 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
     print("✅ Video encoded strictly for Instagram Reels.")
 
-# NO 3RD-PARTY HOST: DIRECT META RESUMABLE UPLOAD
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
@@ -160,7 +159,7 @@ def upload_to_instagram_direct(video_path, caption):
     file_size = os.path.getsize(video_path)
     print(f"📦 Video file size: {file_size / (1024*1024):.2f} MB")
 
-    # Step 1: Instagram Session Start Karein
+    # Step 1: Session init
     print("🚀 Initializing Instagram Resumable Upload Session...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
@@ -181,21 +180,24 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
-    # Step 2: Direct Binary Push to Meta Server
+    # Step 2: Correct Meta Resumable protocol headers
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "offset": "0",
-        "file_size": str(file_size)
+        "file_offset": "0",
+        "Content-Type": "application/octet-stream",
+        "Content-Length": str(file_size)
     }
     with open(video_path, "rb") as f:
-        r_upload = requests.post(upload_url, headers=headers, data=f, timeout=120)
+        video_data = f.read()
+
+    r_upload = requests.post(upload_url, headers=headers, data=video_data, timeout=180)
 
     if r_upload.status_code not in [200, 201]:
-        raise RuntimeError(f"Direct byte upload failed: {r_upload.text}")
+        raise RuntimeError(f"Direct byte upload failed ({r_upload.status_code}): {r_upload.text}")
 
     print("✅ Video uploaded directly to Instagram servers.")
 
-    # Step 3: Transcoding Status Check (Wait for FINISHED)
+    # Step 3: Status check
     print("⏳ Processing on Instagram servers...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
@@ -213,7 +215,7 @@ def upload_to_instagram_direct(video_path, caption):
     else:
         print("⚠️ Polling timeout, trying to publish...")
 
-    # Step 4: Publish Reel
+    # Step 4: Publish
     print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
