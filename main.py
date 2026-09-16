@@ -53,10 +53,13 @@ def get_current_reading_window(pdf_path):
             extracted_text += f"\n--- PAGE {p+1} ---\n" + t
 
     next_page = end_page if end_page < total_pages else 0
-    with open(STATE_FILE, "w") as f:
-        json.dump({"last_page": next_page}, f)
+    try:
+        with open(STATE_FILE, "w") as f:
+            json.dump({"last_page": next_page}, f)
+    except Exception:
+        pass
 
-    return extracted_text[:2000], current_page + 1
+    return extracted_text[:1200], current_page + 1
 
 def generate_clause_script(pdf_content, page_num):
     if not GROQ_API_KEY:
@@ -67,49 +70,92 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
+    # Step 1: Query live available models on this token
+    target_model = "qwen/qwen3.8-27b"
+    try:
+        r = requests.get("https://api.groq.com/openai/v1/models", headers=headers, timeout=10)
+        if r.status_code == 200:
+            available = [m["id"] for m in r.json().get("data", [])]
+            for candidate in ["llama-3.3-70b-versatile", "qwen/qwen3.8-27b", "mixtral-8x7b-32768", "llama3-70b-8192"]:
+                if candidate in available:
+                    target_model = candidate
+                    break
+    except Exception as e:
+        print(f"Model selection warning: {e}")
+
+    print(f"🚀 Using verified Groq model: {target_model}")
+
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
     Teach the next specific rule/clause from this departmental PDF section (Around Page {page_num}).
 
     REEL GUIDELINES:
-    1. Duration: 60 SECONDS of spoken audio (around 120-140 words in simple conversational Hindi).
+    1. Duration: 50 SECONDS (around 85-110 spoken Hindi words).
     2. Language: Super simple everyday conversational Hindi (बोलचाल की बिल्कुल सरल देसी हिंदी).
     3. Structure:
-       - Hook: Rule/Topic name.
-       - Explanation: Rule ko daily life example se samjhao (2-3 lines).
+       - Hook: Rule/Topic name clearly mention karo.
+       - Explanation: Rule ko daily life example se 2-3 lines me samjhao.
        - Quiz: End me 1 MCQ pucho aur bolo comment me answer de.
 
     PDF Content:
     {pdf_content}
 
-    Return a valid JSON object with exactly these keys:
-    - "rule_title": "Topic Name",
-    - "voiceover": "Hindi voiceover text around 120-140 words.",
-    - "question": "Question text",
-    - "options": "A) ... B) ... C) ... D) ...",
-    - "caption": "Instagram Caption with Topic, Easy Explanation, MCQ Question, Options, and hashtags #PostalWala #MTSExam #IndiaPost #Khand02"
+    Output format strictly matching these lines (no markdown, no quotes):
+    TITLE: [Topic Name]
+    VOICEOVER: [Spoken Hindi explanation of 85-110 words with quiz question at the end]
+    QUESTION: [1 MCQ Question]
+    OPTIONS: [A) ... B) ... C) ... D) ...]
+    CAPTION: [Instagram Caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
     payload = {
-        "model": "llama-3.3-70b-versatile",
+        "model": target_model,
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.5,
-        "response_format": {"type": "json_object"}
+        "temperature": 0.4,
+        "max_tokens": 350
     }
     
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
     res_json = res.json()
 
     if res.status_code != 200 or "choices" not in res_json:
-        # Fallback to 8b if 70b rate-limited
-        payload["model"] = "llama-3.1-8b-instant"
-        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-        res_json = res.json()
-        if res.status_code != 200 or "choices" not in res_json:
-            raise RuntimeError(f"Groq API Error: {res_json}")
+        raise RuntimeError(f"Groq API Error: {res_json}")
 
-    raw = res_json["choices"][0]["message"]["content"].strip()
-    return json.loads(raw)
+    raw_text = res_json["choices"][0]["message"]["content"].strip()
+    
+    data = {
+        "rule_title": "डाकघर नियम",
+        "voiceover": "",
+        "question": "आज का सवाल",
+        "options": "A) HO B) SO C) BO D) इनमें से कोई नहीं",
+        "caption": "डाक विभाग परीक्षा तैयारी #PostalWala #MTSExam"
+    }
+    
+    current_key = None
+    for line in raw_text.splitlines():
+        line_clean = line.strip()
+        if line_clean.startswith("TITLE:"):
+            data["rule_title"] = line_clean.replace("TITLE:", "").strip()
+            current_key = "rule_title"
+        elif line_clean.startswith("VOICEOVER:"):
+            data["voiceover"] = line_clean.replace("VOICEOVER:", "").strip()
+            current_key = "voiceover"
+        elif line_clean.startswith("QUESTION:"):
+            data["question"] = line_clean.replace("QUESTION:", "").strip()
+            current_key = "question"
+        elif line_clean.startswith("OPTIONS:"):
+            data["options"] = line_clean.replace("OPTIONS:", "").strip()
+            current_key = "options"
+        elif line_clean.startswith("CAPTION:"):
+            data["caption"] = line_clean.replace("CAPTION:", "").strip()
+            current_key = "caption"
+        elif current_key and line_clean:
+            data[current_key] += " " + line_clean
+
+    if not data["voiceover"]:
+        data["voiceover"] = raw_text[:250]
+
+    return data
 
 def generate_voice(text, filename="voice.mp3"):
     tts = gTTS(text=text, lang="hi", slow=False)
@@ -158,6 +204,7 @@ def upload_to_instagram_direct(video_path, caption):
     file_size = os.path.getsize(video_path)
     print(f"📦 Video file size: {file_size / (1024*1024):.2f} MB")
 
+    # Step 1: Start Resumable Upload Session
     print("🚀 Initializing Instagram Resumable Upload Session...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
@@ -178,6 +225,7 @@ def upload_to_instagram_direct(video_path, caption):
     print(f"✅ Container ID: {video_id}")
     print("📤 Uploading video bytes directly to Instagram...")
 
+    # Step 2: Binary stream directly to upload_url with Meta-compliant headers
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
         "Offset": "0",
@@ -185,15 +233,14 @@ def upload_to_instagram_direct(video_path, caption):
         "Content-Length": str(file_size)
     }
     with open(video_path, "rb") as f:
-        video_data = f.read()
-
-    r_upload = requests.post(upload_url, headers=headers, data=video_data, timeout=180)
+        r_upload = requests.post(upload_url, headers=headers, data=f, timeout=180)
 
     if r_upload.status_code not in [200, 201]:
         raise RuntimeError(f"Direct byte upload failed ({r_upload.status_code}): {r_upload.text}")
 
     print("✅ Video uploaded directly to Instagram servers.")
 
+    # Step 3: Polling for transcode status
     print("⏳ Processing on Instagram servers...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
@@ -209,8 +256,9 @@ def upload_to_instagram_direct(video_path, caption):
         elif code in ["ERROR", "EXPIRED"]:
             raise RuntimeError(f"Instagram rejected video: {status_res}")
     else:
-        print("⚠️ Polling timeout, trying to publish...")
+        print("⚠️ Polling timeout, attempting publish...")
 
+    # Step 4: Publish Reel
     print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
