@@ -36,7 +36,6 @@ def get_current_reading_window(pdf_path):
         except Exception:
             current_page = 0
 
-    # पहली बार चलने पर 'खंड - 02' खोजना
     if current_page == 0:
         search_terms = ["खंड - 02", "खंड-02", "खंड 02", "खंड 2", "डाकघरों के प्रकार"]
         for idx, page in enumerate(reader.pages):
@@ -49,7 +48,6 @@ def get_current_reading_window(pdf_path):
             print("⚠️ 'खंड - 02' नहीं मिला, पेज 1 से शुरू कर रहे हैं।")
             current_page = 0
 
-    # 1 रील के लिए कंटेंट उठाना
     end_page = min(current_page + 1, total_pages)
     extracted_text = ""
     for p in range(current_page, end_page):
@@ -57,14 +55,13 @@ def get_current_reading_window(pdf_path):
         if t:
             extracted_text += f"\n--- PAGE {p+1} ---\n" + t
 
-    # अगली रील के लिए प्रोग्रेस सेव करना
     next_page = end_page if end_page < total_pages else 0
     with open(STATE_FILE, "w") as f:
         json.dump({"last_page": next_page}, f)
 
     return extracted_text[:3500], current_page + 1
 
-# 2. Groq Llama-3.3-70b से 60-80s की आसान देसी हिंदी स्क्रिप्ट और क्विज़
+# 2. मल्टी-मॉडल फॉलबैक के साथ स्क्रिप्ट जनरेटर
 def generate_clause_script(pdf_content, page_num):
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
@@ -97,15 +94,30 @@ def generate_clause_script(pdf_content, page_num):
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
-    payload = {
-        "model": "llama-3.3-70b-versatile",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.6
-    }
     
-    response = requests.post(url, headers=headers, json=payload)
-    if response.status_code != 200:
-        raise Exception(f"Groq API Error: {response.text}")
+    models_to_try = [
+        "llama-3.1-8b-instant",
+        "mixtral-8x7b-32768",
+        "gemma2-9b-it"
+    ]
+    
+    response = None
+    for model_name in models_to_try:
+        payload = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.6
+        }
+        res = requests.post(url, headers=headers, json=payload)
+        if res.status_code == 200:
+            response = res
+            print(f"✅ Successfully used model: {model_name}")
+            break
+        else:
+            print(f"⚠️ Model {model_name} failed ({res.status_code}), trying next...")
+            
+    if not response or response.status_code != 200:
+        raise Exception(f"Groq API Error on all models: {res.text if 'res' in locals() else 'No response'}")
         
     res_data = response.json()
     raw = res_data["choices"][0]["message"]["content"].strip()
@@ -117,7 +129,7 @@ def generate_clause_script(pdf_content, page_num):
         raw = raw.strip()
     return json.loads(raw)
 
-# 3. Edge-TTS Natural Hindi Voice
+# 3. Edge-TTS Voiceover
 async def generate_voice(text, filename="voice.mp3"):
     communicate = edge_tts.Communicate(text, voice="hi-IN-MadhurNeural")
     await communicate.save(filename)
