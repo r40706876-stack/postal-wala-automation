@@ -59,8 +59,11 @@ def get_current_reading_window(pdf_path):
     return extracted_text[:3500], current_page + 1
 
 def generate_clause_script(pdf_content, page_num):
+    if not GROQ_API_KEY:
+        raise ValueError("GROQ_API_KEY environment variable is missing or empty in GitHub Secrets!")
+
     headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Authorization": f"Bearer {GROQ_API_KEY.strip()}",
         "Content-Type": "application/json"
     }
 
@@ -82,21 +85,43 @@ def generate_clause_script(pdf_content, page_num):
     Return ONLY raw valid JSON (no markdown ticks, no backticks, no codeblocks):
     {{
         "rule_title": "Topic / Clause Name",
-        "voiceover": "Detailed conversational Hindi voiceover of around 160-190 words covering the explanation and the quiz question clearly.",
+        "voiceover": "Detailed conversational Hindi voiceover of around 160-190 words covering explanation and quiz question clearly.",
         "question": "Question text",
         "options": "A) ... B) ... C) ... D) ...",
         "caption": "Instagram Caption with Topic, Easy Explanation, MCQ Question, Options, and hashtags #PostalWala #MTSExam #IndiaPost #Khand02"
     }}
     """
 
-    payload = {
-        "model": "qwen/qwen3.8-27b",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.6
-    }
-    
-    res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-    raw = res.json()["choices"][0]["message"]["content"].strip()
+    models_to_try = [
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant"
+    ]
+
+    raw = None
+    for model_name in models_to_try:
+        payload = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.6
+        }
+        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+        
+        try:
+            res_json = res.json()
+        except Exception:
+            print(f"⚠️ Non-JSON response from Groq ({res.status_code}): {res.text}")
+            continue
+
+        if res.status_code == 200 and "choices" in res_json:
+            raw = res_json["choices"][0]["message"]["content"].strip()
+            print(f"✅ Script generated successfully using {model_name}")
+            break
+        else:
+            print(f"⚠️ Groq API issue on {model_name} (Status {res.status_code}): {res_json}")
+
+    if not raw:
+        raise RuntimeError("Groq API failed on all models. Check the logs above for the exact Groq error.")
+
     if "```" in raw:
         raw = raw.split("```")[1]
         if raw.startswith("json"):
@@ -139,7 +164,7 @@ def create_video_ffmpeg(title, question, options, audio_file="voice.mp3", output
 
 def upload_to_instagram(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
-        print("⚠️ IG_ACCESS_TOKEN ya IG_USER_ID Secrets me nahi mila! Upload skip ho gaya.")
+        print("⚠️ IG_ACCESS_TOKEN ya IG_USER_ID missing hai! Upload skip ho raha hai.")
         return
 
     print("📤 Uploading video to public host (Catbox)...")
@@ -153,13 +178,17 @@ def upload_to_instagram(video_path, caption):
         print(f"Catbox warning: {e}")
 
     if not video_url:
-        print("📤 Trying secondary host (Tmpfiles)...")
+        print("📤 Retrying on secondary host (Tmpfiles)...")
         with open(video_path, "rb") as f:
             res = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=90)
             data = res.json()
             raw_url = data.get("data", {}).get("url", "")
             if raw_url:
                 video_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
+
+    if not video_url:
+        print("❌ Video host failed. Instagram upload skipped.")
+        return
 
     print(f"✅ Public URL: {video_url}")
 
