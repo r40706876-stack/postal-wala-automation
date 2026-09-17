@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw, ImageFont
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
+GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY", "")
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
@@ -324,15 +325,15 @@ def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    print("🌐 Uploading video to high-stability unblocked public mirror (0x0.st)...")
-    with open(video_path, "rb") as f:
-        r = requests.post("https://0x0.st", files={"file": f}, timeout=120)
+    print("🚀 Committing video directly inside git repository (Zero network timeout)...")
+    os.system("git config --global user.name 'PostalBot'")
+    os.system("git config --global user.email 'bot@postal.com'")
+    os.system(f"git add {video_path}")
+    os.system("git commit -m 'Auto-upload generated reel media'")
     
-    public_url = r.text.strip()
-    if not public_url.startswith("http"):
-        raise RuntimeError(f"Public mirror upload failed: {r.text}")
-
-    print(f"✅ Clean Public URL: {public_url}")
+    repo_slug = GITHUB_REPOSITORY or os.getenv("GITHUB_REPOSITORY", "")
+    public_url = f"https://raw.githubusercontent.com/{repo_slug}/main/{video_path}"
+    print(f"✅ Local Git Raw URL: {public_url}")
 
     print("🚀 Initializing Instagram Reel Container...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
@@ -342,7 +343,7 @@ def upload_to_instagram_direct(video_path, caption):
         "caption": caption,
         "access_token": IG_ACCESS_TOKEN
     }
-    r_init = requests.post(init_url, data=init_payload)
+    r_init = requests.post(init_url, data=init_payload, timeout=30)
     init_data = r_init.json()
 
     video_id = init_data.get("id")
