@@ -270,7 +270,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         img.save(fname)
         slide_filenames.append(fname)
 
-    # Quiz Slide (Slide 5)
+    # Quiz Slide
     img5 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
@@ -337,115 +337,66 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.")
 
-def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
+def upload_to_tmpfiles(video_file):
+    print("Uploading video to stable public host (tmpfiles.org)...")
+    url = "https://tmpfiles.org/api/v1/upload"
+    with open(video_file, "rb") as f:
+        files = {"file": f}
+        response = requests.post(url, files=files, timeout=120)
+    
+    if response.status_code == 200:
+        res_json = response.json()
+        if res_json.get("status") == "success":
+            file_url = res_json["data"]["url"]
+            public_url = file_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
+            print(f"✅ Successfully hosted at: {public_url}")
+            return public_url
+    raise RuntimeError(f"tmpfiles upload failed: {response.text}")
+
+def post_reel_to_instagram(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
-
+    
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    last_error = None
-    for container_attempt in range(1, max_container_attempts + 1):
-        print(f"--- Reel upload attempt {container_attempt}/{max_container_attempts} ---")
-        try:
-            video_id = _create_reel_container(video_file, caption, user_id, access_token)
-            status = _poll_container_status(video_id, access_token)
+    # Video ko URL banakar Instagram ko bhejenge
+    public_video_url = upload_to_tmpfiles(video_file)
 
-            if status == "FINISHED":
-                _publish_reel(video_id, user_id, access_token)
-                return
-            else:
-                last_error = f"Container ended with non-FINISHED status: {status}"
-                print(f"⚠️ {last_error}. Retrying with a brand-new container...")
-        except Exception as e:
-            last_error = str(e)
-            print(f"⚠️ Attempt {container_attempt} failed: {last_error}. Retrying...")
-
-        if container_attempt < max_container_attempts:
-            time.sleep(20)
-
-    raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
-
-RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
-
-def _create_reel_container(video_file, caption, user_id, access_token):
-    print("Step 1/2: Creating resumable-upload Reel container...")
+    print("Initializing Instagram Reel container with public URL...")
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
-    data = {
+    payload = {
         "media_type": "REELS",
-        "upload_type": "resumable",
+        "video_url": public_video_url,
         "caption": caption,
         "access_token": access_token
     }
-    r = requests.post(init_url, data=data, timeout=60)
-
+    
+    r = requests.post(init_url, data=payload, timeout=60)
     if r.status_code != 200:
         raise RuntimeError(f"Container init fail hua: {r.text}")
-
+        
     init_data = r.json()
     video_id = init_data.get("id")
 
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
-    print(f"Container created with ID: {video_id}. Uploading video bytes to rupload.facebook.com...")
-
-    file_size = os.path.getsize(video_file)
-    upload_url = RUPLOAD_BASE + str(video_id).strip()
-    
-    # 100% GUARANTEED FIX: Yaha explicitly Content-Type aur raw bytes define kiye hain
-    # taaki chunked encoding ki error hamesha ke liye khatam ho jaye.
-    upload_headers = {
-        "Authorization": f"OAuth {access_token}",
-        "offset": "0",
-        "file_size": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
-
-    # Reading file into memory (raw bytes) instead of streaming it.
-    with open(video_file, "rb") as vf:
-        video_data = vf.read()
-
-    up_r = requests.post(upload_url, headers=upload_headers, data=video_data, timeout=600)
-
-    if up_r.status_code != 200:
-        raise RuntimeError(f"Video byte upload fail hua: {up_r.text}")
-
-    up_json = up_r.json()
-    if not up_json.get("success"):
-        raise RuntimeError(f"Video byte upload did not report success: {up_json}")
-
-    print("Step 2/2: Video bytes uploaded successfully. Waiting for Instagram processing...")
-    return video_id
-
-def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
+    print("Waiting for Instagram video processing...")
     status_url = GRAPH_API_BASE + str(video_id).strip()
-
-    for attempt in range(max_checks):
-        time.sleep(wait_seconds)
-
+    for attempt in range(40):
+        time.sleep(15)
         try:
-            status_res = requests.get(
-                status_url,
-                params={"fields": "status_code,status", "access_token": access_token},
-                timeout=30
-            ).json()
+            status_res = requests.get(status_url, params={"fields": "status_code,status", "access_token": access_token}, timeout=30).json()
+            status = status_res.get("status_code")
+            print(f"Check {attempt+1}: Status -> {status}")
+            if status == "FINISHED":
+                break
+            elif status in ["ERROR", "EXPIRED"]:
+                raise RuntimeError(f"Instagram processing failed with status: {status_res}")
         except Exception as e:
-            print(f"Polling network warning (will retry): {e}")
-            continue
+            print(f"Polling warning: {e}")
 
-        status = status_res.get("status_code")
-        print(f"Check {attempt + 1}: Status -> {status}")
-
-        if status == "FINISHED":
-            return "FINISHED"
-        elif status in ["ERROR", "EXPIRED"]:
-            print(f"❌ Instagram reported a definitive failure: {status_res}")
-            return status
-
-    return "TIMEOUT"
-
-def _publish_reel(video_id, user_id, access_token):
     print("Publishing Reel...")
     publish_url = GRAPH_API_BASE + str(user_id).strip() + "/media_publish"
     pub_res = requests.post(publish_url, data={"creation_id": video_id, "access_token": access_token}, timeout=30).json()
@@ -457,7 +408,7 @@ def _publish_reel(video_id, user_id, access_token):
 
 if __name__ == "__main__":
     print("🚀 Postal Wala Deep Continuous Automation Starting...")
-
+    
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
     print(f"✅ Read Page {page_num} with deep continuous tracking.")
@@ -470,4 +421,4 @@ if __name__ == "__main__":
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram(OUTPUT_VIDEO, script_data.get("caption", ""))
