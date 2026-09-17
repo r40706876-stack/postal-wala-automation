@@ -379,18 +379,24 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
 
     raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
 
-def _create_reel_container(video_file, caption, user_id, access_token):
-    print("Initializing Instagram Reel container via standard multipart upload...")
-    init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
+RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
-    with open(video_file, "rb") as vf:
-        files = {"source": (video_file, vf, "video/mp4")}
-        data = {
-            "media_type": "REELS",
-            "caption": caption,
-            "access_token": access_token
-        }
-        r = requests.post(init_url, data=data, files=files, timeout=300)
+def _create_reel_container(video_file, caption, user_id, access_token):
+    # ---- FIX: Meta's Instagram Graph API no longer accepts a raw multipart
+    # "source" file upload on /media for local files — hence the
+    # "(#100) The parameter video_url is required" error. A local file (no
+    # public URL) MUST use the two-step "resumable upload" flow instead:
+    #   1) create a container with upload_type=resumable  -> get container id
+    #   2) POST the raw video bytes to rupload.facebook.com for that id
+    print("Step 1/2: Creating resumable-upload Reel container...")
+    init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
+    data = {
+        "media_type": "REELS",
+        "upload_type": "resumable",
+        "caption": caption,
+        "access_token": access_token
+    }
+    r = requests.post(init_url, data=data, timeout=60)
 
     if r.status_code != 200:
         raise RuntimeError(f"Container init fail hua: {r.text}")
@@ -401,7 +407,27 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
-    print(f"Container created successfully with ID: {video_id}. Waiting for processing...")
+    print(f"Container created with ID: {video_id}. Uploading video bytes to rupload.facebook.com...")
+
+    file_size = os.path.getsize(video_file)
+    upload_url = RUPLOAD_BASE + str(video_id).strip()
+    upload_headers = {
+        "Authorization": f"OAuth {access_token}",
+        "offset": "0",
+        "file_size": str(file_size),
+    }
+
+    with open(video_file, "rb") as vf:
+        up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
+
+    if up_r.status_code != 200:
+        raise RuntimeError(f"Video byte upload fail hua: {up_r.text}")
+
+    up_json = up_r.json()
+    if not up_json.get("success"):
+        raise RuntimeError(f"Video byte upload did not report success: {up_json}")
+
+    print("Step 2/2: Video bytes uploaded successfully. Waiting for Instagram processing...")
     return video_id
 
 def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
