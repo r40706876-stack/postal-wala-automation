@@ -12,8 +12,6 @@ from PIL import Image, ImageDraw, ImageFont
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
@@ -322,98 +320,71 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Perfectly Synced Reel Created.")
 
-def get_public_url(video_path):
-    if not GITHUB_TOKEN or not GITHUB_REPOSITORY:
-        # Fallback to local git commit raw link if workflow permissions allow
-        print("⚠️ GITHUB_TOKEN missing, attempting direct GitHub repository raw link...")
-        return f"https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/main/{video_path}"
-
-    print("🚀 Publishing video via GitHub Release for 100% stable Meta download...")
-    tag_name = f"reel-{int(time.time())}"
-    rel_url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/releases"
-    headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json"
-    }
-    rel_payload = {
-        "tag_name": tag_name,
-        "name": f"Automated Reel {tag_name}",
-        "draft": False,
-        "prerelease": True
-    }
-    r_rel = requests.post(rel_url, headers=headers, json=rel_payload)
-    rel_data = r_rel.json()
-    upload_url_template = rel_data.get("upload_url")
-
-    if not upload_url_template:
-        # Fallback to raw content URL if release creation fails
-        return f"https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/main/{video_path}"
-
-    base_upload_url = upload_url_template.split("{")[0]
-    asset_url = f"{base_upload_url}?name=final_reel.mp4"
-    asset_headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Content-Type": "video/mp4",
-        "Accept": "application/vnd.github+json"
-    }
-    with open(video_path, "rb") as f:
-        video_bytes = f.read()
-
-    r_asset = requests.post(asset_url, headers=asset_headers, data=video_bytes, timeout=120)
-    asset_data = r_asset.json()
-    public_url = asset_data.get("browser_download_url")
-
-    if not public_url:
-        return f"https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/main/{video_path}"
-
-    print(f"✅ GitHub Release Asset URL: {public_url}")
-    return public_url
-
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    public_url = get_public_url(video_path)
-
-    print("🚀 Initializing Instagram Reel Container via direct public URL...")
+    print("🚀 Initializing Instagram Direct Status Upload Session...")
+    
+    # Step 1: Initialize resumable upload session
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
-        "video_url": public_url,
+        "upload_type": "resumable",
         "caption": caption,
         "access_token": IG_ACCESS_TOKEN
     }
-    r_init = requests.post(init_url, data=init_payload)
+    r_init = requests.post(init_url, data=init_payload, timeout=30)
     init_data = r_init.json()
-
+    
     video_id = init_data.get("id")
-    if not video_id:
-        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
-
-    print(f"✅ Container ID Created: {video_id}")
-
-    print("⏳ Waiting for Instagram to process video...")
+    upload_uri = init_data.get("uri")
+    
+    if not video_id or not upload_uri:
+        raise RuntimeError(f"Resumable init failed: {init_data}")
+        
+    print(f"✅ Container ID: {video_id}")
+    
+    # Step 2: Upload file bytes directly using chunk upload protocol
+    file_size = os.path.getsize(video_path)
+    headers = {
+        "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
+        "offset": "0",
+        "file_size": str(file_size),
+        "Content-Type": "application/octet-stream"
+    }
+    
+    with open(video_path, "rb") as f:
+        video_bytes = f.read()
+        
+    print("📤 Pushing binary stream via Graph API chunk protocol...")
+    r_upload = requests.post(upload_uri, headers=headers, data=video_bytes, timeout=180)
+    
+    if r_upload.status_code not in [200, 201]:
+        raise RuntimeError(f"Binary chunk upload failed ({r_upload.status_code}): {r_upload.text})")
+        
+    print("✅ Binary upload completed. Waiting for processing...")
+    
+    # Step 3: Poll status until finished
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
-
     for attempt in range(1, 40):
         time.sleep(10)
         status_res = requests.get(status_url).json()
         code = status_res.get("status_code")
         print(f"🔄 Check {attempt}: {code}")
-
+        
         if code == "FINISHED":
             print("✅ Transcoding FINISHED!")
             break
         elif code in ["ERROR", "EXPIRED"]:
             raise RuntimeError(f"Instagram processing failed: {status_res}")
-    else:
-        print("⚠️ Polling timeout, attempting to publish...")
-
+            
+    # Step 4: Publish Reel
     print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
-
+    
     if "id" in pub_json:
         print(f"🎉 SUCCESS! Reel Live on Instagram! Post ID: {pub_json['id']}")
     else:
