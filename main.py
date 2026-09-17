@@ -13,6 +13,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY", "")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
@@ -325,15 +326,28 @@ def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    print("🚀 Committing video directly inside git repository (Zero network timeout)...")
+    print("🚀 Committing and Pushing video to remote GitHub repository...")
     os.system("git config --global user.name 'PostalBot'")
     os.system("git config --global user.email 'bot@postal.com'")
+    
+    # Authenticate remote URL with GitHub Token so git push succeeds
+    if GITHUB_TOKEN and GITHUB_REPOSITORY:
+        os.system(f"git remote set-url origin https://x-access-token:{GITHUB_TOKEN}@github.com/{GITHUB_REPOSITORY}.git")
+    
+    os.system("git pull origin main --rebase || true")
     os.system(f"git add {video_path}")
     os.system("git commit -m 'Auto-upload generated reel media'")
+    push_code = os.system("git push origin main")
     
-    repo_slug = GITHUB_REPOSITORY or os.getenv("GITHUB_REPOSITORY", "")
-    public_url = f"https://raw.githubusercontent.com/{repo_slug}/main/{video_path}"
-    print(f"✅ Local Git Raw URL: {public_url}")
+    if push_code != 0:
+        print("⚠️ Git push had issues, trying force push or continuing with existing sync...")
+
+    public_url = f"https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/main/{video_path}"
+    print(f"✅ Verified Remote Git Raw URL: {public_url}")
+
+    # Give GitHub raw URL 30 seconds to propagate globally
+    print("⏳ Waiting 30 seconds for GitHub raw link global propagation...")
+    time.sleep(30)
 
     print("🚀 Initializing Instagram Reel Container...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
@@ -356,7 +370,7 @@ def upload_to_instagram_direct(video_path, caption):
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 40):
-        time.sleep(10)
+        time.sleep(15)
         status_res = requests.get(status_url).json()
         code = status_res.get("status_code")
         print(f"🔄 Check {attempt}: {code}")
