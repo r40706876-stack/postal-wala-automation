@@ -148,17 +148,17 @@ def generate_clause_script(pdf_content, page_num):
 
     data = {
         "rule_title": "डाक नियमों की विस्तृत जानकारी",
-        "sen1": "विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है।",
-        "sen2": "प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है।",
-        "sen3": "नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है।",
-        "sen4": "सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए।",
+        "sen1": "विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन अनिवार्य है।",
+        "sen2": "प्रत्येक डाकघर में प्राप्त सामग्री की प्रविष्टि रजिस्टर में दर्ज की जाती है।",
+        "sen3": "नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त कार्रवाई की जाती है।",
+        "sen4": "सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को याद रखना चाहिए।",
         "question": "विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है?",
         "opt_a": "स्थानीय डाकपाल",
         "opt_b": "उच्च अधिकारियों",
         "opt_c": "प्रेषक को",
         "opt_d": "इनमें से कोई नहीं",
         "correct": "B",
-        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का महत्वपूर्ण प्रश्न है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन अनिवार्य है। डाकघर में प्राप्त सामग्री की प्रविष्टि रजिस्टर में दर्ज होती है। नियमों के उल्लंघन पर उच्च अधिकारियों द्वारा अनुशासनात्मक कार्रवाई की जाती है। इन प्रावधानों को अच्छी तरह याद रखें। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।",
+        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का महत्वपूर्ण प्रश्न है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन अनिवार्य है। प्रत्येक डाकघर में प्राप्त सामग्री की प्रविष्टि रजिस्टर में दर्ज होती है। नियमों के उल्लंघन पर उच्च अधिकारियों द्वारा सख्त कार्रवाई की जाती है। इन नियमों को परीक्षा हेतु अच्छी तरह याद रखें। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।",
         "caption": "डाक विभाग परीक्षा तैयारी संपूर्ण विश्लेषण #PostalWala #MTSExam #Khand02"
     }
 
@@ -210,10 +210,10 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
 
-    # 60-Second Hard Limit Protection: Meta rejects Reels > 60 seconds
+    # 60 Second Meta Reel Limit Guard
     if total_dur > 57.0:
         tempo = round(total_dur / 54.0, 2)
-        print(f"⚡ Audio duration ({total_dur:.1f}s) > 57s. Adjusting speed by {tempo}x to respect Instagram 60s Reel limit...", flush=True)
+        print(f"⚡ Audio duration ({total_dur:.1f}s) > 57s. Adjusting speed by {tempo}x...", flush=True)
         adjusted_audio = "voice_fast.mp3"
         cmd_speed = ["ffmpeg", "-y", "-i", audio_file, "-filter:a", f"atempo={tempo}", adjusted_audio]
         subprocess.run(cmd_speed, check=True)
@@ -231,28 +231,38 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         scale = total_dur / sum(durations)
         durations = [d * scale for d in durations]
 
-    font_brand = get_eng_font(48)
-    font_sub = get_eng_font(26)
-    font_title = get_dev_font(36)
-    font_h2 = get_dev_font(32)
+    # Fonts
+    font_brand = get_eng_font(46)
+    font_sub = get_eng_font(24)
+    font_title = get_dev_font(34)
+    font_h2 = get_dev_font(30)
     font_body = get_dev_font(32)
-    font_label = get_dev_font(26)
-    font_cta_hin = get_dev_font(30)
-    font_cta_eng = get_eng_font(30)
-    font_wa = get_dev_font(26)
+    font_label = get_dev_font(24)
+    
+    # Action Banners Fonts (Safe Zone)
+    font_cta_hin = get_dev_font(28)
+    font_cta_eng = get_eng_font(28)
+    font_wa_eng = get_eng_font(26)
+    font_wa_dev = get_dev_font(26)
+    font_opt_eng = get_eng_font(32)
 
     def draw_base(draw_obj):
-        draw_obj.rounded_rectangle([45, 50, 1035, 1850], radius=30, fill="#1E293B", outline="#E11D48", width=4)
-        draw_obj.text((80, 80), "POSTAL WALA", fill="#F43F5E", font=font_brand)
-        draw_obj.text((80, 135), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
+        draw_obj.rounded_rectangle([45, 50, 1035, 1860], radius=30, fill="#1E293B", outline="#E11D48", width=4)
+        draw_obj.text((80, 75), "POSTAL WALA", fill="#F43F5E", font=font_brand)
+        draw_obj.text((80, 130), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
     def draw_footer(draw_obj):
-        draw_obj.rounded_rectangle([80, 1590, 1000, 1710], radius=22, fill="#E11D48")
-        draw_obj.text((120, 1622), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
-        draw_obj.text((610, 1622), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
+        # 1. Green WhatsApp / Course Banner (Safe Zone: Y=1365 to 1475)
+        draw_obj.rounded_rectangle([80, 1365, 1000, 1475], radius=20, fill="#15803D", outline="#22C55E", width=2)
+        # Line 1: English Font (No Tofu Boxes)
+        draw_obj.text((110, 1380), "GDS to MTS | Postman | Mail Guard | P.A.", fill="#FEF08A", font=font_wa_eng)
+        # Line 2: Devanagari Font (Clean Hindi, No Tofu Boxes)
+        draw_obj.text((110, 1425), "कोर्स व फ्री मॉक टेस्ट हेतु व्हाट्सएप: 8989971379", fill="#FFFFFF", font=font_wa_dev)
 
-        draw_obj.rounded_rectangle([80, 1730, 1000, 1825], radius=22, fill="#16A34A")
-        draw_obj.text((105, 1762), "कोर्स और Free Mock Test हेतु WhatsApp: 8989971379", fill="#FFFFFF", font=font_wa)
+        # 2. Red Follow Banner (Safe Zone: Y=1495 to 1575)
+        draw_obj.rounded_rectangle([80, 1495, 1000, 1575], radius=20, fill="#E11D48")
+        draw_obj.text((120, 1520), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
+        draw_obj.text((610, 1520), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"], script_data["sen4"]]
     slide_filenames = []
@@ -262,50 +272,57 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         d = ImageDraw.Draw(img)
         draw_base(d)
 
-        d.rounded_rectangle([80, 190, 1000, 330], radius=20, fill="#0F172A", outline="#38BDF8", width=2)
-        d.text((110, 205), f"संपूर्ण नियम ({idx}/4):", fill="#38BDF8", font=font_label)
-        d.text((110, 245), textwrap.fill(script_data["rule_title"], width=34), fill="#FFFFFF", font=font_title)
+        # Topic Title Box
+        d.rounded_rectangle([80, 180, 1000, 315], radius=20, fill="#0F172A", outline="#38BDF8", width=2)
+        d.text((110, 195), f"संपूर्ण नियम ({idx}/4):", fill="#38BDF8", font=font_label)
+        d.text((110, 235), textwrap.fill(script_data["rule_title"], width=34), fill="#FFFFFF", font=font_title)
 
-        d.rounded_rectangle([80, 360, 1000, 1550], radius=22, fill="#0F172A")
-        d.text((110, 390), "विस्तृत व्याख्या:", fill="#FBBF24", font=font_h2)
+        # Explanation Box (leaves space for safe-zone banners)
+        d.rounded_rectangle([80, 335, 1000, 1340], radius=22, fill="#0F172A")
+        d.text((110, 360), "विस्तृत व्याख्या:", fill="#FBBF24", font=font_h2)
 
-        d.rounded_rectangle([110, 480, 970, 1520], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
-        d.text((135, 510), "मुख्य बिंदु:", fill="#38BDF8", font=font_label)
+        d.rounded_rectangle([110, 420, 970, 1310], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
+        d.text((135, 450), "मुख्य बिंदु:", fill="#38BDF8", font=font_label)
 
         wrapped_text = textwrap.fill(sentence, width=24)
-        d.text((135, 580), wrapped_text, fill="#F8FAFC", font=font_body)
+        d.text((135, 520), wrapped_text, fill="#F8FAFC", font=font_body)
 
         draw_footer(d)
         fname = f"slide_{idx}.png"
         img.save(fname)
         slide_filenames.append(fname)
 
-    # Slide 5 (Quiz) - All options look identical, no answer revealed
+    # Slide 5 (Quiz Slide)
     img5 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
 
-    d5.rounded_rectangle([80, 190, 1000, 330], radius=20, fill="#0F172A", outline="#FBBF24", width=2)
-    d5.text((110, 205), "परीक्षा क्विज़:", fill="#FBBF24", font=font_label)
-    d5.text((110, 245), "सवाल का जवाब दें!", fill="#FFFFFF", font=font_title)
+    d5.rounded_rectangle([80, 180, 1000, 315], radius=20, fill="#0F172A", outline="#FBBF24", width=2)
+    d5.text((110, 195), "परीक्षा क्विज़:", fill="#FBBF24", font=font_label)
+    d5.text((110, 235), "सवाल का जवाब दें!", fill="#FFFFFF", font=font_title)
 
-    d5.rounded_rectangle([80, 360, 1000, 1550], radius=22, fill="#0F172A")
-    d5.text((110, 390), "सवाल:", fill="#FBBF24", font=font_h2)
+    d5.rounded_rectangle([80, 335, 1000, 1340], radius=22, fill="#0F172A")
+    d5.text((110, 360), "सवाल:", fill="#FBBF24", font=font_h2)
 
     q_wrapped = textwrap.fill(script_data["question"], width=26)
-    d5.text((110, 450), q_wrapped, fill="#F8FAFC", font=font_body)
+    d5.text((110, 410), q_wrapped, fill="#F8FAFC", font=font_body)
 
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
-    oy = 790
+    oy = 660
     for idx, opt in enumerate(opts):
         box_bg = "#1E293B"
         border_c = "#38BDF8"
         text_c = "#FFFFFF"
 
-        d5.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill=box_bg, outline=border_c, width=2)
-        opt_text = f"{chr(65+idx)}) {textwrap.fill(opt, width=28)}"
-        d5.text((135, oy + 22), opt_text, fill=text_c, font=font_body)
-        oy += 115
+        d5.rounded_rectangle([110, oy, 970, oy + 85], radius=16, fill=box_bg, outline=border_c, width=2)
+        
+        # A), B), C), D) drawn using English font so it NEVER becomes a box
+        opt_badge = f"{chr(65+idx)})"
+        d5.text((135, oy + 22), opt_badge, fill="#38BDF8", font=font_opt_eng)
+        
+        # Option Hindi text
+        d5.text((195, oy + 20), textwrap.fill(opt, width=26), fill=text_c, font=font_body)
+        oy += 105
 
     draw_footer(d5)
     img5.save("slide_5.png")
@@ -397,8 +414,11 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
-    print(f"Container created with ID: {video_id}. Uploading video bytes to rupload.facebook.com...", flush=True)
+    # Meta Sync Pause: Meta ko container register karne ke liye 5 sec ka time
+    print(f"Container created with ID: {video_id}. Meta sync ke liye 5 sec wait kar rahe hain...", flush=True)
+    time.sleep(5)
 
+    print(f"Uploading video bytes to rupload.facebook.com...", flush=True)
     file_size = os.path.getsize(video_file)
     upload_url = RUPLOAD_BASE + str(video_id).strip()
     upload_headers = {
