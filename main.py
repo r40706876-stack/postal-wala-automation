@@ -232,17 +232,17 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_wa = get_dev_font(26)
 
     def draw_base(draw_obj):
-        draw_obj.rounded_rectangle([45, 50, 1035, 1860], radius=30, fill="#1E293B", outline="#E11D48", width=4)
+        draw_obj.rounded_rectangle([45, 50, 1035, 1850], radius=30, fill="#1E293B", outline="#E11D48", width=4)
         draw_obj.text((80, 80), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         draw_obj.text((80, 135), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
     def draw_footer(draw_obj):
-        draw_obj.rounded_rectangle([80, 1590, 1000, 1720], radius=22, fill="#E11D48")
+        draw_obj.rounded_rectangle([80, 1590, 1000, 1710], radius=22, fill="#E11D48")
         draw_obj.text((120, 1622), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((610, 1622), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
-        draw_obj.rounded_rectangle([80, 1740, 1000, 1830], radius=22, fill="#16A34A")
-        draw_obj.text((105, 1765), "कोर्स और Free Mock Test के लिए WhatsApp करें: 8989971379", fill="#FFFFFF", font=font_wa)
+        draw_obj.rounded_rectangle([80, 1730, 1000, 1825], radius=22, fill="#16A34A")
+        draw_obj.text((105, 1762), "कोर्स और Free Mock Test के लिए WhatsApp: 8989971379", fill="#FFFFFF", font=font_wa)
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"], script_data["sen4"]]
     slide_filenames = []
@@ -270,6 +270,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         img.save(fname)
         slide_filenames.append(fname)
 
+    # Slide 5 (No answer highlight)
     img5 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
@@ -321,86 +322,19 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-map", f"{len(slide_filenames)}:a",
         "-c:v", "libx264",
         "-preset", "medium",
-        "-profile:v", "high",
+        "-profile:v", "main",
         "-level", "4.0",
         "-pix_fmt", "yuv420p",
         "-r", "30",
         "-g", "60",
         "-c:a", "aac",
         "-b:a", "192k",
-        "-ac", "2",
         "-ar", "48000",
         "-movflags", "+faststart",
         "-shortest", output_video
     ])
     subprocess.run(cmd, check=True)
     print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.", flush=True)
-
-def upload_video_to_github_release(video_file):
-    token = os.getenv("GITHUB_TOKEN")
-    repo = os.getenv("GITHUB_REPOSITORY")
-    if not token or not repo:
-        raise RuntimeError(
-            "GITHUB_TOKEN ya GITHUB_REPOSITORY env missing hai — workflow.yml ke "
-            "'Run Script' step me 'GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}' add karo."
-        )
-
-    tag = f"reel-{int(time.time())}"
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json"
-    }
-
-    print(f"Step 0a: GitHub release bana rahe hain (tag: {tag})...", flush=True)
-    create_res = requests.post(
-        f"https://api.github.com/repos/{repo}/releases",
-        headers=headers,
-        json={
-            "tag_name": tag,
-            "name": tag,
-            "body": "Temporary Reel video host (auto-generated, safe to delete)",
-            "draft": False,
-            "prerelease": False
-        },
-        timeout=30
-    )
-    if create_res.status_code not in (200, 201):
-        raise RuntimeError(f"GitHub release create fail hua: {create_res.text}")
-
-    release_data = create_res.json()
-    release_id = release_data["id"]
-
-    print("Step 0b: Video ko release asset ke roop me upload kar rahe hain...", flush=True)
-    upload_url = f"https://uploads.github.com/repos/{repo}/releases/{release_id}/assets?name=reel.mp4"
-
-    with open(video_file, "rb") as vf:
-        video_data = vf.read()
-
-    up_headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "video/mp4"
-    }
-    up_res = requests.post(upload_url, headers=up_headers, data=video_data, timeout=180)
-    if up_res.status_code not in (200, 201):
-        raise RuntimeError(f"GitHub asset upload fail hua: {up_res.text}")
-
-    public_url = up_res.json()["browser_download_url"]
-    print(f"✅ Public video URL (GitHub Release): {public_url}", flush=True)
-    return public_url, release_id
-
-
-def delete_github_release(release_id):
-    token = os.getenv("GITHUB_TOKEN")
-    repo = os.getenv("GITHUB_REPOSITORY")
-    if not token or not repo or not release_id:
-        return
-    try:
-        headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
-        requests.delete(f"https://api.github.com/repos/{repo}/releases/{release_id}", headers=headers, timeout=30)
-        print("🧹 Temporary GitHub release cleanup ho gaya.", flush=True)
-    except Exception as e:
-        print(f"Cleanup warning (ignore karo): {e}", flush=True)
-
 
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
@@ -409,52 +343,72 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    public_video_url, release_id = upload_video_to_github_release(video_file)
-
     last_error = None
-    try:
-        for attempt in range(1, max_container_attempts + 1):
-            print(f"--- Reel publish attempt {attempt}/{max_container_attempts} ---", flush=True)
-            try:
-                video_id = _create_reel_container_url(public_video_url, caption, user_id, access_token)
-                status = _poll_container_status(video_id, access_token)
+    for container_attempt in range(1, max_container_attempts + 1):
+        print(f"--- Reel upload attempt {container_attempt}/{max_container_attempts} ---", flush=True)
+        try:
+            video_id = _create_reel_container(video_file, caption, user_id, access_token)
+            status = _poll_container_status(video_id, access_token)
 
-                if status == "FINISHED":
-                    _publish_reel(video_id, user_id, access_token)
-                    return
-                else:
-                    last_error = f"Container ended with non-FINISHED status: {status}"
-                    print(f"⚠️ {last_error}. Retrying...", flush=True)
-            except Exception as e:
-                last_error = str(e)
-                print(f"⚠️ Attempt {attempt} failed: {last_error}. Retrying...", flush=True)
+            if status == "FINISHED":
+                _publish_reel(video_id, user_id, access_token)
+                return
+            else:
+                last_error = f"Container ended with non-FINISHED status: {status}"
+                print(f"⚠️ {last_error}. Retrying with a brand-new container...", flush=True)
+        except Exception as e:
+            last_error = str(e)
+            print(f"⚠️ Attempt {container_attempt} failed: {last_error}. Retrying...", flush=True)
 
-            if attempt < max_container_attempts:
-                time.sleep(20)
+        if container_attempt < max_container_attempts:
+            time.sleep(20)
 
-        raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
-    finally:
-        delete_github_release(release_id)
+    raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
 
-GRAPH_API_BASE_ = GRAPH_API_BASE
+RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
-def _create_reel_container_url(video_url, caption, user_id, access_token):
-    print("Creating Reel container with hosted video_url...", flush=True)
+def _create_reel_container(video_file, caption, user_id, access_token):
+    print("Step 1/2: Creating resumable-upload Reel container...", flush=True)
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
     data = {
         "media_type": "REELS",
-        "video_url": video_url,
+        "upload_type": "resumable",
         "caption": caption,
         "access_token": access_token
     }
     r = requests.post(init_url, data=data, timeout=60)
-    res_json = r.json()
-    print(f"Container response: {res_json}", flush=True)
 
-    if r.status_code != 200 or "id" not in res_json:
-        raise RuntimeError(f"Container create fail hua: {res_json}")
+    if r.status_code != 200:
+        raise RuntimeError(f"Container init fail hua: {r.text}")
 
-    return res_json["id"]
+    init_data = r.json()
+    video_id = init_data.get("id")
+
+    if not video_id:
+        raise RuntimeError(f"Container ID invalid response: {init_data}")
+
+    print(f"Container created with ID: {video_id}. Uploading video bytes to rupload.facebook.com...", flush=True)
+
+    file_size = os.path.getsize(video_file)
+    upload_url = RUPLOAD_BASE + str(video_id).strip()
+    upload_headers = {
+        "Authorization": f"OAuth {access_token}",
+        "offset": "0",
+        "file_size": str(file_size),
+    }
+
+    with open(video_file, "rb") as vf:
+        up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
+
+    if up_r.status_code != 200:
+        raise RuntimeError(f"Video byte upload fail hua: {up_r.text}")
+
+    up_json = up_r.json()
+    if not up_json.get("success"):
+        raise RuntimeError(f"Video byte upload did not report success: {up_json}")
+
+    print("Step 2/2: Video bytes uploaded successfully. Waiting for Instagram processing...", flush=True)
+    return video_id
 
 def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
     status_url = GRAPH_API_BASE + str(video_id).strip()
