@@ -103,7 +103,6 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
-    # PROMPT UPDATE: Hook at start, no answer at end, WhatsApp promo added.
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
     Teach the departmental rules thoroughly and completely from this running section (Page {page_num}).
@@ -128,7 +127,7 @@ def generate_clause_script(pdf_content, page_num):
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly. 5. Say EXACTLY: "तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं!". 6. End with call-to-action: "GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
+    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly. 5. Say EXACTLY: "तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं!". 6. End with call-to-action: "रोज़ाना ऐसी बेहतरीन तैयारी के लिए अभी फॉलो करें पोस्टल वाला को! GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
@@ -159,7 +158,7 @@ def generate_clause_script(pdf_content, page_num):
         "opt_c": "प्रेषक को",
         "opt_d": "इनमें से कोई नहीं",
         "correct": "B",
-        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का सवाल है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है। प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है। नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है। सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए। तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।",
+        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का सवाल है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है। प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है। नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है। सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए। तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं! रोज़ाना ऐसी बेहतरीन तैयारी के लिए अभी फॉलो करें पोस्टल वाला को! GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।",
         "caption": "डाक विभाग परीक्षा तैयारी संपूर्ण विश्लेषण #PostalWala #MTSExam #Khand02"
     }
 
@@ -211,7 +210,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
 
-    min_slide = 2.0  # seconds, floor so no slide ever collapses to ~0
+    min_slide = 2.0  
     n_slides = 5
     if total_dur <= min_slide * n_slides:
         durations = [total_dur / n_slides] * n_slides
@@ -224,17 +223,15 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
 
     font_brand = get_eng_font(48)
     font_sub = get_eng_font(26)
-
     font_title = get_dev_font(36)
     font_h2 = get_dev_font(32)
     font_body = get_dev_font(32)
     font_label = get_dev_font(26)
     font_cta_hin = get_dev_font(30)
     font_cta_eng = get_eng_font(30)
-    font_wa = get_dev_font(26) # WhatsApp font size
+    font_wa = get_dev_font(26)
 
     def draw_base(draw_obj):
-        # Increased height from 1770 to 1860 for WhatsApp banner
         draw_obj.rounded_rectangle([45, 50, 1035, 1860], radius=30, fill="#1E293B", outline="#E11D48", width=4)
         draw_obj.text((80, 80), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         draw_obj.text((80, 135), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
@@ -244,7 +241,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_obj.text((120, 1622), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((610, 1622), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
-        # New WhatsApp Banner (Green box at the bottom)
         draw_obj.rounded_rectangle([80, 1740, 1000, 1830], radius=22, fill="#16A34A")
         draw_obj.text((105, 1765), "कोर्स और Free Mock Test के लिए WhatsApp करें: 8989971379", fill="#FFFFFF", font=font_wa)
 
@@ -292,7 +288,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     oy = 790
     for idx, opt in enumerate(opts):
-        # NO HIGHLIGHTING: All options look exactly the same so users must comment
+        # Answer highlight removed
         box_bg = "#1E293B"
         border_c = "#38BDF8"
         text_c = "#FFFFFF"
@@ -366,7 +362,7 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
             print(f"⚠️ Attempt {container_attempt} failed: {last_error}. Retrying...")
 
         if container_attempt < max_container_attempts:
-            time.sleep(20)  # brief backoff before creating a new container
+            time.sleep(20)
 
     raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
 
@@ -396,14 +392,21 @@ def _create_reel_container(video_file, caption, user_id, access_token):
 
     file_size = os.path.getsize(video_file)
     upload_url = RUPLOAD_BASE + str(video_id).strip()
+    
+    # 100% GUARANTEED FIX: Yaha explicitly Content-Type aur raw bytes define kiye hain
+    # taaki chunked encoding ki error hamesha ke liye khatam ho jaye.
     upload_headers = {
         "Authorization": f"OAuth {access_token}",
         "offset": "0",
         "file_size": str(file_size),
+        "Content-Type": "application/octet-stream"
     }
 
+    # Reading file into memory (raw bytes) instead of streaming it.
     with open(video_file, "rb") as vf:
-        up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
+        video_data = vf.read()
+
+    up_r = requests.post(upload_url, headers=upload_headers, data=video_data, timeout=600)
 
     if up_r.status_code != 200:
         raise RuntimeError(f"Video byte upload fail hua: {up_r.text}")
