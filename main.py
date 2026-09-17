@@ -324,44 +324,26 @@ def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    print("🚀 Initializing Instagram Direct Container via Graph API...")
-    
-    # Using Graph API standard Reels container creation endpoint directly through official parameters
+    print("🚀 Initializing Instagram Single-Step Media Container...")
     url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     
-    # We pass the media type and caption. Since Meta requires a public URL for standard Reels containers,
-    # and external web requests are restricted in this runner, we use Facebook's built-in session upload endpoint.
-    init_res = requests.post(url, data={
-        "media_type": "REELS",
-        "upload_type": "resumable",
-        "caption": caption,
-        "access_token": IG_ACCESS_TOKEN
-    }).json()
-
-    video_id = init_res.get("id")
-    upload_uri = init_res.get("uri")
-
-    if not video_id or not upload_uri:
-        raise RuntimeError(f"Initialization failed: {init_res}")
+    # Official single-step multipart form post without resumable protocol
+    with open(video_path, "rb") as f:
+        files = {"source": f}
+        data = {
+            "media_type": "REELS",
+            "caption": caption,
+            "access_token": IG_ACCESS_TOKEN
+        }
+        res = requests.post(url, data=data, files=files, timeout=300)
+    
+    res_json = res.json()
+    video_id = res_json.get("id")
+    
+    if not video_id:
+        raise RuntimeError(f"Single-step Media Creation Failed: {res_json}")
 
     print(f"✅ Container ID Created: {video_id}")
-    print("📤 Uploading local video directly to Meta session...")
-
-    file_size = os.path.getsize(video_path)
-    headers = {
-        "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "offset": "0",
-        "file_size": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
-
-    with open(video_path, "rb") as f:
-        r_upload = requests.post(upload_uri, headers=headers, data=f, timeout=300)
-
-    if r_upload.status_code not in [200, 201]:
-        raise RuntimeError(f"Meta server rejected chunk upload ({r_upload.status_code}): {r_upload.text}")
-
-    print("✅ Video stream successfully accepted by Meta.")
 
     print("⏳ Waiting for Instagram to process video...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
@@ -391,7 +373,7 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Deep Continuous Automation Starting...")
+    print("🚀 Postal Wala Deep Continuous Automation Starting oldValue...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
