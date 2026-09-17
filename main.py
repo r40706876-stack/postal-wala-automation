@@ -12,8 +12,6 @@ from PIL import Image, ImageDraw, ImageFont
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
@@ -323,51 +321,28 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     print("✅ Perfectly Synced Reel Created.")
 
 def get_public_url(video_path):
-    token = GITHUB_TOKEN or os.getenv("GITHUB_TOKEN")
-    repo = GITHUB_REPOSITORY or os.getenv("GITHUB_REPOSITORY")
-    
-    if not token or not repo:
-        raise RuntimeError("GITHUB_TOKEN or GITHUB_REPOSITORY is missing.")
-
-    print("🚀 Publishing video via GitHub Release for stable Meta download...")
-    tag_name = f"reel-{int(time.time())}"
-    rel_url = f"https://api.github.com/repos/{repo}/releases"
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json"
-    }
-    rel_payload = {
-        "tag_name": tag_name,
-        "name": f"Automated Reel {tag_name}",
-        "draft": False,
-        "prerelease": True
-    }
-    r_rel = requests.post(rel_url, headers=headers, json=rel_payload)
-    rel_data = r_rel.json()
-    upload_url_template = rel_data.get("upload_url")
-
-    if not upload_url_template:
-        raise RuntimeError(f"GitHub Release Creation Failed: {rel_data}")
-
-    base_upload_url = upload_url_template.split("{")[0]
-    asset_url = f"{base_upload_url}?name=final_reel.mp4"
-    asset_headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "video/mp4",
-        "Accept": "application/vnd.github+json"
-    }
+    print("🌐 Uploading video via Tmpfiles for instant public access...")
     with open(video_path, "rb") as f:
-        video_bytes = f.read()
+        r = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=90)
+    
+    try:
+        res_json = r.json()
+        if res_json.get("status") == "success":
+            raw_url = res_json["data"]["url"]
+            direct_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
+            print(f"✅ Tmpfiles Direct URL: {direct_url}")
+            return direct_url
+    except Exception:
+        pass
+        
+    print("⚠️ Tmpfiles fallback to File.io...")
+    with open(video_path, "rb") as f:
+        r2 = requests.post("https://file.io", files={"file": f}, timeout=60)
+        res_json2 = r2.json()
+        if res_json2.get("success"):
+            return res_json2["link"]
 
-    r_asset = requests.post(asset_url, headers=asset_headers, data=video_bytes, timeout=120)
-    asset_data = r_asset.json()
-    public_url = asset_data.get("browser_download_url")
-
-    if not public_url:
-        raise RuntimeError(f"GitHub Release Asset Upload Failed: {asset_data}")
-
-    print(f"✅ GitHub Release Asset URL: {public_url}")
-    return public_url
+    raise RuntimeError("All video hosting fallbacks failed.")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
