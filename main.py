@@ -328,7 +328,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Strict Instagram-Compatible Baseline Reel Created.")
 
-def post_reel_to_instagram_resumable(video_file, caption):
+def post_reel_to_instagram_clean(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
     
@@ -336,7 +336,7 @@ def post_reel_to_instagram_resumable(video_file, caption):
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
     file_size = os.path.getsize(video_file)
-    print(f"Video size: {file_size} bytes. Initializing Meta Resumable Upload Session...")
+    print(f"Video size: {file_size} bytes. Initializing Clean Resumable Upload Session...")
 
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
     init_params = {
@@ -357,15 +357,14 @@ def post_reel_to_instagram_resumable(video_file, caption):
     if not video_id or not upload_url:
         raise RuntimeError(f"Upload init invalid response: {init_data}")
 
-    print(f"Uploading full video file in single complete request with exact Resumable Headers...")
+    print(f"Uploading full video file without erroneous offset header...")
     
     with open(video_file, "rb") as vf:
         video_bytes = vf.read()
 
-    # CRITICAL FIX: Meta resumable endpoint requires BOTH File-Offset and Authorization/Content-Range correctly structured
+    # REMOVED OFFSET HEADER ENTIRELY AS IT IS UNNECESSARY FOR SINGLE-SHOT RESUMABLE UPLOADS
     headers = {
         "Authorization": f"OAuth {access_token}",
-        "File-Offset": "0",
         "Content-Length": str(file_size),
         "Content-Type": "application/octet-stream"
     }
@@ -414,4 +413,4 @@ if __name__ == "__main__":
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_to_instagram_resumable(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram_clean(OUTPUT_VIDEO, script_data.get("caption", ""))
