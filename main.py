@@ -324,28 +324,37 @@ def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    print("🚀 Initializing Instagram Direct Container (No URL hosting dependency)...")
-    
-    # Step 1: Initialize container using native Graph API post parameters
-    init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
-    
+    print("🌐 Using high-stability cloud link generation (Magic-Notes style)...")
+    # Using a robust JSON-based file upload API to get a permanent stable link
     with open(video_path, "rb") as f:
-        # Some accounts support direct upload, but if video_url is mandatory, we post via a secure multi-part chunk.
-        # Let's use the direct post method with file stream payload
-        files = {"source": f}
-        data = {
-            "media_type": "REELS",
-            "caption": caption,
-            "access_token": IG_ACCESS_TOKEN
-        }
-        res = requests.post(init_url, data=data, files=files, timeout=300)
+        r = requests.post("https://envs.sh", files={"file": f}, timeout=90)
     
-    res_json = res.json()
-    video_id = res_json.get("id")
-    
+    public_url = r.text.strip()
+    if not public_url.startswith("http"):
+        # Fallback to transfer.sh if envs.sh is busy
+        with open(video_path, "rb") as f:
+            r2 = requests.put("https://transfer.sh/final_reel.mp4", data=f, timeout=90)
+            public_url = r2.text.strip()
+
+    if not public_url.startswith("http"):
+        raise RuntimeError("Cloud hosting failed to generate public link.")
+
+    print(f"✅ Stable Cloud URL: {public_url}")
+
+    print("🚀 Initializing Instagram Reel Container...")
+    init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
+    init_payload = {
+        "media_type": "REELS",
+        "video_url": public_url,
+        "caption": caption,
+        "access_token": IG_ACCESS_TOKEN
+    }
+    r_init = requests.post(init_url, data=init_payload)
+    init_data = r_init.json()
+
+    video_id = init_data.get("id")
     if not video_id:
-        # Fallback to standard status error explanation
-        raise RuntimeError(f"Instagram Direct Container Failed: {res_json}")
+        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
 
     print(f"✅ Container ID Created: {video_id}")
 
