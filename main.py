@@ -192,6 +192,7 @@ def generate_clause_script(pdf_content, page_num):
     return data
 
 def generate_voice(text, filename="voice.mp3"):
+    # Magic Notes style natural clear teaching pacing
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
@@ -320,19 +321,34 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Perfectly Synced Reel Created.")
 
+def get_public_url(video_path):
+    print("🌐 Uploading video to File.io for direct public access...")
+    with open(video_path, "rb") as f:
+        r = requests.post("https://file.io", files={"file": f}, timeout=60)
+    
+    try:
+        res_json = r.json()
+        if res_json.get("success"):
+            direct_url = res_json["link"]
+            print(f"✅ File.io Direct URL: {direct_url}")
+            return direct_url
+    except Exception:
+        pass
+        
+    raise RuntimeError(f"File.io upload failed: {r.text}")
+
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    file_size = os.path.getsize(video_path)
-    print(f"📦 Video size: {file_size / (1024*1024):.2f} MB")
+    # Using video_url method to completely bypass binary rupload restrictions
+    public_url = get_public_url(video_path)
 
-    # Step 1: Initialize Resumable Upload Session
-    print("🚀 Initializing Instagram Resumable Upload Session...")
+    print("🚀 Initializing Instagram Reel Container via video_url...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
-        "upload_type": "resumable",
+        "video_url": public_url,
         "caption": caption,
         "access_token": IG_ACCESS_TOKEN
     }
@@ -340,33 +356,12 @@ def upload_to_instagram_direct(video_path, caption):
     init_data = r_init.json()
 
     video_id = init_data.get("id")
-    upload_url = init_data.get("uri")
+    if not video_id:
+        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
 
-    if not video_id or not upload_url:
-        raise RuntimeError(f"Session initialization failed: {init_data}")
+    print(f"✅ Container ID Created: {video_id}")
 
-    print(f"✅ Container ID: {video_id}")
-    print("📤 Uploading binary bytes directly via official Meta Resumable Protocol...")
-
-    # Step 2: Direct Binary Stream with strictly required headers
-    headers = {
-        "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "offset": "0",
-        "file_size": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
-
-    with open(video_path, "rb") as f:
-        video_bytes = f.read()
-
-    r_upload = requests.post(upload_url, headers=headers, data=video_bytes, timeout=180)
-
-    if r_upload.status_code not in [200, 201]:
-        raise RuntimeError(f"Meta byte upload failed ({r_upload.status_code}): {r_upload.text}")
-
-    print("✅ Video binary uploaded directly to Meta servers.")
-
-    # Step 3: Wait for transcoding status
+    print("⏳ Waiting for Instagram to process video...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 40):
@@ -379,11 +374,11 @@ def upload_to_instagram_direct(video_path, caption):
             print("✅ Transcoding FINISHED!")
             break
         elif code in ["ERROR", "EXPIRED"]:
-            raise RuntimeError(f"Instagram rejected video: {status_res}")
+            raise RuntimeError(f"Instagram processing failed: {status_res}")
     else:
         print("⚠️ Polling timeout, attempting to publish...")
 
-    # Step 4: Live Publish
+    print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
