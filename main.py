@@ -57,6 +57,19 @@ def get_target_pdf():
             return f
     return pdf_files[0]
 
+def clean_extracted_ocr_text(text):
+    """PDF ke toote-foote font aur OCR garbage ko shuddh postal shabdon me theek karta hai"""
+    replacements = {
+        "कतलेरी कटेट": "वितरण टिकट",
+        "कटलेरी कटेट": "वितरण टिकट",
+        "कतलेरी": "वितरण टिकट",
+        "कटेट": "टिकट",
+        "धारण विभाग": "वितरण विभाग",
+    }
+    for bad_w, good_w in replacements.items():
+        text = text.replace(bad_w, good_w)
+    return text
+
 def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
@@ -79,6 +92,7 @@ def get_current_reading_window(pdf_path):
     page_text = reader.pages[current_page].extract_text() or ""
     chunk_size = 1400
     sub_text = page_text[char_offset:char_offset + chunk_size]
+    sub_text = clean_extracted_ocr_text(sub_text)
 
     next_offset = char_offset + chunk_size
     next_page = current_page
@@ -103,38 +117,44 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
+    # Strict prompt to eliminate gibberish and ensure official India Post terminology
     prompt = f"""
-    You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
+    You are an expert tutor for Postal MTS/Postman/Mail Guard exams running Instagram page 'Postal Wala'.
     Teach the departmental rules concisely and completely from this running section (Page {page_num}).
-    Provide a crisp, uninterrupted explanation spanning 4 clear, grammatically flawless Hindi sentences (SEN1, SEN2, SEN3, SEN4).
+
+    CRITICAL INSTRUCTION ON OCR / FONT ERRORS:
+    The provided PDF text comes from a digitally scanned document that may have corrupted Hindi fonts, broken matras, or garbled syllables (for example: corrupted text like 'कतलेरी कटेट' which is actually 'वितरण टिकट' or 'डिलीवरी टिकट').
+    - NEVER repeat meaningless, garbled, or corrupted words in your script or voiceover!
+    - Always use authentic, standard, and official India Post terminology (डाक विभाग की शुद्ध नियमावली शब्दावली, जैसे: 'वितरण टिकट' (Delivery Ticket), 'सूचना पर्ची' (Intimation Slip), 'पोस्ट बॉक्स', 'किराया व जमा राशि', 'दुरुपयोग', 'पंजीकृत डाक').
+    - Understand the true meaning of the rule and express it in natural, flawless, exam-standard Hindi.
 
     RULES:
-    1. Pure Hindi (Devanagari script only), flawless grammar, zero spelling mistakes, no English words, no emojis, no bullet symbols.
-    2. Keep sentences to the point so total speaking time is strictly under 45-50 seconds (max 85 words total).
+    1. Pure Hindi (Devanagari script only), flawless grammar, meaningful and authentic postal rules, zero spelling mistakes, no English words, no emojis, no bullet symbols.
+    2. Keep sentences concise so total speaking time is strictly under 45-50 seconds (max 85 words total).
 
     PDF Section:
     {pdf_content}
 
     Format strictly matching these lines:
     TITLE: [Topic Name in pure Hindi]
-    SEN1: [Flawless sentence 1]
-    SEN2: [Flawless sentence 2]
-    SEN3: [Flawless sentence 3]
-    SEN4: [Flawless sentence 4]
-    QUESTION: [1 high-value exam question based strictly on this text in Hindi]
+    SEN1: [Flawless postal rule sentence 1]
+    SEN2: [Flawless postal rule sentence 2]
+    SEN3: [Flawless postal rule sentence 3]
+    SEN4: [Flawless postal rule sentence 4]
+    QUESTION: [1 high-value exam question based strictly on this rule in Hindi]
     OPT_A: [Option A]
     OPT_B: [Option B]
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly and concisely. 5. Say EXACTLY: "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!". 6. End with: "GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
+    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly and concisely with 100% correct postal terminology. 5. Say EXACTLY: "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!". 6. End with: "GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
     payload = {
         "model": "qwen/qwen3.8-27b",
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.3,
+        "temperature": 0.2,
         "max_tokens": 800
     }
 
@@ -167,27 +187,27 @@ def generate_clause_script(pdf_content, page_num):
         if line_clean.startswith("TITLE:"):
             data["rule_title"] = line_clean.replace("TITLE:", "").strip()
         elif line_clean.startswith("SEN1:"):
-            data["sen1"] = line_clean.replace("SEN1:", "").strip()
+            data["sen1"] = clean_extracted_ocr_text(line_clean.replace("SEN1:", "").strip())
         elif line_clean.startswith("SEN2:"):
-            data["sen2"] = line_clean.replace("SEN2:", "").strip()
+            data["sen2"] = clean_extracted_ocr_text(line_clean.replace("SEN2:", "").strip())
         elif line_clean.startswith("SEN3:"):
-            data["sen3"] = line_clean.replace("SEN3:", "").strip()
+            data["sen3"] = clean_extracted_ocr_text(line_clean.replace("SEN3:", "").strip())
         elif line_clean.startswith("SEN4:"):
-            data["sen4"] = line_clean.replace("SEN4:", "").strip()
+            data["sen4"] = clean_extracted_ocr_text(line_clean.replace("SEN4:", "").strip())
         elif line_clean.startswith("QUESTION:"):
-            data["question"] = line_clean.replace("QUESTION:", "").strip()
+            data["question"] = clean_extracted_ocr_text(line_clean.replace("QUESTION:", "").strip())
         elif line_clean.startswith("OPT_A:"):
-            data["opt_a"] = line_clean.replace("OPT_A:", "").strip()
+            data["opt_a"] = clean_extracted_ocr_text(line_clean.replace("OPT_A:", "").strip())
         elif line_clean.startswith("OPT_B:"):
-            data["opt_b"] = line_clean.replace("OPT_B:", "").strip()
+            data["opt_b"] = clean_extracted_ocr_text(line_clean.replace("OPT_B:", "").strip())
         elif line_clean.startswith("OPT_C:"):
-            data["opt_c"] = line_clean.replace("OPT_C:", "").strip()
+            data["opt_c"] = clean_extracted_ocr_text(line_clean.replace("OPT_C:", "").strip())
         elif line_clean.startswith("OPT_D:"):
-            data["opt_d"] = line_clean.replace("OPT_D:", "").strip()
+            data["opt_d"] = clean_extracted_ocr_text(line_clean.replace("OPT_D:", "").strip())
         elif line_clean.startswith("CORRECT:"):
             data["correct"] = line_clean.replace("CORRECT:", "").strip().upper()[:1]
         elif line_clean.startswith("VOICEOVER:"):
-            data["voiceover"] = line_clean.replace("VOICEOVER:", "").strip()
+            data["voiceover"] = clean_extracted_ocr_text(line_clean.replace("VOICEOVER:", "").strip())
         elif line_clean.startswith("CAPTION:"):
             data["caption"] = line_clean.replace("CAPTION:", "").strip()
 
@@ -210,7 +230,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
 
-    # 60 Second Meta Reel Limit Guard
+    # 60-Second Hard Limit Check
     if total_dur > 57.0:
         tempo = round(total_dur / 54.0, 2)
         print(f"⚡ Audio duration ({total_dur:.1f}s) > 57s. Adjusting speed by {tempo}x...", flush=True)
@@ -239,7 +259,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_body = get_dev_font(32)
     font_label = get_dev_font(24)
     
-    # Action Banners Fonts (Safe Zone)
+    # Action Banners Fonts (Safe Zone Above Caption)
     font_cta_hin = get_dev_font(28)
     font_cta_eng = get_eng_font(28)
     font_wa_eng = get_eng_font(26)
@@ -277,7 +297,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         d.text((110, 195), f"संपूर्ण नियम ({idx}/4):", fill="#38BDF8", font=font_label)
         d.text((110, 235), textwrap.fill(script_data["rule_title"], width=34), fill="#FFFFFF", font=font_title)
 
-        # Explanation Box (leaves space for safe-zone banners)
+        # Explanation Box
         d.rounded_rectangle([80, 335, 1000, 1340], radius=22, fill="#0F172A")
         d.text((110, 360), "विस्तृत व्याख्या:", fill="#FBBF24", font=font_h2)
 
