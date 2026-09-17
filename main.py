@@ -304,7 +304,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
     filter_complex = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,format=yuv420p[v]"
 
-    # STRICTLY INSTAGRAM COMPATIBLE 1-PASS BASELINE FFMPEG COMMAND (NO B-FRAMES)
     cmd = ["ffmpeg", "-y"]
     cmd.extend(inputs.strip().split())
     cmd.extend([
@@ -361,9 +360,12 @@ def post_reel_to_instagram_direct(video_file, caption):
     print(f"Uploading video file via strict binary stream to Meta...")
     
     with open(video_file, "rb") as vf:
+        # FIXED: Meta requires BOTH Content-Length and X-Entity-Length matching file size for raw stream uploads
         headers = {
             "Authorization": f"OAuth {access_token}",
             "Offset": "0",
+            "Content-Length": str(file_size),
+            "X-Entity-Length": str(file_size),
             "Content-Type": "application/octet-stream"
         }
         upload_res = requests.post(upload_url, headers=headers, data=vf, timeout=300)
