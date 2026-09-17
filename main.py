@@ -336,6 +336,72 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.", flush=True)
 
+def upload_video_to_github_release(video_file):
+    token = os.getenv("GITHUB_TOKEN")
+    repo = os.getenv("GITHUB_REPOSITORY")
+    if not token or not repo:
+        raise RuntimeError(
+            "GITHUB_TOKEN ya GITHUB_REPOSITORY env missing hai — workflow.yml ke "
+            "'Run Script' step me 'GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}' add karo."
+        )
+
+    tag = f"reel-{int(time.time())}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json"
+    }
+
+    print(f"Step 0a: GitHub release bana rahe hain (tag: {tag})...", flush=True)
+    create_res = requests.post(
+        f"https://api.github.com/repos/{repo}/releases",
+        headers=headers,
+        json={
+            "tag_name": tag,
+            "name": tag,
+            "body": "Temporary Reel video host (auto-generated, safe to delete)",
+            "draft": False,
+            "prerelease": False
+        },
+        timeout=30
+    )
+    if create_res.status_code not in (200, 201):
+        raise RuntimeError(f"GitHub release create fail hua: {create_res.text}")
+
+    release_data = create_res.json()
+    release_id = release_data["id"]
+
+    print("Step 0b: Video ko release asset ke roop me upload kar rahe hain...", flush=True)
+    upload_url = f"https://uploads.github.com/repos/{repo}/releases/{release_id}/assets?name=reel.mp4"
+
+    with open(video_file, "rb") as vf:
+        video_data = vf.read()
+
+    up_headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "video/mp4"
+    }
+    up_res = requests.post(upload_url, headers=up_headers, data=video_data, timeout=180)
+    if up_res.status_code not in (200, 201):
+        raise RuntimeError(f"GitHub asset upload fail hua: {up_res.text}")
+
+    public_url = up_res.json()["browser_download_url"]
+    print(f"✅ Public video URL (GitHub Release): {public_url}", flush=True)
+    return public_url, release_id
+
+
+def delete_github_release(release_id):
+    token = os.getenv("GITHUB_TOKEN")
+    repo = os.getenv("GITHUB_REPOSITORY")
+    if not token or not repo or not release_id:
+        return
+    try:
+        headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
+        requests.delete(f"https://api.github.com/repos/{repo}/releases/{release_id}", headers=headers, timeout=30)
+        print("🧹 Temporary GitHub release cleanup ho gaya.", flush=True)
+    except Exception as e:
+        print(f"Cleanup warning (ignore karo): {e}", flush=True)
+
+
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
@@ -343,35 +409,32 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    print("Step 0: Video ko temporary public URL pe upload kar rahe hain...", flush=True)
-    with open(video_file, "rb") as vf:
-        upload_res = requests.post("https://0x0.st", files={"file": vf}, timeout=120)
-    if upload_res.status_code != 200:
-        raise RuntimeError(f"Temp hosting fail hua: {upload_res.text}")
-    public_video_url = upload_res.text.strip()
-    print(f"✅ Public video URL: {public_video_url}", flush=True)
+    public_video_url, release_id = upload_video_to_github_release(video_file)
 
     last_error = None
-    for attempt in range(1, max_container_attempts + 1):
-        print(f"--- Reel publish attempt {attempt}/{max_container_attempts} ---", flush=True)
-        try:
-            video_id = _create_reel_container_url(public_video_url, caption, user_id, access_token)
-            status = _poll_container_status(video_id, access_token)
+    try:
+        for attempt in range(1, max_container_attempts + 1):
+            print(f"--- Reel publish attempt {attempt}/{max_container_attempts} ---", flush=True)
+            try:
+                video_id = _create_reel_container_url(public_video_url, caption, user_id, access_token)
+                status = _poll_container_status(video_id, access_token)
 
-            if status == "FINISHED":
-                _publish_reel(video_id, user_id, access_token)
-                return
-            else:
-                last_error = f"Container ended with non-FINISHED status: {status}"
-                print(f"⚠️ {last_error}. Retrying...", flush=True)
-        except Exception as e:
-            last_error = str(e)
-            print(f"⚠️ Attempt {attempt} failed: {last_error}. Retrying...", flush=True)
+                if status == "FINISHED":
+                    _publish_reel(video_id, user_id, access_token)
+                    return
+                else:
+                    last_error = f"Container ended with non-FINISHED status: {status}"
+                    print(f"⚠️ {last_error}. Retrying...", flush=True)
+            except Exception as e:
+                last_error = str(e)
+                print(f"⚠️ Attempt {attempt} failed: {last_error}. Retrying...", flush=True)
 
-        if attempt < max_container_attempts:
-            time.sleep(20)
+            if attempt < max_container_attempts:
+                time.sleep(20)
 
-    raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
+        raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
+    finally:
+        delete_github_release(release_id)
 
 GRAPH_API_BASE_ = GRAPH_API_BASE
 
