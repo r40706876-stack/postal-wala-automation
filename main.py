@@ -192,7 +192,6 @@ def generate_clause_script(pdf_content, page_num):
     return data
 
 def generate_voice(text, filename="voice.mp3"):
-    # Magic Notes style natural clear teaching pacing
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
@@ -321,43 +320,32 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Perfectly Synced Reel Created.")
 
-def get_public_url(video_path):
-    print("🌐 Uploading video to File.io for direct public access...")
-    with open(video_path, "rb") as f:
-        r = requests.post("https://file.io", files={"file": f}, timeout=60)
-    
-    try:
-        res_json = r.json()
-        if res_json.get("success"):
-            direct_url = res_json["link"]
-            print(f"✅ File.io Direct URL: {direct_url}")
-            return direct_url
-    except Exception:
-        pass
-        
-    raise RuntimeError(f"File.io upload failed: {r.text}")
-
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    # Using video_url method to completely bypass binary rupload restrictions
-    public_url = get_public_url(video_path)
+    file_size = os.path.getsize(video_path)
+    print(f"📦 Video size: {file_size / (1024*1024):.2f} MB")
 
-    print("🚀 Initializing Instagram Reel Container via video_url...")
-    init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
-    init_payload = {
-        "media_type": "REELS",
-        "video_url": public_url,
-        "caption": caption,
-        "access_token": IG_ACCESS_TOKEN
-    }
-    r_init = requests.post(init_url, data=init_payload)
-    init_data = r_init.json()
-
-    video_id = init_data.get("id")
+    # Using public GitHub raw link or standard multipart container creation
+    # Let's use direct multipart upload to media endpoint with proper error handling
+    print("🚀 Uploading video via multipart form to Instagram...")
+    url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
+    
+    with open(video_path, "rb") as f:
+        files = {"video_file": f}
+        data = {
+            "media_type": "REELS",
+            "caption": caption,
+            "access_token": IG_ACCESS_TOKEN
+        }
+        res = requests.post(url, data=data, files=files, timeout=300)
+    
+    res_json = res.json()
+    video_id = res_json.get("id")
+    
     if not video_id:
-        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
+        raise RuntimeError(f"Instagram Multipart Upload Failed: {res_json}")
 
     print(f"✅ Container ID Created: {video_id}")
 
