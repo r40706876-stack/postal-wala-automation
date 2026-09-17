@@ -321,19 +321,22 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     print("✅ Perfectly Synced Reel Created.")
 
 def get_public_url(video_path):
-    print("🌐 Uploading video to Catbox.moe for reliable public access...")
-    url = "https://catbox.moe/user/api.php"
+    print("🌐 Uploading video to Tmpfiles.org for direct public access...")
     with open(video_path, "rb") as f:
-        data = {"reqtype": "fileupload"}
-        files = {"fileToUpload": f}
-        r = requests.post(url, data=data, files=files, timeout=90)
+        r = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=90)
     
-    if r.status_code == 200 and r.text.startswith("http"):
-        direct_url = r.text.strip()
-        print(f"✅ Catbox Direct URL: {direct_url}")
-        return direct_url
-    
-    raise RuntimeError(f"Catbox upload failed: {r.text}")
+    try:
+        res_json = r.json()
+        if res_json.get("status") == "success":
+            raw_url = res_json["data"]["url"]
+            # Convert to direct download link format
+            direct_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
+            print(f"✅ Tmpfiles Direct URL: {direct_url}")
+            return direct_url
+    except Exception:
+        pass
+        
+    raise RuntimeError(f"Tmpfiles upload failed: {r.text}")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
