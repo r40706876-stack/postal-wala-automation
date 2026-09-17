@@ -55,39 +55,41 @@ def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
     
-    current_page = 0
+    state = {"last_page": 0, "char_offset": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
                 state = json.load(f)
-                current_page = state.get("last_page", 0)
         except Exception:
-            current_page = 0
+            pass
 
-    if current_page == 0:
-        search_terms = ["खंड - 02", "खंड-02", "खंड 02", "खंड 2", "डाकघरों के प्रकार"]
-        for idx, page in enumerate(reader.pages):
-            txt = page.extract_text() or ""
-            if any(term in txt for term in search_terms):
-                current_page = idx
-                print(f"✅ 'खंड - 02' पेज नंबर {idx + 1} पर मिल गया!")
-                break
+    current_page = state.get("last_page", 0)
+    char_offset = state.get("char_offset", 0)
 
-    end_page = min(current_page + 1, total_pages)
-    extracted_text = ""
-    for p in range(current_page, end_page):
-        t = reader.pages[p].extract_text()
-        if t:
-            extracted_text += f"\n--- PAGE {p+1} ---\n" + t
+    if current_page >= total_pages:
+        current_page = 0
+        char_offset = 0
 
-    next_page = end_page if end_page < total_pages else 0
+    page_text = reader.pages[current_page].extract_text() or ""
+    
+    # Take a continuous chunk from where it left off, ensuring deep clause coverage
+    chunk_size = 1200
+    sub_text = page_text[char_offset:char_offset + chunk_size]
+
+    # If the page chunk is finishing, move to next page
+    next_offset = char_offset + chunk_size
+    next_page = current_page
+    if next_offset >= len(page_text):
+        next_page += 1
+        next_offset = 0
+
     try:
         with open(STATE_FILE, "w") as f:
-            json.dump({"last_page": next_page}, f)
+            json.dump({"last_page": next_page, "char_offset": next_offset}, f)
     except Exception:
         pass
 
-    return extracted_text[:1400], current_page + 1
+    return sub_text, current_page + 1
 
 def generate_clause_script(pdf_content, page_num):
     if not GROQ_API_KEY:
@@ -100,33 +102,37 @@ def generate_clause_script(pdf_content, page_num):
 
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
-    Teach the rule from this departmental section (Around Page {page_num}) and provide 4 chronological sentences for screen sync, plus 1 quiz question.
+    Continue teaching the department rules deeply and thoroughly from this running section (Page {page_num}). 
+    DO NOT abruptly jump topics. Continue from the exact flow of the text provided below. Give a detailed, comprehensive explanation spanning 4 sequential sentences (SEN1, SEN2, SEN3, SEN4).
 
     RULES:
-    1. Pure Hindi (Devanagari script), no English words, no emojis.
-    2. Provide exactly 4 sequential sentences (SEN1, SEN2, SEN3, SEN4) that cover the 35s explanation step-by-step.
+    1. Pure Hindi (Devanagari script only), no English words, no emojis, no bullet symbols.
+    2. Provide 4 progressive detailed sentences covering the topic thoroughly.
+
+    PDF Section:
+    {pdf_content}
 
     Format strictly matching these lines:
     TITLE: [Topic Name in Hindi]
-    SEN1: [First sentence spoken in 0-8s]
-    SEN2: [Second sentence spoken in 8-18s]
-    SEN3: [Third sentence spoken in 18-28s]
-    SEN4: [Fourth sentence spoken in 28-35s]
-    QUESTION: [1 short exam question in Hindi]
+    SEN1: [Detailed sentence 1]
+    SEN2: [Detailed sentence 2]
+    SEN3: [Detailed sentence 3]
+    SEN4: [Detailed sentence 4]
+    QUESTION: [1 deep exam question based on this text in Hindi]
     OPT_A: [Option A]
     OPT_B: [Option B]
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Full spoken script combining SEN1, SEN2, SEN3, SEN4 + Quiz + Outro]
+    VOICEOVER: [Full spoken script combining SEN1, SEN2, SEN3, SEN4 + Quiz + Outro at normal calm teaching speed]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
     payload = {
         "model": "qwen/qwen3.8-27b",
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.4,
-        "max_tokens": 600
+        "temperature": 0.3,
+        "max_tokens": 700
     }
     
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
@@ -138,19 +144,19 @@ def generate_clause_script(pdf_content, page_num):
     raw_text = res_json["choices"][0]["message"]["content"].strip()
     
     data = {
-        "rule_title": "फ्रैंकिंग मशीन के प्रकार",
-        "sen1": "पोस्टल परीक्षा की तैयारी के लिए फ्रैंकिंग मशीन का यह नियम समझें।",
-        "sen2": "डाक विभाग में डाक शुल्क भुगतान के लिए यह मशीन उपयोग होती है।",
-        "sen3": "इसमें दो मुख्य प्रकार ईएफएम और आरएमएफएम होते हैं।",
-        "sen4": "ईएफएम मशीन की छाप हमेशा लाल रंग में होती है।",
-        "question": "ईएफएम मशीन की छाप किस रंग में होती है?",
-        "opt_a": "A) नीला",
-        "opt_b": "B) लाल",
-        "opt_c": "C) हरा",
-        "opt_d": "D) काला",
+        "rule_title": "डाक सेवाओं का विस्तृत नियम",
+        "sen1": "डाल विभाग के नियमों के अनुसार डाक वस्तुओं का वितरण सुचारू रूप से होना अनिवार्य है।",
+        "sen2": "प्रत्येक डाकघर को प्राप्त होने वाली डाक की छँटाई निर्धारित समय पर करनी होती है।",
+        "sen3": "यदि किसी वस्तु पर पता स्पष्ट नहीं है तो उसे संबंधित शाखा में भेजा जाता है।",
+        "sen4": "इन सभी प्रक्रियाओं का उद्देश्य ग्राहकों को समय पर सेवा प्रदान करना है।",
+        "question": "अस्पष्ट पते वाली डाक वस्तु को कहाँ भेजा जाता है?",
+        "opt_a": "मुख्य शाखा",
+        "opt_b": "संबंधित शाखा या डेड लेटर कार्यालय",
+        "opt_c": "नष्ट करने हेतु",
+        "opt_d": "प्रेषक को तुरंत वापस",
         "correct": "B",
-        "voiceover": "पोस्टल परीक्षा की तैयारी के लिए फ्रैंकिंग मशीन का यह नियम समझें। डाक विभाग में डाक शुल्क भुगतान के लिए यह मशीन उपयोग होती है। इसमें दो मुख्य प्रकार ईएफएम और आरएमएफएम होते हैं। ईएफएम मशीन की छाप हमेशा लाल रंग में होती है। अब परीक्षा का सवाल है। ईएफएम मशीन की छाप किस रंग में होती है? आपके पास हैं पाँच सेकंड। सही उत्तर है ऑप्शन बी, लाल रंग। रोज़ाना ऐसी तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!",
-        "caption": "डाक विभाग परीक्षा तैयारी #PostalWala #MTSExam #Khand02"
+        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज हम पिछले क्लाउज़ को आगे बढ़ाते हुए डाक विभाग के अगले महत्वपूर्ण नियमों को गहराई से समझेंगे। डाक विभाग के नियमों के अनुसार डाक वस्तुओं का वितरण सुचारू रूप से होना अनिवार्य है। प्रत्येक डाकघर को प्राप्त होने वाली डाक की छँटाई निर्धारित समय पर करनी होती है। यदि किसी वस्तु पर पता स्पष्ट नहीं है तो उसे संबंधित शाखा में भेजा जाता है। इन सभी प्रक्रियाओं का उद्देश्य ग्राहकों को समय पर सेवा प्रदान करना है। आइए अब इस नियम पर आधारित एक महत्वपूर्ण परीक्षा प्रश्न हल करें। अस्पष्ट पते वाली डाक वस्तु को कहाँ भेजा जाता है? सही उत्तर है ऑप्शन बी, संबंधित शाखा या डेड लेटर कार्यालय। रोज़ाना ऐसी विस्तृत तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!",
+        "caption": "डाक विभाग परीक्षा तैयारी निरंतरता #PostalWala #MTSExam #Khand02"
     }
     
     for line in raw_text.splitlines():
@@ -168,13 +174,13 @@ def generate_clause_script(pdf_content, page_num):
         elif line_clean.startswith("QUESTION:"):
             data["question"] = line_clean.replace("QUESTION:", "").strip()
         elif line_clean.startswith("OPT_A:"):
-            data["opt_a"] = "A) " + line_clean.replace("OPT_A:", "").replace("A)", "").strip()
+            data["opt_a"] = line_clean.replace("OPT_A:", "").strip()
         elif line_clean.startswith("OPT_B:"):
-            data["opt_b"] = "B) " + line_clean.replace("OPT_B:", "").replace("B)", "").strip()
+            data["opt_b"] = line_clean.replace("OPT_B:", "").strip()
         elif line_clean.startswith("OPT_C:"):
-            data["opt_c"] = "C) " + line_clean.replace("OPT_C:", "").replace("C)", "").strip()
+            data["opt_c"] = line_clean.replace("OPT_C:", "").strip()
         elif line_clean.startswith("OPT_D:"):
-            data["opt_d"] = "D) " + line_clean.replace("OPT_D:", "").replace("D)", "").strip()
+            data["opt_d"] = line_clean.replace("OPT_D:", "").strip()
         elif line_clean.startswith("CORRECT:"):
             data["correct"] = line_clean.replace("CORRECT:", "").strip().upper()[:1]
         elif line_clean.startswith("VOICEOVER:"):
@@ -182,16 +188,14 @@ def generate_clause_script(pdf_content, page_num):
         elif line_clean.startswith("CAPTION:"):
             data["caption"] = line_clean.replace("CAPTION:", "").strip()
 
-    replacements = {"EFM": "ईएफएम", "RMFM": "आरएमएफएम", "MTS": "एमटीएस", "RMS": "आरएमएस"}
     for k in data:
         if isinstance(data[k], str):
-            for eng, hin in replacements.items():
-                data[k] = data[k].replace(eng, hin)
             data[k] = "".join(c for c in data[k] if ord(c) < 0x10000)
 
     return data
 
 def generate_voice(text, filename="voice.mp3"):
+    # slow=False with natural sentence pacing for clear teaching audio
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
@@ -204,19 +208,17 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
     
-    # Time slices for 4 dynamic explanation cards + 1 quiz card
-    step_dur = min(8.5, (total_dur - 15.0) / 4.0)
-    t1, t2, t3, t4 = step_dur, step_dur*2, step_dur*3, max(12.0, total_dur - 15.0)
-    quiz_end = total_dur
+    step_dur = max(4.0, (total_dur - 15.0) / 4.0)
+    t1, t2, t3, t4 = step_dur, step_dur*2, step_dur*3, max(10.0, total_dur - 15.0)
 
     font_brand = get_eng_font(52)
     font_sub = get_eng_font(30)
     font_cta_eng = get_eng_font(36)
 
-    font_title = get_dev_font(44)
-    font_h2 = get_dev_font(42)
-    font_body = get_dev_font(40)
-    font_label = get_dev_font(32)
+    font_title = get_dev_font(42)
+    font_h2 = get_dev_font(40)
+    font_body = get_dev_font(36)
+    font_label = get_dev_font(30)
     font_cta_hin = get_dev_font(34)
 
     def draw_base(draw_obj):
@@ -229,7 +231,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_obj.text((180, 1635), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((370, 1685), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
-    # --- SLIDES 1 to 4: DYNAMIC EXPLANATION CARDS (Sync with voice) ---
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"], script_data["sen4"]]
     slide_filenames = []
 
@@ -239,38 +240,38 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_base(d)
 
         d.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#0F172A", outline="#38BDF8", width=3)
-        d.text((115, 315), f"आज का नियम ({idx}/4):", fill="#38BDF8", font=font_label)
-        d.text((115, 365), textwrap.fill(script_data["rule_title"], width=28), fill="#FFFFFF", font=font_title)
+        d.text((115, 315), f"जारी नियम ({idx}/4):", fill="#38BDF8", font=font_label)
+        d.text((115, 355), textwrap.fill(script_data["rule_title"], width=30), fill="#FFFFFF", font=font_title)
 
-        d.rounded_rectangle([85, 520, 995, 1550], radius=30, fill="#0F172A")
-        d.text((120, 560), "ध्वनि के साथ समझें:", fill="#FBBF24", font=font_h2)
+        d.rounded_rectangle([85, 500, 995, 1550], radius=30, fill="#0F172A")
+        d.text((120, 540), "विस्तृत व्याख्या:", fill="#FBBF24", font=font_h2)
 
         # Active Live Spoken Sentence Box
-        d.rounded_rectangle([115, 750, 965, 1150], radius=25, fill="#1E293B", outline="#38BDF8", width=3)
-        d.text((140, 790), "बोल रहे हैं:", fill="#38BDF8", font=font_label)
-        d.text((140, 870), textwrap.fill(sentence, width=26), fill="#F8FAFC", font=font_body)
+        d.rounded_rectangle([115, 700, 965, 1250], radius=25, fill="#1E293B", outline="#38BDF8", width=3)
+        d.text((140, 740), "मुख्य बात:", fill="#38BDF8", font=font_label)
+        d.text((140, 820), textwrap.fill(sentence, width=25), fill="#F8FAFC", font=font_body)
 
         draw_footer(d)
         fname = f"slide_{idx}.png"
         img.save(fname)
         slide_filenames.append(fname)
 
-    # --- SLIDE 5: QUIZ & ANSWER ---
+    # Quiz Slide
     img5 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
 
     d5.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#0F172A", outline="#FBBF24", width=3)
     d5.text((115, 315), "परीक्षा क्विज़:", fill="#FBBF24", font=font_label)
-    d5.text((115, 365), "सवाल का जवाब सोचें!", fill="#FFFFFF", font=font_title)
+    d5.text((115, 355), "सवाल का जवाब दें!", fill="#FFFFFF", font=font_title)
 
-    d5.rounded_rectangle([85, 520, 995, 1550], radius=30, fill="#0F172A")
-    d5.text((120, 560), "सवाल:", fill="#FBBF24", font=font_h2)
-    d5.text((120, 640), textwrap.fill(script_data["question"], width=28), fill="#F8FAFC", font=font_body)
+    d5.rounded_rectangle([85, 500, 995, 1550], radius=30, fill="#0F172A")
+    d5.text((120, 540), "सवाल:", fill="#FBBF24", font=font_h2)
+    d5.text((120, 620), textwrap.fill(script_data["question"], width=26), fill="#F8FAFC", font=font_body)
 
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     correct = script_data.get("correct", "B")
-    oy = 960
+    oy = 950
     for idx, opt in enumerate(opts):
         is_ans = (correct == chr(65 + idx))
         box_bg = "#064E3B" if is_ans else "#1E293B"
@@ -278,14 +279,13 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         text_c = "#34D399" if is_ans else "#FFFFFF"
 
         d5.rounded_rectangle([115, oy, 965, oy + 95], radius=18, fill=box_bg, outline=border_c, width=2)
-        d5.text((150, oy + 25), opt, fill=text_c, font=font_body)
-        oy += 125
+        d5.text((145, oy + 25), f"{chr(65+idx)}) {textwrap.fill(opt, width=32)}", fill=text_c, font=font_body)
+        oy += 120
 
     draw_footer(d5)
     img5.save("slide_5.png")
     slide_filenames.append("slide_5.png")
 
-    # Build FFmpeg Filter Complex for 5 sequential slides matching audio duration
     durations = [t1, t2 - t1, t3 - t2, t4 - t3, total_dur - t4]
     inputs = ""
     filter_parts = ""
@@ -298,9 +298,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
     filter_complex = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,format=yuv420p[v]"
 
-    cmd = [
-        "ffmpeg", "-y"
-    ]
+    cmd = ["ffmpeg", "-y"]
     cmd.extend(inputs.strip().split())
     cmd.extend([
         "-i", audio_file,
@@ -320,7 +318,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ])
     subprocess.run(cmd, check=True)
-    print("✅ Dynamic Multi-Slide Synced Reel Created.")
+    print("✅ Perfectly Synced Continuous Reel Created.")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
@@ -345,9 +343,6 @@ def upload_to_instagram_direct(video_path, caption):
     if not video_id or not upload_url:
         raise RuntimeError(f"Session initialization failed: {init_data}")
 
-    print(f"✅ Container ID: {video_id}")
-    print("📤 Uploading binary bytes directly to Meta...")
-
     headers = {
         "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
         "offset": "0",
@@ -361,8 +356,6 @@ def upload_to_instagram_direct(video_path, caption):
 
     if r_upload.status_code not in [200, 201]:
         raise RuntimeError(f"Meta byte upload failed ({r_upload.status_code}): {r_upload.text}")
-
-    print("✅ Video binary uploaded directly to Meta servers.")
 
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
@@ -390,17 +383,17 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Automation Starting (Live Synced Captions)...")
+    print("🚀 Postal Wala Continuous Automation Starting...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
-    print(f"✅ Read Page {page_num}.")
+    print(f"✅ Read Page {page_num} with continuous offset.")
 
     script_data = generate_clause_script(pdf_content, page_num)
-    print("✅ AI Script Ready with Synced Sentences.")
+    print("✅ AI Script Ready for Ongoing Clause.")
 
     generate_voice(script_data["voiceover"], "voice.mp3")
-    print("✅ Voiceover Ready.")
+    print("✅ Voiceover Ready at Normal Speed.")
 
     create_video_ffmpeg(script_data, "voice.mp3", "final_reel.mp4")
 
