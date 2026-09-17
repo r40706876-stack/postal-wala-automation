@@ -105,12 +105,12 @@ def generate_clause_script(pdf_content, page_num):
 
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
-    Teach the departmental rules thoroughly and completely from this running section (Page {page_num}).
-    Do NOT cut short or leave the clause half-explained. Provide a comprehensive, uninterrupted explanation spanning 4 rich, grammatically flawless Hindi sentences (SEN1, SEN2, SEN3, SEN4).
+    Teach the departmental rules concisely and completely from this running section (Page {page_num}).
+    Provide a crisp, uninterrupted explanation spanning 4 clear, grammatically flawless Hindi sentences (SEN1, SEN2, SEN3, SEN4).
 
     RULES:
     1. Pure Hindi (Devanagari script only), flawless grammar, zero spelling mistakes, no English words, no emojis, no bullet symbols.
-    2. Keep each sentence natural and focused on a single complete rule aspect.
+    2. Keep sentences to the point so total speaking time is strictly under 45-50 seconds (max 85 words total).
 
     PDF Section:
     {pdf_content}
@@ -127,7 +127,7 @@ def generate_clause_script(pdf_content, page_num):
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly. 5. Say EXACTLY: "तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं!". 6. End with call-to-action: "GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
+    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly and concisely. 5. Say EXACTLY: "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!". 6. End with: "GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
@@ -158,7 +158,7 @@ def generate_clause_script(pdf_content, page_num):
         "opt_c": "प्रेषक को",
         "opt_d": "इनमें से कोई नहीं",
         "correct": "B",
-        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का सवाल है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है। प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है। नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है। सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए। तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।",
+        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का महत्वपूर्ण प्रश्न है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन अनिवार्य है। डाकघर में प्राप्त सामग्री की प्रविष्टि रजिस्टर में दर्ज होती है। नियमों के उल्लंघन पर उच्च अधिकारियों द्वारा अनुशासनात्मक कार्रवाई की जाती है। इन प्रावधानों को अच्छी तरह याद रखें। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।",
         "caption": "डाक विभाग परीक्षा तैयारी संपूर्ण विश्लेषण #PostalWala #MTSExam #Khand02"
     }
 
@@ -198,7 +198,7 @@ def generate_clause_script(pdf_content, page_num):
     return data
 
 async def generate_voice(text, filename="voice.mp3"):
-    communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="-2%")
+    communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+10%")
     await communicate.save(filename)
 
 def get_audio_duration(audio_file):
@@ -209,6 +209,16 @@ def get_audio_duration(audio_file):
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
+
+    # 60-Second Hard Limit Protection: Meta rejects Reels > 60 seconds
+    if total_dur > 57.0:
+        tempo = round(total_dur / 54.0, 2)
+        print(f"⚡ Audio duration ({total_dur:.1f}s) > 57s. Adjusting speed by {tempo}x to respect Instagram 60s Reel limit...", flush=True)
+        adjusted_audio = "voice_fast.mp3"
+        cmd_speed = ["ffmpeg", "-y", "-i", audio_file, "-filter:a", f"atempo={tempo}", adjusted_audio]
+        subprocess.run(cmd_speed, check=True)
+        audio_file = adjusted_audio
+        total_dur = get_audio_duration(audio_file)
 
     min_slide = 2.0
     n_slides = 5
@@ -242,7 +252,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_obj.text((610, 1622), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
         draw_obj.rounded_rectangle([80, 1730, 1000, 1825], radius=22, fill="#16A34A")
-        draw_obj.text((105, 1762), "कोर्स और Free Mock Test के लिए WhatsApp: 8989971379", fill="#FFFFFF", font=font_wa)
+        draw_obj.text((105, 1762), "कोर्स और Free Mock Test हेतु WhatsApp: 8989971379", fill="#FFFFFF", font=font_wa)
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"], script_data["sen4"]]
     slide_filenames = []
@@ -270,7 +280,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         img.save(fname)
         slide_filenames.append(fname)
 
-    # Slide 5 (No answer highlight)
+    # Slide 5 (Quiz) - All options look identical, no answer revealed
     img5 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
