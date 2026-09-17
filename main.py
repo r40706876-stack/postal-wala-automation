@@ -71,7 +71,7 @@ def get_current_reading_window(pdf_path):
         char_offset = 0
 
     page_text = reader.pages[current_page].extract_text() or ""
-    chunk_size = 1400  # Larger chunk to ensure deep coverage of the clause
+    chunk_size = 1400
     sub_text = page_text[char_offset:char_offset + chunk_size]
 
     next_offset = char_offset + chunk_size
@@ -192,7 +192,6 @@ def generate_clause_script(pdf_content, page_num):
     return data
 
 def generate_voice(text, filename="voice.mp3"):
-    # Normal speed with natural teaching tone
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
@@ -219,13 +218,11 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_cta_eng = get_eng_font(30)
 
     def draw_base(draw_obj):
-        # Strict safe bounding box to prevent touching header/footer
         draw_obj.rounded_rectangle([45, 50, 1035, 1770], radius=30, fill="#1E293B", outline="#E11D48", width=4)
         draw_obj.text((80, 80), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         draw_obj.text((80, 135), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
     def draw_footer(draw_obj):
-        # Fully separated, non-overlapping professional CTA footer card
         draw_obj.rounded_rectangle([80, 1590, 1000, 1720], radius=22, fill="#E11D48")
         draw_obj.text((120, 1622), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((610, 1622), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
@@ -245,7 +242,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         d.rounded_rectangle([80, 360, 1000, 1550], radius=22, fill="#0F172A")
         d.text((110, 390), "विस्तृत व्याख्या:", fill="#FBBF24", font=font_h2)
 
-        # Content card strictly ending before footer starts at 1590
         d.rounded_rectangle([110, 480, 970, 1520], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
         d.text((135, 510), "मुख्य बिंदु:", fill="#38BDF8", font=font_label)
         
@@ -322,19 +318,42 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ])
     subprocess.run(cmd, check=True)
-    print("✅ Flawlessly Formatted & Detailed Continuous Reel Created.")
+    print("✅ Perfectly Synced Reel Created.")
+
+def get_public_url(video_path):
+    print("🌐 Uploading video to Catbox.moe for direct public access...")
+    url = "https://catbox.moe/user/api.php"
+    with open(video_path, "rb") as f:
+        data = {"reqtype": "fileupload"}
+        files = {"fileToUpload": f}
+        r = requests.post(url, data=data, files=files, timeout=90)
+    
+    if r.status_code == 200 and r.text.startswith("http"):
+        direct_url = r.text.strip()
+        print(f"✅ Clean Raw Direct URL: {direct_url}")
+        return direct_url
+    
+    print("⚠️ Catbox fallback to file.io...")
+    with open(video_path, "rb") as f:
+        r2 = requests.post("https://file.io", files={"file": f}, timeout=60)
+        res_json = r2.json()
+        if res_json.get("success"):
+            return res_json["link"]
+            
+    raise RuntimeError(f"Video host failed: {r.text}")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    file_size = os.path.getsize(video_path)
-    print(f"📦 Video size: {file_size / (1024*1024):.2f} MB")
+    # Using public video URL method to bypass any 400 resumable upload header conflicts
+    public_url = get_public_url(video_path)
 
+    print("🚀 Initializing Instagram Reel Container via direct URL...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
-        "upload_type": "resumable",
+        "video_url": public_url,
         "caption": caption,
         "access_token": IG_ACCESS_TOKEN
     }
@@ -342,29 +361,16 @@ def upload_to_instagram_direct(video_path, caption):
     init_data = r_init.json()
 
     video_id = init_data.get("id")
-    upload_url = init_data.get("uri")
+    if not video_id:
+        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
 
-    if not video_id or not upload_url:
-        raise RuntimeError(f"Session initialization failed: {init_data}")
+    print(f"✅ Container ID Created: {video_id}")
 
-    headers = {
-        "Authorization": f"OAuth {IG_ACCESS_TOKEN}",
-        "offset": "0",
-        "file_size": str(file_size)
-    }
-
-    with open(video_path, "rb") as f:
-        video_bytes = f.read()
-
-    r_upload = requests.post(upload_url, headers=headers, data=video_bytes, timeout=180)
-
-    if r_upload.status_code not in [200, 201]:
-        raise RuntimeError(f"Meta byte upload failed ({r_upload.status_code}): {r_upload.text}")
-
+    print("⏳ Waiting for Instagram to process video...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
     for attempt in range(1, 40):
-        time.sleep(8)
+        time.sleep(10)
         status_res = requests.get(status_url).json()
         code = status_res.get("status_code")
         print(f"🔄 Check {attempt}: {code}")
@@ -373,10 +379,11 @@ def upload_to_instagram_direct(video_path, caption):
             print("✅ Transcoding FINISHED!")
             break
         elif code in ["ERROR", "EXPIRED"]:
-            raise RuntimeError(f"Instagram rejected video: {status_res}")
+            raise RuntimeError(f"Instagram processing failed: {status_res}")
     else:
         print("⚠️ Polling timeout, attempting to publish...")
 
+    print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
     pub_json = pub_res.json()
