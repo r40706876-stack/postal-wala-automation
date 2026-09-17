@@ -328,7 +328,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Strict Instagram-Compatible Baseline Reel Created.")
 
-def post_reel_to_instagram_direct(video_file, caption):
+def post_reel_to_instagram_resumable_chunks(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
     
@@ -336,7 +336,7 @@ def post_reel_to_instagram_direct(video_file, caption):
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
     file_size = os.path.getsize(video_file)
-    print(f"Video size: {file_size} bytes. Initializing Magic Notes Resumable Session...")
+    print(f"Video size: {file_size} bytes. Initializing Chunked Resumable Upload Session...")
 
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
     init_params = {
@@ -358,23 +358,29 @@ def post_reel_to_instagram_direct(video_file, caption):
     if not video_id or not upload_url:
         raise RuntimeError(f"Upload init invalid response: {init_data}")
 
-    print(f"Uploading video file via Magic Notes exact binary stream protocol...")
+    print(f"Uploading large video file in 1MB chunks...")
     
+    chunk_size = 1024 * 1024  # 1MB per chunk
     with open(video_file, "rb") as vf:
-        video_bytes = vf.read()
-
-    headers = {
-        "Authorization": f"OAuth {access_token}",
-        "Offset": "0",
-        "Content-Length": str(file_size),
-        "X-Entity-Length": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
-    
-    upload_res = requests.post(upload_url, headers=headers, data=video_bytes, timeout=300)
-
-    if upload_res.status_code not in [200, 201]:
-        raise RuntimeError(f"Video binary upload fail hua ({upload_res.status_code}): {upload_res.text}")
+        offset = 0
+        while offset < file_size:
+            chunk_data = vf.read(chunk_size)
+            actual_chunk_len = len(chunk_data)
+            
+            headers = {
+                "Authorization": f"OAuth {access_token}",
+                "Offset": str(offset),
+                "Content-Length": str(actual_chunk_len),
+                "X-Entity-Length": str(file_size),
+                "Content-Type": "application/octet-stream"
+            }
+            
+            upload_res = requests.post(upload_url, headers=headers, data=chunk_data, timeout=300)
+            if upload_res.status_code not in [200, 201]:
+                raise RuntimeError(f"Chunk upload fail hua at offset {offset} ({upload_res.status_code}): {upload_res.text}")
+                
+            offset += actual_chunk_len
+            print(f"Uploaded chunk: {offset}/{file_size} bytes")
 
     print("Waiting for Instagram video processing...")
     status_url = GRAPH_API_BASE + str(video_id).strip()
@@ -415,4 +421,4 @@ if __name__ == "__main__":
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_to_instagram_direct(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram_resumable_chunks(OUTPUT_VIDEO, script_data.get("caption", ""))
