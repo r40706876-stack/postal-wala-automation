@@ -324,24 +324,30 @@ def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    print("🚀 Initializing Instagram Single-Step Media Container...")
-    url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
-    
-    # Official single-step multipart form post without resumable protocol
+    print("🌐 Uploading video to high-stability unblocked public mirror (0x0.st)...")
     with open(video_path, "rb") as f:
-        files = {"source": f}
-        data = {
-            "media_type": "REELS",
-            "caption": caption,
-            "access_token": IG_ACCESS_TOKEN
-        }
-        res = requests.post(url, data=data, files=files, timeout=300)
+        r = requests.post("https://0x0.st", files={"file": f}, timeout=120)
     
-    res_json = res.json()
-    video_id = res_json.get("id")
-    
+    public_url = r.text.strip()
+    if not public_url.startswith("http"):
+        raise RuntimeError(f"Public mirror upload failed: {r.text}")
+
+    print(f"✅ Clean Public URL: {public_url}")
+
+    print("🚀 Initializing Instagram Reel Container...")
+    init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
+    init_payload = {
+        "media_type": "REELS",
+        "video_url": public_url,
+        "caption": caption,
+        "access_token": IG_ACCESS_TOKEN
+    }
+    r_init = requests.post(init_url, data=init_payload)
+    init_data = r_init.json()
+
+    video_id = init_data.get("id")
     if not video_id:
-        raise RuntimeError(f"Single-step Media Creation Failed: {res_json}")
+        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
 
     print(f"✅ Container ID Created: {video_id}")
 
@@ -373,7 +379,7 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Deep Continuous Automation Starting oldValue...")
+    print("🚀 Postal Wala Deep Continuous Automation Starting...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
