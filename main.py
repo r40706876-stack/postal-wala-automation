@@ -103,6 +103,7 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
+    # PROMPT UPDATE: Hook at start, no answer at end, WhatsApp promo added.
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
     Teach the departmental rules thoroughly and completely from this running section (Page {page_num}).
@@ -127,7 +128,7 @@ def generate_clause_script(pdf_content, page_num):
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Full natural teaching voiceover combining a warm greeting, clear explanation of SEN1 to SEN4, the quiz question, and a strong call-to-action ending with: रोज़ाना ऐसी बेहतरीन तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!]
+    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly. 5. Say EXACTLY: "तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं!". 6. End with call-to-action: "GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
@@ -158,7 +159,7 @@ def generate_clause_script(pdf_content, page_num):
         "opt_c": "प्रेषक को",
         "opt_d": "इनमें से कोई नहीं",
         "correct": "B",
-        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज हम डाक विभाग के नियमों को बिल्कुल विस्तार से और गहराई से समझेंगे ताकि परीक्षा में आपका एक भी नंबर न कटे। विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है। प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है। नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है। सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए। आइए अब इस नियम पर आधारित एक महत्वपूर्ण प्रश्न हल करें। विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? सही उत्तर है ऑप्शन बी, उच्च अधिकारियों। ऐसी ही शानदार और संपूर्ण तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!",
+        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का सवाल है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है। प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है। नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है। सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए। तो दोस्तों, इसका सही जवाब कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. के लिए कोर्स और फ्री मॉक टेस्ट के लिए 8989971379 पर WhatsApp करें।",
         "caption": "डाक विभाग परीक्षा तैयारी संपूर्ण विश्लेषण #PostalWala #MTSExam #Khand02"
     }
 
@@ -210,23 +211,14 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
 
-    # ---- FIX: previously t4 could end up SMALLER than t3 when total_dur was short
-    # (e.g. < ~18s), which made durations[3] = t4 - t3 negative and produced a
-    # corrupt/invalid final video -> this was the root cause behind Instagram's
-    # "Media upload has failed" (error 2207082).
-    # We now build the 5 slide durations from a single proportional split of the
-    # real audio length, so they always add up to total_dur and are never negative.
     min_slide = 2.0  # seconds, floor so no slide ever collapses to ~0
     n_slides = 5
     if total_dur <= min_slide * n_slides:
-        # Extremely short audio: split evenly, ignore weighting entirely.
         durations = [total_dur / n_slides] * n_slides
     else:
-        # Slides 1-4 (explanation) get equal weight, slide 5 (quiz) gets a bit more time.
         weights = [1.0, 1.0, 1.0, 1.0, 1.3]
         total_weight = sum(weights)
         durations = [max(min_slide, total_dur * w / total_weight) for w in weights]
-        # Rescale so the durations sum EXACTLY to total_dur (avoids ffmpeg desync)
         scale = total_dur / sum(durations)
         durations = [d * scale for d in durations]
 
@@ -239,9 +231,11 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_label = get_dev_font(26)
     font_cta_hin = get_dev_font(30)
     font_cta_eng = get_eng_font(30)
+    font_wa = get_dev_font(26) # WhatsApp font size
 
     def draw_base(draw_obj):
-        draw_obj.rounded_rectangle([45, 50, 1035, 1770], radius=30, fill="#1E293B", outline="#E11D48", width=4)
+        # Increased height from 1770 to 1860 for WhatsApp banner
+        draw_obj.rounded_rectangle([45, 50, 1035, 1860], radius=30, fill="#1E293B", outline="#E11D48", width=4)
         draw_obj.text((80, 80), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         draw_obj.text((80, 135), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
@@ -249,6 +243,10 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_obj.rounded_rectangle([80, 1590, 1000, 1720], radius=22, fill="#E11D48")
         draw_obj.text((120, 1622), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((610, 1622), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
+
+        # New WhatsApp Banner (Green box at the bottom)
+        draw_obj.rounded_rectangle([80, 1740, 1000, 1830], radius=22, fill="#16A34A")
+        draw_obj.text((105, 1765), "कोर्स और Free Mock Test के लिए WhatsApp करें: 8989971379", fill="#FFFFFF", font=font_wa)
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"], script_data["sen4"]]
     slide_filenames = []
@@ -292,13 +290,12 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     d5.text((110, 450), q_wrapped, fill="#F8FAFC", font=font_body)
 
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
-    correct = script_data.get("correct", "B")
     oy = 790
     for idx, opt in enumerate(opts):
-        is_ans = (correct == chr(65 + idx))
-        box_bg = "#064E3B" if is_ans else "#1E293B"
-        border_c = "#10B981" if is_ans else "#38BDF8"
-        text_c = "#34D399" if is_ans else "#FFFFFF"
+        # NO HIGHLIGHTING: All options look exactly the same so users must comment
+        box_bg = "#1E293B"
+        border_c = "#38BDF8"
+        text_c = "#FFFFFF"
 
         d5.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill=box_bg, outline=border_c, width=2)
         opt_text = f"{chr(65+idx)}) {textwrap.fill(opt, width=28)}"
@@ -315,7 +312,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         inputs += f"-i {fname} "
 
     for i, dur in enumerate(durations):
-        # extra safety floor even after scaling, in case of float rounding
         safe_dur = max(1.0, dur)
         filter_parts += f"[{i}:v]loop=loop=-1:size=1:start=0,trim=duration={safe_dur}[v{i}]; "
 
@@ -352,11 +348,6 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    # ---- FIX: the whole "create container -> poll -> publish" flow is now wrapped
-    # in a retry loop, because 2207082 is Instagram's own generic
-    # "server-side/transient error, please retry" code. A single failed attempt
-    # is expected sometimes; we now create a *fresh* container and try again
-    # instead of giving up after one failure.
     last_error = None
     for container_attempt in range(1, max_container_attempts + 1):
         print(f"--- Reel upload attempt {container_attempt}/{max_container_attempts} ---")
@@ -382,12 +373,6 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
 RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
 def _create_reel_container(video_file, caption, user_id, access_token):
-    # ---- FIX: Meta's Instagram Graph API no longer accepts a raw multipart
-    # "source" file upload on /media for local files — hence the
-    # "(#100) The parameter video_url is required" error. A local file (no
-    # public URL) MUST use the two-step "resumable upload" flow instead:
-    #   1) create a container with upload_type=resumable  -> get container id
-    #   2) POST the raw video bytes to rupload.facebook.com for that id
     print("Step 1/2: Creating resumable-upload Reel container...")
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
     data = {
@@ -431,12 +416,6 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     return video_id
 
 def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
-    # ---- FIX: previously the deliberate `raise RuntimeError(...)` on an ERROR
-    # status was thrown INSIDE the same try block whose `except Exception`
-    # caught it — so the script just logged a warning and kept polling for the
-    # full 40 attempts (~10 minutes) instead of stopping right away.
-    # Now: network hiccups (timeouts, bad JSON) are retried, but a real
-    # ERROR/EXPIRED status from Instagram breaks out immediately.
     status_url = GRAPH_API_BASE + str(video_id).strip()
 
     for attempt in range(max_checks):
@@ -459,7 +438,7 @@ def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=1
             return "FINISHED"
         elif status in ["ERROR", "EXPIRED"]:
             print(f"❌ Instagram reported a definitive failure: {status_res}")
-            return status  # bubble up immediately, do NOT keep polling
+            return status
 
     return "TIMEOUT"
 
