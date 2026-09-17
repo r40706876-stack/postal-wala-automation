@@ -7,7 +7,6 @@ import subprocess
 import requests
 import textwrap
 from pypdf import PdfReader
-from gtts import gTTS
 from PIL import Image, ImageDraw, ImageFont
 from groq import Groq
 import edge_tts
@@ -305,6 +304,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
     filter_complex = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,format=yuv420p[v]"
 
+    # STRICTLY INSTAGRAM COMPATIBLE 1-PASS BASELINE FFMPEG COMMAND (NO B-FRAMES)
     cmd = ["ffmpeg", "-y"]
     cmd.extend(inputs.strip().split())
     cmd.extend([
@@ -313,11 +313,13 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-map", "[v]",
         "-map", f"{len(slide_filenames)}:a",
         "-c:v", "libx264",
-        "-preset", "veryfast",
-        "-profile:v", "main",
-        "-level:v", "4.0",
+        "-preset", "ultrafast",
+        "-profile:v", "baseline",
+        "-level", "3.0",
+        "-pix_fmt", "yuv420p",
+        "-bf", "0",
         "-r", "30",
-        "-g", "60",
+        "-g", "30",
         "-c:a", "aac",
         "-b:a", "128k",
         "-ar", "44100",
@@ -325,7 +327,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ])
     subprocess.run(cmd, check=True)
-    print("✅ Perfectly Synced Reel Created.")
+    print("✅ Strict Instagram-Compatible Baseline Reel Created.")
 
 def post_reel_to_instagram_direct(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
@@ -335,29 +337,19 @@ def post_reel_to_instagram_direct(video_file, caption):
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
     file_size = os.path.getsize(video_file)
-    print(f"Video size: {file_size} bytes. Initializing resumable upload container...")
+    print(f"Video size: {file_size} bytes. Initializing Instagram Resumable Session...")
 
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
     init_params = {
         "media_type": "REELS",
         "upload_type": "resumable",
         "caption": caption,
-        "length": file_size,
         "access_token": access_token
     }
     
-    r = None
-    for attempt in range(3):
-        try:
-            r = requests.post(init_url, data=init_params, timeout=30)
-            if r.status_code == 200:
-                break
-        except Exception as e:
-            print(f"Init attempt {attempt+1} failed: {e}")
-            time.sleep(5)
-            
-    if not r or r.status_code != 200:
-        raise RuntimeError(f"Upload init fail hua: {r.text if r else 'No response'}")
+    r = requests.post(init_url, data=init_params, timeout=30)
+    if r.status_code != 200:
+        raise RuntimeError(f"Upload init fail hua: {r.text}")
         
     init_data = r.json()
     video_id = init_data.get("id")
@@ -366,19 +358,16 @@ def post_reel_to_instagram_direct(video_file, caption):
     if not video_id or not upload_url:
         raise RuntimeError(f"Upload init invalid response: {init_data}")
 
-    print("Uploading video binary data directly via resumable session...")
-    with open(video_file, "rb") as vf:
-        video_bytes = vf.read()
-
-    headers = {
-        "Authorization": f"OAuth {access_token}",
-        "Offset": "0",
-        "Content-Length": str(file_size),
-        "X-Entity-Length": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
+    print(f"Uploading video file via strict binary stream to Meta...")
     
-    upload_res = requests.post(upload_url, headers=headers, data=video_bytes, timeout=300)
+    with open(video_file, "rb") as vf:
+        headers = {
+            "Authorization": f"OAuth {access_token}",
+            "Offset": "0",
+            "Content-Type": "application/octet-stream"
+        }
+        upload_res = requests.post(upload_url, headers=headers, data=vf, timeout=300)
+
     if upload_res.status_code not in [200, 201]:
         raise RuntimeError(f"Video binary upload fail hua ({upload_res.status_code}): {upload_res.text}")
 
