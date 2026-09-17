@@ -11,17 +11,21 @@ from PIL import Image, ImageDraw, ImageFont
 from groq import Groq
 import edge_tts
 
+# --- Environment Variables ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
 GRAPH_API_BASE = "".join(["http", "s://", "graph.", "facebook", ".com/v19.0/"])
+RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
+
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
 AUDIO_OUTPUT = "voice.mp3"
 OUTPUT_VIDEO = "final_reel.mp4"
 VOICE_NAME = "hi-IN-SwaraNeural"
 
+# --- Font Management ---
 def ensure_fonts():
     if not os.path.exists(DEV_FONT_PATH):
         print("📥 Downloading Noto Sans Devanagari font...", flush=True)
@@ -48,70 +52,62 @@ def get_eng_font(size):
             return ImageFont.truetype(p, size)
     return get_dev_font(size)
 
+# --- PDF & State Tracking ---
 def get_target_pdf():
     pdf_files = glob.glob("*.pdf") + glob.glob("data/*.pdf")
     if not pdf_files:
-        raise FileNotFoundError("Repo me koi PDF nahi mili!")
+        raise FileNotFoundError("Repo me koi PDF nahi mili! Kripya PDF repo me rakhein.")
     for f in pdf_files:
         if "mts" in f.lower():
             return f
     return pdf_files[0]
 
-def clean_extracted_ocr_text(text):
-    """Prathmik OCR Filter: Aam toote-foote shabdon ko turant shuddh karta hai"""
-    replacements = {
-        "नित्य पत्र": "वित्तीय वर्ष",
-        "नित्य वर्ष": "वित्तीय वर्ष",
-        "नित्य": "वित्तीय",
-        "कतलेरी कटेट": "वितरण टिकट",
-        "कटलेरी कटेट": "वितरण टिकट",
-        "कतलेरी": "वितरण टिकट",
-        "कटेट": "टिकट",
-        "धारण विभाग": "वितरण विभाग",
+def load_progress_state():
+    state = {
+        "clause_no": 1,
+        "current_part": 1,
+        "total_parts": 1,
+        "last_page": 0,
+        "char_offset": 0
     }
-    for bad_w, good_w in replacements.items():
-        text = text.replace(bad_w, good_w)
-    return text
-
-def get_current_reading_window(pdf_path):
-    reader = PdfReader(pdf_path)
-    total_pages = len(reader.pages)
-
-    state = {"last_page": 0, "char_offset": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
-                state = json.load(f)
+                state.update(json.load(f))
         except Exception:
             pass
+    return state
 
-    current_page = state.get("last_page", 0)
-    char_offset = state.get("char_offset", 0)
-
-    if current_page >= total_pages:
-        current_page = 0
-        char_offset = 0
-
-    page_text = reader.pages[current_page].extract_text() or ""
-    chunk_size = 1400
-    sub_text = page_text[char_offset:char_offset + chunk_size]
-    sub_text = clean_extracted_ocr_text(sub_text)
-
-    next_offset = char_offset + chunk_size
-    next_page = current_page
-    if next_offset >= len(page_text):
-        next_page += 1
-        next_offset = 0
-
+def save_progress_state(state):
     try:
         with open(STATE_FILE, "w") as f:
-            json.dump({"last_page": next_page, "char_offset": next_offset}, f)
-    except Exception:
-        pass
+            json.dump(state, f, indent=2)
+    except Exception as e:
+        print(f"⚠️ Warning saving state: {e}", flush=True)
 
-    return sub_text, current_page + 1
+def get_pdf_context_snippet(pdf_path, state):
+    reader = PdfReader(pdf_path)
+    total_pages = len(reader.pages)
 
-def generate_clause_script(pdf_content, page_num):
+    page_idx = state.get("last_page", 0)
+    if page_idx >= total_pages:
+        page_idx = 0
+        state["last_page"] = 0
+        state["char_offset"] = 0
+
+    page_text = reader.pages[page_idx].extract_text() or ""
+    offset = state.get("char_offset", 0)
+    chunk = page_text[offset:offset + 1200]
+
+    if not chunk.strip() or (offset + 1200 >= len(page_text)):
+        if page_idx + 1 < total_pages:
+            next_page_text = reader.pages[page_idx + 1].extract_text() or ""
+            chunk = (chunk + "\n" + next_page_text)[:1200]
+
+    return chunk, page_idx + 1
+
+# --- AI Script Generation (Exhaustive & Accurate) ---
+def generate_partwise_clause_script(pdf_snippet, state):
     if not GROQ_API_KEY:
         raise ValueError("GROQ_API_KEY missing in GitHub Secrets!")
 
@@ -120,49 +116,63 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
-    # Strict Deep Postal Rule Reasoning Engine
+    current_clause = state.get("clause_no", 1)
+    current_part = state.get("current_part", 1)
+
     prompt = f"""
-    You are the Senior Chief Instructor for India Post Departmental Examinations (MTS, Postman, Mail Guard, Postal Assistant) running the official preparation channel 'Postal Wala'.
-    Teach the departmental rules from this running section (Page {page_num}).
+    You are the Senior Chief Instructor for India Post Departmental Examinations (MTS, Postman, Mail Guard, Postal Assistant) running the preparation channel 'Postal Wala'.
 
-    CRITICAL POSTAL DOMAIN REASONING & OCR VERIFICATION PROTOCOL:
-    1. The PDF is an old scanned book where Hindi OCR constantly corrupts letters, matras, and phrases into misleading or strange words (e.g. OCR turned 'वित्तीय वर्ष' into 'नित्य पत्र', and 'वितरण टिकट' into 'कतलेरी कटेट').
-    2. DEEP VERIFICATION MANDATE: Whenever you encounter ANY word or phrase that sounds unfamiliar, awkward, suspicious, or lacks clear sense:
-       - DO NOT blindly copy or repeat it!
-       - PAUSE and analyze it 3 to 4 times strictly through the lens of official India Post Departmental Rules (Post Office Guide Part 1, Postal Manual Vol V/VI).
-       - Ask yourself: "Does this term actually exist in the postal manual? What official postal procedure or clause is being described here?"
-       - Correlate with real departmental concepts: Post Box/Bag rental (वित्तीय वर्ष / त्रैमासिक किराया), Delivery Ticket (वितरण टिकट), Intimation Slip (सूचना पर्ची), Refusal/Return (वापसी/अस्वीकृति), Franking, Registration, etc.
-       - Reconstruct the explanation using 100% authentic, correct, and authoritative India Post terminology.
-    3. ZERO TOLERANCE FOR NONSENSE: If an OCR word makes no sense in postal law, completely discard the corrupted word and write the correct departmental fact in pure, natural Hindi.
+    CORE MANDATE:
+    Teach the departmental rules from Post Office Guide Part 1 thoroughly, accurately, and clause-by-clause.
+    Do NOT rush. If a clause is large, break it down honestly across multiple parts (e.g. 2, 3, 4 parts).
+    Current Position: Working on Clause #{current_clause}, Part #{current_part}.
 
-    SCRIPT CONSTRAINTS:
-    1. Pure Hindi (Devanagari script only), flawless grammar, authoritative exam-standard postal terminology, zero spelling mistakes, no English words, no emojis, no bullet symbols.
-    2. Total speaking duration strictly under 45-50 seconds (max 85 words total).
+    Reference section from study material:
+    \"\"\"{pdf_snippet}\"\"\"
 
-    PDF Section:
-    {pdf_content}
+    OPERATIONAL INSTRUCTIONS:
+    1. REFERENCE ONLY: Use the reference text solely to identify which official PO Guide Part 1 Clause / Topic is currently being covered.
+    2. AUTHORITATIVE KNOWLEDGE: Do NOT copy OCR typographical mistakes or broken syllables. Retrieve authentic, updated official India Post rules with 100% factual accuracy (e.g. 'सक्षम प्राधिकारी', 'वित्तीय वर्ष', 'वितरण टिकट', 'अनपेड डाक').
+    3. EXHAUSTIVE SUB-PART COVERAGE:
+       - Decide TOTAL_PARTS needed to thoroughly teach this clause.
+       - In Part #{current_part}, focus on this specific sub-rule with complete precision (timelines, authorities, conditions, exceptions).
+    4. SCRIPT CONSTRAINTS:
+       - Pure Hindi (Devanagari script only), flawless grammar, authoritative exam terminology, zero spelling mistakes, no English words, no emojis.
+       - Total speaking duration strictly under 45-50 seconds (max 85 words total).
+    5. VOICE HOOK SEQUENCE:
+       - Warm greeting.
+       - Ask the QUESTION immediately.
+       - Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!".
+       - Explain SEN1 to SEN4 clearly.
+       - Say EXACTLY: "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!".
+       - If {current_part} < TOTAL_PARTS: "इस नियम के अगले भाग को जानने के लिए अभी फॉलो कर लें!"
+       - End with: "GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।"
+       - DO NOT reveal or speak the correct answer anywhere in the audio.
 
-    Format strictly matching these lines:
-    TITLE: [Topic Name in pure Hindi]
-    SEN1: [Flawless postal rule sentence 1]
-    SEN2: [Flawless postal rule sentence 2]
-    SEN3: [Flawless postal rule sentence 3]
-    SEN4: [Flawless postal rule sentence 4]
+    FORMAT STRICTLY MATCHING:
+    CLAUSE_NO: [{current_clause}]
+    PART_NO: [{current_part}]
+    TOTAL_PARTS: [Total parts for this clause, e.g. 2]
+    TITLE: [क्लॉज {current_clause} (भाग {current_part}/TOTAL_PARTS): नियम का नाम]
+    SEN1: [Flawless exam rule sentence 1]
+    SEN2: [Flawless exam rule sentence 2]
+    SEN3: [Flawless exam rule sentence 3]
+    SEN4: [Flawless exam rule sentence 4]
     QUESTION: [1 high-value exam question based strictly on this rule in Hindi]
     OPT_A: [Option A]
     OPT_B: [Option B]
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly, smoothly and with 100% correct postal terminology. 5. Say EXACTLY: "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!". 6. End with: "GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
-    CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
+    VOICEOVER: [Exact full voiceover following the hook sequence]
+    CAPTION: [Instagram caption with #PostalWala #MTSExam #PostmanExam #POGuidePart1]
     """
 
     payload = {
         "model": "qwen/qwen3.8-27b",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.2,
-        "max_tokens": 800
+        "max_tokens": 900
     }
 
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
@@ -174,47 +184,65 @@ def generate_clause_script(pdf_content, page_num):
     raw_text = res_json["choices"][0]["message"]["content"].strip()
 
     data = {
-        "rule_title": "डाक नियमों की विस्तृत जानकारी",
+        "clause_no": current_clause,
+        "part_no": current_part,
+        "total_parts": 2,
+        "rule_title": f"क्लॉज {current_clause} (भाग {current_part}/2): डाक विभाग के नियम",
         "sen1": "विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन अनिवार्य है।",
-        "sen2": "प्रत्येक डाकघर में प्राप्त सामग्री की प्रविष्टि रजिस्टर में दर्ज की जाती है।",
+        "sen2": "प्रत्येक डाकघर में प्राप्त सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है।",
         "sen3": "नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त कार्रवाई की जाती है।",
-        "sen4": "सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को याद रखना चाहिए।",
+        "sen4": "सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन महत्वपूर्ण प्रावधानों को याद रखना चाहिए।",
         "question": "विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है?",
         "opt_a": "स्थानीय डाकपाल",
-        "opt_b": "उच्च अधिकारियों",
+        "opt_b": "उच्च अधिकारियों को",
         "opt_c": "प्रेषक को",
         "opt_d": "इनमें से कोई नहीं",
         "correct": "B",
-        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का महत्वपूर्ण प्रश्न है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन अनिवार्य है। प्रत्येक डाकघर में प्राप्त सामग्री की प्रविष्टि रजिस्टर में दर्ज होती है। नियमों के उल्लंघन पर उच्च अधिकारियों द्वारा सख्त कार्रवाई की जाती है। इन नियमों को परीक्षा हेतु अच्छी तरह याद रखें। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।",
-        "caption": "डाक विभाग परीक्षा तैयारी संपूर्ण विश्लेषण #PostalWala #MTSExam #Khand02"
+        "voiceover": f"नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज का महत्वपूर्ण प्रश्न है: विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें! विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन अनिवार्य है। प्रत्येक डाकघर में प्राप्त सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज होती है। नियमों के उल्लंघन पर उच्च अधिकारियों द्वारा सख्त कार्रवाई की जाती है। इन नियमों को परीक्षा हेतु अच्छी तरह याद रखें। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।",
+        "caption": f"डाक विभाग परीक्षा तैयारी क्लॉज {current_clause} संपूर्ण विश्लेषण #PostalWala #MTSExam #POGuidePart1"
     }
 
     for line in raw_text.splitlines():
         line_clean = line.strip()
-        if line_clean.startswith("TITLE:"):
+        if line_clean.startswith("CLAUSE_NO:"):
+            try:
+                data["clause_no"] = int(line_clean.replace("CLAUSE_NO:", "").strip())
+            except Exception:
+                pass
+        elif line_clean.startswith("PART_NO:"):
+            try:
+                data["part_no"] = int(line_clean.replace("PART_NO:", "").strip())
+            except Exception:
+                pass
+        elif line_clean.startswith("TOTAL_PARTS:"):
+            try:
+                data["total_parts"] = int(line_clean.replace("TOTAL_PARTS:", "").strip())
+            except Exception:
+                pass
+        elif line_clean.startswith("TITLE:"):
             data["rule_title"] = line_clean.replace("TITLE:", "").strip()
         elif line_clean.startswith("SEN1:"):
-            data["sen1"] = clean_extracted_ocr_text(line_clean.replace("SEN1:", "").strip())
+            data["sen1"] = line_clean.replace("SEN1:", "").strip()
         elif line_clean.startswith("SEN2:"):
-            data["sen2"] = clean_extracted_ocr_text(line_clean.replace("SEN2:", "").strip())
+            data["sen2"] = line_clean.replace("SEN2:", "").strip()
         elif line_clean.startswith("SEN3:"):
-            data["sen3"] = clean_extracted_ocr_text(line_clean.replace("SEN3:", "").strip())
+            data["sen3"] = line_clean.replace("SEN3:", "").strip()
         elif line_clean.startswith("SEN4:"):
-            data["sen4"] = clean_extracted_ocr_text(line_clean.replace("SEN4:", "").strip())
+            data["sen4"] = line_clean.replace("SEN4:", "").strip()
         elif line_clean.startswith("QUESTION:"):
-            data["question"] = clean_extracted_ocr_text(line_clean.replace("QUESTION:", "").strip())
+            data["question"] = line_clean.replace("QUESTION:", "").strip()
         elif line_clean.startswith("OPT_A:"):
-            data["opt_a"] = clean_extracted_ocr_text(line_clean.replace("OPT_A:", "").strip())
+            data["opt_a"] = line_clean.replace("OPT_A:", "").strip()
         elif line_clean.startswith("OPT_B:"):
-            data["opt_b"] = clean_extracted_ocr_text(line_clean.replace("OPT_B:", "").strip())
+            data["opt_b"] = line_clean.replace("OPT_B:", "").strip()
         elif line_clean.startswith("OPT_C:"):
-            data["opt_c"] = clean_extracted_ocr_text(line_clean.replace("OPT_C:", "").strip())
+            data["opt_c"] = line_clean.replace("OPT_C:", "").strip()
         elif line_clean.startswith("OPT_D:"):
-            data["opt_d"] = clean_extracted_ocr_text(line_clean.replace("OPT_D:", "").strip())
+            data["opt_d"] = line_clean.replace("OPT_D:", "").strip()
         elif line_clean.startswith("CORRECT:"):
             data["correct"] = line_clean.replace("CORRECT:", "").strip().upper()[:1]
         elif line_clean.startswith("VOICEOVER:"):
-            data["voiceover"] = clean_extracted_ocr_text(line_clean.replace("VOICEOVER:", "").strip())
+            data["voiceover"] = line_clean.replace("VOICEOVER:", "").strip()
         elif line_clean.startswith("CAPTION:"):
             data["caption"] = line_clean.replace("CAPTION:", "").strip()
 
@@ -224,6 +252,24 @@ def generate_clause_script(pdf_content, page_num):
 
     return data
 
+def advance_progress_state(state, data):
+    cur_part = data.get("part_no", state.get("current_part", 1))
+    total_parts = data.get("total_parts", state.get("total_parts", 1))
+
+    if cur_part < total_parts:
+        state["current_part"] = cur_part + 1
+        state["total_parts"] = total_parts
+        print(f"📌 Clause {state['clause_no']} in progress: next run will do Part {state['current_part']}/{total_parts}", flush=True)
+    else:
+        state["clause_no"] = state.get("clause_no", 1) + 1
+        state["current_part"] = 1
+        state["total_parts"] = 1
+        state["char_offset"] = state.get("char_offset", 0) + 1200
+        print(f"🎉 Clause completed! Next run will start Clause {state['clause_no']} (Part 1)", flush=True)
+
+    save_progress_state(state)
+
+# --- Voice Generation ---
 async def generate_voice(text, filename="voice.mp3"):
     communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+10%")
     await communicate.save(filename)
@@ -233,11 +279,12 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
+# --- Video Rendering (Safe Zones & Clean Graphics) ---
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
 
-    # 60-Second Hard Limit Check
+    # 60-Second Hard Limit Protection
     if total_dur > 57.0:
         tempo = round(total_dur / 54.0, 2)
         print(f"⚡ Audio duration ({total_dur:.1f}s) > 57s. Adjusting speed by {tempo}x...", flush=True)
@@ -266,7 +313,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_body = get_dev_font(32)
     font_label = get_dev_font(24)
     
-    # Action Banners Fonts (Safe Zone Above Caption)
     font_cta_hin = get_dev_font(28)
     font_cta_eng = get_eng_font(28)
     font_wa_eng = get_eng_font(26)
@@ -279,11 +325,9 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_obj.text((80, 130), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
     def draw_footer(draw_obj):
-        # 1. Green WhatsApp / Course Banner (Safe Zone: Y=1365 to 1475)
+        # 1. Green WhatsApp Banner (Safe Zone: Y=1365 to 1475)
         draw_obj.rounded_rectangle([80, 1365, 1000, 1475], radius=20, fill="#15803D", outline="#22C55E", width=2)
-        # Line 1: English Font (No Tofu Boxes)
         draw_obj.text((110, 1380), "GDS to MTS | Postman | Mail Guard | P.A.", fill="#FEF08A", font=font_wa_eng)
-        # Line 2: Devanagari Font (Clean Hindi, No Tofu Boxes)
         draw_obj.text((110, 1425), "कोर्स व फ्री मॉक टेस्ट हेतु व्हाट्सएप: 8989971379", fill="#FFFFFF", font=font_wa_dev)
 
         # 2. Red Follow Banner (Safe Zone: Y=1495 to 1575)
@@ -319,7 +363,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         img.save(fname)
         slide_filenames.append(fname)
 
-    # Slide 5 (Quiz Slide)
+    # Slide 5 (Quiz Slide - No answer revealed)
     img5 = Image.new("RGB", (1080, 1920), color="#0F172A")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
@@ -343,11 +387,11 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
 
         d5.rounded_rectangle([110, oy, 970, oy + 85], radius=16, fill=box_bg, outline=border_c, width=2)
         
-        # A), B), C), D) drawn using English font so it NEVER becomes a box
+        # A), B), C), D) in English font to eliminate tofu boxes
         opt_badge = f"{chr(65+idx)})"
         d5.text((135, oy + 22), opt_badge, fill="#38BDF8", font=font_opt_eng)
         
-        # Option Hindi text
+        # Option text in Devanagari font
         d5.text((195, oy + 20), textwrap.fill(opt, width=26), fill=text_c, font=font_body)
         oy += 105
 
@@ -390,6 +434,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.", flush=True)
 
+# --- Proven Resumable Instagram Upload (With 5s Meta Sync) ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
@@ -419,8 +464,6 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
 
     raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
 
-RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
-
 def _create_reel_container(video_file, caption, user_id, access_token):
     print("Step 1/2: Creating resumable-upload Reel container...", flush=True)
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
@@ -441,7 +484,7 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
-    # Meta Sync Pause: 5 seconds for container registration
+    # Meta Sync Pause: 5 seconds for Meta server registration
     print(f"Container created with ID: {video_id}. Meta sync ke liye 5 sec wait kar rahe hain...", flush=True)
     time.sleep(5)
 
@@ -504,18 +547,25 @@ def _publish_reel(video_id, user_id, access_token):
     else:
         raise RuntimeError(f"Publish fail hua: {pub_res}")
 
+# --- Execution Entry Point ---
 if __name__ == "__main__":
-    print("🚀 Postal Wala Deep Continuous Automation Starting...", flush=True)
+    print("🚀 Postal Wala Multi-Part Clause Automation Starting...", flush=True)
+
+    state = load_progress_state()
+    print(f"📋 Current Tracking -> Clause: {state.get('clause_no', 1)}, Part: {state.get('current_part', 1)}", flush=True)
 
     target_pdf = get_target_pdf()
-    pdf_content, page_num = get_current_reading_window(target_pdf)
-    print(f"✅ Read Page {page_num} with deep continuous tracking.", flush=True)
+    pdf_snippet, page_num = get_pdf_context_snippet(target_pdf, state)
+    print(f"✅ Extracted reference context from PDF (Page {page_num}).", flush=True)
 
-    script_data = generate_clause_script(pdf_content, page_num)
-    print("✅ AI Script Ready with Thorough Explanation.", flush=True)
+    script_data = generate_partwise_clause_script(pdf_snippet, state)
+    print(f"✅ AI Script Ready: {script_data.get('rule_title')}", flush=True)
 
     asyncio.run(generate_voice(script_data["voiceover"], AUDIO_OUTPUT))
-    print("✅ Voiceover Ready with Natural Teaching Pacing.", flush=True)
+    print("✅ Voiceover Ready with Clean Audio.", flush=True)
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
+
     post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
+
+    advance_progress_state(state, script_data)
