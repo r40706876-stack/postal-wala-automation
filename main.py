@@ -333,20 +333,12 @@ def get_public_url(video_path):
         print(f"✅ Clean Raw Direct URL: {direct_url}")
         return direct_url
     
-    print("⚠️ Catbox fallback to file.io...")
-    with open(video_path, "rb") as f:
-        r2 = requests.post("https://file.io", files={"file": f}, timeout=60)
-        res_json = r2.json()
-        if res_json.get("success"):
-            return res_json["link"]
-            
-    raise RuntimeError(f"Video host failed: {r.text}")
+    raise RuntimeError(f"Catbox upload failed: {r.text}")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    # Using public video URL method to bypass any 400 resumable upload header conflicts
     public_url = get_public_url(video_path)
 
     print("🚀 Initializing Instagram Reel Container via direct URL...")
