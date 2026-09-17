@@ -58,8 +58,11 @@ def get_target_pdf():
     return pdf_files[0]
 
 def clean_extracted_ocr_text(text):
-    """PDF ke toote-foote font aur OCR garbage ko shuddh postal shabdon me theek karta hai"""
+    """Prathmik OCR Filter: Aam toote-foote shabdon ko turant shuddh karta hai"""
     replacements = {
+        "नित्य पत्र": "वित्तीय वर्ष",
+        "नित्य वर्ष": "वित्तीय वर्ष",
+        "नित्य": "वित्तीय",
         "कतलेरी कटेट": "वितरण टिकट",
         "कटलेरी कटेट": "वितरण टिकट",
         "कतलेरी": "वितरण टिकट",
@@ -117,20 +120,24 @@ def generate_clause_script(pdf_content, page_num):
         "Content-Type": "application/json"
     }
 
-    # Strict prompt to eliminate gibberish and ensure official India Post terminology
+    # Strict Deep Postal Rule Reasoning Engine
     prompt = f"""
-    You are an expert tutor for Postal MTS/Postman/Mail Guard exams running Instagram page 'Postal Wala'.
-    Teach the departmental rules concisely and completely from this running section (Page {page_num}).
+    You are the Senior Chief Instructor for India Post Departmental Examinations (MTS, Postman, Mail Guard, Postal Assistant) running the official preparation channel 'Postal Wala'.
+    Teach the departmental rules from this running section (Page {page_num}).
 
-    CRITICAL INSTRUCTION ON OCR / FONT ERRORS:
-    The provided PDF text comes from a digitally scanned document that may have corrupted Hindi fonts, broken matras, or garbled syllables (for example: corrupted text like 'कतलेरी कटेट' which is actually 'वितरण टिकट' or 'डिलीवरी टिकट').
-    - NEVER repeat meaningless, garbled, or corrupted words in your script or voiceover!
-    - Always use authentic, standard, and official India Post terminology (डाक विभाग की शुद्ध नियमावली शब्दावली, जैसे: 'वितरण टिकट' (Delivery Ticket), 'सूचना पर्ची' (Intimation Slip), 'पोस्ट बॉक्स', 'किराया व जमा राशि', 'दुरुपयोग', 'पंजीकृत डाक').
-    - Understand the true meaning of the rule and express it in natural, flawless, exam-standard Hindi.
+    CRITICAL POSTAL DOMAIN REASONING & OCR VERIFICATION PROTOCOL:
+    1. The PDF is an old scanned book where Hindi OCR constantly corrupts letters, matras, and phrases into misleading or strange words (e.g. OCR turned 'वित्तीय वर्ष' into 'नित्य पत्र', and 'वितरण टिकट' into 'कतलेरी कटेट').
+    2. DEEP VERIFICATION MANDATE: Whenever you encounter ANY word or phrase that sounds unfamiliar, awkward, suspicious, or lacks clear sense:
+       - DO NOT blindly copy or repeat it!
+       - PAUSE and analyze it 3 to 4 times strictly through the lens of official India Post Departmental Rules (Post Office Guide Part 1, Postal Manual Vol V/VI).
+       - Ask yourself: "Does this term actually exist in the postal manual? What official postal procedure or clause is being described here?"
+       - Correlate with real departmental concepts: Post Box/Bag rental (वित्तीय वर्ष / त्रैमासिक किराया), Delivery Ticket (वितरण टिकट), Intimation Slip (सूचना पर्ची), Refusal/Return (वापसी/अस्वीकृति), Franking, Registration, etc.
+       - Reconstruct the explanation using 100% authentic, correct, and authoritative India Post terminology.
+    3. ZERO TOLERANCE FOR NONSENSE: If an OCR word makes no sense in postal law, completely discard the corrupted word and write the correct departmental fact in pure, natural Hindi.
 
-    RULES:
-    1. Pure Hindi (Devanagari script only), flawless grammar, meaningful and authentic postal rules, zero spelling mistakes, no English words, no emojis, no bullet symbols.
-    2. Keep sentences concise so total speaking time is strictly under 45-50 seconds (max 85 words total).
+    SCRIPT CONSTRAINTS:
+    1. Pure Hindi (Devanagari script only), flawless grammar, authoritative exam-standard postal terminology, zero spelling mistakes, no English words, no emojis, no bullet symbols.
+    2. Total speaking duration strictly under 45-50 seconds (max 85 words total).
 
     PDF Section:
     {pdf_content}
@@ -147,7 +154,7 @@ def generate_clause_script(pdf_content, page_num):
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly and concisely with 100% correct postal terminology. 5. Say EXACTLY: "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!". 6. End with: "GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
+    VOICEOVER: [Voiceover MUST follow this exact sequence: 1. Warm greeting. 2. Ask the QUESTION immediately. 3. Say EXACTLY: "इसका जवाब जानने के लिए वीडियो में अंत तक बने रहें!". 4. Explain SEN1 to SEN4 clearly, smoothly and with 100% correct postal terminology. 5. Say EXACTLY: "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!". 6. End with: "GDS to MTS, Postman और P.A. कोर्स हेतु 8989971379 पर WhatsApp करें।" IMPORTANT: DO NOT speak or reveal the correct answer anywhere.]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
@@ -434,7 +441,7 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
-    # Meta Sync Pause: Meta ko container register karne ke liye 5 sec ka time
+    # Meta Sync Pause: 5 seconds for container registration
     print(f"Container created with ID: {video_id}. Meta sync ke liye 5 sec wait kar rahe hain...", flush=True)
     time.sleep(5)
 
