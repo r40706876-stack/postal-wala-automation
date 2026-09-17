@@ -302,7 +302,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         filter_parts += f"[{i}:v]loop=loop=-1:size=1:start=0,trim=duration={max(1.0, dur)}[v{i}]; "
     
     concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
-    filter_complex = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,format=yuv420p[v]"
+    filter_complex = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,format=yuv420p[v]"
 
     cmd = ["ffmpeg", "-y"]
     cmd.extend(inputs.strip().split())
@@ -312,23 +312,22 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-map", "[v]",
         "-map", f"{len(slide_filenames)}:a",
         "-c:v", "libx264",
-        "-preset", "ultrafast",
-        "-profile:v", "baseline",
-        "-level", "3.0",
+        "-preset", "medium",
+        "-profile:v", "main",
+        "-level", "4.0",
         "-pix_fmt", "yuv420p",
-        "-bf", "0",
         "-r", "30",
-        "-g", "30",
+        "-g", "60",
         "-c:a", "aac",
-        "-b:a", "128k",
-        "-ar", "44100",
+        "-b:a", "192k",
+        "-ar", "48000",
         "-movflags", "+faststart",
         "-shortest", output_video
     ])
     subprocess.run(cmd, check=True)
-    print("✅ Strict Instagram-Compatible Baseline Reel Created.")
+    print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.")
 
-def post_reel_to_instagram_clean(video_file, caption):
+def post_reel_to_instagram_resumable_fixed(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
     
@@ -336,7 +335,7 @@ def post_reel_to_instagram_clean(video_file, caption):
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
     file_size = os.path.getsize(video_file)
-    print(f"Video size: {file_size} bytes. Initializing Clean Resumable Upload Session...")
+    print(f"Video size: {file_size} bytes. Initializing Resumable Upload Session...")
 
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
     init_params = {
@@ -357,14 +356,15 @@ def post_reel_to_instagram_clean(video_file, caption):
     if not video_id or not upload_url:
         raise RuntimeError(f"Upload init invalid response: {init_data}")
 
-    print(f"Uploading full video file without erroneous offset header...")
+    print(f"Uploading full video file with mandatory Offset: 0 header...")
     
     with open(video_file, "rb") as vf:
         video_bytes = vf.read()
 
-    # REMOVED OFFSET HEADER ENTIRELY AS IT IS UNNECESSARY FOR SINGLE-SHOT RESUMABLE UPLOADS
+    # CRITICAL: Meta resumable session strictly requires Offset: 0 when sending full binary stream in single shot
     headers = {
         "Authorization": f"OAuth {access_token}",
+        "Offset": "0",
         "Content-Length": str(file_size),
         "Content-Type": "application/octet-stream"
     }
@@ -377,9 +377,9 @@ def post_reel_to_instagram_clean(video_file, caption):
     print("Waiting for Instagram video processing...")
     status_url = GRAPH_API_BASE + str(video_id).strip()
     for attempt in range(40):
-        time.sleep(10)
+        time.sleep(15)
         try:
-            status_res = requests.get(status_url, params={"fields": "status_code", "access_token": access_token}, timeout=30).json()
+            status_res = requests.get(status_url, params={"fields": "status_code,status", "access_token": access_token}, timeout=30).json()
             status = status_res.get("status_code")
             print(f"Check {attempt+1}: Status -> {status}")
             if status == "FINISHED":
@@ -413,4 +413,4 @@ if __name__ == "__main__":
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_to_instagram_clean(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram_resumable_fixed(OUTPUT_VIDEO, script_data.get("caption", ""))
