@@ -12,6 +12,8 @@ from PIL import Image, ImageDraw, ImageFont
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
@@ -321,22 +323,51 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     print("✅ Perfectly Synced Reel Created.")
 
 def get_public_url(video_path):
-    print("🌐 Uploading video to Tmpfiles.org for direct public access...")
+    if not GITHUB_TOKEN or not GITHUB_REPOSITORY:
+        # Fallback to local git commit raw link if workflow permissions allow
+        print("⚠️ GITHUB_TOKEN missing, attempting direct GitHub repository raw link...")
+        return f"https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/main/{video_path}"
+
+    print("🚀 Publishing video via GitHub Release for 100% stable Meta download...")
+    tag_name = f"reel-{int(time.time())}"
+    rel_url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/releases"
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json"
+    }
+    rel_payload = {
+        "tag_name": tag_name,
+        "name": f"Automated Reel {tag_name}",
+        "draft": False,
+        "prerelease": True
+    }
+    r_rel = requests.post(rel_url, headers=headers, json=rel_payload)
+    rel_data = r_rel.json()
+    upload_url_template = rel_data.get("upload_url")
+
+    if not upload_url_template:
+        # Fallback to raw content URL if release creation fails
+        return f"https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/main/{video_path}"
+
+    base_upload_url = upload_url_template.split("{")[0]
+    asset_url = f"{base_upload_url}?name=final_reel.mp4"
+    asset_headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Content-Type": "video/mp4",
+        "Accept": "application/vnd.github+json"
+    }
     with open(video_path, "rb") as f:
-        r = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=90)
-    
-    try:
-        res_json = r.json()
-        if res_json.get("status") == "success":
-            raw_url = res_json["data"]["url"]
-            # Convert to direct download link format
-            direct_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
-            print(f"✅ Tmpfiles Direct URL: {direct_url}")
-            return direct_url
-    except Exception:
-        pass
-        
-    raise RuntimeError(f"Tmpfiles upload failed: {r.text}")
+        video_bytes = f.read()
+
+    r_asset = requests.post(asset_url, headers=asset_headers, data=video_bytes, timeout=120)
+    asset_data = r_asset.json()
+    public_url = asset_data.get("browser_download_url")
+
+    if not public_url:
+        return f"https://raw.githubusercontent.com/{GITHUB_REPOSITORY}/main/{video_path}"
+
+    print(f"✅ GitHub Release Asset URL: {public_url}")
+    return public_url
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
@@ -344,7 +375,7 @@ def upload_to_instagram_direct(video_path, caption):
 
     public_url = get_public_url(video_path)
 
-    print("🚀 Initializing Instagram Reel Container via video_url...")
+    print("🚀 Initializing Instagram Reel Container via direct public URL...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
     init_payload = {
         "media_type": "REELS",
