@@ -327,52 +327,50 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.")
 
-def post_reel_to_instagram_resumable_fixed(video_file, caption):
+def post_reel_to_instagram_simple(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
     
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    file_size = os.path.getsize(video_file)
-    print(f"Video size: {file_size} bytes. Initializing Resumable Upload Session...")
+    print("Uploading video via simple direct hosting method to avoid header mismatches...")
+    
+    # Using tmpfiles.org to get a direct public URL for the video, eliminating all Instagram binary upload header bugs
+    url = "https://tmpfiles.org/api/v1/upload"
+    with open(video_file, "rb") as f:
+        files = {"file": f}
+        response = requests.post(url, files=files, timeout=120)
+    
+    if response.status_code != 200:
+        raise RuntimeError(f"Public host upload failed: {response.text}")
+        
+    res_json = response.json()
+    if res_json.get("status") != "success":
+        raise RuntimeError(f"Public host error: {res_json}")
+        
+    file_url = res_json["data"]["url"]
+    public_url = file_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
+    print(f"✅ Video hosted at: {public_url}")
 
+    print("Initializing Instagram Reel container with video URL...")
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
-    init_params = {
+    payload = {
         "media_type": "REELS",
-        "upload_type": "resumable",
+        "video_url": public_url,
         "caption": caption,
         "access_token": access_token
     }
     
-    r = requests.post(init_url, data=init_params, timeout=30)
+    r = requests.post(init_url, data=payload, timeout=60)
     if r.status_code != 200:
-        raise RuntimeError(f"Upload init fail hua: {r.text}")
+        raise RuntimeError(f"Container init fail hua: {r.text}")
         
     init_data = r.json()
     video_id = init_data.get("id")
-    upload_url = init_data.get("upload_url") or init_data.get("uri")
 
-    if not video_id or not upload_url:
-        raise RuntimeError(f"Upload init invalid response: {init_data}")
-
-    print(f"Uploading full video file with mandatory Offset: 0 header...")
-    
-    with open(video_file, "rb") as vf:
-        video_bytes = vf.read()
-
-    # CRITICAL: Meta resumable session strictly requires Offset: 0 when sending full binary stream in single shot
-    headers = {
-        "Authorization": f"OAuth {access_token}",
-        "Offset": "0",
-        "Content-Length": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
-    
-    upload_res = requests.post(upload_url, headers=headers, data=video_bytes, timeout=300)
-
-    if upload_res.status_code not in [200, 201]:
-        raise RuntimeError(f"Video binary upload fail hua ({upload_res.status_code}): {upload_res.text}")
+    if not video_id:
+        raise RuntimeError(f"Container ID invalid response: {init_data}")
 
     print("Waiting for Instagram video processing...")
     status_url = GRAPH_API_BASE + str(video_id).strip()
@@ -413,4 +411,4 @@ if __name__ == "__main__":
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_to_instagram_resumable_fixed(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram_simple(OUTPUT_VIDEO, script_data.get("caption", ""))
