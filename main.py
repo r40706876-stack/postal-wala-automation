@@ -24,12 +24,12 @@ VOICE_NAME = "hi-IN-SwaraNeural"
 
 def ensure_fonts():
     if not os.path.exists(DEV_FONT_PATH):
-        print("📥 Downloading Noto Sans Devanagari font...")
+        print("📥 Downloading Noto Sans Devanagari font...", flush=True)
         url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
         r = requests.get(url, timeout=30)
         with open(DEV_FONT_PATH, "wb") as f:
             f.write(r.content)
-        print("✅ Font cached locally.")
+        print("✅ Font cached locally.", flush=True)
 
 def get_dev_font(size):
     ensure_fonts()
@@ -288,7 +288,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     oy = 790
     for idx, opt in enumerate(opts):
-        # Answer highlight removed
         box_bg = "#1E293B"
         border_c = "#38BDF8"
         text_c = "#FFFFFF"
@@ -335,90 +334,134 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ])
     subprocess.run(cmd, check=True)
-    print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.")
+    print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.", flush=True)
 
-def upload_to_tmpfiles(video_file):
-    print("Uploading video to stable public host (tmpfiles.org)...")
-    url = "https://tmpfiles.org/api/v1/upload"
-    with open(video_file, "rb") as f:
-        files = {"file": f}
-        response = requests.post(url, files=files, timeout=120)
-    
-    if response.status_code == 200:
-        res_json = response.json()
-        if res_json.get("status") == "success":
-            file_url = res_json["data"]["url"]
-            public_url = file_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
-            print(f"✅ Successfully hosted at: {public_url}")
-            return public_url
-    raise RuntimeError(f"tmpfiles upload failed: {response.text}")
-
-def post_reel_to_instagram(video_file, caption):
+def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
-    
+
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    # Video ko URL banakar Instagram ko bhejenge
-    public_video_url = upload_to_tmpfiles(video_file)
+    last_error = None
+    for container_attempt in range(1, max_container_attempts + 1):
+        print(f"--- Reel upload attempt {container_attempt}/{max_container_attempts} ---", flush=True)
+        try:
+            video_id = _create_reel_container(video_file, caption, user_id, access_token)
+            status = _poll_container_status(video_id, access_token)
 
-    print("Initializing Instagram Reel container with public URL...")
+            if status == "FINISHED":
+                _publish_reel(video_id, user_id, access_token)
+                return
+            else:
+                last_error = f"Container ended with non-FINISHED status: {status}"
+                print(f"⚠️ {last_error}. Retrying with a brand-new container...", flush=True)
+        except Exception as e:
+            last_error = str(e)
+            print(f"⚠️ Attempt {container_attempt} failed: {last_error}. Retrying...", flush=True)
+
+        if container_attempt < max_container_attempts:
+            time.sleep(20)
+
+    raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
+
+RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
+
+# --- YE HISSSE KO MAINE WAPAS EXACT AAPKE ORIGIONAL WORKING CODE JESA KAR DIYA HAI ---
+def _create_reel_container(video_file, caption, user_id, access_token):
+    print("Step 1/2: Creating resumable-upload Reel container...", flush=True)
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
-    payload = {
+    data = {
         "media_type": "REELS",
-        "video_url": public_video_url,
+        "upload_type": "resumable",
         "caption": caption,
         "access_token": access_token
     }
-    
-    r = requests.post(init_url, data=payload, timeout=60)
+    r = requests.post(init_url, data=data, timeout=60)
+
     if r.status_code != 200:
         raise RuntimeError(f"Container init fail hua: {r.text}")
-        
+
     init_data = r.json()
     video_id = init_data.get("id")
 
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
-    print("Waiting for Instagram video processing...")
-    status_url = GRAPH_API_BASE + str(video_id).strip()
-    for attempt in range(40):
-        time.sleep(15)
-        try:
-            status_res = requests.get(status_url, params={"fields": "status_code,status", "access_token": access_token}, timeout=30).json()
-            status = status_res.get("status_code")
-            print(f"Check {attempt+1}: Status -> {status}")
-            if status == "FINISHED":
-                break
-            elif status in ["ERROR", "EXPIRED"]:
-                raise RuntimeError(f"Instagram processing failed with status: {status_res}")
-        except Exception as e:
-            print(f"Polling warning: {e}")
+    print(f"Container created with ID: {video_id}. Uploading video bytes to rupload.facebook.com...", flush=True)
 
-    print("Publishing Reel...")
+    file_size = os.path.getsize(video_file)
+    upload_url = RUPLOAD_BASE + str(video_id).strip()
+    upload_headers = {
+        "Authorization": f"OAuth {access_token}",
+        "offset": "0",
+        "file_size": str(file_size),
+    }
+
+    # EXACT SAME WORKING METHOD: Reading via file object 'vf'
+    with open(video_file, "rb") as vf:
+        up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
+
+    if up_r.status_code != 200:
+        raise RuntimeError(f"Video byte upload fail hua: {up_r.text}")
+
+    up_json = up_r.json()
+    if not up_json.get("success"):
+        raise RuntimeError(f"Video byte upload did not report success: {up_json}")
+
+    print("Step 2/2: Video bytes uploaded successfully. Waiting for Instagram processing...", flush=True)
+    return video_id
+
+def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
+    status_url = GRAPH_API_BASE + str(video_id).strip()
+
+    for attempt in range(max_checks):
+        time.sleep(wait_seconds)
+
+        try:
+            status_res = requests.get(
+                status_url,
+                params={"fields": "status_code,status", "access_token": access_token},
+                timeout=30
+            ).json()
+        except Exception as e:
+            print(f"Polling network warning (will retry): {e}", flush=True)
+            continue
+
+        status = status_res.get("status_code")
+        print(f"Check {attempt + 1}: Status -> {status}", flush=True)
+
+        if status == "FINISHED":
+            return "FINISHED"
+        elif status in ["ERROR", "EXPIRED"]:
+            print(f"❌ Instagram reported a definitive failure: {status_res}", flush=True)
+            return status
+
+    return "TIMEOUT"
+
+def _publish_reel(video_id, user_id, access_token):
+    print("Publishing Reel...", flush=True)
     publish_url = GRAPH_API_BASE + str(user_id).strip() + "/media_publish"
     pub_res = requests.post(publish_url, data={"creation_id": video_id, "access_token": access_token}, timeout=30).json()
 
     if "id" in pub_res:
-        print(f"🎉 Reel successfully published on Instagram! Post ID: {pub_res['id']}")
+        print(f"🎉 Reel successfully published on Instagram! Post ID: {pub_res['id']}", flush=True)
     else:
         raise RuntimeError(f"Publish fail hua: {pub_res}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Deep Continuous Automation Starting...")
-    
+    print("🚀 Postal Wala Deep Continuous Automation Starting...", flush=True)
+
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
-    print(f"✅ Read Page {page_num} with deep continuous tracking.")
+    print(f"✅ Read Page {page_num} with deep continuous tracking.", flush=True)
 
     script_data = generate_clause_script(pdf_content, page_num)
-    print("✅ AI Script Ready with Thorough Explanation.")
+    print("✅ AI Script Ready with Thorough Explanation.", flush=True)
 
     asyncio.run(generate_voice(script_data["voiceover"], AUDIO_OUTPUT))
-    print("✅ Voiceover Ready with Natural Teaching Pacing.")
+    print("✅ Voiceover Ready with Natural Teaching Pacing.", flush=True)
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_to_instagram(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
