@@ -24,12 +24,71 @@ AUDIO_OUTPUT = "voice.mp3"
 OUTPUT_VIDEO = "final_reel.mp4"
 VOICE_NAME = "hi-IN-SwaraNeural"
 
+# --- Official India Post PO Guide Part 1 Master Catalog ---
+POSTAL_CLAUSE_CATALOG = {
+    1: {
+        "name": "डाक विभाग का नियंत्रण व संगठन",
+        "total_parts": 2,
+        "part_1_focus": "संचार मंत्रालय के प्रशासनिक नियंत्रण, महानिदेशक (DG) शीर्ष प्रमुख, मुख्यालय डाक भवन नई दिल्ली।",
+        "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और बोर्ड सचिव के दायित्व।"
+    },
+    2: {
+        "name": "डाकघरों के प्रकार और श्रेणियां",
+        "total_parts": 2,
+        "part_1_focus": "डाकघर की 3 श्रेणियां (HO, SO, BO)। प्रधान डाकघर (HO) मुख्य लेखा कार्यालय होता है और प्रथम श्रेणी HO का प्रभारी राजपत्रित पोस्टमास्टर होता है।",
+        "part_2_focus": "उप डाकघर (SO) और शाखा डाकघर (BO)। ग्रामीण क्षेत्रों में BO के कार्य के घंटे न्यूनतम 4 और अधिकतम 5 घंटे, प्रभारी शाखा डाकपाल (BPM)।"
+    },
+    3: {
+        "name": "रात्रि डाकघर के नियम",
+        "total_parts": 2,
+        "part_1_focus": "महानिदेशक द्वारा स्थापना और कार्य समय रात 8:30 बजे तक बढ़ाने का विशेष अधिकार।",
+        "part_2_focus": "रविवार और डाक अवकाश पर सुबह 10 से शाम 5 बजे तक कार्य, केवल सीमित बुकिंग और टिकट बिक्री।"
+    },
+    4: {
+        "name": "मोबाइल डाकघर",
+        "total_parts": 1,
+        "part_1_focus": "बड़े शहरों में देर शाम तक डाक बुकिंग सुविधा, कोई बचत बैंक या मनीऑर्डर कार्य नहीं होता।"
+    },
+    55: {
+        "name": "पोस्ट बॉक्स के नियम व किराया",
+        "total_parts": 3,
+        "part_1_focus": "केवल पूरी तरह प्रीपेड अपंजीकृत पत्रों के लिए, डाकपाल के विवेक पर आवंटन।",
+        "part_2_focus": "वार्षिक किराया ₹150 (केवल बॉक्स) और ₹250 (बॉक्स व बैग दोनों), त्रैमासिक किराया ₹50 और ₹80।",
+        "part_3_focus": "ताला-चाबी की सुरक्षा, चाबी खोने पर सूचना और नया ताला लगाने का निर्धारित शुल्क।"
+    },
+    56: {
+        "name": "पोस्ट बैग एवं वितरण टिकट",
+        "total_parts": 2,
+        "part_1_focus": "सभी वितरण डाकघरों में सुविधा, किराएदार द्वारा थैला लाने-ले जाने के नियम।",
+        "part_2_focus": "डाक खिड़की से डाक प्राप्त करने के लिए अधिकृत प्रतिनिधि को वितरण टिकट (Delivery Ticket) प्रस्तुत करना अनिवार्य।"
+    }
+}
+
 def clean_text(text):
     if not text:
         return ""
     text = text.strip().strip("[](){}\"'`")
     text = "".join(c for c in text if ord(c) < 0x10000)
     return text.strip()
+
+def clean_hindi_postal_terms(text):
+    if not text:
+        return ""
+    replacements = {
+        "पेन्टियों": "पत्र-पेटियों",
+        "पेन्टी": "पत्र-पेटी",
+        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें",
+        "घंटी वाली प्लेट": "घंटे वाली प्लेट",
+        "नित्य पत्र": "वित्तीय वर्ष",
+        "नित्य वर्ष": "वित्तीय वर्ष",
+        "कतलेरी कटेट": "वितरण टिकट",
+        "कटलेरी कटेट": "वितरण टिकट",
+        "कतलेरी": "वितरण टिकट",
+        "कटेट": "टिकट"
+    }
+    for bad_w, good_w in replacements.items():
+        text = text.replace(bad_w, good_w)
+    return clean_text(text)
 
 # --- Font Management ---
 def ensure_fonts():
@@ -58,11 +117,10 @@ def get_eng_font(size):
             return ImageFont.truetype(p, size)
     return get_dev_font(size)
 
-# --- State Tracking ---
+# --- State Management ---
 def load_progress_state():
     state = {
         "clause_no": 2,
-        "clause_name": "डाकघरों के प्रकार और श्रेणियां",
         "current_part": 1,
         "total_parts": 2
     }
@@ -81,7 +139,7 @@ def save_progress_state(state):
     except Exception as e:
         print(f"⚠️ Warning saving state: {e}", flush=True)
 
-# --- Pure Knowledge AI Script Generator (No Corrupted OCR) ---
+# --- AI Script Generation ---
 def generate_clause_script(state):
     if not GROQ_API_KEY:
         raise ValueError("GROQ_API_KEY missing in GitHub Secrets!")
@@ -94,53 +152,50 @@ def generate_clause_script(state):
     current_clause = state.get("clause_no", 2)
     current_part = state.get("current_part", 1)
 
+    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[2])
+    clause_name = clause_info["name"]
+    total_parts = clause_info["total_parts"]
+    part_focus = clause_info.get(f"part_{current_part}_focus", clause_info.get("part_1_focus", ""))
+
     prompt = f"""
-    You are the Senior Chief Instructor for India Post Departmental Examinations (MTS, Postman, Mail Guard, Postal Assistant) running the educational channel 'Postal Wala'.
+    You are the Senior Chief Instructor for India Post Departmental Examinations (MTS, Postman, Mail Guard, Postal Assistant) running 'Postal Wala'.
 
-    TOPIC MANDATE:
-    Book: 'Post Office Guide Part 1' (डाक घर गाइड भाग 1)
-    Topic: Clause {current_clause} - 'डाकघरों के प्रकार और श्रेणियां' (Types of Post Offices: HO, SO, BO)
-    Current Part: Part {current_part} of this clause.
+    EXACT TOPIC TO TEACH:
+    - Book: 'Post Office Guide Part 1' (पोस्ट ऑफिस गाइड भाग 1)
+    - Clause Number: क्लॉज {current_clause}
+    - Clause Official Title: {clause_name}
+    - Part: भाग {current_part} (कुल {total_parts} भाग)
+    - Sub-Rule Focus: "{part_focus}"
 
-    OFFICIAL DEPARTMENTAL FACTS FOR CLAUSE 2:
-    - Post offices are divided into 3 classes: Head Post Office (HO), Sub Post Office (SO), and Branch Post Office (BO).
-    - Head Post Office is the main account office (मुख्य लेखा कार्यालय) for itself and all subordinate Sub and Branch offices.
-    - In-charge of 1st Class HO is a Gazetted Postmaster (राजपत्रित पोस्टमास्टर) exercising powers of Superintendent of Post Offices.
-    - Branch Post Office (BO) operates in rural areas. Working hours: min 4 hours, max 5 hours. Headed by GDS BPM.
-    - Sub Post Office (SO) is directly subordinate to HO.
+    MANDATORY SCRIPT & LANGUAGE RULES:
+    1. Pure, flawless, official Devanagari Hindi. Zero grammatical errors, complete and natural sentences.
+    2. Write exactly 3 authoritative teaching sentences (SEN1, SEN2, SEN3) about this specific sub-rule, each ~22-26 words long.
+    3. EXACT VOICE PACING (CRITICAL):
+       - The voiceover MUST be strictly between 115 and 122 words total.
+       - It will naturally speak in 51-53 seconds. Do not exceed this length.
+    4. MANDATORY INTRO & OUTRO SEQUENCE:
+       - "नमस्कार साथियों! पोस्ट ऑफिस गाइड भाग 1 के क्लॉज {current_clause}, {clause_name} के भाग {current_part} में आपका स्वागत है, जिसे हम कुल {total_parts} भागों में पूरा करेंगे।"
+       - "आज का महत्वपूर्ण प्रश्न है: [Question]?"
+       - "इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें!"
+       - [Explain SEN1, SEN2, and SEN3 calmly]
+       - "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!"
+       - If {current_part} < {total_parts}: "इस क्लॉज के अगले भाग को देखने के लिए अभी फॉलो कर लें!"
+       - End with: "GDS to MTS, Postman और P.A. कोर्स हेतु स्क्रीन पर दिए गए नंबर पर WhatsApp करें।"
+       - DO NOT speak the digits of the phone number.
+       - DO NOT reveal or speak the correct answer.
 
-    QUALITY & LANGUAGE REQUIREMENTS:
-    1. Pure, flawless, official Hindi (मानक देवनागरी हिंदी). No English words, no broken words, complete grammatical sentences.
-    2. Exact pacing: Total voiceover MUST be strictly between 115 and 125 words so the video naturally lasts 50-54 seconds without rushing.
-    3. Exactly 3 rich teaching sentences (SEN1, SEN2, SEN3), each around 20-25 words, thoroughly explaining the departmental rule.
-
-    VOICEOVER SEQUENCE (MANDATORY):
-    - "नमस्कार साथियों! पोस्ट ऑफिस गाइड भाग 1 के क्लॉज {current_clause}, डाकघरों के प्रकार के भाग {current_part} में आपका स्वागत है, जिसे हम कुल [TOTAL_PARTS] भागों में पूरा करेंगे।"
-    - "आज का महत्वपूर्ण प्रश्न है: [Question]?"
-    - "इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें!"
-    - [Explain SEN1, SEN2, and SEN3 calmly with natural pauses]
-    - "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!"
-    - If {current_part} < TOTAL_PARTS: "इस क्लॉज के अगले भाग को देखने के लिए अभी फॉलो कर लें!"
-    - End with: "GDS to MTS, Postman और P.A. कोर्स हेतु स्क्रीन पर दिए गए नंबर पर WhatsApp करें।"
-    - DO NOT speak digits of the phone number.
-    - DO NOT reveal the correct answer in the audio.
-
-    FORMAT (Do NOT use square brackets in output):
-    CLAUSE_TAG: PO GUIDE PART 1 | क्लॉज {current_clause}
-    CLAUSE_NAME: डाकघरों के प्रकार और श्रेणियां
-    PART_NO: {current_part}
-    TOTAL_PARTS: [e.g. 2]
-    SEN1: [Complete rich Hindi sentence 1, ~22 words]
-    SEN2: [Complete rich Hindi sentence 2, ~22 words]
-    SEN3: [Complete rich Hindi sentence 3, ~22 words]
-    QUESTION: [1 high-yield exam question in Hindi]
+    OUTPUT FORMAT (Do NOT use brackets in values):
+    SEN1: [Rich Hindi sentence 1, ~24 words]
+    SEN2: [Rich Hindi sentence 2, ~24 words]
+    SEN3: [Rich Hindi sentence 3, ~24 words]
+    QUESTION: [1 high-yield exam question in Hindi based strictly on this rule]
     OPT_A: [Option A]
     OPT_B: [Option B]
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Exact voiceover text strictly 115 to 125 words]
-    CAPTION: [Instagram caption with #PostalWala #POGuidePart1 #Clause2 #MTSExam]
+    VOICEOVER: [Exact voiceover text strictly 115 to 122 words]
+    CAPTION: [Instagram caption with #PostalWala #POGuidePart1 #Clause{current_clause} #MTSExam #PostmanExam]
     """
 
     payload = {
@@ -159,59 +214,45 @@ def generate_clause_script(state):
     raw_text = res_json["choices"][0]["message"]["content"].strip()
 
     data = {
-        "clause_tag": f"PO GUIDE PART 1 | क्लॉज {current_clause}",
-        "clause_name": "डाकघरों के प्रकार और श्रेणियां",
+        "clause_no": current_clause,
+        "clause_name": clause_name,
         "part_no": current_part,
-        "total_parts": 2,
-        "sen1": "डाक विभाग के अंतर्गत डाकघरों को मुख्य रूप से तीन श्रेणियों में विभाजित किया गया है, जिन्हें प्रधान, उप और शाखा डाकघर कहते हैं।",
-        "sen2": "प्रधान डाकघर अपने क्षेत्राधिकार के सभी उप डाकघरों और शाखा डाकघरों का मुख्य लेखा कार्यालय यानी चीफ अकाउंट ऑफिस होता है।",
-        "sen3": "प्रथम श्रेणी के प्रधान डाकघर का प्रभारी राजपत्रित अधिकारी होता है, जिसके पास डाक अधीक्षक के समकक्ष वित्तीय व प्रशासनिक शक्तियां होती हैं।",
+        "total_parts": total_parts,
+        "sen1": "भारतीय डाक विभाग के अंतर्गत डाकघरों को मुख्य रूप से तीन श्रेणियों में विभाजित किया गया है, जिन्हें प्रधान डाकघर, उप डाकघर और शाखा डाकघर कहते हैं।",
+        "sen2": "प्रधान डाकघर अपने क्षेत्राधिकार के सभी उप डाकघरों और शाखा डाकघरों का मुख्य लेखा कार्यालय यानी चीफ अकाउंट ऑफिस के रूप में कार्य करता है।",
+        "sen3": "प्रथम श्रेणी के प्रधान डाकघर का प्रभारी राजपत्रित पोस्टमास्टर होता है, जो डाकघरों के अधीक्षक के समान प्रशासनिक व वित्तीय शक्तियां प्रयोग करता है।",
         "question": "अपने अधीनस्थ डाकघरों के लिए मुख्य लेखा कार्यालय के रूप में कौन कार्य करता है?",
         "opt_a": "प्रधान डाकघर",
         "opt_b": "उप डाकघर",
         "opt_c": "शाखा डाकघर",
         "opt_d": "मंडल कार्यालय",
         "correct": "A",
-        "voiceover": f"नमस्कार साथियों! पोस्ट ऑफिस गाइड भाग 1 के क्लॉज {current_clause}, डाकघरों के प्रकार के भाग {current_part} में आपका स्वागत है, जिसे हम कुल 2 भागों में पूरा करेंगे। आज का महत्वपूर्ण प्रश्न है: अपने अधीनस्थ डाकघरों के लिए मुख्य लेखा कार्यालय के रूप में कौन कार्य करता है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! डाक विभाग में डाकघरों को तीन श्रेणियों में बांटा गया है, प्रधान डाकघर, उप डाकघर और शाखा डाकघर। प्रधान डाकघर अपने क्षेत्र के सभी डाकघरों का मुख्य लेखा कार्यालय होता है। प्रथम श्रेणी प्रधान डाकघर का प्रभारी राजपत्रित अधिकारी होता है। तो दोस्तों, इसका सही उत्तर कमेंट्स में बताएं! अगले भाग के लिए अभी फॉलो करें, और कोर्स हेतु स्क्रीन पर दिए नंबर पर WhatsApp करें।",
+        "voiceover": f"नमस्कार साथियों! पोस्ट ऑफिस गाइड भाग 1 के क्लॉज {current_clause}, {clause_name} के भाग {current_part} में आपका स्वागत है, जिसे हम कुल {total_parts} भागों में पूरा करेंगे। आज का महत्वपूर्ण प्रश्न है: अपने अधीनस्थ डाकघरों के लिए मुख्य लेखा कार्यालय के रूप में कौन कार्य करता है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! भारतीय डाक विभाग में डाकघरों को तीन श्रेणियों में बांटा गया है: प्रधान डाकघर, उप डाकघर और शाखा डाकघर। प्रधान डाकघर अपने अधीनस्थ सभी डाकघरों का मुख्य लेखा कार्यालय होता है। प्रथम श्रेणी प्रधान डाकघर का प्रभारी राजपत्रित पोस्टमास्टर होता है। तो दोस्तों, इसका सही उत्तर कमेंट्स में बताएं! अगले भाग के लिए अभी फॉलो करें, और विभागीय कोर्स हेतु स्क्रीन पर दिए नंबर पर WhatsApp करें।",
         "caption": f"पीओ गाइड भाग 1 क्लॉज {current_clause} संपूर्ण विश्लेषण #PostalWala #POGuidePart1 #Clause{current_clause} #MTSExam"
     }
 
     for line in raw_text.splitlines():
         clean_l = line.strip()
-        if clean_l.startswith("CLAUSE_TAG:"):
-            data["clause_tag"] = clean_text(clean_l.replace("CLAUSE_TAG:", ""))
-        elif clean_l.startswith("CLAUSE_NAME:"):
-            data["clause_name"] = clean_text(clean_l.replace("CLAUSE_NAME:", ""))
-        elif clean_l.startswith("PART_NO:"):
-            try:
-                data["part_no"] = int(clean_text(clean_l.replace("PART_NO:", "")))
-            except Exception:
-                pass
-        elif clean_l.startswith("TOTAL_PARTS:"):
-            try:
-                data["total_parts"] = int(clean_text(clean_l.replace("TOTAL_PARTS:", "")))
-            except Exception:
-                pass
-        elif clean_l.startswith("SEN1:"):
-            data["sen1"] = clean_text(clean_l.replace("SEN1:", ""))
+        if clean_l.startswith("SEN1:"):
+            data["sen1"] = clean_hindi_postal_terms(clean_l.replace("SEN1:", ""))
         elif clean_l.startswith("SEN2:"):
-            data["sen2"] = clean_text(clean_l.replace("SEN2:", ""))
+            data["sen2"] = clean_hindi_postal_terms(clean_l.replace("SEN2:", ""))
         elif clean_l.startswith("SEN3:"):
-            data["sen3"] = clean_text(clean_l.replace("SEN3:", ""))
+            data["sen3"] = clean_hindi_postal_terms(clean_l.replace("SEN3:", ""))
         elif clean_l.startswith("QUESTION:"):
-            data["question"] = clean_text(clean_l.replace("QUESTION:", ""))
+            data["question"] = clean_hindi_postal_terms(clean_l.replace("QUESTION:", ""))
         elif clean_l.startswith("OPT_A:"):
-            data["opt_a"] = clean_text(clean_l.replace("OPT_A:", ""))
+            data["opt_a"] = clean_hindi_postal_terms(clean_l.replace("OPT_A:", ""))
         elif clean_l.startswith("OPT_B:"):
-            data["opt_b"] = clean_text(clean_l.replace("OPT_B:", ""))
+            data["opt_b"] = clean_hindi_postal_terms(clean_l.replace("OPT_B:", ""))
         elif clean_l.startswith("OPT_C:"):
-            data["opt_c"] = clean_text(clean_l.replace("OPT_C:", ""))
+            data["opt_c"] = clean_hindi_postal_terms(clean_l.replace("OPT_C:", ""))
         elif clean_l.startswith("OPT_D:"):
-            data["opt_d"] = clean_text(clean_l.replace("OPT_D:", ""))
+            data["opt_d"] = clean_hindi_postal_terms(clean_l.replace("OPT_D:", ""))
         elif clean_l.startswith("CORRECT:"):
             data["correct"] = clean_text(clean_l.replace("CORRECT:", "")).upper()[:1]
         elif clean_l.startswith("VOICEOVER:"):
-            data["voiceover"] = clean_text(clean_l.replace("VOICEOVER:", ""))
+            data["voiceover"] = clean_hindi_postal_terms(clean_l.replace("VOICEOVER:", ""))
         elif clean_l.startswith("CAPTION:"):
             data["caption"] = clean_text(clean_l.replace("CAPTION:", ""))
 
@@ -219,21 +260,25 @@ def generate_clause_script(state):
 
 def advance_progress_state(state, data):
     cur_part = data.get("part_no", state.get("current_part", 1))
-    total_parts = data.get("total_parts", state.get("total_parts", 1))
+    total_parts = data.get("total_parts", state.get("total_parts", 2))
 
     if cur_part < total_parts:
         state["current_part"] = cur_part + 1
         state["total_parts"] = total_parts
         print(f"📌 Clause {state['clause_no']} in progress: Next run will do Part {state['current_part']}/{total_parts}", flush=True)
     else:
-        state["clause_no"] = state.get("clause_no", 2) + 1
+        # Move to next Clause in Catalog
+        catalog_keys = sorted(POSTAL_CLAUSE_CATALOG.keys())
+        current_idx = catalog_keys.index(state["clause_no"]) if state["clause_no"] in catalog_keys else 0
+        next_idx = (current_idx + 1) % len(catalog_keys)
+        state["clause_no"] = catalog_keys[next_idx]
         state["current_part"] = 1
-        state["total_parts"] = 1
+        state["total_parts"] = POSTAL_CLAUSE_CATALOG[state["clause_no"]]["total_parts"]
         print(f"🎉 Clause completed! Next run will start Clause {state['clause_no']} (Part 1)", flush=True)
 
     save_progress_state(state)
 
-# --- Voice Generation (Natural Speed) ---
+# --- Voice Generation ---
 async def generate_voice(text, filename="voice.mp3"):
     communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+0%")
     await communicate.save(filename)
@@ -243,12 +288,13 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-# --- Video Rendering ---
+# --- Video Rendering Engine ---
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
     print(f"🎵 Generated Voiceover Duration: {total_dur:.1f} seconds (Target: 50-55s)", flush=True)
 
+    # 58-second hard limit safety guard
     if total_dur > 57.0:
         tempo = round(total_dur / 54.0, 2)
         print(f"⚡ Audio exceeds 57s ({total_dur:.1f}s). Minor adjustment by {tempo}x...", flush=True)
@@ -258,6 +304,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         audio_file = adjusted_audio
         total_dur = get_audio_duration(audio_file)
 
+    # 4 Slides: Point 1, Point 2, Point 3, Quiz Slide
     n_slides = 4
     weights = [1.0, 1.0, 1.0, 1.3]
     total_weight = sum(weights)
@@ -269,7 +316,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_badge = get_dev_font(24)
     font_title = get_dev_font(34)
     font_h2 = get_dev_font(32)
-    font_body = get_dev_font(42)
+    font_body = get_dev_font(42)  # Large readable font
     font_label = get_dev_font(26)
     
     font_cta_hin = get_dev_font(28)
@@ -285,33 +332,41 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_obj.text((80, 130), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
     def draw_footer(draw_obj):
+        # 1. WhatsApp Action Banner (Safe Zone: Y=1365 to 1475)
         draw_obj.rounded_rectangle([80, 1365, 1000, 1475], radius=20, fill="#15803D", outline="#22C55E", width=2)
         draw_obj.text((110, 1380), "GDS to MTS | Postman | Mail Guard | P.A.", fill="#FEF08A", font=font_wa_eng)
         draw_obj.text((110, 1425), "कोर्स व फ्री मॉक टेस्ट हेतु व्हाट्सएप: 8989971379", fill="#FFFFFF", font=font_wa_dev)
 
+        # 2. Follow Banner (Safe Zone: Y=1495 to 1575)
         draw_obj.rounded_rectangle([80, 1495, 1000, 1575], radius=20, fill="#E11D48")
         draw_obj.text((120, 1520), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((610, 1520), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
-    clause_tag = script_data.get("clause_tag", "PO GUIDE PART 1 | क्लॉज 2")
-    clause_title = f"{script_data.get('clause_name', 'डाकघरों के प्रकार')} (भाग {script_data.get('part_no', 1)}/{script_data.get('total_parts', 1)})"
+    # 100% Pure Devanagari Badge (Zero Tofu Boxes)
+    badge_text = f"पीओ गाइड भाग 1  •  क्लॉज {script_data['clause_no']}"
+    clause_title = f"{script_data['clause_name']} (भाग {script_data['part_no']}/{script_data['total_parts']})"
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"]]
     slide_filenames = []
 
+    # Slides 1 to 3 (Core Points)
     for idx, sentence in enumerate(sentences, 1):
         img = Image.new("RGB", (1080, 1920), color="#0F172A")
         d = ImageDraw.Draw(img)
         draw_base(d)
 
+        # Top Header Box
         d.rounded_rectangle([80, 180, 1000, 340], radius=20, fill="#0F172A", outline="#38BDF8", width=2)
-        d.rounded_rectangle([105, 195, 580, 238], radius=10, fill="#F59E0B")
-        d.text((120, 202), clause_tag, fill="#000000", font=font_badge)
+        # Golden Badge
+        d.rounded_rectangle([105, 195, 590, 240], radius=10, fill="#F59E0B")
+        d.text((120, 202), badge_text, fill="#000000", font=font_badge)
         d.text((110, 255), textwrap.fill(clause_title, width=30), fill="#FFFFFF", font=font_title)
 
+        # Explanation Box
         d.rounded_rectangle([80, 360, 1000, 1340], radius=22, fill="#0F172A")
         d.text((110, 385), "विस्तृत नियम विश्लेषण:", fill="#FBBF24", font=font_h2)
 
+        # Inner Content Card
         d.rounded_rectangle([110, 445, 970, 1310], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
         d.text((140, 480), f"महत्वपूर्ण परीक्षा बिंदु #{idx}:", fill="#38BDF8", font=font_label)
 
@@ -323,14 +378,14 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         img.save(fname)
         slide_filenames.append(fname)
 
-    # Quiz Slide
+    # Slide 4 (Quiz Slide)
     img_quiz = Image.new("RGB", (1080, 1920), color="#0F172A")
     dq = ImageDraw.Draw(img_quiz)
     draw_base(dq)
 
     dq.rounded_rectangle([80, 180, 1000, 340], radius=20, fill="#0F172A", outline="#FBBF24", width=2)
-    dq.rounded_rectangle([105, 195, 580, 238], radius=10, fill="#F59E0B")
-    dq.text((120, 202), clause_tag, fill="#000000", font=font_badge)
+    dq.rounded_rectangle([105, 195, 590, 240], radius=10, fill="#F59E0B")
+    dq.text((120, 202), badge_text, fill="#000000", font=font_badge)
     dq.text((110, 255), "परीक्षा क्विज़: सवाल का सही जवाब दें!", fill="#FFFFFF", font=font_title)
 
     dq.rounded_rectangle([80, 360, 1000, 1340], radius=22, fill="#0F172A")
@@ -439,6 +494,7 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
+    # Meta Sync Pause
     print(f"Container created with ID: {video_id}. Meta sync ke liye 5 sec wait kar rahe hain...", flush=True)
     time.sleep(5)
 
@@ -503,16 +559,16 @@ def _publish_reel(video_id, user_id, access_token):
 
 # --- Execution Entry Point ---
 if __name__ == "__main__":
-    print("🚀 Postal Wala Pure Clause-2 Automation Starting...", flush=True)
+    print("🚀 Postal Wala Zero-Error Pipeline Starting...", flush=True)
 
     state = load_progress_state()
     print(f"📋 Current Tracking -> Clause: {state.get('clause_no', 2)}, Part: {state.get('current_part', 1)}", flush=True)
 
     script_data = generate_clause_script(state)
-    print(f"✅ AI Script Ready: {script_data.get('clause_tag')} - {script_data.get('clause_name')}", flush=True)
+    print(f"✅ Generated Script: क्लॉज {script_data['clause_no']} - {script_data['clause_name']} (भाग {script_data['part_no']}/{script_data['total_parts']})", flush=True)
 
     asyncio.run(generate_voice(script_data["voiceover"], AUDIO_OUTPUT))
-    print("✅ Voiceover Ready with Natural Teaching Pacing.", flush=True)
+    print("✅ Voiceover Ready with Natural Pacing.", flush=True)
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
