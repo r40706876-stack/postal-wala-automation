@@ -12,8 +12,6 @@ from PIL import Image, ImageDraw, ImageFont
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
@@ -326,72 +324,27 @@ def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    if not GITHUB_TOKEN or not GITHUB_REPOSITORY:
-        raise ValueError("GITHUB_TOKEN or GITHUB_REPOSITORY secret missing!")
-
-    # Step 1: Publish video as a temporary GitHub Release to get a 100% reliable permanent raw URL
-    print("🚀 Publishing video to GitHub Release for direct public URL...")
-    tag_name = f"reel-{int(time.time())}"
-    
-    # Create release
-    rel_url = f"https://api.github.com/repos/{GITHUB_REPOSITORY}/releases"
-    headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json"
-    }
-    rel_payload = {
-        "tag_name": tag_name,
-        "name": f"Automated Reel {tag_name}",
-        "draft": False,
-        "prerelease": True
-    }
-    r_rel = requests.post(rel_url, headers=headers, json=rel_payload)
-    rel_data = r_rel.json()
-    upload_url_template = rel_data.get("upload_url")
-
-    if not upload_url_template:
-        raise RuntimeError(f"GitHub Release Creation Failed: {rel_data}")
-
-    # Upload asset binary
-    base_upload_url = upload_url_template.split("{")[0]
-    asset_url = f"{base_upload_url}?name=final_reel.mp4"
-    
-    asset_headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Content-Type": "video/mp4",
-        "Accept": "application/vnd.github+json"
-    }
-    with open(video_path, "rb") as f:
-        video_bytes = f.read()
-
-    r_asset = requests.post(asset_url, headers=asset_headers, data=video_bytes, timeout=120)
-    asset_data = r_asset.json()
-    public_url = asset_data.get("browser_download_url")
-
-    if not public_url:
-        raise RuntimeError(f"GitHub Asset Upload Failed: {asset_data}")
-
-    print(f"✅ Secure GitHub Public URL: {public_url}")
-
-    # Step 2: Initialize Instagram Reel Container via video_url
-    print("🚀 Initializing Instagram Reel Container via direct URL...")
+    print("🚀 Initializing Instagram Reel Container via direct binary chunks...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
-    init_payload = {
-        "media_type": "REELS",
-        "video_url": public_url,
-        "caption": caption,
-        "access_token": IG_ACCESS_TOKEN
-    }
-    r_init = requests.post(init_url, data=init_payload)
-    init_data = r_init.json()
-
-    video_id = init_data.get("id")
+    
+    # We use file upload stream directly with Instagram's standard endpoint
+    with open(video_path, "rb") as f:
+        files = {"source": f}
+        data = {
+            "media_type": "REELS",
+            "caption": caption,
+            "access_token": IG_ACCESS_TOKEN
+        }
+        res = requests.post(init_url, data=data, files=files, timeout=300)
+    
+    res_json = res.json()
+    video_id = res_json.get("id")
+    
     if not video_id:
-        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
+        raise RuntimeError(f"Instagram Container Upload Failed: {res_json}")
 
     print(f"✅ Container ID Created: {video_id}")
 
-    # Step 3: Wait for Meta to process/transcode video
     print("⏳ Waiting for Instagram to process video...")
     status_url = f"https://graph.facebook.com/v19.0/{video_id}?fields=status_code&access_token={IG_ACCESS_TOKEN}"
 
@@ -409,7 +362,6 @@ def upload_to_instagram_direct(video_path, caption):
     else:
         print("⚠️ Polling timeout, attempting to publish...")
 
-    # Step 4: Publish Reel
     print("🚀 Publishing Reel now...")
     pub_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media_publish"
     pub_res = requests.post(pub_url, data={"creation_id": video_id, "access_token": IG_ACCESS_TOKEN})
