@@ -60,7 +60,7 @@ def get_target_pdf():
 def get_current_reading_window(pdf_path):
     reader = PdfReader(pdf_path)
     total_pages = len(reader.pages)
-    
+
     state = {"last_page": 0, "char_offset": 0}
     if os.path.exists(STATE_FILE):
         try:
@@ -105,7 +105,7 @@ def generate_clause_script(pdf_content, page_num):
 
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
-    Teach the departmental rules thoroughly and completely from this running section (Page {page_num}). 
+    Teach the departmental rules thoroughly and completely from this running section (Page {page_num}).
     Do NOT cut short or leave the clause half-explained. Provide a comprehensive, uninterrupted explanation spanning 4 rich, grammatically flawless Hindi sentences (SEN1, SEN2, SEN3, SEN4).
 
     RULES:
@@ -137,7 +137,7 @@ def generate_clause_script(pdf_content, page_num):
         "temperature": 0.3,
         "max_tokens": 800
     }
-    
+
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
     res_json = res.json()
 
@@ -145,7 +145,7 @@ def generate_clause_script(pdf_content, page_num):
         raise RuntimeError(f"Groq API Error: {res_json}")
 
     raw_text = res_json["choices"][0]["message"]["content"].strip()
-    
+
     data = {
         "rule_title": "डाक नियमों की विस्तृत जानकारी",
         "sen1": "विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है।",
@@ -161,7 +161,7 @@ def generate_clause_script(pdf_content, page_num):
         "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज हम डाक विभाग के नियमों को बिल्कुल विस्तार से और गहराई से समझेंगे ताकि परीक्षा में आपका एक भी नंबर न कटे। विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है। प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है। नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है। सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए। आइए अब इस नियम पर आधारित एक महत्वपूर्ण प्रश्न हल करें। विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? सही उत्तर है ऑप्शन बी, उच्च अधिकारियों। ऐसी ही शानदार और संपूर्ण तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!",
         "caption": "डाक विभाग परीक्षा तैयारी संपूर्ण विश्लेषण #PostalWala #MTSExam #Khand02"
     }
-    
+
     for line in raw_text.splitlines():
         line_clean = line.strip()
         if line_clean.startswith("TITLE:"):
@@ -209,9 +209,26 @@ def get_audio_duration(audio_file):
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
-    
-    step_dur = max(4.5, (total_dur - 15.0) / 4.0)
-    t1, t2, t3, t4 = step_dur, step_dur*2, step_dur*3, max(12.0, total_dur - 15.0)
+
+    # ---- FIX: previously t4 could end up SMALLER than t3 when total_dur was short
+    # (e.g. < ~18s), which made durations[3] = t4 - t3 negative and produced a
+    # corrupt/invalid final video -> this was the root cause behind Instagram's
+    # "Media upload has failed" (error 2207082).
+    # We now build the 5 slide durations from a single proportional split of the
+    # real audio length, so they always add up to total_dur and are never negative.
+    min_slide = 2.0  # seconds, floor so no slide ever collapses to ~0
+    n_slides = 5
+    if total_dur <= min_slide * n_slides:
+        # Extremely short audio: split evenly, ignore weighting entirely.
+        durations = [total_dur / n_slides] * n_slides
+    else:
+        # Slides 1-4 (explanation) get equal weight, slide 5 (quiz) gets a bit more time.
+        weights = [1.0, 1.0, 1.0, 1.0, 1.3]
+        total_weight = sum(weights)
+        durations = [max(min_slide, total_dur * w / total_weight) for w in weights]
+        # Rescale so the durations sum EXACTLY to total_dur (avoids ffmpeg desync)
+        scale = total_dur / sum(durations)
+        durations = [d * scale for d in durations]
 
     font_brand = get_eng_font(48)
     font_sub = get_eng_font(26)
@@ -250,7 +267,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
 
         d.rounded_rectangle([110, 480, 970, 1520], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
         d.text((135, 510), "मुख्य बिंदु:", fill="#38BDF8", font=font_label)
-        
+
         wrapped_text = textwrap.fill(sentence, width=24)
         d.text((135, 580), wrapped_text, fill="#F8FAFC", font=font_body)
 
@@ -270,7 +287,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
 
     d5.rounded_rectangle([80, 360, 1000, 1550], radius=22, fill="#0F172A")
     d5.text((110, 390), "सवाल:", fill="#FBBF24", font=font_h2)
-    
+
     q_wrapped = textwrap.fill(script_data["question"], width=26)
     d5.text((110, 450), q_wrapped, fill="#F8FAFC", font=font_body)
 
@@ -292,15 +309,16 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     img5.save("slide_5.png")
     slide_filenames.append("slide_5.png")
 
-    durations = [t1, t2 - t1, t3 - t2, t4 - t3, total_dur - t4]
     inputs = ""
     filter_parts = ""
     for i, fname in enumerate(slide_filenames):
         inputs += f"-i {fname} "
-    
+
     for i, dur in enumerate(durations):
-        filter_parts += f"[{i}:v]loop=loop=-1:size=1:start=0,trim=duration={max(1.0, dur)}[v{i}]; "
-    
+        # extra safety floor even after scaling, in case of float rounding
+        safe_dur = max(1.0, dur)
+        filter_parts += f"[{i}:v]loop=loop=-1:size=1:start=0,trim=duration={safe_dur}[v{i}]; "
+
     concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
     filter_complex = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,format=yuv420p[v]"
 
@@ -327,66 +345,99 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.")
 
-def post_reel_to_instagram_simple(video_file, caption):
+def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
-    
+
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    print("Uploading video via simple direct hosting method to avoid header mismatches...")
-    
-    # Using tmpfiles.org to get a direct public URL for the video, eliminating all Instagram binary upload header bugs
-    url = "https://tmpfiles.org/api/v1/upload"
-    with open(video_file, "rb") as f:
-        files = {"file": f}
-        response = requests.post(url, files=files, timeout=120)
-    
-    if response.status_code != 200:
-        raise RuntimeError(f"Public host upload failed: {response.text}")
-        
-    res_json = response.json()
-    if res_json.get("status") != "success":
-        raise RuntimeError(f"Public host error: {res_json}")
-        
-    file_url = res_json["data"]["url"]
-    public_url = file_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
-    print(f"✅ Video hosted at: {public_url}")
+    # ---- FIX: the whole "create container -> poll -> publish" flow is now wrapped
+    # in a retry loop, because 2207082 is Instagram's own generic
+    # "server-side/transient error, please retry" code. A single failed attempt
+    # is expected sometimes; we now create a *fresh* container and try again
+    # instead of giving up after one failure.
+    last_error = None
+    for container_attempt in range(1, max_container_attempts + 1):
+        print(f"--- Reel upload attempt {container_attempt}/{max_container_attempts} ---")
+        try:
+            video_id = _create_reel_container(video_file, caption, user_id, access_token)
+            status = _poll_container_status(video_id, access_token)
 
-    print("Initializing Instagram Reel container with video URL...")
+            if status == "FINISHED":
+                _publish_reel(video_id, user_id, access_token)
+                return
+            else:
+                last_error = f"Container ended with non-FINISHED status: {status}"
+                print(f"⚠️ {last_error}. Retrying with a brand-new container...")
+        except Exception as e:
+            last_error = str(e)
+            print(f"⚠️ Attempt {container_attempt} failed: {last_error}. Retrying...")
+
+        if container_attempt < max_container_attempts:
+            time.sleep(20)  # brief backoff before creating a new container
+
+    raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
+
+def _create_reel_container(video_file, caption, user_id, access_token):
+    print("Initializing Instagram Reel container via standard multipart upload...")
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
-    payload = {
-        "media_type": "REELS",
-        "video_url": public_url,
-        "caption": caption,
-        "access_token": access_token
-    }
-    
-    r = requests.post(init_url, data=payload, timeout=60)
+
+    with open(video_file, "rb") as vf:
+        files = {"source": (video_file, vf, "video/mp4")}
+        data = {
+            "media_type": "REELS",
+            "caption": caption,
+            "access_token": access_token
+        }
+        r = requests.post(init_url, data=data, files=files, timeout=300)
+
     if r.status_code != 200:
         raise RuntimeError(f"Container init fail hua: {r.text}")
-        
+
     init_data = r.json()
     video_id = init_data.get("id")
 
     if not video_id:
         raise RuntimeError(f"Container ID invalid response: {init_data}")
 
-    print("Waiting for Instagram video processing...")
-    status_url = GRAPH_API_BASE + str(video_id).strip()
-    for attempt in range(40):
-        time.sleep(15)
-        try:
-            status_res = requests.get(status_url, params={"fields": "status_code,status", "access_token": access_token}, timeout=30).json()
-            status = status_res.get("status_code")
-            print(f"Check {attempt+1}: Status -> {status}")
-            if status == "FINISHED":
-                break
-            elif status in ["ERROR", "EXPIRED"]:
-                raise RuntimeError(f"Instagram processing failed with status: {status_res}")
-        except Exception as e:
-            print(f"Polling warning: {e}")
+    print(f"Container created successfully with ID: {video_id}. Waiting for processing...")
+    return video_id
 
+def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
+    # ---- FIX: previously the deliberate `raise RuntimeError(...)` on an ERROR
+    # status was thrown INSIDE the same try block whose `except Exception`
+    # caught it — so the script just logged a warning and kept polling for the
+    # full 40 attempts (~10 minutes) instead of stopping right away.
+    # Now: network hiccups (timeouts, bad JSON) are retried, but a real
+    # ERROR/EXPIRED status from Instagram breaks out immediately.
+    status_url = GRAPH_API_BASE + str(video_id).strip()
+
+    for attempt in range(max_checks):
+        time.sleep(wait_seconds)
+
+        try:
+            status_res = requests.get(
+                status_url,
+                params={"fields": "status_code,status", "access_token": access_token},
+                timeout=30
+            ).json()
+        except Exception as e:
+            print(f"Polling network warning (will retry): {e}")
+            continue
+
+        status = status_res.get("status_code")
+        print(f"Check {attempt + 1}: Status -> {status}")
+
+        if status == "FINISHED":
+            return "FINISHED"
+        elif status in ["ERROR", "EXPIRED"]:
+            print(f"❌ Instagram reported a definitive failure: {status_res}")
+            return status  # bubble up immediately, do NOT keep polling
+
+    return "TIMEOUT"
+
+def _publish_reel(video_id, user_id, access_token):
     print("Publishing Reel...")
     publish_url = GRAPH_API_BASE + str(user_id).strip() + "/media_publish"
     pub_res = requests.post(publish_url, data={"creation_id": video_id, "access_token": access_token}, timeout=30).json()
@@ -398,7 +449,7 @@ def post_reel_to_instagram_simple(video_file, caption):
 
 if __name__ == "__main__":
     print("🚀 Postal Wala Deep Continuous Automation Starting...")
-    
+
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
     print(f"✅ Read Page {page_num} with deep continuous tracking.")
@@ -411,4 +462,4 @@ if __name__ == "__main__":
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_to_instagram_simple(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
