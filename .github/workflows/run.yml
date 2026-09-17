@@ -1,13 +1,14 @@
 name: Postal Wala Daily Reel
 
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '30 2 * * *' # रोज़ सुबह 8:00 बजे (IST) ऑटोमैटिक रन होगा
+  workflow_dispatch: # आप इसे मैन्युअली भी रन कर सकते हैं
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -19,9 +20,9 @@ jobs:
 
       - name: Install Dependencies & Linux Fonts
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-noto-core fonts-indic fontconfig
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install requests pypdf pillow groq edge-tts
+          sudo apt-get update && sudo apt-get install -y ffmpeg fonts-noto-core
 
       - name: Run Script
         env:
@@ -32,9 +33,8 @@ jobs:
           python main.py
 
       - name: Save Reading Progress
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add progress_state.json || true
-          git commit -m "Update reading progress [skip ci]" || echo "No changes to commit"
-          git push || echo "Push failed"
+        if: always()
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "📥 Auto-update reading progress & state [skip ci]"
+          file_pattern: progress_state.json
