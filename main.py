@@ -329,19 +329,17 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     print("✅ Strict Instagram-Compatible Baseline Reel Created.")
 
 def upload_video_to_public_host(video_file):
-    print("Uploading video to public temporary host...")
-    url = "https://catbox.moe/user/api.php"
+    print("Uploading video to public temporary host (transfer.sh)...")
+    url = f"https://transfer.sh/{os.path.basename(video_file)}"
     with open(video_file, "rb") as f:
-        files = {"fileToUpload": f}
-        data = {"reqtype": "fileupload"}
-        response = requests.post(url, data=data, files=files, timeout=120)
+        response = requests.put(url, data=f, timeout=180)
     
-    if response.status_code == 200 and response.text.startswith("http"):
+    if response.status_code == 200:
         public_url = response.text.strip()
         print(f"✅ Video successfully hosted publicly at: {public_url}")
         return public_url
-    else:
-        raise RuntimeError(f"Public host upload failed: {response.text}")
+            
+    raise RuntimeError(f"Public host upload failed ({response.status_code}): {response.text}")
 
 def post_reel_via_public_url(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
@@ -350,7 +348,6 @@ def post_reel_via_public_url(video_file, caption):
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    # Step 1: Upload video to get public URL
     public_video_url = upload_video_to_public_host(video_file)
 
     print("Initializing Instagram container with public video URL...")
