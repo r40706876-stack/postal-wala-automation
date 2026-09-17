@@ -71,12 +71,9 @@ def get_current_reading_window(pdf_path):
         char_offset = 0
 
     page_text = reader.pages[current_page].extract_text() or ""
-    
-    # Take a continuous chunk from where it left off, ensuring deep clause coverage
-    chunk_size = 1200
+    chunk_size = 1400  # Larger chunk to ensure deep coverage of the clause
     sub_text = page_text[char_offset:char_offset + chunk_size]
 
-    # If the page chunk is finishing, move to next page
     next_offset = char_offset + chunk_size
     next_page = current_page
     if next_offset >= len(page_text):
@@ -102,29 +99,29 @@ def generate_clause_script(pdf_content, page_num):
 
     prompt = f"""
     You are an expert tutor for Postal MTS/Postman exam running Instagram page 'Postal Wala'.
-    Continue teaching the department rules deeply and thoroughly from this running section (Page {page_num}). 
-    DO NOT abruptly jump topics. Continue from the exact flow of the text provided below. Give a detailed, comprehensive explanation spanning 4 sequential sentences (SEN1, SEN2, SEN3, SEN4).
+    Teach the departmental rules thoroughly and completely from this running section (Page {page_num}). 
+    Do NOT cut short or leave the clause half-explained. Provide a comprehensive, uninterrupted explanation spanning 4 rich, grammatically flawless Hindi sentences (SEN1, SEN2, SEN3, SEN4).
 
     RULES:
-    1. Pure Hindi (Devanagari script only), no English words, no emojis, no bullet symbols.
-    2. Provide 4 progressive detailed sentences covering the topic thoroughly.
+    1. Pure Hindi (Devanagari script only), flawless grammar, zero spelling mistakes, no English words, no emojis, no bullet symbols.
+    2. Keep each sentence natural and focused on a single complete rule aspect.
 
     PDF Section:
     {pdf_content}
 
     Format strictly matching these lines:
-    TITLE: [Topic Name in Hindi]
-    SEN1: [Detailed sentence 1]
-    SEN2: [Detailed sentence 2]
-    SEN3: [Detailed sentence 3]
-    SEN4: [Detailed sentence 4]
-    QUESTION: [1 deep exam question based on this text in Hindi]
+    TITLE: [Topic Name in pure Hindi]
+    SEN1: [Flawless sentence 1]
+    SEN2: [Flawless sentence 2]
+    SEN3: [Flawless sentence 3]
+    SEN4: [Flawless sentence 4]
+    QUESTION: [1 high-value exam question based strictly on this text in Hindi]
     OPT_A: [Option A]
     OPT_B: [Option B]
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Full spoken script combining SEN1, SEN2, SEN3, SEN4 + Quiz + Outro at normal calm teaching speed]
+    VOICEOVER: [Full natural teaching voiceover combining a warm greeting, clear explanation of SEN1 to SEN4, the quiz question, and a strong call-to-action ending with: रोज़ाना ऐसी बेहतरीन तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!]
     CAPTION: [Instagram caption with #PostalWala #MTSExam #IndiaPost #Khand02]
     """
 
@@ -132,7 +129,7 @@ def generate_clause_script(pdf_content, page_num):
         "model": "qwen/qwen3.8-27b",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.3,
-        "max_tokens": 700
+        "max_tokens": 800
     }
     
     res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
@@ -144,19 +141,19 @@ def generate_clause_script(pdf_content, page_num):
     raw_text = res_json["choices"][0]["message"]["content"].strip()
     
     data = {
-        "rule_title": "डाक सेवाओं का विस्तृत नियम",
-        "sen1": "डाल विभाग के नियमों के अनुसार डाक वस्तुओं का वितरण सुचारू रूप से होना अनिवार्य है।",
-        "sen2": "प्रत्येक डाकघर को प्राप्त होने वाली डाक की छँटाई निर्धारित समय पर करनी होती है।",
-        "sen3": "यदि किसी वस्तु पर पता स्पष्ट नहीं है तो उसे संबंधित शाखा में भेजा जाता है।",
-        "sen4": "इन सभी प्रक्रियाओं का उद्देश्य ग्राहकों को समय पर सेवा प्रदान करना है।",
-        "question": "अस्पष्ट पते वाली डाक वस्तु को कहाँ भेजा जाता है?",
-        "opt_a": "मुख्य शाखा",
-        "opt_b": "संबंधित शाखा या डेड लेटर कार्यालय",
-        "opt_c": "नष्ट करने हेतु",
-        "opt_d": "प्रेषक को तुरंत वापस",
+        "rule_title": "डाक नियमों की विस्तृत जानकारी",
+        "sen1": "विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है।",
+        "sen2": "प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है।",
+        "sen3": "नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है।",
+        "sen4": "सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए।",
+        "question": "विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है?",
+        "opt_a": "स्थानीय डाकपाल",
+        "opt_b": "उच्च अधिकारियों",
+        "opt_c": "प्रेषक को",
+        "opt_d": "इनमें से कोई नहीं",
         "correct": "B",
-        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज हम पिछले क्लाउज़ को आगे बढ़ाते हुए डाक विभाग के अगले महत्वपूर्ण नियमों को गहराई से समझेंगे। डाक विभाग के नियमों के अनुसार डाक वस्तुओं का वितरण सुचारू रूप से होना अनिवार्य है। प्रत्येक डाकघर को प्राप्त होने वाली डाक की छँटाई निर्धारित समय पर करनी होती है। यदि किसी वस्तु पर पता स्पष्ट नहीं है तो उसे संबंधित शाखा में भेजा जाता है। इन सभी प्रक्रियाओं का उद्देश्य ग्राहकों को समय पर सेवा प्रदान करना है। आइए अब इस नियम पर आधारित एक महत्वपूर्ण परीक्षा प्रश्न हल करें। अस्पष्ट पते वाली डाक वस्तु को कहाँ भेजा जाता है? सही उत्तर है ऑप्शन बी, संबंधित शाखा या डेड लेटर कार्यालय। रोज़ाना ऐसी विस्तृत तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!",
-        "caption": "डाक विभाग परीक्षा तैयारी निरंतरता #PostalWala #MTSExam #Khand02"
+        "voiceover": "नमस्कार साथियों, पोस्टल वाला में आपका स्वागत है। आज हम डाक विभाग के नियमों को बिल्कुल विस्तार से और गहराई से समझेंगे ताकि परीक्षा में आपका एक भी नंबर न कटे। विभागीय नियमों के अनुसार सभी डाक वस्तुओं का सुरक्षित प्रबंधन करना अनिवार्य होता है। प्रत्येक डाकघर में प्राप्त होने वाली सामग्री की प्रविष्टि आधिकारिक रजिस्टर में दर्ज की जाती है। नियमों का उल्लंघन पाए जाने पर उच्च अधिकारियों द्वारा सख्त अनुशासनात्मक कार्रवाई की जाती है। सभी अभ्यर्थियों को परीक्षा की दृष्टि से इन प्रावधानों को पूरी तरह याद रखना चाहिए। आइए अब इस नियम पर आधारित एक महत्वपूर्ण प्रश्न हल करें। विभागीय नियमों के उल्लंघन पर कार्रवाई करने का अधिकार किसे प्राप्त है? सही उत्तर है ऑप्शन बी, उच्च अधिकारियों। ऐसी ही शानदार और संपूर्ण तैयारी के लिए अभी फॉलो करें पोस्टल वाला को!",
+        "caption": "डाक विभाग परीक्षा तैयारी संपूर्ण विश्लेषण #PostalWala #MTSExam #Khand02"
     }
     
     for line in raw_text.splitlines():
@@ -195,7 +192,7 @@ def generate_clause_script(pdf_content, page_num):
     return data
 
 def generate_voice(text, filename="voice.mp3"):
-    # slow=False with natural sentence pacing for clear teaching audio
+    # Normal speed with natural teaching tone
     tts = gTTS(text=text, lang="hi", slow=False)
     tts.save(filename)
 
@@ -208,28 +205,30 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ensure_fonts()
     total_dur = get_audio_duration(audio_file)
     
-    step_dur = max(4.0, (total_dur - 15.0) / 4.0)
-    t1, t2, t3, t4 = step_dur, step_dur*2, step_dur*3, max(10.0, total_dur - 15.0)
+    step_dur = max(4.5, (total_dur - 15.0) / 4.0)
+    t1, t2, t3, t4 = step_dur, step_dur*2, step_dur*3, max(12.0, total_dur - 15.0)
 
-    font_brand = get_eng_font(52)
-    font_sub = get_eng_font(30)
-    font_cta_eng = get_eng_font(36)
+    font_brand = get_eng_font(48)
+    font_sub = get_eng_font(26)
 
-    font_title = get_dev_font(42)
-    font_h2 = get_dev_font(40)
-    font_body = get_dev_font(36)
-    font_label = get_dev_font(30)
-    font_cta_hin = get_dev_font(34)
+    font_title = get_dev_font(36)
+    font_h2 = get_dev_font(32)
+    font_body = get_dev_font(32)
+    font_label = get_dev_font(26)
+    font_cta_hin = get_dev_font(30)
+    font_cta_eng = get_eng_font(30)
 
     def draw_base(draw_obj):
-        draw_obj.rounded_rectangle([45, 90, 1035, 1830], radius=35, fill="#1E293B", outline="#E11D48", width=6)
-        draw_obj.text((90, 140), "POSTAL WALA", fill="#F43F5E", font=font_brand)
-        draw_obj.text((90, 220), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
+        # Strict safe bounding box to prevent touching header/footer
+        draw_obj.rounded_rectangle([45, 50, 1035, 1770], radius=30, fill="#1E293B", outline="#E11D48", width=4)
+        draw_obj.text((80, 80), "POSTAL WALA", fill="#F43F5E", font=font_brand)
+        draw_obj.text((80, 135), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
     def draw_footer(draw_obj):
-        draw_obj.rounded_rectangle([85, 1610, 995, 1750], radius=25, fill="#E11D48")
-        draw_obj.text((180, 1635), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
-        draw_obj.text((370, 1685), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
+        # Fully separated, non-overlapping professional CTA footer card
+        draw_obj.rounded_rectangle([80, 1590, 1000, 1720], radius=22, fill="#E11D48")
+        draw_obj.text((120, 1622), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
+        draw_obj.text((610, 1622), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"], script_data["sen4"]]
     slide_filenames = []
@@ -239,17 +238,19 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         d = ImageDraw.Draw(img)
         draw_base(d)
 
-        d.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#0F172A", outline="#38BDF8", width=3)
-        d.text((115, 315), f"जारी नियम ({idx}/4):", fill="#38BDF8", font=font_label)
-        d.text((115, 355), textwrap.fill(script_data["rule_title"], width=30), fill="#FFFFFF", font=font_title)
+        d.rounded_rectangle([80, 190, 1000, 330], radius=20, fill="#0F172A", outline="#38BDF8", width=2)
+        d.text((110, 205), f"संपूर्ण नियम ({idx}/4):", fill="#38BDF8", font=font_label)
+        d.text((110, 245), textwrap.fill(script_data["rule_title"], width=34), fill="#FFFFFF", font=font_title)
 
-        d.rounded_rectangle([85, 500, 995, 1550], radius=30, fill="#0F172A")
-        d.text((120, 540), "विस्तृत व्याख्या:", fill="#FBBF24", font=font_h2)
+        d.rounded_rectangle([80, 360, 1000, 1550], radius=22, fill="#0F172A")
+        d.text((110, 390), "विस्तृत व्याख्या:", fill="#FBBF24", font=font_h2)
 
-        # Active Live Spoken Sentence Box
-        d.rounded_rectangle([115, 700, 965, 1250], radius=25, fill="#1E293B", outline="#38BDF8", width=3)
-        d.text((140, 740), "मुख्य बात:", fill="#38BDF8", font=font_label)
-        d.text((140, 820), textwrap.fill(sentence, width=25), fill="#F8FAFC", font=font_body)
+        # Content card strictly ending before footer starts at 1590
+        d.rounded_rectangle([110, 480, 970, 1520], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
+        d.text((135, 510), "मुख्य बिंदु:", fill="#38BDF8", font=font_label)
+        
+        wrapped_text = textwrap.fill(sentence, width=24)
+        d.text((135, 580), wrapped_text, fill="#F8FAFC", font=font_body)
 
         draw_footer(d)
         fname = f"slide_{idx}.png"
@@ -261,26 +262,29 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
 
-    d5.rounded_rectangle([85, 290, 995, 470], radius=25, fill="#0F172A", outline="#FBBF24", width=3)
-    d5.text((115, 315), "परीक्षा क्विज़:", fill="#FBBF24", font=font_label)
-    d5.text((115, 355), "सवाल का जवाब दें!", fill="#FFFFFF", font=font_title)
+    d5.rounded_rectangle([80, 190, 1000, 330], radius=20, fill="#0F172A", outline="#FBBF24", width=2)
+    d5.text((110, 205), "परीक्षा क्विज़:", fill="#FBBF24", font=font_label)
+    d5.text((110, 245), "सवाल का जवाब दें!", fill="#FFFFFF", font=font_title)
 
-    d5.rounded_rectangle([85, 500, 995, 1550], radius=30, fill="#0F172A")
-    d5.text((120, 540), "सवाल:", fill="#FBBF24", font=font_h2)
-    d5.text((120, 620), textwrap.fill(script_data["question"], width=26), fill="#F8FAFC", font=font_body)
+    d5.rounded_rectangle([80, 360, 1000, 1550], radius=22, fill="#0F172A")
+    d5.text((110, 390), "सवाल:", fill="#FBBF24", font=font_h2)
+    
+    q_wrapped = textwrap.fill(script_data["question"], width=26)
+    d5.text((110, 450), q_wrapped, fill="#F8FAFC", font=font_body)
 
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     correct = script_data.get("correct", "B")
-    oy = 950
+    oy = 790
     for idx, opt in enumerate(opts):
         is_ans = (correct == chr(65 + idx))
         box_bg = "#064E3B" if is_ans else "#1E293B"
         border_c = "#10B981" if is_ans else "#38BDF8"
         text_c = "#34D399" if is_ans else "#FFFFFF"
 
-        d5.rounded_rectangle([115, oy, 965, oy + 95], radius=18, fill=box_bg, outline=border_c, width=2)
-        d5.text((145, oy + 25), f"{chr(65+idx)}) {textwrap.fill(opt, width=32)}", fill=text_c, font=font_body)
-        oy += 120
+        d5.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill=box_bg, outline=border_c, width=2)
+        opt_text = f"{chr(65+idx)}) {textwrap.fill(opt, width=28)}"
+        d5.text((135, oy + 22), opt_text, fill=text_c, font=font_body)
+        oy += 115
 
     draw_footer(d5)
     img5.save("slide_5.png")
@@ -318,7 +322,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ])
     subprocess.run(cmd, check=True)
-    print("✅ Perfectly Synced Continuous Reel Created.")
+    print("✅ Flawlessly Formatted & Detailed Continuous Reel Created.")
 
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
@@ -383,17 +387,17 @@ def upload_to_instagram_direct(video_path, caption):
         raise RuntimeError(f"Publish Failed: {pub_json}")
 
 if __name__ == "__main__":
-    print("🚀 Postal Wala Continuous Automation Starting...")
+    print("🚀 Postal Wala Deep Continuous Automation Starting...")
     
     target_pdf = get_target_pdf()
     pdf_content, page_num = get_current_reading_window(target_pdf)
-    print(f"✅ Read Page {page_num} with continuous offset.")
+    print(f"✅ Read Page {page_num} with deep continuous tracking.")
 
     script_data = generate_clause_script(pdf_content, page_num)
-    print("✅ AI Script Ready for Ongoing Clause.")
+    print("✅ AI Script Ready with Thorough Explanation.")
 
     generate_voice(script_data["voiceover"], "voice.mp3")
-    print("✅ Voiceover Ready at Normal Speed.")
+    print("✅ Voiceover Ready with Natural Teaching Pacing.")
 
     create_video_ffmpeg(script_data, "voice.mp3", "final_reel.mp4")
 
