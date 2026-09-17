@@ -320,28 +320,41 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Perfectly Synced Reel Created.")
 
+def get_public_url(video_path):
+    print("🌐 Uploading video to Catbox.moe for reliable public access...")
+    url = "https://catbox.moe/user/api.php"
+    with open(video_path, "rb") as f:
+        data = {"reqtype": "fileupload"}
+        files = {"fileToUpload": f}
+        r = requests.post(url, data=data, files=files, timeout=90)
+    
+    if r.status_code == 200 and r.text.startswith("http"):
+        direct_url = r.text.strip()
+        print(f"✅ Catbox Direct URL: {direct_url}")
+        return direct_url
+    
+    raise RuntimeError(f"Catbox upload failed: {r.text}")
+
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    print("🚀 Initializing Instagram Reel Container via direct binary chunks...")
+    public_url = get_public_url(video_path)
+
+    print("🚀 Initializing Instagram Reel Container via video_url...")
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
-    
-    # We use file upload stream directly with Instagram's standard endpoint
-    with open(video_path, "rb") as f:
-        files = {"source": f}
-        data = {
-            "media_type": "REELS",
-            "caption": caption,
-            "access_token": IG_ACCESS_TOKEN
-        }
-        res = requests.post(init_url, data=data, files=files, timeout=300)
-    
-    res_json = res.json()
-    video_id = res_json.get("id")
-    
+    init_payload = {
+        "media_type": "REELS",
+        "video_url": public_url,
+        "caption": caption,
+        "access_token": IG_ACCESS_TOKEN
+    }
+    r_init = requests.post(init_url, data=init_payload)
+    init_data = r_init.json()
+
+    video_id = init_data.get("id")
     if not video_id:
-        raise RuntimeError(f"Instagram Container Upload Failed: {res_json}")
+        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
 
     print(f"✅ Container ID Created: {video_id}")
 
