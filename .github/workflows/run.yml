@@ -2,8 +2,8 @@ name: Postal Wala Daily Reel
 
 on:
   schedule:
-    - cron: '30 2 * * *' # रोज़ सुबह 8:00 बजे (IST) ऑटोमैटिक रन होगा
-  workflow_dispatch: # आप इसे मैन्युअली भी रन कर सकते हैं
+    - cron: '30 2 * * *'
+  workflow_dispatch:
 
 jobs:
   run-pipeline:
@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies & Linux Fonts
         run: |
           python -m pip install --upgrade pip
-          pip install requests pypdf pillow groq edge-tts
+          pip install requests pypdf pillow groq edge-tts gtts
           sudo apt-get update && sudo apt-get install -y ffmpeg fonts-noto-core
 
       - name: Run Script
