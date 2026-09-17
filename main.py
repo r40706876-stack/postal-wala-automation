@@ -328,48 +328,55 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Strict Instagram-Compatible Baseline Reel Created.")
 
-def upload_video_to_public_host(video_file):
-    print("Uploading video to public temporary host (transfer.sh)...")
-    url = f"https://transfer.sh/{os.path.basename(video_file)}"
-    with open(video_file, "rb") as f:
-        response = requests.put(url, data=f, timeout=180)
-    
-    if response.status_code == 200:
-        public_url = response.text.strip()
-        print(f"✅ Video successfully hosted publicly at: {public_url}")
-        return public_url
-            
-    raise RuntimeError(f"Public host upload failed ({response.status_code}): {response.text}")
-
-def post_reel_via_public_url(video_file, caption):
+def post_reel_to_instagram_direct(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
     
     if not access_token or not user_id:
         raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
 
-    public_video_url = upload_video_to_public_host(video_file)
+    file_size = os.path.getsize(video_file)
+    print(f"Video size: {file_size} bytes. Initializing Magic Notes Resumable Session...")
 
-    print("Initializing Instagram container with public video URL...")
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
-    payload = {
+    init_params = {
         "media_type": "REELS",
-        "video_url": public_video_url,
+        "upload_type": "resumable",
         "caption": caption,
+        "length": file_size,
         "access_token": access_token
     }
     
-    r = requests.post(init_url, data=payload, timeout=60)
+    r = requests.post(init_url, data=init_params, timeout=30)
     if r.status_code != 200:
-        raise RuntimeError(f"Container init fail hua: {r.text}")
+        raise RuntimeError(f"Upload init fail hua: {r.text}")
         
     init_data = r.json()
     video_id = init_data.get("id")
+    upload_url = init_data.get("upload_url") or init_data.get("uri")
 
-    if not video_id:
-        raise RuntimeError(f"Container ID invalid response: {init_data}")
+    if not video_id or not upload_url:
+        raise RuntimeError(f"Upload init invalid response: {init_data}")
 
-    print("Waiting for Instagram video processing from URL...")
+    print(f"Uploading video file via Magic Notes exact binary stream protocol...")
+    
+    with open(video_file, "rb") as vf:
+        video_bytes = vf.read()
+
+    headers = {
+        "Authorization": f"OAuth {access_token}",
+        "Offset": "0",
+        "Content-Length": str(file_size),
+        "X-Entity-Length": str(file_size),
+        "Content-Type": "application/octet-stream"
+    }
+    
+    upload_res = requests.post(upload_url, headers=headers, data=video_bytes, timeout=300)
+
+    if upload_res.status_code not in [200, 201]:
+        raise RuntimeError(f"Video binary upload fail hua ({upload_res.status_code}): {upload_res.text}")
+
+    print("Waiting for Instagram video processing...")
     status_url = GRAPH_API_BASE + str(video_id).strip()
     for attempt in range(40):
         time.sleep(10)
@@ -408,4 +415,4 @@ if __name__ == "__main__":
 
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
 
-    post_reel_via_public_url(OUTPUT_VIDEO, script_data.get("caption", ""))
+    post_reel_to_instagram_direct(OUTPUT_VIDEO, script_data.get("caption", ""))
