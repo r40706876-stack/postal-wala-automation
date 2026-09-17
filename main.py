@@ -320,50 +320,32 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     subprocess.run(cmd, check=True)
     print("✅ Perfectly Synced Reel Created.")
 
-def get_public_url(video_path):
-    print("🌐 Uploading video via Tmpfiles for instant public access...")
-    with open(video_path, "rb") as f:
-        r = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}, timeout=90)
-    
-    try:
-        res_json = r.json()
-        if res_json.get("status") == "success":
-            raw_url = res_json["data"]["url"]
-            direct_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
-            print(f"✅ Tmpfiles Direct URL: {direct_url}")
-            return direct_url
-    except Exception:
-        pass
-        
-    print("⚠️ Tmpfiles fallback to File.io...")
-    with open(video_path, "rb") as f:
-        r2 = requests.post("https://file.io", files={"file": f}, timeout=60)
-        res_json2 = r2.json()
-        if res_json2.get("success"):
-            return res_json2["link"]
-
-    raise RuntimeError("All video hosting fallbacks failed.")
-
 def upload_to_instagram_direct(video_path, caption):
     if not IG_ACCESS_TOKEN or not IG_USER_ID:
         raise ValueError("CRITICAL: IG_ACCESS_TOKEN ya IG_USER_ID missing hai!")
 
-    public_url = get_public_url(video_path)
-
-    print("🚀 Initializing Instagram Reel Container via direct public URL...")
+    print("🚀 Initializing Instagram Direct Container (No URL hosting dependency)...")
+    
+    # Step 1: Initialize container using native Graph API post parameters
     init_url = f"https://graph.facebook.com/v19.0/{IG_USER_ID}/media"
-    init_payload = {
-        "media_type": "REELS",
-        "video_url": public_url,
-        "caption": caption,
-        "access_token": IG_ACCESS_TOKEN
-    }
-    r_init = requests.post(init_url, data=init_payload)
-    init_data = r_init.json()
-
-    video_id = init_data.get("id")
+    
+    with open(video_path, "rb") as f:
+        # Some accounts support direct upload, but if video_url is mandatory, we post via a secure multi-part chunk.
+        # Let's use the direct post method with file stream payload
+        files = {"source": f}
+        data = {
+            "media_type": "REELS",
+            "caption": caption,
+            "access_token": IG_ACCESS_TOKEN
+        }
+        res = requests.post(init_url, data=data, files=files, timeout=300)
+    
+    res_json = res.json()
+    video_id = res_json.get("id")
+    
     if not video_id:
-        raise RuntimeError(f"Instagram Container Creation Failed: {init_data}")
+        # Fallback to standard status error explanation
+        raise RuntimeError(f"Instagram Direct Container Failed: {res_json}")
 
     print(f"✅ Container ID Created: {video_id}")
 
