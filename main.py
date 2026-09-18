@@ -23,12 +23,13 @@ AUDIO_OUTPUT = "voice.mp3"
 OUTPUT_VIDEO = "final_reel.mp4"
 VOICE_NAME = "hi-IN-SwaraNeural"
 
-# Assets Directory & Visual Asset Paths
+# Assets Directory
 ASSETS_DIR = "assets"
-POST_ICON_PATH = os.path.join(ASSETS_DIR, "postal_badge.png")
-QUIZ_ICON_PATH = os.path.join(ASSETS_DIR, "quiz_badge.png")
+BOOK_3D_PATH = os.path.join(ASSETS_DIR, "3d_book.png")
+POSTBOX_3D_PATH = os.path.join(ASSETS_DIR, "3d_postbox.png")
+QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 
-# Pillow Compatibility (Prevents AttributeError on different Pillow versions)
+# Cross-version Pillow Compatibility
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
 # --- Official PO Guide Part 1 Master Catalog ---
@@ -98,34 +99,82 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
-# --- Procedural Visual Elements Engine ---
+# --- 100% Offline 3D Graphic Renderer (Zero External Dependency) ---
 def ensure_auto_icons():
     os.makedirs(ASSETS_DIR, exist_ok=True)
 
-    # 1. Postal Emblem Badge (Slide 1-3)
-    if not os.path.exists(POST_ICON_PATH):
+    # 1. 3D PO Guide Rulebook (Slide 1)
+    if not os.path.exists(BOOK_3D_PATH):
         try:
-            icon = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
-            d = ImageDraw.Draw(icon)
-            d.ellipse([10, 10, 190, 190], fill="#BE123C", outline="#FBBF24", width=7)
-            d.ellipse([26, 26, 174, 174], outline="#FFFFFF", width=3)
-            d.rectangle([52, 70, 148, 130], fill="#FFFFFF", outline="#0F172A", width=3)
-            d.polygon([(52, 70), (100, 105), (148, 70)], fill="#E2E8F0", outline="#0F172A", width=3)
-            d.polygon([(100, 32), (104, 42), (115, 42), (106, 49), (110, 59), (100, 52), (90, 59), (94, 49), (85, 42), (96, 42)], fill="#FBBF24")
-            icon.save(POST_ICON_PATH, "PNG")
+            bk = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
+            db = ImageDraw.Draw(bk)
+            # Soft Shadow
+            db.ellipse([40, 360, 260, 400], fill="#0A0F1D")
+            # Back Cover Edge
+            db.rounded_rectangle([55, 60, 245, 360], radius=14, fill="#1E3A8A")
+            # Pages Stack (Cream paper look)
+            db.rounded_rectangle([75, 65, 240, 350], radius=8, fill="#F8FAFC", outline="#CBD5E1", width=2)
+            # Front Cover
+            db.rounded_rectangle([55, 55, 230, 350], radius=12, fill="#1D4ED8", outline="#60A5FA", width=3)
+            # Golden Spine Band
+            db.rectangle([55, 55, 82, 350], fill="#F59E0B")
+            db.rectangle([78, 55, 84, 350], fill="#FDE047")
+            # Golden Emblem on Book
+            db.ellipse([115, 150, 185, 220], fill="#F59E0B", outline="#FEF08A", width=3)
+            db.polygon([(150, 162), (155, 178), (172, 178), (158, 188), (163, 204), (150, 194), (137, 204), (142, 188), (128, 178), (145, 178)], fill="#FFFFFF")
+            # Red Ribbon Bookmark
+            db.polygon([(140, 330), (162, 330), (162, 385), (151, 372), (140, 385)], fill="#DC2626")
+            bk.save(BOOK_3D_PATH, "PNG")
         except Exception:
             pass
 
-    # 2. Quiz Question Badge (Slide 4)
-    if not os.path.exists(QUIZ_ICON_PATH):
+    # 2. 3D Red Pillar Postbox (Slide 2 & 3)
+    if not os.path.exists(POSTBOX_3D_PATH):
         try:
-            q_icon = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
-            dq = ImageDraw.Draw(q_icon)
-            dq.ellipse([10, 10, 190, 190], fill="#F59E0B", outline="#38BDF8", width=7)
-            dq.ellipse([25, 25, 175, 175], outline="#FEF08A", width=4)
-            f_eng = get_eng_font(105)
-            dq.text((70, 30), "?", fill="#0F172A", font=f_eng)
-            q_icon.save(QUIZ_ICON_PATH, "PNG")
+            box = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
+            d = ImageDraw.Draw(box)
+            # Ground Shadow
+            d.ellipse([50, 375, 250, 410], fill="#0A0F1D")
+            # Postbox Base
+            d.rounded_rectangle([65, 340, 235, 385], radius=15, fill="#1E293B", outline="#475569", width=3)
+            # Main Red Cylinder (3D Shading)
+            d.rounded_rectangle([75, 120, 225, 350], radius=12, fill="#991B1B")
+            d.rounded_rectangle([95, 120, 205, 350], radius=8, fill="#DC2626")
+            d.rounded_rectangle([115, 120, 160, 350], radius=6, fill="#EF4444")
+            # Golden Postal Ribbon
+            d.rectangle([75, 165, 225, 182], fill="#F59E0B")
+            d.rectangle([115, 165, 160, 182], fill="#FDE047")
+            # Letter Slot with envelope
+            d.rounded_rectangle([90, 195, 210, 215], radius=5, fill="#0F172A")
+            d.rectangle([110, 200, 190, 225], fill="#FFFFFF", outline="#CBD5E1", width=1)
+            d.polygon([(110, 200), (150, 215), (190, 200)], fill="#E2E8F0")
+            # Collection Keyhole
+            d.ellipse([140, 270, 160, 290], fill="#F59E0B", outline="#78350F", width=2)
+            d.ellipse([147, 277, 153, 283], fill="#0F172A")
+            # 3D Dome Top
+            d.chord([70, 40, 230, 150], start=180, end=0, fill="#B91C1C", outline="#F87171", width=3)
+            d.chord([95, 50, 205, 140], start=180, end=0, fill="#EF4444")
+            d.ellipse([135, 30, 165, 55], fill="#F59E0B", outline="#FEF08A", width=2)
+            box.save(POSTBOX_3D_PATH, "PNG")
+        except Exception:
+            pass
+
+    # 3. 3D Golden Trophy (Slide 4: Quiz)
+    if not os.path.exists(QUIZ_3D_PATH):
+        try:
+            q = Image.new("RGBA", (300, 400), (0, 0, 0, 0))
+            dq = ImageDraw.Draw(q)
+            dq.ellipse([50, 355, 250, 395], fill="#0A0F1D")
+            dq.rounded_rectangle([75, 320, 225, 365], radius=10, fill="#1E293B", outline="#38BDF8", width=3)
+            dq.rectangle([135, 240, 165, 325], fill="#D97706")
+            dq.rectangle([142, 240, 158, 325], fill="#FDE047")
+            dq.chord([60, 70, 240, 250], start=0, end=180, fill="#D97706", outline="#B45309", width=4)
+            dq.chord([80, 75, 220, 240], start=0, end=180, fill="#F59E0B")
+            dq.chord([110, 85, 190, 230], start=0, end=180, fill="#FEF08A")
+            dq.arc([35, 95, 95, 175], start=90, end=270, fill="#FBBF24", width=12)
+            dq.arc([205, 95, 265, 175], start=270, end=90, fill="#FBBF24", width=12)
+            dq.polygon([(150, 115), (157, 137), (180, 137), (162, 152), (169, 174), (150, 160), (131, 174), (138, 152), (120, 137), (143, 137)], fill="#FFFFFF")
+            q.save(QUIZ_3D_PATH, "PNG")
         except Exception:
             pass
 
@@ -156,11 +205,7 @@ def get_eng_font(size):
 
 # --- State Management ---
 def load_progress_state():
-    state = {
-        "clause_no": 3,
-        "current_part": 1,
-        "total_parts": 2
-    }
+    state = {"clause_no": 3, "current_part": 1, "total_parts": 2}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -176,7 +221,7 @@ def save_progress_state(state):
     except Exception as e:
         print(f"⚠️ Warning saving state: {e}", flush=True)
 
-# --- AI Script Generation with Hardened Fallback ---
+# --- Script Generation ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 3)
     current_part = state.get("current_part", 1)
@@ -313,13 +358,13 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-# --- Video Rendering Engine ---
+# --- Video Engine with 3D Assets ---
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     ensure_auto_icons()
 
     total_dur = get_audio_duration(audio_file)
-    print(f"🎵 Generated Voiceover Duration: {total_dur:.1f}s", flush=True)
+    print(f"🎵 Voiceover Duration: {total_dur:.1f}s", flush=True)
 
     if total_dur > 57.0:
         tempo = round(total_dur / 54.0, 2)
@@ -351,12 +396,11 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_opt_hin = get_dev_font(34)
 
     def draw_base(draw_obj):
-        # Outer Card
         draw_obj.rounded_rectangle([45, 50, 1035, 1860], radius=30, fill="#1E293B", outline="#E11D48", width=4)
         draw_obj.text((80, 75), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         draw_obj.text((80, 130), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
-        # Official Syllabus Trust Pill (Top-Right of Header)
+        # Trust Pill
         draw_obj.rounded_rectangle([630, 80, 1000, 130], radius=16, fill="#065F46", outline="#34D399", width=2)
         draw_obj.text((655, 93), "✓ 100% OFFICIAL SYLLABUS", fill="#ECFDF5", font=font_trust)
 
@@ -369,7 +413,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         draw_obj.text((120, 1520), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((610, 1520), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
-    def paste_safe_icon(base_img, path, pos, size=(110, 110)):
+    def paste_safe_asset(base_img, path, pos, size=(240, 335)):
         if os.path.exists(path):
             try:
                 ic = Image.open(path).convert("RGBA")
@@ -384,6 +428,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"]]
     slide_filenames = []
 
+    # Slides 1 to 3
     for idx, sentence in enumerate(sentences, 1):
         img = Image.new("RGB", (1080, 1920), color="#0F172A")
         d = ImageDraw.Draw(img)
@@ -392,10 +437,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         d.rounded_rectangle([80, 180, 1000, 340], radius=20, fill="#0F172A", outline="#38BDF8", width=2)
         d.rounded_rectangle([105, 195, 590, 240], radius=10, fill="#F59E0B")
         d.text((120, 202), badge_text, fill="#000000", font=font_badge)
-        d.text((110, 255), textwrap.fill(clause_title, width=22), fill="#FFFFFF", font=font_title)
-
-        # Postal Emblem
-        paste_safe_icon(img, POST_ICON_PATH, pos=(860, 205), size=(110, 110))
+        d.text((110, 255), textwrap.fill(clause_title, width=28), fill="#FFFFFF", font=font_title)
 
         d.rounded_rectangle([80, 360, 1000, 1340], radius=22, fill="#0F172A")
         d.text((110, 385), "विस्तृत नियम विश्लेषण:", fill="#FBBF24", font=font_h2)
@@ -406,12 +448,18 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         wrapped_text = textwrap.fill(sentence, width=22)
         d.multiline_text((140, 560), wrapped_text, fill="#F8FAFC", font=font_body, spacing=18)
 
+        # Slide 1 gets 3D Rulebook; Slide 2 & 3 get 3D Postbox
+        if idx == 1:
+            paste_safe_asset(img, BOOK_3D_PATH, pos=(710, 960), size=(240, 335))
+        else:
+            paste_safe_asset(img, POSTBOX_3D_PATH, pos=(710, 960), size=(240, 335))
+
         draw_footer(d)
         fname = f"slide_{idx}.png"
         img.save(fname)
         slide_filenames.append(fname)
 
-    # Quiz Slide
+    # Slide 4: Quiz
     img_quiz = Image.new("RGB", (1080, 1920), color="#0F172A")
     dq = ImageDraw.Draw(img_quiz)
     draw_base(dq)
@@ -420,9 +468,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     dq.rounded_rectangle([105, 195, 590, 240], radius=10, fill="#F59E0B")
     dq.text((120, 202), badge_text, fill="#000000", font=font_badge)
     dq.text((110, 255), "परीक्षा क्विज़: सवाल का सही जवाब दें!", fill="#FFFFFF", font=font_title)
-
-    # Quiz Question Emblem
-    paste_safe_icon(img_quiz, QUIZ_ICON_PATH, pos=(860, 205), size=(110, 110))
 
     dq.rounded_rectangle([80, 360, 1000, 1340], radius=22, fill="#0F172A")
     dq.text((110, 385), "आज का सवाल:", fill="#FBBF24", font=font_h2)
@@ -438,6 +483,9 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         dq.text((135, oy + 30), opt_badge, fill="#38BDF8", font=font_opt_eng)
         dq.text((205, oy + 28), textwrap.fill(opt, width=24), fill="#FFFFFF", font=font_opt_hin)
         oy += 125
+
+    # 3D Trophy on Quiz Slide
+    paste_safe_asset(img_quiz, QUIZ_3D_PATH, pos=(790, 360), size=(170, 225))
 
     draw_footer(dq)
     img_quiz.save("slide_4.png")
@@ -474,7 +522,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ]
     subprocess.run(cmd, check=True)
-    print("✅ Meta-Optimized 1080x1920 Instagram Reel Created.", flush=True)
+    print("✅ Meta-Optimized 1080x1920 Reel Created with 3D Assets.", flush=True)
 
 # --- Resumable Instagram Upload ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
@@ -482,7 +530,7 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
     user_id = os.getenv("IG_USER_ID")
 
     if not access_token or not user_id:
-        raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID secrets me missing hai!")
+        raise ValueError("IG_ACCESS_TOKEN ya IG_USER_ID missing!")
 
     last_error = None
     for container_attempt in range(1, max_container_attempts + 1):
@@ -494,14 +542,14 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
                 _publish_reel(video_id, user_id, access_token)
                 return
             else:
-                last_error = f"Container ended with non-FINISHED status: {status}"
+                last_error = f"Status: {status}"
         except Exception as e:
             last_error = str(e)
 
         if container_attempt < max_container_attempts:
             time.sleep(20)
 
-    raise RuntimeError(f"Upload failed. Last error: {last_error}")
+    raise RuntimeError(f"Upload failed: {last_error}")
 
 def _create_reel_container(video_file, caption, user_id, access_token):
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
@@ -513,7 +561,7 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     }
     r = requests.post(init_url, data=data, timeout=60)
     if r.status_code != 200:
-        raise RuntimeError(f"Container init fail hua: {r.text}")
+        raise RuntimeError(f"Container init fail: {r.text}")
 
     video_id = r.json().get("id")
     time.sleep(5)
@@ -530,7 +578,7 @@ def _create_reel_container(video_file, caption, user_id, access_token):
         up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
 
     if up_r.status_code != 200 or not up_r.json().get("success"):
-        raise RuntimeError(f"Video upload fail: {up_r.text}")
+        raise RuntimeError(f"Upload fail: {up_r.text}")
 
     return video_id
 
@@ -539,12 +587,8 @@ def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=1
     for _ in range(max_checks):
         time.sleep(wait_seconds)
         try:
-            status_res = requests.get(
-                status_url,
-                params={"fields": "status_code,status", "access_token": access_token},
-                timeout=30
-            ).json()
-            status = status_res.get("status_code")
+            res = requests.get(status_url, params={"fields": "status_code,status", "access_token": access_token}, timeout=30).json()
+            status = res.get("status_code")
             if status == "FINISHED":
                 return "FINISHED"
             elif status in ["ERROR", "EXPIRED"]:
@@ -559,9 +603,9 @@ def _publish_reel(video_id, user_id, access_token):
     if "id" in pub_res:
         print(f"🎉 Reel successfully published on Instagram! Post ID: {pub_res['id']}", flush=True)
     else:
-        raise RuntimeError(f"Publish fail hua: {pub_res}")
+        raise RuntimeError(f"Publish fail: {pub_res}")
 
-# --- Execution Entry Point ---
+# --- Main Entry Point ---
 if __name__ == "__main__":
     state = load_progress_state()
     script_data = generate_clause_script(state)
