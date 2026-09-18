@@ -21,6 +21,7 @@ RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
 AUDIO_OUTPUT = "voice.mp3"
+BGM_OUTPUT = "bgm.mp3"
 OUTPUT_VIDEO = "final_reel.mp4"
 VOICE_NAME = "hi-IN-SwaraNeural"
 
@@ -32,14 +33,32 @@ QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- 6 High-Retention Rotating Viral Hooks (Infinite Loop) ---
+# --- 6 High-Retention Rotating Viral Hooks (Voice & Visual Badges) ---
 VIRAL_HOOKS = [
-    "लिख कर ले लो! इस 40 सेकंड की रील से विभागीय परीक्षा में आपके 2 नंबर पक्के होने वाले हैं, आइए देखते हैं कैसे!",
-    "जीडीएस से एमटीएस और पोस्टमैन परीक्षा में 90% लोग इस एक नियम में गलत उत्तर देकर आते हैं! क्या आप भी वही गलती कर रहे हैं?",
-    "अगर आप सच में इस बार जीडीएस से प्रमोशन लेने की तैयारी कर रहे हैं, तो पोस्टल वाला के इस सवाल का सही जवाब देकर दिखाइए!",
-    "डाक विभाग की परीक्षाओं में बार-बार दोहराया जाने वाला सबसे पसंदीदा नियम! आज 45 सेकंड में इसे हमेशा के लिए रट लो!",
-    "अगर इस साल जीडीएस की नौकरी से प्रमोशन पाकर पोस्टमैन या पी.ए. बनना है, तो इस रील को 1 सेकंड भी स्किप मत करना!",
-    "क्या आपको पता है? डाक घर गाइड का यह एक छोटा सा क्लॉज कई लोगों का प्रमोशन रोक देता है! आइए इस नियम को गहराई से समझें!"
+    {
+        "voice": "लिख कर ले लो! इस 40 सेकंड की रील से विभागीय परीक्षा में आपके 2 नंबर पक्के होने वाले हैं, आइए देखते हैं कैसे!",
+        "visual_badge": "🔥 लिख कर ले लो! इस रील से 2 नंबर पक्के"
+    },
+    {
+        "voice": "जीडीएस से एमटीएस और पोस्टमैन परीक्षा में 90% लोग इस एक नियम में गलत उत्तर देकर आते हैं! क्या आप भी वही गलती कर रहे हैं?",
+        "visual_badge": "⚠️ 90% लोग इस नियम में फेल होते हैं!"
+    },
+    {
+        "voice": "अगर आप सच में इस बार जीडीएस से प्रमोशन लेने की तैयारी कर रहे हैं, तो पोस्टल वाला के इस सवाल का सही जवाब देकर दिखाइए!",
+        "visual_badge": "🎯 दम है तो सही उत्तर देकर दिखाओ!"
+    },
+    {
+        "voice": "डाक विभाग की परीक्षाओं में बार-बार दोहराया जाने वाला सबसे पसंदीदा नियम! आज 45 सेकंड में इसे हमेशा के लिए रट लो!",
+        "visual_badge": "📌 परीक्षा में बार-बार पूछा जाने वाला नियम"
+    },
+    {
+        "voice": "अगर इस साल जीडीएस की नौकरी से प्रमोशन पाकर पोस्टमैन या पी.ए. बनना है, तो इस रील को 1 सेकंड भी स्किप मत करना!",
+        "visual_badge": "🚀 जीडीएस से प्रमोशन का पक्का मौका!"
+    },
+    {
+        "voice": "क्या आपको पता है? डाक घर गाइड का यह एक छोटा सा क्लॉज कई लोगों का प्रमोशन रोक देता है! आइए इस नियम को गहराई से समझें!",
+        "visual_badge": "⚡ चेतावनी: यह नियम प्रमोशन रोक सकता है!"
+    }
 ]
 
 # --- Official PO Guide Part 1 Complete Master Catalog (Clauses 1 to 60) ---
@@ -48,7 +67,7 @@ POSTAL_CLAUSE_CATALOG = {
         "name": "डाक विभाग का नियंत्रण व संगठन",
         "total_parts": 2,
         "part_1_focus": "संचार मंत्रालय के अधीन, महानिदेशक डाक सेवा शीर्ष प्रशासनिक प्रमुख, मुख्यालय डाक भवन नई दिल्ली।",
-        "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और board सचिव के दायित्व।"
+        "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और बोर्ड सचिव के दायित्व।"
     },
     2: {
         "name": "डाकघरों के प्रकार और श्रेणियां",
@@ -500,6 +519,27 @@ def get_eng_font(size):
             return ImageFont.truetype(p, size)
     return get_dev_font(size)
 
+# --- Background Music Auto-Synthesis Engine ---
+def ensure_bgm(bgm_path="bgm.mp3"):
+    if os.path.exists(bgm_path) and os.path.getsize(bgm_path) > 2000:
+        return bgm_path
+    if os.path.exists(os.path.join(ASSETS_DIR, "bgm.mp3")):
+        return os.path.join(ASSETS_DIR, "bgm.mp3")
+
+    try:
+        cmd = [
+            "ffmpeg", "-y", "-f", "lavfi",
+            "-i", "aevalsrc=exprs='0.035*sin(2*PI*110*t)+0.025*sin(2*PI*164.81*t)+0.02*sin(2*PI*220*t)':s=48000:d=70,lowpass=f=450",
+            "-c:a", "libmp3lame", "-b:a", "128k", bgm_path
+        ]
+        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if os.path.exists(bgm_path) and os.path.getsize(bgm_path) > 2000:
+            print(f"🎵 Generated ambient background audio: {bgm_path}", flush=True)
+            return bgm_path
+    except Exception as e:
+        print(f"⚠️ BGM notice: {e}", flush=True)
+    return None
+
 # --- State Management With Hook Loop Tracking ---
 def load_progress_state():
     state = {"clause_no": 55, "current_part": 2, "total_parts": 3, "hook_index": 0}
@@ -520,12 +560,14 @@ def save_progress_state(state):
     except Exception as e:
         print(f"⚠️ Warning saving state: {e}", flush=True)
 
-# --- Script Generation With Rotating Viral Hook ---
+# --- Script Generation With Full Length & Full Paragraphs ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 55)
     current_part = state.get("current_part", 2)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
-    active_hook = VIRAL_HOOKS[hook_idx]
+    hook_obj = VIRAL_HOOKS[hook_idx]
+    active_hook_voice = hook_obj["voice"]
+    active_hook_badge = hook_obj["visual_badge"]
 
     clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[55])
     clause_name = clause_info["name"]
@@ -537,6 +579,7 @@ def generate_clause_script(state):
         "clause_name": clause_name,
         "part_no": current_part,
         "total_parts": total_parts,
+        "visual_hook_badge": active_hook_badge,
         "sen1": f"भारतीय डाक विभाग के नियमों के अनुसार {clause_name} का विस्तृत विवरण डाक घर गाइड भाग 1 के क्लॉज {current_clause} में निर्धारित किया गया है।",
         "sen2": f"इस नियम के मुख्य कानूनी प्रावधान के अंतर्गत {part_focus}",
         "sen3": "विभागीय परीक्षाओं जैसे MTS, Postman और PA में इस क्लॉज के शुल्क, समय सीमा और संचालन शर्तों पर सीधे प्रश्न पूछे जाते हैं।",
@@ -546,8 +589,8 @@ def generate_clause_script(state):
         "opt_c": "मनीऑर्डर नियम",
         "opt_d": "इनमें से कोई नहीं",
         "correct": "A",
-        "voiceover": f"{active_hook} आज का महत्वपूर्ण प्रश्न है: क्लॉज {current_clause}, {clause_name} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! डाक विभाग के नियमानुसार {part_focus} विभागीय परीक्षा की दृष्टि से यह नियम अत्यंत महत्वपूर्ण है क्योंकि इसमें से सीधे ऑब्जेक्टिव प्रश्न पूछे जाते हैं। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें, और प्रमोशन पाने के लिए पोस्टल वाला को फॉलो करना न भूलें!",
-        "caption": f"{active_hook} पीओ गाइड भाग 1 क्लॉज {current_clause} संपूर्ण विश्लेषण #PostalWala #GDS_to_MTS #PostmanExam #POGuidePart1 #Clause{current_clause}"
+        "voiceover": f"{active_hook_voice} आज का महत्वपूर्ण प्रश्न है: क्लॉज {current_clause}, {clause_name} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! डाक विभाग के नियमानुसार {part_focus} विभागीय परीक्षा की दृष्टि से यह नियम अत्यंत महत्वपूर्ण है क्योंकि इसमें से सीधे ऑब्जेक्टिव प्रश्न पूछे जाते हैं। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें, और प्रमोशन पाने के लिए पोस्टल वाला को फॉलो करना न भूलें!",
+        "caption": f"{active_hook_badge} | डाक घर गाइड भाग 1 क्लॉज {current_clause} संपूर्ण विश्लेषण। विभागीय परीक्षा (MTS / Postman / PA) की तैयारी के लिए फॉलो करें। #PostalWala #GDStoMTS #PostmanExam #GDSExam #IndiaPost #DepartmentalExam #POGuidePart1"
     }
 
     if not GROQ_API_KEY:
@@ -562,13 +605,13 @@ def generate_clause_script(state):
     - Part: भाग {current_part} (कुल {total_parts} भाग)
     - Sub-Rule Focus: "{part_focus}"
 
-    MANDATORY OPENING HOOK (Use these EXACT words as the very first sentence):
-    "{active_hook}"
+    MANDATORY OPENING HOOK (Use these EXACT words as the very first sentence of voiceover):
+    "{active_hook_voice}"
 
     RULES:
     1. Flawless Devanagari Hindi. Complete professional sentences.
     2. Write exactly 3 authoritative teaching sentences (SEN1, SEN2, SEN3), each ~24-28 words long, clearly explaining the rule, official conditions, fees, and exam traps.
-    3. The voiceover MUST be strictly between 118 and 125 words total (natural, deep-teaching pace ~51-53 seconds).
+    3. The voiceover MUST be strictly between 118 and 125 words total (natural, deep-teaching pace ~51-53 seconds). Keep the full teaching intact!
     4. Follow this voiceover layout strictly:
        - OPENING: Use the MANDATORY OPENING HOOK word-for-word.
        - QUESTION HOOK: "आज का महत्वपूर्ण प्रश्न है: [Question]? इसका सही उत्तर वीडियो में अंत तक समझें!"
@@ -590,7 +633,7 @@ def generate_clause_script(state):
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
     VOICEOVER: [Exact voiceover text strictly 118 to 125 words starting with the active hook]
-    CAPTION: [Instagram caption with active hook and targeted hashtags]
+    CAPTION: [Instagram caption with targeted hashtags]
     """
 
     try:
@@ -630,6 +673,7 @@ def generate_clause_script(state):
             if not data.get("voiceover") or len(data["voiceover"].strip()) < 35:
                 data["voiceover"] = fallback_data["voiceover"]
 
+            data["visual_hook_badge"] = active_hook_badge
             return data
     except Exception as e:
         print(f"⚠️ Groq API warning: {e}. Safe fallback active.", flush=True)
@@ -709,10 +753,11 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-# --- Balanced Professional Mobile Layout Engine ---
+# --- Balanced Professional Mobile Layout Engine With Audio Mix ---
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     ensure_auto_icons()
+    active_bgm = ensure_bgm(BGM_OUTPUT)
 
     total_dur = get_audio_duration(audio_file)
     print(f"🎵 Voiceover Duration: {total_dur:.1f}s", flush=True)
@@ -737,8 +782,9 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_part_tag = get_dev_font(22)
     font_title = get_dev_font(36)
     font_h2 = get_dev_font(32)
-    font_body = get_dev_font(48)
-    font_label = get_dev_font(28)
+    font_body = get_dev_font(46)
+    font_label = get_dev_font(26)
+    font_hook_alert = get_dev_font(30)
 
     # 100% Devanagari Hindi font to prevent tofu boxes [▯▯▯▯]
     font_wa_hin = get_dev_font(32)
@@ -776,10 +822,10 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
             except Exception:
                 pass
 
-    # Cleaned: Title is separate, Part is a neat Tag
     badge_text = f"पीओ गाइड भाग 1  •  क्लॉज {script_data['clause_no']}"
     part_tag_text = f"भाग {script_data['part_no']}/{script_data['total_parts']}"
     clause_title = script_data['clause_name']
+    visual_hook_text = script_data.get("visual_hook_badge", "🔥 लिख कर ले लो! इस रील से 2 नंबर पक्के")
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"]]
     slide_filenames = []
@@ -797,11 +843,11 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         d.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
         d.text((120, 198), badge_text, fill="#000000", font=font_badge)
 
-        # Right Badge: Part Tag (Electric Blue Pill - Zero Wrapping Bug!)
+        # Right Badge: Part Tag (Electric Blue Pill)
         d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8", outline="#60A5FA", width=1)
         d.text((845, 198), part_tag_text, fill="#FFFFFF", font=font_part_tag)
 
-        # Clean Single Title Line (Bold White, Centered Vertically in remaining area)
+        # Clean Single Title Line (Bold White)
         d.text((105, 255), clause_title, fill="#FFFFFF", font=font_title)
 
         draw_sleek_whatsapp_strip(d)
@@ -809,15 +855,23 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         # Main Teaching Card (y: 505 to 1550)
         d.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
 
-        d.rounded_rectangle([110, 535, 470, 588], radius=12, fill="#0B132B")
-        d.text((130, 545), f"परीक्षा बिंदु #{idx}:", fill="#38BDF8", font=font_label)
-
-        wrapped_text = textwrap.fill(sentence, width=21)
-        d.multiline_text((115, 625), wrapped_text, fill="#F8FAFC", font=font_body, spacing=24)
-
+        # Slide 1 Visual Hook Alert Card
         if idx == 1:
-            paste_safe_asset(img, BOOK_3D_PATH, pos=(390, 1080), size=(300, 420))
+            d.rounded_rectangle([110, 530, 970, 600], radius=14, fill="#991B1B", outline="#FBBF24", width=2)
+            d.text((130, 545), visual_hook_text, fill="#FEF08A", font=font_hook_alert)
+
+            d.rounded_rectangle([110, 620, 450, 670], radius=10, fill="#0B132B")
+            d.text((125, 630), "परीक्षा बिंदु #1:", fill="#38BDF8", font=font_label)
+
+            wrapped_text = textwrap.fill(sentence, width=22)
+            d.multiline_text((115, 695), wrapped_text, fill="#F8FAFC", font=font_body, spacing=20)
+            paste_safe_asset(img, BOOK_3D_PATH, pos=(390, 1100), size=(300, 410))
         else:
+            d.rounded_rectangle([110, 535, 470, 588], radius=12, fill="#0B132B")
+            d.text((130, 545), f"परीक्षा बिंदु #{idx}:", fill="#38BDF8", font=font_label)
+
+            wrapped_text = textwrap.fill(sentence, width=21)
+            d.multiline_text((115, 625), wrapped_text, fill="#F8FAFC", font=font_body, spacing=24)
             paste_safe_asset(img, POSTBOX_3D_PATH, pos=(390, 1080), size=(300, 420))
 
         draw_footer_cta(d)
@@ -832,11 +886,9 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
 
     dq.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#FBBF24", width=2)
     
-    # Left Badge
     dq.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
     dq.text((120, 198), badge_text, fill="#000000", font=font_badge)
 
-    # Right Badge
     dq.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8", outline="#60A5FA", width=1)
     dq.text((845, 198), part_tag_text, fill="#FFFFFF", font=font_part_tag)
 
@@ -880,15 +932,33 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         filter_parts += f"[{i}:v]loop=loop=-1:size=1:start=0,trim=duration={safe_dur}[v{i}]; "
 
     concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
-    filter_complex = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,format=yuv420p[v]"
+    video_filter = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,format=yuv420p[v]"
 
     cmd = [
         "ffmpeg", "-y",
         *inputs,
-        "-i", audio_file,
-        "-filter_complex", filter_complex,
-        "-map", "[v]",
-        "-map", f"{len(slide_filenames)}:a",
+        "-i", audio_file
+    ]
+
+    # Robust Dual-Stream Audio Mixing with Auto-BGM
+    voice_idx = len(slide_filenames)
+    if active_bgm and os.path.exists(active_bgm) and os.path.getsize(active_bgm) > 2000:
+        bgm_idx = voice_idx + 1
+        cmd.extend(["-stream_loop", "-1", "-i", active_bgm])
+        full_filter = f"{video_filter}; [{voice_idx}:a]aresample=48000,volume=1.0[v_aud]; [{bgm_idx}:a]aresample=48000,volume=0.08[bgm_aud]; [v_aud][bgm_aud]amix=inputs=2:duration=first:dropout_transition=2[a]"
+        cmd.extend([
+            "-filter_complex", full_filter,
+            "-map", "[v]",
+            "-map", "[a]"
+        ])
+    else:
+        cmd.extend([
+            "-filter_complex", video_filter,
+            "-map", "[v]",
+            "-map", f"{voice_idx}:a"
+        ])
+
+    cmd.extend([
         "-c:v", "libx264",
         "-preset", "medium",
         "-profile:v", "main",
@@ -901,9 +971,10 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-ar", "48000",
         "-movflags", "+faststart",
         "-shortest", output_video
-    ]
+    ])
+
     subprocess.run(cmd, check=True)
-    print("✅ Meta-Optimized 1080x1920 Balanced UI Reel Created.", flush=True)
+    print("✅ Meta-Optimized 1080x1920 Reel Created with High-Retention BGM Mix.", flush=True)
 
 # --- Bulletproof Resumable Instagram Upload ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
@@ -997,8 +1068,8 @@ if __name__ == "__main__":
     script_data = generate_clause_script(state)
 
     if not script_data.get("voiceover") or len(script_data["voiceover"].strip()) < 30:
-        hook = VIRAL_HOOKS[state.get("hook_index", 0) % len(VIRAL_HOOKS)]
-        script_data["voiceover"] = f"{hook} आज का महत्वपूर्ण प्रश्न है: क्लॉज {state.get('clause_no', 55)} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो अंत तक समझें! विभागीय परीक्षा की पक्की तैयारी के लिए पोस्टल वाला को फॉलो करें और फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें!"
+        hook_obj = VIRAL_HOOKS[state.get("hook_index", 0) % len(VIRAL_HOOKS)]
+        script_data["voiceover"] = f"{hook_obj['voice']} आज का महत्वपूर्ण प्रश्न है: क्लॉज {state.get('clause_no', 55)} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो अंत तक समझें! विभागीय परीक्षा की पक्की तैयारी के लिए पोस्टल वाला को फॉलो करें और फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें!"
 
     asyncio.run(generate_voice(script_data["voiceover"], AUDIO_OUTPUT))
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
