@@ -29,8 +29,17 @@ BOOK_3D_PATH = os.path.join(ASSETS_DIR, "3d_book.png")
 POSTBOX_3D_PATH = os.path.join(ASSETS_DIR, "3d_postbox.png")
 QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 
-# Cross-version Pillow Compatibility
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
+
+# --- 6 High-Retention Rotating Viral Hooks (Infinite Loop) ---
+VIRAL_HOOKS = [
+    "लिख कर ले लो! इस 40 सेकंड की रील से विभागीय परीक्षा में आपके 2 नंबर पक्के होने वाले हैं, आइए देखते हैं कैसे!",
+    "जीडीएस से एमटीएस और पोस्टमैन परीक्षा में 90% लोग इस एक नियम में गलत उत्तर देकर आते हैं! क्या आप भी वही गलती कर रहे हैं?",
+    "अगर आप सच में इस बार जीडीएस से प्रमोशन लेने की तैयारी कर रहे हैं, तो पोस्टल वाला के इस सवाल का सही जवाब देकर दिखाइए!",
+    "डाक विभाग की परीक्षाओं में बार-बार दोहराया जाने वाला सबसे पसंदीदा नियम! आज 45 सेकंड में इसे हमेशा के लिए रट लो!",
+    "अगर इस साल जीडीएस की नौकरी से प्रमोशन पाकर पोस्टमैन या पी.ए. बनना है, तो इस रील को 1 सेकंड भी स्किप मत करना!",
+    "क्या आपको पता है? डाक घर गाइड का यह एक छोटा सा क्लॉज कई लोगों का प्रमोशन रोक देता है! आइए इस नियम को गहराई से समझें!"
+]
 
 # --- Official PO Guide Part 1 Complete Master Catalog (Clauses 1 to 60) ---
 POSTAL_CLAUSE_CATALOG = {
@@ -396,7 +405,6 @@ def clean_hindi_postal_terms(text):
 def ensure_auto_icons():
     os.makedirs(ASSETS_DIR, exist_ok=True)
 
-    # 1. 3D PO Guide Rulebook (Slide 1)
     if not os.path.exists(BOOK_3D_PATH):
         try:
             bk = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
@@ -414,7 +422,6 @@ def ensure_auto_icons():
         except Exception:
             pass
 
-    # 2. 3D Red Pillar Postbox (Slide 2 & 3)
     if not os.path.exists(POSTBOX_3D_PATH):
         try:
             box = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
@@ -438,7 +445,6 @@ def ensure_auto_icons():
         except Exception:
             pass
 
-    # 3. 3D Golden Trophy (Slide 4)
     if not os.path.exists(QUIZ_3D_PATH):
         try:
             q = Image.new("RGBA", (300, 400), (0, 0, 0, 0))
@@ -482,15 +488,17 @@ def get_eng_font(size):
             return ImageFont.truetype(p, size)
     return get_dev_font(size)
 
-# --- State Management ---
+# --- State Management With Hook Loop Tracking ---
 def load_progress_state():
-    state = {"clause_no": 55, "current_part": 2, "total_parts": 3}
+    state = {"clause_no": 55, "current_part": 2, "total_parts": 3, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
                 state.update(json.load(f))
         except Exception:
             pass
+    if "hook_index" not in state:
+        state["hook_index"] = 0
     return state
 
 def save_progress_state(state):
@@ -500,10 +508,12 @@ def save_progress_state(state):
     except Exception as e:
         print(f"⚠️ Warning saving state: {e}", flush=True)
 
-# --- Script Generation With Deep Rule Explanation ---
+# --- Script Generation With Rotating Viral Hook ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 55)
     current_part = state.get("current_part", 2)
+    hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
+    active_hook = VIRAL_HOOKS[hook_idx]
 
     clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[55])
     clause_name = clause_info["name"]
@@ -524,8 +534,8 @@ def generate_clause_script(state):
         "opt_c": "मनीऑर्डर नियम",
         "opt_d": "इनमें से कोई नहीं",
         "correct": "A",
-        "voiceover": f"जीडीएस से प्रमोशन लेने के लिए आपका स्वागत है पोस्टल वाला में! आज का महत्वपूर्ण प्रश्न है: क्लॉज {current_clause}, {clause_name} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! डाक विभाग के नियमानुसार {part_focus} विभागीय परीक्षा की दृष्टि से यह नियम अत्यंत महत्वपूर्ण है क्योंकि इसमें से सीधे ऑब्जेक्टिव प्रश्न पूछे जाते हैं। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें, और प्रमोशन पाने के लिए पोस्टल वाला को फॉलो करना न भूलें!",
-        "caption": f"जीडीएस से प्रमोशन के लिए पीओ गाइड भाग 1 क्लॉज {current_clause} संपूर्ण विश्लेषण #PostalWala #GDS_to_MTS #PostmanExam #POGuidePart1 #Clause{current_clause}"
+        "voiceover": f"{active_hook} आज का महत्वपूर्ण प्रश्न है: क्लॉज {current_clause}, {clause_name} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! डाक विभाग के नियमानुसार {part_focus} विभागीय परीक्षा की दृष्टि से यह नियम अत्यंत महत्वपूर्ण है क्योंकि इसमें से सीधे ऑब्जेक्टिव प्रश्न पूछे जाते हैं। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें, और प्रमोशन पाने के लिए पोस्टल वाला को फॉलो करना न भूलें!",
+        "caption": f"{active_hook} पीओ गाइड भाग 1 क्लॉज {current_clause} संपूर्ण विश्लेषण #PostalWala #GDS_to_MTS #PostmanExam #POGuidePart1 #Clause{current_clause}"
     }
 
     if not GROQ_API_KEY:
@@ -540,15 +550,15 @@ def generate_clause_script(state):
     - Part: भाग {current_part} (कुल {total_parts} भाग)
     - Sub-Rule Focus: "{part_focus}"
 
-    GOAL:
-    We saved time by removing the spoken WhatsApp promotion. Dedicate 100% of the remaining video time to deep, authoritative postal rule teaching so students understand the concept completely.
+    MANDATORY OPENING HOOK (Use these EXACT words as the very first sentence):
+    "{active_hook}"
 
     RULES:
     1. Flawless Devanagari Hindi. Complete professional sentences.
     2. Write exactly 3 authoritative teaching sentences (SEN1, SEN2, SEN3), each ~24-28 words long, clearly explaining the rule, official conditions, fees, and exam traps.
     3. The voiceover MUST be strictly between 118 and 125 words total (natural, deep-teaching pace ~51-53 seconds).
     4. Follow this voiceover layout strictly:
-       - OPENING HOOK (Exact words): "जीडीएस से प्रमोशन लेने के लिए आपका स्वागत है पोस्टल वाला में!"
+       - OPENING: Use the MANDATORY OPENING HOOK word-for-word.
        - QUESTION HOOK: "आज का महत्वपूर्ण प्रश्न है: [Question]? इसका सही उत्तर वीडियो में अंत तक समझें!"
        - DEEP TEACHING: Thoroughly explain SEN1, SEN2, and SEN3 calmly, covering why this rule matters in postal operations and departmental exams.
        - UNIFIED CLOSING (Exact flow without repeating words):
@@ -567,8 +577,8 @@ def generate_clause_script(state):
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
-    VOICEOVER: [Exact voiceover text strictly 118 to 125 words]
-    CAPTION: [Instagram caption with targeted hashtags]
+    VOICEOVER: [Exact voiceover text strictly 118 to 125 words starting with the active hook]
+    CAPTION: [Instagram caption with active hook and targeted hashtags]
     """
 
     try:
@@ -612,8 +622,11 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- Automatic Intelligent Clause Progression ---
+# --- Automatic Intelligent Clause & Hook Progression ---
 def advance_progress_state(state, data):
+    current_hook_idx = state.get("hook_index", 0)
+    state["hook_index"] = (current_hook_idx + 1) % len(VIRAL_HOOKS)
+
     cur_part = data.get("part_no", state.get("current_part", 1))
     total_parts = data.get("total_parts", state.get("total_parts", 2))
 
@@ -623,10 +636,8 @@ def advance_progress_state(state, data):
     else:
         cur_clause = state.get("clause_no")
 
-        # 1. Clause 56 pura hote hi seedhe Clause 5 par jump
         if cur_clause == 56:
             state["clause_no"] = 5
-        # 2. Clause 54 pura hote hi 55-56 skip karke seedhe Clause 57 par jump
         elif cur_clause == 54:
             state["clause_no"] = 57
         else:
@@ -655,7 +666,7 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-# --- Video Engine With High-Impact Middle WhatsApp Banner ---
+# --- Balanced Professional Mobile Layout Engine ---
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     ensure_auto_icons()
@@ -676,45 +687,43 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     total_weight = sum(weights)
     durations = [total_dur * (w / total_weight) for w in weights]
 
-    font_brand = get_eng_font(46)
-    font_sub = get_eng_font(24)
+    font_brand = get_eng_font(44)
+    font_sub = get_eng_font(22)
+    font_trust = get_eng_font(20)
     font_badge = get_dev_font(24)
     font_title = get_dev_font(34)
     font_h2 = get_dev_font(32)
-    font_body = get_dev_font(40)
-    font_label = get_dev_font(26)
-    font_trust = get_eng_font(20)
+    font_body = get_dev_font(48)
+    font_label = get_dev_font(28)
 
-    # High-impact fonts for WhatsApp Middle Banner
-    font_wa_eng = get_eng_font(32)
-    font_wa_dev = get_dev_font(36)
+    # 100% Hindi Devanagari font to prevent tofu boxes [▯▯▯▯]
+    font_wa_hin = get_dev_font(32)
+    font_wa_num = get_eng_font(30)
 
-    font_cta_hin = get_dev_font(28)
-    font_cta_eng = get_eng_font(28)
-    font_opt_eng = get_eng_font(34)
-    font_opt_hin = get_dev_font(32)
+    font_cta = get_eng_font(30)
+    font_cta_dev = get_dev_font(30)
+    font_opt_eng = get_eng_font(36)
+    font_opt_hin = get_dev_font(34)
 
     def draw_base(draw_obj):
-        draw_obj.rounded_rectangle([45, 50, 1035, 1860], radius=30, fill="#1E293B", outline="#E11D48", width=4)
+        draw_obj.rounded_rectangle([45, 50, 1035, 1710], radius=32, fill="#0B132B", outline="#1E293B", width=3)
         draw_obj.text((80, 75), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         draw_obj.text((80, 130), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
-        draw_obj.rounded_rectangle([630, 80, 1000, 130], radius=16, fill="#065F46", outline="#34D399", width=2)
-        draw_obj.text((655, 93), "✓ 100% OFFICIAL SYLLABUS", fill="#ECFDF5", font=font_trust)
+        draw_obj.rounded_rectangle([630, 80, 1000, 132], radius=16, fill="#064E3B", outline="#10B981", width=2)
+        draw_obj.text((655, 93), "✓ 100% OFFICIAL SYLLABUS", fill="#D1FAE5", font=font_trust)
 
-    # High-impact Middle Green Banner (Height 150px)
-    def draw_middle_whatsapp_banner(draw_obj):
-        draw_obj.rounded_rectangle([80, 320, 1000, 470], radius=20, fill="#15803D", outline="#22C55E", width=3)
-        draw_obj.text((110, 338), "GDS to MTS | Postman | Mail Guard | P.A.", fill="#FEF08A", font=font_wa_eng)
-        draw_obj.text((110, 396), "कोर्स व टेस्ट हेतु WhatsApp: 8989971379", fill="#FFFFFF", font=font_wa_dev)
+    def draw_sleek_whatsapp_strip(draw_obj):
+        draw_obj.rounded_rectangle([80, 345, 1000, 475], radius=18, fill="#064E3B", outline="#34D399", width=2)
+        draw_obj.text((110, 362), "GDS to MTS • Postman • Mail Guard • P.A.", fill="#FDE047", font=font_wa_num)
+        draw_obj.text((110, 412), "कोर्स व फ्री टेस्ट हेतु व्हाट्सएप: 8989971379", fill="#FFFFFF", font=font_wa_hin)
 
-    # Clean Red Follow Button in Safe Bottom Zone
     def draw_footer_cta(draw_obj):
-        draw_obj.rounded_rectangle([80, 1460, 1000, 1550], radius=20, fill="#E11D48")
-        draw_obj.text((120, 1485), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
-        draw_obj.text((610, 1485), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
+        draw_obj.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
+        draw_obj.text((120, 1605), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_dev)
+        draw_obj.text((580, 1605), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta)
 
-    def paste_safe_asset(base_img, path, pos, size=(240, 335)):
+    def paste_safe_asset(base_img, path, pos, size=(300, 420)):
         if os.path.exists(path):
             try:
                 ic = Image.open(path).convert("RGBA")
@@ -731,30 +740,31 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
 
     # Slides 1 to 3
     for idx, sentence in enumerate(sentences, 1):
-        img = Image.new("RGB", (1080, 1920), color="#0F172A")
+        img = Image.new("RGB", (1080, 1920), color="#060A17")
         d = ImageDraw.Draw(img)
         draw_base(d)
 
-        d.rounded_rectangle([80, 175, 1000, 305], radius=18, fill="#0F172A", outline="#38BDF8", width=2)
-        d.rounded_rectangle([105, 188, 590, 230], radius=10, fill="#F59E0B")
-        d.text((120, 195), badge_text, fill="#000000", font=font_badge)
-        d.text((110, 240), textwrap.fill(clause_title, width=28), fill="#FFFFFF", font=font_title)
+        # Title Card
+        d.rounded_rectangle([80, 175, 1000, 315], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
+        d.rounded_rectangle([105, 190, 585, 235], radius=10, fill="#F59E0B")
+        d.text((120, 197), badge_text, fill="#000000", font=font_badge)
+        d.text((110, 248), textwrap.fill(clause_title, width=28), fill="#FFFFFF", font=font_title)
 
-        draw_middle_whatsapp_banner(d)
+        draw_sleek_whatsapp_strip(d)
 
-        d.rounded_rectangle([80, 490, 1000, 1420], radius=22, fill="#0F172A")
-        d.text((110, 510), "विस्तृत नियम विश्लेषण:", fill="#FBBF24", font=font_h2)
+        # Main Teaching Card (Even distribution, no empty space)
+        d.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
 
-        d.rounded_rectangle([110, 560, 970, 1390], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
-        d.text((140, 585), f"महत्वपूर्ण परीक्षा बिंदु #{idx}:", fill="#38BDF8", font=font_label)
+        d.rounded_rectangle([110, 535, 470, 588], radius=12, fill="#0B132B")
+        d.text((130, 545), f"परीक्षा बिंदु #{idx}:", fill="#38BDF8", font=font_label)
 
-        wrapped_text = textwrap.fill(sentence, width=23)
-        d.multiline_text((140, 650), wrapped_text, fill="#F8FAFC", font=font_body, spacing=16)
+        wrapped_text = textwrap.fill(sentence, width=21)
+        d.multiline_text((115, 625), wrapped_text, fill="#F8FAFC", font=font_body, spacing=24)
 
         if idx == 1:
-            paste_safe_asset(img, BOOK_3D_PATH, pos=(710, 1040), size=(240, 335))
+            paste_safe_asset(img, BOOK_3D_PATH, pos=(390, 1080), size=(300, 420))
         else:
-            paste_safe_asset(img, POSTBOX_3D_PATH, pos=(710, 1040), size=(240, 335))
+            paste_safe_asset(img, POSTBOX_3D_PATH, pos=(390, 1080), size=(300, 420))
 
         draw_footer_cta(d)
         fname = f"slide_{idx}.png"
@@ -762,33 +772,40 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         slide_filenames.append(fname)
 
     # Slide 4: Quiz
-    img_quiz = Image.new("RGB", (1080, 1920), color="#0F172A")
+    img_quiz = Image.new("RGB", (1080, 1920), color="#060A17")
     dq = ImageDraw.Draw(img_quiz)
     draw_base(dq)
 
-    dq.rounded_rectangle([80, 175, 1000, 305], radius=18, fill="#0F172A", outline="#FBBF24", width=2)
-    dq.rounded_rectangle([105, 188, 590, 230], radius=10, fill="#F59E0B")
-    dq.text((120, 195), badge_text, fill="#000000", font=font_badge)
-    dq.text((110, 240), "परीक्षा क्विज़: सही उत्तर कमेंट करें!", fill="#FFFFFF", font=font_title)
+    dq.rounded_rectangle([80, 175, 1000, 315], radius=18, fill="#1C2541", outline="#FBBF24", width=2)
+    dq.rounded_rectangle([105, 190, 585, 235], radius=10, fill="#F59E0B")
+    dq.text((120, 197), badge_text, fill="#000000", font=font_badge)
+    dq.text((110, 248), "परीक्षा क्विज़: सही उत्तर कमेंट करें!", fill="#FFFFFF", font=font_title)
 
-    draw_middle_whatsapp_banner(dq)
+    draw_sleek_whatsapp_strip(dq)
 
-    dq.rounded_rectangle([80, 490, 1000, 1420], radius=22, fill="#0F172A")
-    dq.text((110, 510), "आज का सवाल:", fill="#FBBF24", font=font_h2)
+    dq.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
+
+    dq.rounded_rectangle([110, 530, 330, 575], radius=12, fill="#0B132B")
+    dq.text((120, 538), "आज का सवाल:", fill="#FBBF24", font=font_h2)
 
     q_wrapped = textwrap.fill(script_data["question"], width=23)
-    dq.multiline_text((110, 560), q_wrapped, fill="#F8FAFC", font=font_h2, spacing=10)
+    dq.multiline_text((110, 595), q_wrapped, fill="#F8FAFC", font=font_h2, spacing=10)
 
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     oy = 745
     for idx, opt in enumerate(opts):
-        dq.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#1E293B", outline="#38BDF8", width=2)
+        dq.rounded_rectangle([110, oy, 970, oy + 105], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
         opt_badge = f"{chr(65+idx)})"
-        dq.text((135, oy + 25), opt_badge, fill="#38BDF8", font=font_opt_eng)
-        dq.text((205, oy + 25), textwrap.fill(opt, width=24), fill="#FFFFFF", font=font_opt_hin)
-        oy += 115
+        dq.text((135, oy + 28), opt_badge, fill="#38BDF8", font=font_opt_eng)
+        dq.text((205, oy + 28), textwrap.fill(opt, width=24), fill="#FFFFFF", font=font_opt_hin)
+        oy += 125
 
-    paste_safe_asset(img_quiz, QUIZ_3D_PATH, pos=(810, 500), size=(150, 200))
+    # Bottom Engagement Pill
+    dq.rounded_rectangle([110, 1370, 970, 1490], radius=18, fill="#0B132B", outline="#F59E0B", width=2)
+    dq.text((220, 1395), "✍️ अपना सही जवाब अभी कमेंट करें!", fill="#FDE047", font=font_h2)
+    dq.text((195, 1445), "देखते हैं कितने साथी सही उत्तर देते हैं!", fill="#94A3B8", font=font_badge)
+
+    paste_safe_asset(img_quiz, QUIZ_3D_PATH, pos=(815, 520), size=(150, 195))
 
     draw_footer_cta(dq)
     img_quiz.save("slide_4.png")
@@ -825,7 +842,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-shortest", output_video
     ]
     subprocess.run(cmd, check=True)
-    print("✅ Meta-Optimized 1080x1920 Reel Created with Deep-Teaching Script & Assets.", flush=True)
+    print("✅ Meta-Optimized 1080x1920 Balanced UI Reel Created.", flush=True)
 
 # --- Bulletproof Resumable Instagram Upload ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
