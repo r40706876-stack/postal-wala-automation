@@ -1,20 +1,20 @@
 name: Postal Wala Daily Reel Automation
 
 on:
-  workflow_dispatch: # जब चाहें बटन दबाकर तुरंत खुद चलाने के लिए
+  workflow_dispatch:
   schedule:
-    # दिन की 4 सबसे असरदार वायरल टाइमिंग्स (IST):
-    - cron: '30 3 * * *'   # 1. सुबह 09:00 AM IST (03:30 AM UTC)
-    - cron: '45 7 * * *'   # 2. दोपहर 01:15 PM IST (07:45 AM UTC)
-    - cron: '30 12 * * *'  # 3. शाम 06:00 PM IST (12:30 PM UTC)
-    - cron: '15 15 * * *'  # 4. रात 08:45 PM IST (03:15 PM UTC)
+    # 4 Daily Peak Slots (IST): 09:00 AM, 01:15 PM, 06:00 PM, 08:45 PM
+    - cron: '30 3 * * *'   # 09:00 AM IST
+    - cron: '45 7 * * *'   # 01:15 PM IST
+    - cron: '30 12 * * *'  # 06:00 PM IST
+    - cron: '15 15 * * *'  # 08:45 PM IST
 
 jobs:
   build-and-post:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write # progress_state.json को ऑटो-सेव करने की अनुमति
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -46,4 +46,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add progress_state.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update progress state [skip ci]" && git pull --rebase && git push)
+          git diff --staged --quiet || git commit -m "Auto-update progress state [skip ci]"
+          git reset --hard HEAD
+          git clean -fd
+          git pull --rebase origin main || echo "Rebase not needed"
+          git push origin main || git push
