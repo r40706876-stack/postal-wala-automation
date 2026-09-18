@@ -1,16 +1,20 @@
-name: Postal Wala Daily Reel
+name: Postal Wala Daily Reel Automation
 
 on:
-  workflow_dispatch: # मैन्युअल रन करने के लिए
+  workflow_dispatch: # जब चाहें बटन दबाकर तुरंत खुद चलाने के लिए
   schedule:
-    - cron: '30 3 * * *' # रोज़ सुबह 9:00 AM IST (3:30 AM UTC)
+    # दिन की 4 सबसे असरदार वायरल टाइमिंग्स (IST):
+    - cron: '30 3 * * *'   # 1. सुबह 09:00 AM IST (03:30 AM UTC)
+    - cron: '45 7 * * *'   # 2. दोपहर 01:15 PM IST (07:45 AM UTC)
+    - cron: '30 12 * * *'  # 3. शाम 06:00 PM IST (12:30 PM UTC)
+    - cron: '15 15 * * *'  # 4. रात 08:45 PM IST (03:15 PM UTC)
 
 jobs:
   build-and-post:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write # progress_state.json को वापस सेव करने के लिए ज़रूरी है
+      contents: write # progress_state.json को ऑटो-सेव करने की अनुमति
 
     steps:
       - name: Checkout Repository
@@ -21,7 +25,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install System Dependencies (FFmpeg & Fonts)
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation
@@ -42,5 +46,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add progress_state.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update progress state [skip ci]"
-          git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update progress state [skip ci]" && git pull --rebase && git push)
