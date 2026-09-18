@@ -48,7 +48,7 @@ POSTAL_CLAUSE_CATALOG = {
         "name": "डाक विभाग का नियंत्रण व संगठन",
         "total_parts": 2,
         "part_1_focus": "संचार मंत्रालय के अधीन, महानिदेशक डाक सेवा शीर्ष प्रशासनिक प्रमुख, मुख्यालय डाक भवन नई दिल्ली।",
-        "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और बोर्ड सचिव के दायित्व।"
+        "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और board सचिव के दायित्व।"
     },
     2: {
         "name": "डाकघरों के प्रकार और श्रेणियां",
@@ -402,7 +402,7 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
-# Robust Multi-line Regex Extractor (Never breaks on newlines or Markdown headers)
+# Robust Multi-line Regex Extractor
 def extract_field_block(text, field_name, next_fields):
     pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
     m = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
@@ -733,13 +733,14 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_brand = get_eng_font(44)
     font_sub = get_eng_font(22)
     font_trust = get_eng_font(20)
-    font_badge = get_dev_font(24)
-    font_title = get_dev_font(34)
+    font_badge = get_dev_font(23)
+    font_part_tag = get_dev_font(22)
+    font_title = get_dev_font(36)
     font_h2 = get_dev_font(32)
     font_body = get_dev_font(48)
     font_label = get_dev_font(28)
 
-    # Pure Devanagari Hindi font to prevent tofu boxes [▯▯▯▯]
+    # 100% Devanagari Hindi font to prevent tofu boxes [▯▯▯▯]
     font_wa_hin = get_dev_font(32)
     font_wa_num = get_eng_font(30)
 
@@ -775,8 +776,10 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
             except Exception:
                 pass
 
+    # Cleaned: Title is separate, Part is a neat Tag
     badge_text = f"पीओ गाइड भाग 1  •  क्लॉज {script_data['clause_no']}"
-    clause_title = f"{script_data['clause_name']} (भाग {script_data['part_no']}/{script_data['total_parts']})"
+    part_tag_text = f"भाग {script_data['part_no']}/{script_data['total_parts']}"
+    clause_title = script_data['clause_name']
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"]]
     slide_filenames = []
@@ -787,15 +790,23 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         d = ImageDraw.Draw(img)
         draw_base(d)
 
-        # Title Card
-        d.rounded_rectangle([80, 175, 1000, 315], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
-        d.rounded_rectangle([105, 190, 585, 235], radius=10, fill="#F59E0B")
-        d.text((120, 197), badge_text, fill="#000000", font=font_badge)
-        d.text((110, 248), textwrap.fill(clause_title, width=28), fill="#FFFFFF", font=font_title)
+        # Title Card (y: 175 to 320)
+        d.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
+        
+        # Left Badge: Clause Number (Golden Pill)
+        d.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
+        d.text((120, 198), badge_text, fill="#000000", font=font_badge)
+
+        # Right Badge: Part Tag (Electric Blue Pill - Zero Wrapping Bug!)
+        d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8", outline="#60A5FA", width=1)
+        d.text((845, 198), part_tag_text, fill="#FFFFFF", font=font_part_tag)
+
+        # Clean Single Title Line (Bold White, Centered Vertically in remaining area)
+        d.text((105, 255), clause_title, fill="#FFFFFF", font=font_title)
 
         draw_sleek_whatsapp_strip(d)
 
-        # Main Teaching Card (Even distribution, no empty space)
+        # Main Teaching Card (y: 505 to 1550)
         d.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
 
         d.rounded_rectangle([110, 535, 470, 588], radius=12, fill="#0B132B")
@@ -819,10 +830,17 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     dq = ImageDraw.Draw(img_quiz)
     draw_base(dq)
 
-    dq.rounded_rectangle([80, 175, 1000, 315], radius=18, fill="#1C2541", outline="#FBBF24", width=2)
-    dq.rounded_rectangle([105, 190, 585, 235], radius=10, fill="#F59E0B")
-    dq.text((120, 197), badge_text, fill="#000000", font=font_badge)
-    dq.text((110, 248), "परीक्षा क्विज़: सही उत्तर कमेंट करें!", fill="#FFFFFF", font=font_title)
+    dq.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#FBBF24", width=2)
+    
+    # Left Badge
+    dq.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
+    dq.text((120, 198), badge_text, fill="#000000", font=font_badge)
+
+    # Right Badge
+    dq.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8", outline="#60A5FA", width=1)
+    dq.text((845, 198), part_tag_text, fill="#FFFFFF", font=font_part_tag)
+
+    dq.text((105, 255), "परीक्षा क्विज़: सही उत्तर कमेंट करें!", fill="#FDE047", font=font_title)
 
     draw_sleek_whatsapp_strip(dq)
 
