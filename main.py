@@ -32,7 +32,7 @@ QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 # Cross-version Pillow Compatibility
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- Official PO Guide Part 1 Master Catalog ---
+# --- Official PO Guide Part 1 Complete Master Catalog (Clauses 1 to 60) ---
 POSTAL_CLAUSE_CATALOG = {
     1: {
         "name": "डाक विभाग का नियंत्रण व संगठन",
@@ -57,6 +57,278 @@ POSTAL_CLAUSE_CATALOG = {
         "total_parts": 1,
         "part_1_focus": "बड़े शहरों में देर शाम तक डाक व पार्सल बुकिंग सुविधा, कोई बचत बैंक या मनीऑर्डर कार्य नहीं होता।"
     },
+    5: {
+        "name": "डाकघर के कामकाज के घंटे",
+        "total_parts": 2,
+        "part_1_focus": "सामान्य डाक लेन-देन, रजिस्ट्री बुकिंग, मनीऑर्डर और बचत बैंक के अलग-अलग निर्धारित समय सीमा के नियम।",
+        "part_2_focus": "सार्वजनिक कार्य के घंटे समाप्त होने के बाद खिड़कियां बंद करने और लेट फीस के साथ डाक स्वीकार करने के नियम।"
+    },
+    6: {
+        "name": "रविवार और डाक अवकाश पर कार्य",
+        "total_parts": 1,
+        "part_1_focus": "रविवार और 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूर्णतः बंद रहते हैं, केवल रात्रि डाकघर सीमित सेवाएं देते हैं।"
+    },
+    7: {
+        "name": "डाक टिकटों और लेखन-सामग्री का विक्रय",
+        "total_parts": 2,
+        "part_1_focus": "प्रत्येक डाकघर में कार्य के घंटों के दौरान जनता के लिए डाक टिकट और स्टेशनरी की उपलब्धता सुनिश्चित करना अनिवार्य।",
+        "part_2_focus": "डाक टिकट काउंटर पर फटे-पुराने नोट न देने और सही मुद्रा में भुगतान करने के विभागीय नियम।"
+    },
+    8: {
+        "name": "फिलाटेलिक ब्यूरो और डाक टिकट संग्रह",
+        "total_parts": 1,
+        "part_1_focus": "स्मारक डाक टिकटों की बिक्री, फिलाटेलिक डिपॉजिट अकाउंट (PDA) खोलने और टिकट संग्राहकों के लिए विशेष सुविधाएं।"
+    },
+    9: {
+        "name": "फ्रैंकिंग मशीन के नियम व लाइसेंस",
+        "total_parts": 2,
+        "part_1_focus": "डाक महानिदेशक या मंडल प्रमुख द्वारा लाइसेंस जारी करना, लाल रंग की स्याही की छाप और लाइसेंस शुल्क के नियम।",
+        "part_2_focus": "फ्रैंकिंग मीटर रीसेट, एडवांस भुगतान पर मिलने वाली छूट और पोस्टिंग के लिए निर्धारित डाकघर की शर्तें।"
+    },
+    10: {
+        "name": "अप्रयुक्त व जाली टिकटों का निषेध",
+        "total_parts": 1,
+        "part_1_focus": "काटे गए, फटे, पूर्व-उपयोग किए गए या जाली टिकटों का उपयोग आईपीसी की धारा 263-A के तहत दंडनीय अपराध है।"
+    },
+    11: {
+        "name": "डाकभार का पूर्व-भुगतान",
+        "total_parts": 1,
+        "part_1_focus": "डाकभार का पूर्ण पूर्व-भुगतान डाक टिकटों से किया जाना अनिवार्य, बिना डाकभार पत्रों पर दोगुना डाक शुल्क वसूलने का नियम।"
+    },
+    12: {
+        "name": "बिना डाकभार व कम डाकभार वाली वस्तुएं",
+        "total_parts": 2,
+        "part_1_focus": "अनपेड डाक वस्तुओं पर वितरण के समय दोगुना शुल्क और कम डाकभार पर कमी का दोगुना शुल्क वसूलना।",
+        "part_2_focus": "यदि प्राप्तकर्ता अनपेड डाक लेने से इनकार करता है, तो शुल्क प्रेषक से कानूनी रूप से वसूल किया जाता है।"
+    },
+    13: {
+        "name": "पैकिंग और सीलिंग की सामान्य शर्तें",
+        "total_parts": 2,
+        "part_1_focus": "डाक वस्तुओं की मजबूत पैकिंग ताकि परिवहन के दौरान अन्य डाक वस्तुओं और डाक कर्मचारियों को नुकसान न पहुंचे।",
+        "part_2_focus": "कीमती सामान और पार्सल पर विशेष मोहर, वैक्स सील और मजबूत धागे के उपयोग से संबंधित अनिवार्य निर्देश।"
+    },
+    14: {
+        "name": "पता लिखने का सही प्रारूप",
+        "total_parts": 2,
+        "part_1_focus": "पत्र के मुख भाग पर समानांतर दिशा में दाईं ओर प्राप्तकर्ता का पूरा नाम, पता और पिन कोड लिखना।",
+        "part_2_focus": "पत्र के निचले बाएं कोने या पिछले हिस्से पर प्रेषक का नाम व पता लिखना ताकि अवितरित होने पर वापस भेजा जा सके।"
+    },
+    15: {
+        "name": "पिन कोड प्रणाली के नियम",
+        "total_parts": 1,
+        "part_1_focus": "6 अंकों का पिन कोड (पहला अंक जोन, दूसरा उप-जोन, तीसरा जिला, अंतिम तीन अंक वितरण डाकघर) डाक छंटाई को तीव्र बनाता है।"
+    },
+    16: {
+        "name": "पोस्टिंग का प्रमाण पत्र (UPC)",
+        "total_parts": 1,
+        "part_1_focus": "डाकघर में सामान्य डाक डालने के लिखित साक्ष्य के रूप में पोस्टिंग का प्रमाण पत्र जारी करने के नियम।"
+    },
+    17: {
+        "name": "डाक वस्तुओं की वापसी (Recall of Articles)",
+        "total_parts": 2,
+        "part_1_focus": "प्रेषक द्वारा डाक वितरण से पूर्व पत्र वापस बुलाने का अधिकार, निर्धारित आवेदन शुल्क और प्रक्रिया।",
+        "part_2_focus": "डाक वापसी के लिए प्रेषक द्वारा अपनी पहचान सिद्ध करना और सक्षम डाक प्राधिकारी की लिखित अनुमति।"
+    },
+    18: {
+        "name": "पत्र पेटियों में डाक पोस्ट करने के नियम",
+        "total_parts": 1,
+        "part_1_focus": "लेटर बॉक्स में केवल पूरी तरह प्रीपेड अनरजिस्टर्ड पत्र डालना, पार्सल व बीमित पत्र डालना सख्त वर्जित।"
+    },
+    19: {
+        "name": "अंतर्देशीय डाक वस्तुओं की श्रेणियां",
+        "total_parts": 1,
+        "part_1_focus": "प्रथम श्रेणी डाक (पत्र, पोस्टकार्ड, आईएलसी) जिन्हें बिना अतिरिक्त हवाई अधिभार स्वतः एयर ट्रांसमिशन मिलता है।"
+    },
+    20: {
+        "name": "पत्र (Letters) के वजन व आकार सीमाएं",
+        "total_parts": 2,
+        "part_1_focus": "पत्र का अधिकतम वजन 2 किलोग्राम तक, लंबाई-चौड़ाई और रोल फार्म के लिए निर्धारित न्यूनतम-अधिकतम सीमाएं।",
+        "part_2_focus": "प्रत्येक 20 ग्राम या उसके भाग पर निर्धारित डाक शुल्क दरें और कम डाकभार पर दोगुनी वसूली के नियम।"
+    },
+    21: {
+        "name": "अंतर्देशीय पत्र कार्ड (ILC) के नियम",
+        "total_parts": 1,
+        "part_1_focus": "आईएलसी केवल भारत के भीतर मान्य, अधिकतम वजन 5 ग्राम और इसके भीतर कोई भी अतिरिक्त सामग्री रखना वर्जित।"
+    },
+    22: {
+        "name": "पोस्टकार्ड की श्रेणियां व दरें",
+        "total_parts": 2,
+        "part_1_focus": "एकल पोस्टकार्ड (Single), जवाबी पोस्टकार्ड (Reply), मुद्रित और मेघदूत पोस्टकार्ड की निर्धारित दरें व माप।",
+        "part_2_focus": "पोस्टकार्ड पर कुछ भी चिपकाने या मोड़ने पर उसे सामान्य पत्र मानकर अतिरिक्त शुल्क वसूलने का नियम।"
+    },
+    23: {
+        "name": "बुक पैकेट (Book Packets) के नियम",
+        "total_parts": 2,
+        "part_1_focus": "बुक पैकेट का अधिकतम वजन 5 किलोग्राम, खुला और बिना सील का होना अनिवार्य ताकि जांच की जा सके।",
+        "part_2_focus": "बुक पैकेट में कोई भी व्यक्तिगत पत्र व्यवहार या बंद संदेश रखना सख्त वर्जित और दंडनीय।"
+    },
+    24: {
+        "name": "मुद्रित पुस्तकों का बुक पैकेट",
+        "total_parts": 1,
+        "part_1_focus": "केवल मुद्रित पुस्तकों के पैकेट पर विशेष रियायती डाक दरें और विज्ञापन सामग्री न होने की अनिवार्य शर्त।"
+    },
+    25: {
+        "name": "अंध साहित्य पैकेट (Blind Literature)",
+        "total_parts": 1,
+        "part_1_focus": "ब्रेल लिपि में दृष्टिहीनों के साहित्य के लिए 7 किलोग्राम तक पूर्ण डाकभार व पंजीकरण शुल्क से छूट (एयर सरचार्ज छोड़कर)।"
+    },
+    26: {
+        "name": "नमूना और पैटर्न पैकेट (Sample Packets)",
+        "total_parts": 1,
+        "part_1_focus": "व्यापारिक नमूनों के लिए अधिकतम वजन 2 किग्रा, जिसका कोई स्वतंत्र विक्रय मूल्य न हो।"
+    },
+    27: {
+        "name": "पंजीकृत समाचार पत्र (Registered Newspapers)",
+        "total_parts": 2,
+        "part_1_focus": "समाचार पत्र का डाक विभाग में पंजीकरण, 31 दिनों से अधिक के अंतराल पर प्रकाशित न होना और रियायती दरें।",
+        "part_2_focus": "पंजीकरण संख्या (RNI) का मुखपृष्ठ पर मुद्रण और पोस्टिंग के लिए निर्धारित डाकघरों की सूची।"
+    },
+    28: {
+        "name": "समाचार पत्रों के पैकेट के नियम",
+        "total_parts": 1,
+        "part_1_focus": "एक ही पते पर भेजे जाने वाले एक से अधिक समाचार पत्रों के पैकेट के लिए विशेष डाक दरें और वजन सीमा।"
+    },
+    29: {
+        "name": "पार्सल (Parcel) के सामान्य नियम",
+        "total_parts": 2,
+        "part_1_focus": "पार्सल की मजबूत पैकेजिंग, गैर-वितरण शाखा डाकघर (BO) के लिए अधिकतम वजन 10 किलोग्राम और अन्य के लिए 20 किग्रा।",
+        "part_2_focus": "पार्सल में केवल प्रेषक और प्राप्तकर्ता से संबंधित एक ही लिखित पत्र या इनवॉइस रखने की अनुमति।"
+    },
+    30: {
+        "name": "अपंजीकृत पार्सल की वजन सीमा",
+        "total_parts": 1,
+        "part_1_focus": "अपंजीकृत पार्सल का अधिकतम वजन 4 किलोग्राम, 4 किग्रा से अधिक होने पर अनिवार्य रूप से रजिस्ट्री कराना आवश्यक।"
+    },
+    31: {
+        "name": "अनिवार्य पंजीकरण (Compulsory Registration)",
+        "total_parts": 2,
+        "part_1_focus": "4 किलोग्राम से अधिक वजन का पार्सल, बीमित वस्तुएं और सीमा शुल्क वाली वस्तुओं का अनिवार्य पंजीकरण।",
+        "part_2_focus": "यदि लेटर बॉक्स में कोई ऐसी वस्तु पाई जाती है जिसे रजिस्टर होना चाहिए था, तो दोगुनी फीस वसूल कर रजिस्ट्री की जाती है।"
+    },
+    32: {
+        "name": "हवाई डाक (Air Mail) नियम व अधिभार",
+        "total_parts": 1,
+        "part_1_focus": "द्वितीय श्रेणी डाक (पार्सल, बुक पैकेट) पर हवाई ट्रांसमिशन के लिए निर्धारित अतिरिक्त एयर मेल शुल्क।"
+    },
+    33: {
+        "name": "बीमा (Insurance) की सामान्य शर्तें",
+        "total_parts": 2,
+        "part_1_focus": "डाक वस्तुओं के खोने या नुकसान से सुरक्षा हेतु बीमा, अनिवार्य वैक्स सील और निर्धारित बीमा शुल्क संरचना।",
+        "part_2_focus": "बीमित वस्तु के वास्तविक मूल्य से अधिक का बीमा कराना वर्जित और कपटपूर्ण दावों का निषेध।"
+    },
+    34: {
+        "name": "अनिवार्य बीमा वाली वस्तुएं",
+        "total_parts": 1,
+        "part_1_focus": "मुद्रा नोट, सिक्के, सोने-चांदी के आभूषण और कीमती पत्थरों को डाक से भेजने पर बीमा कराना पूर्णतः अनिवार्य।"
+    },
+    35: {
+        "name": "बीमा की अधिकतम सीमाएं व शाखा डाकघर",
+        "total_parts": 1,
+        "part_1_focus": "शाखा डाकघरों (BO) में अधिकतम ₹600 तक बीमा स्वीकार्य, विभागीय प्रधान डाकघरों में ₹1,00,000 तक की सीमा।"
+    },
+    36: {
+        "name": "मूल्यदेय डाक (Value Payable Post - VPP)",
+        "total_parts": 2,
+        "part_1_focus": "वीपीपी के अंतर्गत अधिकतम ₹5,000 तक की वसूली, केवल वास्तविक व्यापारिक वस्तुओं और दस्तावेजों के लिए मान्य।",
+        "part_2_focus": "वीपीपी वस्तु के वितरण के समय राशि प्राप्त न होने पर डाकघर में अधिकतम 7 दिनों तक रखने के नियम।"
+    },
+    37: {
+        "name": "वीपीपी वस्तु की बुकिंग व वितरण शर्तें",
+        "total_parts": 1,
+        "part_1_focus": "प्रेषक द्वारा वीपीपी फॉर्म भरना, पार्सल या पत्र पर स्पष्ट 'V.P.' लिखना और देय राशि का अंकन।"
+    },
+    38: {
+        "name": "डाक वस्तुओं का पंजीकरण (Registration)",
+        "total_parts": 2,
+        "part_1_focus": "रजिस्ट्री कराने पर विशेष रसीद जारी होना, सुरक्षित हैंड-टू-हैंड ट्रांसमिशन और निर्धारित रजिस्ट्री शुल्क ₹17।",
+        "part_2_focus": "खो जाने की स्थिति में विभागीय जांच और अंतर्देशीय पंजीकृत पत्रों के लिए निर्धारित क्षतिपूर्ति राशि।"
+    },
+    39: {
+        "name": "रजिस्ट्री पावती (Acknowledgement - AD)",
+        "total_parts": 1,
+        "part_1_focus": "प्राप्तकर्ता के हस्ताक्षर युक्त पावती (AD कार्ड) प्रेषक को वापस भेजने का निर्धारित शुल्क ₹3 और इसके नियम।"
+    },
+    40: {
+        "name": "डाक वितरण की सामान्य व्यवस्था",
+        "total_parts": 2,
+        "part_1_focus": "डाकिए द्वारा क्षेत्र में घर-घर जाकर डाक वितरण, सुरक्षित डिलीवरी और हस्ताक्षर प्राप्त करने की प्रक्रिया।",
+        "part_2_focus": "नाबालिग या मानसिक अस्वस्थ व्यक्तियों के नाम आई डाक के वितरण हेतु कानूनी अभिभावक के अधिकार।"
+    },
+    41: {
+        "name": "वितरण के समय देय डाकभार की वसूली",
+        "total_parts": 1,
+        "part_1_focus": "कम या बिना डाकभार वाली वस्तुओं को सुपुर्द करने से पहले देय राशि नकद वसूलना और रसीद देना।"
+    },
+    42: {
+        "name": "क्षतिग्रस्त व फटी हुई डाक वस्तुओं की डिलीवरी",
+        "total_parts": 1,
+        "part_1_focus": "रास्ते में फटे या क्षतिग्रस्त पार्सल को डाकपाल की उपस्थिति में डाक खिड़की पर खोलकर जांच कर डिलीवरी देना।"
+    },
+    43: {
+        "name": "अवितरित डाक (Undelivered Articles)",
+        "total_parts": 2,
+        "part_1_focus": "प्राप्तकर्ता न मिलने पर डाकिए द्वारा 7 दिनों तक डाकघर में रखना, 'पता न मिलने' पर प्रेषक को वापसी।",
+        "part_2_focus": "यदि प्रेषक का पता भी न हो, तो डाक वस्तु को रिटर्न लेटर ऑफिस (RLO) भेजने की अनिवार्य प्रक्रिया।"
+    },
+    44: {
+        "name": "रिटर्न लेटर ऑफिस (RLO) के कार्य",
+        "total_parts": 1,
+        "part_1_focus": "अवितरित और लावारिस डाक वस्तुओं को खोलकर प्रेषक या पाने वाले का पता खोजने और सुरक्षित निस्तारण का कार्यालय।"
+    },
+    45: {
+        "name": "डाक का पुन:प्रेषण (Redirection) शुल्क नियम",
+        "total_parts": 1,
+        "part_1_focus": "प्रथम श्रेणी डाक का पुनर्निर्देशन पूर्णतः निःशुल्क, पार्सल के पुनर्निर्देशन पर आधा डाक शुल्क वसूलने का नियम।"
+    },
+    46: {
+        "name": "शासकीय डाक वस्तुएं (Official Postal Articles)",
+        "total_parts": 2,
+        "part_1_focus": "सरकारी कार्यालयों द्वारा प्रेषित डाक, सर्विस स्टैम्प्स (Service Postage Stamps) का अनिवार्य प्रयोग।",
+        "part_2_focus": "शासकीय डाक के लिफाफे पर 'On India Government Service' (OIGS) या 'On Service' का स्पष्ट मुद्रण।"
+    },
+    47: {
+        "name": "सर्विस स्टैम्प्स के दुरुपयोग पर दंड",
+        "total_parts": 1,
+        "part_1_focus": "सरकारी सेवा टिकटों का निजी कार्य में उपयोग करना गंभीर कानूनी अपराध और आईपीसी के तहत दंडनीय।"
+    },
+    48: {
+        "name": "कैंप डाक और विशेष बैग व्यवस्था",
+        "total_parts": 1,
+        "part_1_focus": "महामहिम राष्ट्रपति, उपराष्ट्रपति और उच्च गणमान्य व्यक्तियों के दौरे के समय विशेष कैंप डाक बैग के नियम।"
+    },
+    49: {
+        "name": "सैन्य डाक सेवा (APO / FPO) के नियम",
+        "total_parts": 2,
+        "part_1_focus": "सेना डाक सेवा (APS) को 56 APO और 99 APO के माध्यम से डाक प्रेषण, नागरिक पिन कोड का प्रयोग न करना।",
+        "part_2_focus": "सैनिकों के लिए वीपीपी और मनीऑर्डर भेजने की विशेष शर्तें और सैन्य पते का निर्धारित प्रारूप।"
+    },
+    50: {
+        "name": "डाक में निषिद्ध वस्तुएं (Prohibited Articles)",
+        "total_parts": 2,
+        "part_1_focus": "विस्फोटक, ज्वलनशील पदार्थ, जीवित कीड़े, मादक द्रव्य और खतरनाक रसायनों को डाक से भेजना पूर्णतः प्रतिबंधित।",
+        "part_2_focus": "निषिद्ध वस्तुएं पाए जाने पर डाक वस्तु को जब्त करना, नष्ट करना और भेजने वाले पर कानूनी कार्रवाई।"
+    },
+    51: {
+        "name": "मनीऑर्डर (Money Order) की सामान्य शर्तें",
+        "total_parts": 2,
+        "part_1_focus": "इलेक्ट्रॉनिक मनीऑर्डर (eMO) द्वारा अधिकतम ₹5,000 तक की धनराशि प्रेषण और 5% कमीशन शुल्क संरचना।",
+        "part_2_focus": "मनीऑर्डर के भुगतान के समय प्राप्तकर्ता की पहचान, अंगूठा निशानी या हस्ताक्षर के अनिवार्य नियम।"
+    },
+    52: {
+        "name": "मनीऑर्डर का पता परिवर्तन व भुगतान रोकना",
+        "total_parts": 1,
+        "part_1_focus": "भुगतान से पूर्व प्रेषक द्वारा बिना अतिरिक्त शुल्क प्राप्तकर्ता का नाम या पता बदलने और राशि वापस लेने का अधिकार।"
+    },
+    53: {
+        "name": "डाक जीवन बीमा (PLI) सामान्य परिचय",
+        "total_parts": 1,
+        "part_1_focus": "1884 में स्थापित सबसे पुरानी बीमा योजना, सरकारी व अर्ध-सरकारी कर्मचारियों के लिए कम प्रीमियम और अधिक बोनस।"
+    },
+    54: {
+        "name": "ग्रामीण डाक जीवन बीमा (RPLI)",
+        "total_parts": 1,
+        "part_1_focus": "1995 में मल्होत्रा समिति की सिफारिश पर शुरू, ग्रामीण जनता के लिए 6 प्रमुख बीमा पॉलिसियां और सुरक्षा।"
+    },
     55: {
         "name": "पोस्ट बॉक्स के नियम व किराया",
         "total_parts": 3,
@@ -69,6 +341,27 @@ POSTAL_CLAUSE_CATALOG = {
         "total_parts": 2,
         "part_1_focus": "सभी वितरण डाकघरों में सुविधा, किराएदार द्वारा मजबूत थैला लाने-ले जाने के नियम।",
         "part_2_focus": "डाक खिड़की से डाक प्राप्त करने के लिए अधिकृत प्रतिनिधि को वितरण टिकट (Delivery Ticket) प्रस्तुत करना अनिवार्य।"
+    },
+    57: {
+        "name": "पोस्ट बॉक्स व पोस्ट बैग के संयुक्त नियम",
+        "total_parts": 1,
+        "part_1_focus": "बॉक्स और बैग दोनों एक साथ किराए पर लेने के संयुक्त नियम और ₹250 वार्षिक शुल्क के प्रावधान।"
+    },
+    58: {
+        "name": "विशेष वितरण व्यवस्था (विंडो डिलीवरी)",
+        "total_parts": 1,
+        "part_1_focus": "फर्मों और भारी डाक प्राप्तकर्ताओं के लिए डाक खिड़की से डाक प्राप्त करने की विशेष व्यवस्था।"
+    },
+    59: {
+        "name": "डाक का पुन:प्रेषण (Redirection)",
+        "total_parts": 2,
+        "part_1_focus": "पता बदलने की स्थिति में डाक को नए पते पर भेजने की शर्तें और अंतर्देशीय डाक पर कोई अतिरिक्त शुल्क न लगना।",
+        "part_2_focus": "पार्सल के रीडायरेक्शन पर लगने वाला आधा डाक शुल्क और प्रेषक के लिखित निर्देश के नियम।"
+    },
+    60: {
+        "name": "डाक लौटाने के निर्देश (Instruction regarding Delivery)",
+        "total_parts": 1,
+        "part_1_focus": "प्राप्तकर्ता द्वारा अनुपस्थिति में डाक रोकने या किसी अन्य व्यक्ति को सौंपने के लिखित आदेश की 3 वर्ष की वैधता।"
     }
 }
 
@@ -99,7 +392,7 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
-# --- 100% Offline 3D Graphic Renderer (Zero External Dependency) ---
+# --- 100% Offline 3D Graphic Renderer ---
 def ensure_auto_icons():
     os.makedirs(ASSETS_DIR, exist_ok=True)
 
@@ -108,21 +401,14 @@ def ensure_auto_icons():
         try:
             bk = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
             db = ImageDraw.Draw(bk)
-            # Soft Shadow
             db.ellipse([40, 360, 260, 400], fill="#0A0F1D")
-            # Back Cover Edge
             db.rounded_rectangle([55, 60, 245, 360], radius=14, fill="#1E3A8A")
-            # Pages Stack (Cream paper look)
             db.rounded_rectangle([75, 65, 240, 350], radius=8, fill="#F8FAFC", outline="#CBD5E1", width=2)
-            # Front Cover
             db.rounded_rectangle([55, 55, 230, 350], radius=12, fill="#1D4ED8", outline="#60A5FA", width=3)
-            # Golden Spine Band
             db.rectangle([55, 55, 82, 350], fill="#F59E0B")
             db.rectangle([78, 55, 84, 350], fill="#FDE047")
-            # Golden Emblem on Book
             db.ellipse([115, 150, 185, 220], fill="#F59E0B", outline="#FEF08A", width=3)
             db.polygon([(150, 162), (155, 178), (172, 178), (158, 188), (163, 204), (150, 194), (137, 204), (142, 188), (128, 178), (145, 178)], fill="#FFFFFF")
-            # Red Ribbon Bookmark
             db.polygon([(140, 330), (162, 330), (162, 385), (151, 372), (140, 385)], fill="#DC2626")
             bk.save(BOOK_3D_PATH, "PNG")
         except Exception:
@@ -133,25 +419,18 @@ def ensure_auto_icons():
         try:
             box = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
             d = ImageDraw.Draw(box)
-            # Ground Shadow
             d.ellipse([50, 375, 250, 410], fill="#0A0F1D")
-            # Postbox Base
             d.rounded_rectangle([65, 340, 235, 385], radius=15, fill="#1E293B", outline="#475569", width=3)
-            # Main Red Cylinder (3D Shading)
             d.rounded_rectangle([75, 120, 225, 350], radius=12, fill="#991B1B")
             d.rounded_rectangle([95, 120, 205, 350], radius=8, fill="#DC2626")
             d.rounded_rectangle([115, 120, 160, 350], radius=6, fill="#EF4444")
-            # Golden Postal Ribbon
             d.rectangle([75, 165, 225, 182], fill="#F59E0B")
             d.rectangle([115, 165, 160, 182], fill="#FDE047")
-            # Letter Slot with envelope
             d.rounded_rectangle([90, 195, 210, 215], radius=5, fill="#0F172A")
             d.rectangle([110, 200, 190, 225], fill="#FFFFFF", outline="#CBD5E1", width=1)
             d.polygon([(110, 200), (150, 215), (190, 200)], fill="#E2E8F0")
-            # Collection Keyhole
             d.ellipse([140, 270, 160, 290], fill="#F59E0B", outline="#78350F", width=2)
             d.ellipse([147, 277, 153, 283], fill="#0F172A")
-            # 3D Dome Top
             d.chord([70, 40, 230, 150], start=180, end=0, fill="#B91C1C", outline="#F87171", width=3)
             d.chord([95, 50, 205, 140], start=180, end=0, fill="#EF4444")
             d.ellipse([135, 30, 165, 55], fill="#F59E0B", outline="#FEF08A", width=2)
@@ -159,7 +438,7 @@ def ensure_auto_icons():
         except Exception:
             pass
 
-    # 3. 3D Golden Trophy (Slide 4: Quiz)
+    # 3. 3D Golden Trophy (Slide 4)
     if not os.path.exists(QUIZ_3D_PATH):
         try:
             q = Image.new("RGBA", (300, 400), (0, 0, 0, 0))
@@ -205,7 +484,7 @@ def get_eng_font(size):
 
 # --- State Management ---
 def load_progress_state():
-    state = {"clause_no": 3, "current_part": 1, "total_parts": 2}
+    state = {"clause_no": 55, "current_part": 2, "total_parts": 3}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -221,12 +500,12 @@ def save_progress_state(state):
     except Exception as e:
         print(f"⚠️ Warning saving state: {e}", flush=True)
 
-# --- Script Generation ---
+# --- Script Generation with Groq & Safe Fallback ---
 def generate_clause_script(state):
-    current_clause = state.get("clause_no", 3)
-    current_part = state.get("current_part", 1)
+    current_clause = state.get("clause_no", 55)
+    current_part = state.get("current_part", 2)
 
-    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[3])
+    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[55])
     clause_name = clause_info["name"]
     total_parts = clause_info["total_parts"]
     part_focus = clause_info.get(f"part_{current_part}_focus", clause_info.get("part_1_focus", ""))
@@ -331,6 +610,7 @@ def generate_clause_script(state):
 
     return fallback_data
 
+# --- Automatic Intelligent Clause Progression ---
 def advance_progress_state(state, data):
     cur_part = data.get("part_no", state.get("current_part", 1))
     total_parts = data.get("total_parts", state.get("total_parts", 2))
@@ -339,12 +619,28 @@ def advance_progress_state(state, data):
         state["current_part"] = cur_part + 1
         state["total_parts"] = total_parts
     else:
-        catalog_keys = sorted(POSTAL_CLAUSE_CATALOG.keys())
-        current_idx = catalog_keys.index(state["clause_no"]) if state["clause_no"] in catalog_keys else 0
-        next_idx = (current_idx + 1) % len(catalog_keys)
-        state["clause_no"] = catalog_keys[next_idx]
+        cur_clause = state.get("clause_no")
+
+        # 1. Clause 56 pura hote hi seedhe Clause 5 par jump
+        if cur_clause == 56:
+            state["clause_no"] = 5
+        # 2. Clause 54 pura hote hi 55-56 skip karke seedhe Clause 57 par jump
+        elif cur_clause == 54:
+            state["clause_no"] = 57
+        else:
+            catalog_keys = sorted(POSTAL_CLAUSE_CATALOG.keys())
+            current_idx = catalog_keys.index(cur_clause) if cur_clause in catalog_keys else 0
+            next_idx = (current_idx + 1) % len(catalog_keys)
+            next_clause = catalog_keys[next_idx]
+
+            # Extra Safety: Normal 5..54 cycle me galti se bhi 55 ya 56 repeat na ho
+            if next_clause in [55, 56] and cur_clause != 55:
+                next_clause = 57
+
+            state["clause_no"] = next_clause
+
         state["current_part"] = 1
-        state["total_parts"] = POSTAL_CLAUSE_CATALOG[state["clause_no"]]["total_parts"]
+        state["total_parts"] = POSTAL_CLAUSE_CATALOG.get(state["clause_no"], {}).get("total_parts", 2)
 
     save_progress_state(state)
 
@@ -448,7 +744,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         wrapped_text = textwrap.fill(sentence, width=22)
         d.multiline_text((140, 560), wrapped_text, fill="#F8FAFC", font=font_body, spacing=18)
 
-        # Slide 1 gets 3D Rulebook; Slide 2 & 3 get 3D Postbox
         if idx == 1:
             paste_safe_asset(img, BOOK_3D_PATH, pos=(710, 960), size=(240, 335))
         else:
@@ -484,7 +779,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         dq.text((205, oy + 28), textwrap.fill(opt, width=24), fill="#FFFFFF", font=font_opt_hin)
         oy += 125
 
-    # 3D Trophy on Quiz Slide
     paste_safe_asset(img_quiz, QUIZ_3D_PATH, pos=(790, 360), size=(170, 225))
 
     draw_footer(dq)
