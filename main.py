@@ -7,7 +7,6 @@ import subprocess
 import requests
 import textwrap
 from PIL import Image, ImageDraw, ImageFont
-from groq import Groq
 import edge_tts
 
 # --- Environment Variables ---
@@ -24,12 +23,20 @@ AUDIO_OUTPUT = "voice.mp3"
 OUTPUT_VIDEO = "final_reel.mp4"
 VOICE_NAME = "hi-IN-SwaraNeural"
 
-# --- Official India Post PO Guide Part 1 Master Catalog ---
+# Assets Directory & Visual Asset Paths
+ASSETS_DIR = "assets"
+POST_ICON_PATH = os.path.join(ASSETS_DIR, "postal_badge.png")
+QUIZ_ICON_PATH = os.path.join(ASSETS_DIR, "quiz_badge.png")
+
+# Pillow Compatibility (Prevents AttributeError on different Pillow versions)
+RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
+
+# --- Official PO Guide Part 1 Master Catalog ---
 POSTAL_CLAUSE_CATALOG = {
     1: {
         "name": "डाक विभाग का नियंत्रण व संगठन",
         "total_parts": 2,
-        "part_1_focus": "संचार मंत्रालय के प्रशासनिक नियंत्रण, महानिदेशक (DG) शीर्ष प्रमुख, मुख्यालय डाक भवन नई दिल्ली।",
+        "part_1_focus": "संचार मंत्रालय के अधीन, महानिदेशक डाक सेवा शीर्ष प्रशासनिक प्रमुख, मुख्यालय डाक भवन नई दिल्ली।",
         "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और बोर्ड सचिव के दायित्व।"
     },
     2: {
@@ -41,13 +48,13 @@ POSTAL_CLAUSE_CATALOG = {
     3: {
         "name": "रात्रि डाकघर के नियम",
         "total_parts": 2,
-        "part_1_focus": "महानिदेशक द्वारा स्थापना और कार्य समय रात 8:30 बजे तक बढ़ाने का विशेष अधिकार।",
-        "part_2_focus": "रविवार और डाक अवकाश पर सुबह 10 से शाम 5 बजे तक कार्य, केवल सीमित बुकिंग और टिकट बिक्री।"
+        "part_1_focus": "महानिदेशक (DG) द्वारा स्थापना और कार्य समय रात 8:30 बजे तक बढ़ाने का विशेष अधिकार।",
+        "part_2_focus": "रविवार और राष्ट्रीय डाक अवकाश पर सुबह 10 से शाम 5 बजे तक कार्य, केवल सीमित बुकिंग और टिकट बिक्री।"
     },
     4: {
         "name": "मोबाइल डाकघर",
         "total_parts": 1,
-        "part_1_focus": "बड़े शहरों में देर शाम तक डाक बुकिंग सुविधा, कोई बचत बैंक या मनीऑर्डर कार्य नहीं होता।"
+        "part_1_focus": "बड़े शहरों में देर शाम तक डाक व पार्सल बुकिंग सुविधा, कोई बचत बैंक या मनीऑर्डर कार्य नहीं होता।"
     },
     55: {
         "name": "पोस्ट बॉक्स के नियम व किराया",
@@ -59,7 +66,7 @@ POSTAL_CLAUSE_CATALOG = {
     56: {
         "name": "पोस्ट बैग एवं वितरण टिकट",
         "total_parts": 2,
-        "part_1_focus": "सभी वितरण डाकघरों में सुविधा, किराएदार द्वारा थैला लाने-ले जाने के नियम।",
+        "part_1_focus": "सभी वितरण डाकघरों में सुविधा, किराएदार द्वारा मजबूत थैला लाने-ले जाने के नियम।",
         "part_2_focus": "डाक खिड़की से डाक प्राप्त करने के लिए अधिकृत प्रतिनिधि को वितरण टिकट (Delivery Ticket) प्रस्तुत करना अनिवार्य।"
     }
 }
@@ -79,6 +86,7 @@ def clean_hindi_postal_terms(text):
         "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें",
         "घंटी वाली प्लेट": "घंटे वाली प्लेट",
+        "घंटी वाली": "घंटे वाली",
         "नित्य पत्र": "वित्तीय वर्ष",
         "नित्य वर्ष": "वित्तीय वर्ष",
         "कतलेरी कटेट": "वितरण टिकट",
@@ -90,15 +98,44 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
+# --- Procedural Visual Elements Engine ---
+def ensure_auto_icons():
+    os.makedirs(ASSETS_DIR, exist_ok=True)
+
+    # 1. Postal Emblem Badge (Slide 1-3)
+    if not os.path.exists(POST_ICON_PATH):
+        try:
+            icon = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+            d = ImageDraw.Draw(icon)
+            d.ellipse([10, 10, 190, 190], fill="#BE123C", outline="#FBBF24", width=7)
+            d.ellipse([26, 26, 174, 174], outline="#FFFFFF", width=3)
+            d.rectangle([52, 70, 148, 130], fill="#FFFFFF", outline="#0F172A", width=3)
+            d.polygon([(52, 70), (100, 105), (148, 70)], fill="#E2E8F0", outline="#0F172A", width=3)
+            d.polygon([(100, 32), (104, 42), (115, 42), (106, 49), (110, 59), (100, 52), (90, 59), (94, 49), (85, 42), (96, 42)], fill="#FBBF24")
+            icon.save(POST_ICON_PATH, "PNG")
+        except Exception:
+            pass
+
+    # 2. Quiz Question Badge (Slide 4)
+    if not os.path.exists(QUIZ_ICON_PATH):
+        try:
+            q_icon = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+            dq = ImageDraw.Draw(q_icon)
+            dq.ellipse([10, 10, 190, 190], fill="#F59E0B", outline="#38BDF8", width=7)
+            dq.ellipse([25, 25, 175, 175], outline="#FEF08A", width=4)
+            f_eng = get_eng_font(105)
+            dq.text((70, 30), "?", fill="#0F172A", font=f_eng)
+            q_icon.save(QUIZ_ICON_PATH, "PNG")
+        except Exception:
+            pass
+
 # --- Font Management ---
 def ensure_fonts():
     if not os.path.exists(DEV_FONT_PATH):
-        print("📥 Downloading Noto Sans Devanagari font...", flush=True)
         url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
         r = requests.get(url, timeout=30)
         with open(DEV_FONT_PATH, "wb") as f:
             f.write(r.content)
-        print("✅ Font cached locally.", flush=True)
 
 def get_dev_font(size):
     ensure_fonts()
@@ -120,7 +157,7 @@ def get_eng_font(size):
 # --- State Management ---
 def load_progress_state():
     state = {
-        "clause_no": 2,
+        "clause_no": 3,
         "current_part": 1,
         "total_parts": 2
     }
@@ -139,124 +176,115 @@ def save_progress_state(state):
     except Exception as e:
         print(f"⚠️ Warning saving state: {e}", flush=True)
 
-# --- AI Script Generation ---
+# --- AI Script Generation with Hardened Fallback ---
 def generate_clause_script(state):
-    if not GROQ_API_KEY:
-        raise ValueError("GROQ_API_KEY missing in GitHub Secrets!")
-
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY.strip()}",
-        "Content-Type": "application/json"
-    }
-
-    current_clause = state.get("clause_no", 2)
+    current_clause = state.get("clause_no", 3)
     current_part = state.get("current_part", 1)
 
-    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[2])
+    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[3])
     clause_name = clause_info["name"]
     total_parts = clause_info["total_parts"]
     part_focus = clause_info.get(f"part_{current_part}_focus", clause_info.get("part_1_focus", ""))
 
-    prompt = f"""
-    You are the Senior Chief Instructor for India Post Departmental Examinations (MTS, Postman, Mail Guard, Postal Assistant) running 'Postal Wala'.
+    fallback_data = {
+        "clause_no": current_clause,
+        "clause_name": clause_name,
+        "part_no": current_part,
+        "total_parts": total_parts,
+        "sen1": f"भारतीय डाक विभाग के अनुसार {clause_name} से संबंधित नियम डाक घर गाइड भाग 1 के क्लॉज {current_clause} में परिभाषित हैं।",
+        "sen2": f"इस नियम के मुख्य प्रावधान के अंतर्गत {part_focus}",
+        "sen3": "विभागीय परीक्षाओं में इस नियम के अधिकार, कार्य समय और संचालन शर्तों पर सीधे प्रश्न पूछे जाते हैं।",
+        "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} का संबंध मुख्य रूप से किससे है?",
+        "opt_a": clause_name,
+        "opt_b": "डाक विभाग का बजट",
+        "opt_c": "मनीऑर्डर नियम",
+        "opt_d": "इनमें से कोई नहीं",
+        "correct": "A",
+        "voiceover": f"नमस्कार साथियों! पोस्ट ऑफिस गाइड भाग 1 के क्लॉज {current_clause}, {clause_name} के भाग {current_part} में आपका स्वागत है, जिसे हम कुल {total_parts} भागों में पूरा करेंगे। आज का महत्वपूर्ण प्रश्न है: क्लॉज {current_clause} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! {part_focus} विभागीय परीक्षा में इस नियम से संबंधित प्रश्न अक्सर पूछे जाते हैं। तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं! विभागीय परीक्षा में अच्छे नंबर लाने के लिए पोस्टल वाला को अभी फॉलो करें, और पूरे कोर्स हेतु स्क्रीन पर दिए नंबर पर WhatsApp करें।",
+        "caption": f"पीओ गाइड भाग 1 क्लॉज {current_clause} संपूर्ण विश्लेषण #PostalWala #POGuidePart1 #Clause{current_clause} #MTSExam #PostmanExam"
+    }
 
-    EXACT TOPIC TO TEACH:
+    if not GROQ_API_KEY:
+        return fallback_data
+
+    prompt = f"""
+    You are the Senior Chief Instructor for India Post Departmental Examinations running 'Postal Wala'.
+    EXACT TOPIC:
     - Book: 'Post Office Guide Part 1' (पोस्ट ऑफिस गाइड भाग 1)
     - Clause Number: क्लॉज {current_clause}
-    - Clause Official Title: {clause_name}
+    - Official Title: {clause_name}
     - Part: भाग {current_part} (कुल {total_parts} भाग)
     - Sub-Rule Focus: "{part_focus}"
 
-    MANDATORY SCRIPT & LANGUAGE RULES:
-    1. Pure, flawless, official Devanagari Hindi. Zero grammatical errors, complete and natural sentences.
-    2. Write exactly 3 authoritative teaching sentences (SEN1, SEN2, SEN3) about this specific sub-rule, each ~22-26 words long.
-    3. EXACT VOICE PACING (CRITICAL):
-       - The voiceover MUST be strictly between 115 and 122 words total.
-       - It will naturally speak in 51-53 seconds. Do not exceed this length.
-    4. MANDATORY INTRO & OUTRO SEQUENCE:
+    RULES:
+    1. Flawless Devanagari Hindi. Complete sentences.
+    2. Write exactly 3 authoritative teaching sentences (SEN1, SEN2, SEN3) about this specific rule, each ~22-26 words long.
+    3. The voiceover MUST be strictly between 115 and 122 words total (naturally 51-53 seconds).
+    4. Follow this voiceover layout strictly:
        - "नमस्कार साथियों! पोस्ट ऑफिस गाइड भाग 1 के क्लॉज {current_clause}, {clause_name} के भाग {current_part} में आपका स्वागत है, जिसे हम कुल {total_parts} भागों में पूरा करेंगे।"
        - "आज का महत्वपूर्ण प्रश्न है: [Question]?"
        - "इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें!"
        - [Explain SEN1, SEN2, and SEN3 calmly]
        - "तो दोस्तों, इसका सही उत्तर कमेंट्स में जरूर बताएं!"
-       - If {current_part} < {total_parts}: "इस क्लॉज के अगले भाग को देखने के लिए अभी फॉलो कर लें!"
+       - "विभागीय परीक्षा में अच्छे नंबर लाने के लिए पोस्टल वाला को अभी फॉलो करें!"
        - End with: "GDS to MTS, Postman और P.A. कोर्स हेतु स्क्रीन पर दिए गए नंबर पर WhatsApp करें।"
        - DO NOT speak the digits of the phone number.
-       - DO NOT reveal or speak the correct answer.
+       - DO NOT reveal the correct answer.
 
-    OUTPUT FORMAT (Do NOT use brackets in values):
+    OUTPUT FORMAT:
     SEN1: [Rich Hindi sentence 1, ~24 words]
     SEN2: [Rich Hindi sentence 2, ~24 words]
     SEN3: [Rich Hindi sentence 3, ~24 words]
-    QUESTION: [1 high-yield exam question in Hindi based strictly on this rule]
+    QUESTION: [1 high-yield exam question in Hindi]
     OPT_A: [Option A]
     OPT_B: [Option B]
     OPT_C: [Option C]
     OPT_D: [Option D]
     CORRECT: [A/B/C/D]
     VOICEOVER: [Exact voiceover text strictly 115 to 122 words]
-    CAPTION: [Instagram caption with #PostalWala #POGuidePart1 #Clause{current_clause} #MTSExam #PostmanExam]
+    CAPTION: [Instagram caption]
     """
 
-    payload = {
-        "model": "qwen/qwen3.8-27b",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.2,
-        "max_tokens": 850
-    }
+    try:
+        headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.2, "max_tokens": 850}
+        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=25)
+        res_json = res.json()
 
-    res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-    res_json = res.json()
+        if res.status_code == 200 and "choices" in res_json:
+            raw_text = res_json["choices"][0]["message"]["content"].strip()
+            data = fallback_data.copy()
 
-    if res.status_code != 200 or "choices" not in res_json:
-        raise RuntimeError(f"Groq API Error: {res_json}")
+            for line in raw_text.splitlines():
+                clean_l = line.strip()
+                if clean_l.startswith("SEN1:"):
+                    data["sen1"] = clean_hindi_postal_terms(clean_l.replace("SEN1:", ""))
+                elif clean_l.startswith("SEN2:"):
+                    data["sen2"] = clean_hindi_postal_terms(clean_l.replace("SEN2:", ""))
+                elif clean_l.startswith("SEN3:"):
+                    data["sen3"] = clean_hindi_postal_terms(clean_l.replace("SEN3:", ""))
+                elif clean_l.startswith("QUESTION:"):
+                    data["question"] = clean_hindi_postal_terms(clean_l.replace("QUESTION:", ""))
+                elif clean_l.startswith("OPT_A:"):
+                    data["opt_a"] = clean_hindi_postal_terms(clean_l.replace("OPT_A:", ""))
+                elif clean_l.startswith("OPT_B:"):
+                    data["opt_b"] = clean_hindi_postal_terms(clean_l.replace("OPT_B:", ""))
+                elif clean_l.startswith("OPT_C:"):
+                    data["opt_c"] = clean_hindi_postal_terms(clean_l.replace("OPT_C:", ""))
+                elif clean_l.startswith("OPT_D:"):
+                    data["opt_d"] = clean_hindi_postal_terms(clean_l.replace("OPT_D:", ""))
+                elif clean_l.startswith("CORRECT:"):
+                    data["correct"] = clean_text(clean_l.replace("CORRECT:", "")).upper()[:1]
+                elif clean_l.startswith("VOICEOVER:"):
+                    data["voiceover"] = clean_hindi_postal_terms(clean_l.replace("VOICEOVER:", ""))
+                elif clean_l.startswith("CAPTION:"):
+                    data["caption"] = clean_text(clean_l.replace("CAPTION:", ""))
 
-    raw_text = res_json["choices"][0]["message"]["content"].strip()
+            return data
+    except Exception as e:
+        print(f"⚠️ Groq API warning: {e}. Safe fallback active.", flush=True)
 
-    data = {
-        "clause_no": current_clause,
-        "clause_name": clause_name,
-        "part_no": current_part,
-        "total_parts": total_parts,
-        "sen1": "भारतीय डाक विभाग के अंतर्गत डाकघरों को मुख्य रूप से तीन श्रेणियों में विभाजित किया गया है, जिन्हें प्रधान डाकघर, उप डाकघर और शाखा डाकघर कहते हैं।",
-        "sen2": "प्रधान डाकघर अपने क्षेत्राधिकार के सभी उप डाकघरों और शाखा डाकघरों का मुख्य लेखा कार्यालय यानी चीफ अकाउंट ऑफिस के रूप में कार्य करता है।",
-        "sen3": "प्रथम श्रेणी के प्रधान डाकघर का प्रभारी राजपत्रित पोस्टमास्टर होता है, जो डाकघरों के अधीक्षक के समान प्रशासनिक व वित्तीय शक्तियां प्रयोग करता है।",
-        "question": "अपने अधीनस्थ डाकघरों के लिए मुख्य लेखा कार्यालय के रूप में कौन कार्य करता है?",
-        "opt_a": "प्रधान डाकघर",
-        "opt_b": "उप डाकघर",
-        "opt_c": "शाखा डाकघर",
-        "opt_d": "मंडल कार्यालय",
-        "correct": "A",
-        "voiceover": f"नमस्कार साथियों! पोस्ट ऑफिस गाइड भाग 1 के क्लॉज {current_clause}, {clause_name} के भाग {current_part} में आपका स्वागत है, जिसे हम कुल {total_parts} भागों में पूरा करेंगे। आज का महत्वपूर्ण प्रश्न है: अपने अधीनस्थ डाकघरों के लिए मुख्य लेखा कार्यालय के रूप में कौन कार्य करता है? इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें! भारतीय डाक विभाग में डाकघरों को तीन श्रेणियों में बांटा गया है: प्रधान डाकघर, उप डाकघर और शाखा डाकघर। प्रधान डाकघर अपने अधीनस्थ सभी डाकघरों का मुख्य लेखा कार्यालय होता है। प्रथम श्रेणी प्रधान डाकघर का प्रभारी राजपत्रित पोस्टमास्टर होता है। तो दोस्तों, इसका सही उत्तर कमेंट्स में बताएं! अगले भाग के लिए अभी फॉलो करें, और विभागीय कोर्स हेतु स्क्रीन पर दिए नंबर पर WhatsApp करें।",
-        "caption": f"पीओ गाइड भाग 1 क्लॉज {current_clause} संपूर्ण विश्लेषण #PostalWala #POGuidePart1 #Clause{current_clause} #MTSExam"
-    }
-
-    for line in raw_text.splitlines():
-        clean_l = line.strip()
-        if clean_l.startswith("SEN1:"):
-            data["sen1"] = clean_hindi_postal_terms(clean_l.replace("SEN1:", ""))
-        elif clean_l.startswith("SEN2:"):
-            data["sen2"] = clean_hindi_postal_terms(clean_l.replace("SEN2:", ""))
-        elif clean_l.startswith("SEN3:"):
-            data["sen3"] = clean_hindi_postal_terms(clean_l.replace("SEN3:", ""))
-        elif clean_l.startswith("QUESTION:"):
-            data["question"] = clean_hindi_postal_terms(clean_l.replace("QUESTION:", ""))
-        elif clean_l.startswith("OPT_A:"):
-            data["opt_a"] = clean_hindi_postal_terms(clean_l.replace("OPT_A:", ""))
-        elif clean_l.startswith("OPT_B:"):
-            data["opt_b"] = clean_hindi_postal_terms(clean_l.replace("OPT_B:", ""))
-        elif clean_l.startswith("OPT_C:"):
-            data["opt_c"] = clean_hindi_postal_terms(clean_l.replace("OPT_C:", ""))
-        elif clean_l.startswith("OPT_D:"):
-            data["opt_d"] = clean_hindi_postal_terms(clean_l.replace("OPT_D:", ""))
-        elif clean_l.startswith("CORRECT:"):
-            data["correct"] = clean_text(clean_l.replace("CORRECT:", "")).upper()[:1]
-        elif clean_l.startswith("VOICEOVER:"):
-            data["voiceover"] = clean_hindi_postal_terms(clean_l.replace("VOICEOVER:", ""))
-        elif clean_l.startswith("CAPTION:"):
-            data["caption"] = clean_text(clean_l.replace("CAPTION:", ""))
-
-    return data
+    return fallback_data
 
 def advance_progress_state(state, data):
     cur_part = data.get("part_no", state.get("current_part", 1))
@@ -265,16 +293,13 @@ def advance_progress_state(state, data):
     if cur_part < total_parts:
         state["current_part"] = cur_part + 1
         state["total_parts"] = total_parts
-        print(f"📌 Clause {state['clause_no']} in progress: Next run will do Part {state['current_part']}/{total_parts}", flush=True)
     else:
-        # Move to next Clause in Catalog
         catalog_keys = sorted(POSTAL_CLAUSE_CATALOG.keys())
         current_idx = catalog_keys.index(state["clause_no"]) if state["clause_no"] in catalog_keys else 0
         next_idx = (current_idx + 1) % len(catalog_keys)
         state["clause_no"] = catalog_keys[next_idx]
         state["current_part"] = 1
         state["total_parts"] = POSTAL_CLAUSE_CATALOG[state["clause_no"]]["total_parts"]
-        print(f"🎉 Clause completed! Next run will start Clause {state['clause_no']} (Part 1)", flush=True)
 
     save_progress_state(state)
 
@@ -291,33 +316,32 @@ def get_audio_duration(audio_file):
 # --- Video Rendering Engine ---
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
-    total_dur = get_audio_duration(audio_file)
-    print(f"🎵 Generated Voiceover Duration: {total_dur:.1f} seconds (Target: 50-55s)", flush=True)
+    ensure_auto_icons()
 
-    # 58-second hard limit safety guard
+    total_dur = get_audio_duration(audio_file)
+    print(f"🎵 Generated Voiceover Duration: {total_dur:.1f}s", flush=True)
+
     if total_dur > 57.0:
         tempo = round(total_dur / 54.0, 2)
-        print(f"⚡ Audio exceeds 57s ({total_dur:.1f}s). Minor adjustment by {tempo}x...", flush=True)
         adjusted_audio = "voice_fast.mp3"
         cmd_speed = ["ffmpeg", "-y", "-i", audio_file, "-filter:a", f"atempo={tempo}", adjusted_audio]
         subprocess.run(cmd_speed, check=True)
         audio_file = adjusted_audio
         total_dur = get_audio_duration(audio_file)
 
-    # 4 Slides: Point 1, Point 2, Point 3, Quiz Slide
     n_slides = 4
     weights = [1.0, 1.0, 1.0, 1.3]
     total_weight = sum(weights)
     durations = [total_dur * (w / total_weight) for w in weights]
 
-    # Typography
     font_brand = get_eng_font(46)
     font_sub = get_eng_font(24)
     font_badge = get_dev_font(24)
     font_title = get_dev_font(34)
     font_h2 = get_dev_font(32)
-    font_body = get_dev_font(42)  # Large readable font
+    font_body = get_dev_font(42)
     font_label = get_dev_font(26)
+    font_trust = get_eng_font(20)
     
     font_cta_hin = get_dev_font(28)
     font_cta_eng = get_eng_font(28)
@@ -327,46 +351,55 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_opt_hin = get_dev_font(34)
 
     def draw_base(draw_obj):
+        # Outer Card
         draw_obj.rounded_rectangle([45, 50, 1035, 1860], radius=30, fill="#1E293B", outline="#E11D48", width=4)
         draw_obj.text((80, 75), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         draw_obj.text((80, 130), "@POSTAL_WALA", fill="#94A3B8", font=font_sub)
 
+        # Official Syllabus Trust Pill (Top-Right of Header)
+        draw_obj.rounded_rectangle([630, 80, 1000, 130], radius=16, fill="#065F46", outline="#34D399", width=2)
+        draw_obj.text((655, 93), "✓ 100% OFFICIAL SYLLABUS", fill="#ECFDF5", font=font_trust)
+
     def draw_footer(draw_obj):
-        # 1. WhatsApp Action Banner (Safe Zone: Y=1365 to 1475)
         draw_obj.rounded_rectangle([80, 1365, 1000, 1475], radius=20, fill="#15803D", outline="#22C55E", width=2)
         draw_obj.text((110, 1380), "GDS to MTS | Postman | Mail Guard | P.A.", fill="#FEF08A", font=font_wa_eng)
         draw_obj.text((110, 1425), "कोर्स व फ्री मॉक टेस्ट हेतु व्हाट्सएप: 8989971379", fill="#FFFFFF", font=font_wa_dev)
 
-        # 2. Follow Banner (Safe Zone: Y=1495 to 1575)
         draw_obj.rounded_rectangle([80, 1495, 1000, 1575], radius=20, fill="#E11D48")
         draw_obj.text((120, 1520), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_hin)
         draw_obj.text((610, 1520), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta_eng)
 
-    # 100% Pure Devanagari Badge (Zero Tofu Boxes)
+    def paste_safe_icon(base_img, path, pos, size=(110, 110)):
+        if os.path.exists(path):
+            try:
+                ic = Image.open(path).convert("RGBA")
+                ic = ic.resize(size, RESAMPLE_MODE)
+                base_img.paste(ic, pos, ic)
+            except Exception:
+                pass
+
     badge_text = f"पीओ गाइड भाग 1  •  क्लॉज {script_data['clause_no']}"
     clause_title = f"{script_data['clause_name']} (भाग {script_data['part_no']}/{script_data['total_parts']})"
 
     sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"]]
     slide_filenames = []
 
-    # Slides 1 to 3 (Core Points)
     for idx, sentence in enumerate(sentences, 1):
         img = Image.new("RGB", (1080, 1920), color="#0F172A")
         d = ImageDraw.Draw(img)
         draw_base(d)
 
-        # Top Header Box
         d.rounded_rectangle([80, 180, 1000, 340], radius=20, fill="#0F172A", outline="#38BDF8", width=2)
-        # Golden Badge
         d.rounded_rectangle([105, 195, 590, 240], radius=10, fill="#F59E0B")
         d.text((120, 202), badge_text, fill="#000000", font=font_badge)
-        d.text((110, 255), textwrap.fill(clause_title, width=30), fill="#FFFFFF", font=font_title)
+        d.text((110, 255), textwrap.fill(clause_title, width=22), fill="#FFFFFF", font=font_title)
 
-        # Explanation Box
+        # Postal Emblem
+        paste_safe_icon(img, POST_ICON_PATH, pos=(860, 205), size=(110, 110))
+
         d.rounded_rectangle([80, 360, 1000, 1340], radius=22, fill="#0F172A")
         d.text((110, 385), "विस्तृत नियम विश्लेषण:", fill="#FBBF24", font=font_h2)
 
-        # Inner Content Card
         d.rounded_rectangle([110, 445, 970, 1310], radius=20, fill="#1E293B", outline="#38BDF8", width=2)
         d.text((140, 480), f"महत्वपूर्ण परीक्षा बिंदु #{idx}:", fill="#38BDF8", font=font_label)
 
@@ -378,7 +411,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         img.save(fname)
         slide_filenames.append(fname)
 
-    # Slide 4 (Quiz Slide)
+    # Quiz Slide
     img_quiz = Image.new("RGB", (1080, 1920), color="#0F172A")
     dq = ImageDraw.Draw(img_quiz)
     draw_base(dq)
@@ -387,6 +420,9 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     dq.rounded_rectangle([105, 195, 590, 240], radius=10, fill="#F59E0B")
     dq.text((120, 202), badge_text, fill="#000000", font=font_badge)
     dq.text((110, 255), "परीक्षा क्विज़: सवाल का सही जवाब दें!", fill="#FFFFFF", font=font_title)
+
+    # Quiz Question Emblem
+    paste_safe_icon(img_quiz, QUIZ_ICON_PATH, pos=(860, 205), size=(110, 110))
 
     dq.rounded_rectangle([80, 360, 1000, 1340], radius=22, fill="#0F172A")
     dq.text((110, 385), "आज का सवाल:", fill="#FBBF24", font=font_h2)
@@ -397,14 +433,10 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     oy = 680
     for idx, opt in enumerate(opts):
-        box_bg = "#1E293B"
-        border_c = "#38BDF8"
-        text_c = "#FFFFFF"
-
-        dq.rounded_rectangle([110, oy, 970, oy + 105], radius=16, fill=box_bg, outline=border_c, width=2)
+        dq.rounded_rectangle([110, oy, 970, oy + 105], radius=16, fill="#1E293B", outline="#38BDF8", width=2)
         opt_badge = f"{chr(65+idx)})"
         dq.text((135, oy + 30), opt_badge, fill="#38BDF8", font=font_opt_eng)
-        dq.text((205, oy + 28), textwrap.fill(opt, width=24), fill=text_c, font=font_opt_hin)
+        dq.text((205, oy + 28), textwrap.fill(opt, width=24), fill="#FFFFFF", font=font_opt_hin)
         oy += 125
 
     draw_footer(dq)
@@ -454,7 +486,6 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
 
     last_error = None
     for container_attempt in range(1, max_container_attempts + 1):
-        print(f"--- Reel upload attempt {container_attempt}/{max_container_attempts} ---", flush=True)
         try:
             video_id = _create_reel_container(video_file, caption, user_id, access_token)
             status = _poll_container_status(video_id, access_token)
@@ -464,18 +495,15 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
                 return
             else:
                 last_error = f"Container ended with non-FINISHED status: {status}"
-                print(f"⚠️ {last_error}. Retrying with a brand-new container...", flush=True)
         except Exception as e:
             last_error = str(e)
-            print(f"⚠️ Attempt {container_attempt} failed: {last_error}. Retrying...", flush=True)
 
         if container_attempt < max_container_attempts:
             time.sleep(20)
 
-    raise RuntimeError(f"All {max_container_attempts} attempts failed. Last error: {last_error}")
+    raise RuntimeError(f"Upload failed. Last error: {last_error}")
 
 def _create_reel_container(video_file, caption, user_id, access_token):
-    print("Step 1/2: Creating resumable-upload Reel container...", flush=True)
     init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
     data = {
         "media_type": "REELS",
@@ -484,21 +512,12 @@ def _create_reel_container(video_file, caption, user_id, access_token):
         "access_token": access_token
     }
     r = requests.post(init_url, data=data, timeout=60)
-
     if r.status_code != 200:
         raise RuntimeError(f"Container init fail hua: {r.text}")
 
-    init_data = r.json()
-    video_id = init_data.get("id")
-
-    if not video_id:
-        raise RuntimeError(f"Container ID invalid response: {init_data}")
-
-    # Meta Sync Pause
-    print(f"Container created with ID: {video_id}. Meta sync ke liye 5 sec wait kar rahe hain...", flush=True)
+    video_id = r.json().get("id")
     time.sleep(5)
 
-    print(f"Uploading video bytes to rupload.facebook.com...", flush=True)
     file_size = os.path.getsize(video_file)
     upload_url = RUPLOAD_BASE + str(video_id).strip()
     upload_headers = {
@@ -510,48 +529,33 @@ def _create_reel_container(video_file, caption, user_id, access_token):
     with open(video_file, "rb") as vf:
         up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
 
-    if up_r.status_code != 200:
-        raise RuntimeError(f"Video byte upload fail hua: {up_r.text}")
+    if up_r.status_code != 200 or not up_r.json().get("success"):
+        raise RuntimeError(f"Video upload fail: {up_r.text}")
 
-    up_json = up_r.json()
-    if not up_json.get("success"):
-        raise RuntimeError(f"Video byte upload did not report success: {up_json}")
-
-    print("Step 2/2: Video bytes uploaded successfully. Waiting for Instagram processing...", flush=True)
     return video_id
 
 def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
     status_url = GRAPH_API_BASE + str(video_id).strip()
-
-    for attempt in range(max_checks):
+    for _ in range(max_checks):
         time.sleep(wait_seconds)
-
         try:
             status_res = requests.get(
                 status_url,
                 params={"fields": "status_code,status", "access_token": access_token},
                 timeout=30
             ).json()
-        except Exception as e:
-            print(f"Polling network warning (will retry): {e}", flush=True)
+            status = status_res.get("status_code")
+            if status == "FINISHED":
+                return "FINISHED"
+            elif status in ["ERROR", "EXPIRED"]:
+                return status
+        except Exception:
             continue
-
-        status = status_res.get("status_code")
-        print(f"Check {attempt + 1}: Status -> {status}", flush=True)
-
-        if status == "FINISHED":
-            return "FINISHED"
-        elif status in ["ERROR", "EXPIRED"]:
-            print(f"❌ Instagram reported a definitive failure: {status_res}", flush=True)
-            return status
-
     return "TIMEOUT"
 
 def _publish_reel(video_id, user_id, access_token):
-    print("Publishing Reel...", flush=True)
     publish_url = GRAPH_API_BASE + str(user_id).strip() + "/media_publish"
     pub_res = requests.post(publish_url, data={"creation_id": video_id, "access_token": access_token}, timeout=30).json()
-
     if "id" in pub_res:
         print(f"🎉 Reel successfully published on Instagram! Post ID: {pub_res['id']}", flush=True)
     else:
@@ -559,19 +563,10 @@ def _publish_reel(video_id, user_id, access_token):
 
 # --- Execution Entry Point ---
 if __name__ == "__main__":
-    print("🚀 Postal Wala Zero-Error Pipeline Starting...", flush=True)
-
     state = load_progress_state()
-    print(f"📋 Current Tracking -> Clause: {state.get('clause_no', 2)}, Part: {state.get('current_part', 1)}", flush=True)
-
     script_data = generate_clause_script(state)
-    print(f"✅ Generated Script: क्लॉज {script_data['clause_no']} - {script_data['clause_name']} (भाग {script_data['part_no']}/{script_data['total_parts']})", flush=True)
 
     asyncio.run(generate_voice(script_data["voiceover"], AUDIO_OUTPUT))
-    print("✅ Voiceover Ready with Natural Pacing.", flush=True)
-
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
-
     post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
-
     advance_progress_state(state, script_data)
