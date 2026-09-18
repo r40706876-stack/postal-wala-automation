@@ -519,22 +519,34 @@ def get_eng_font(size):
             return ImageFont.truetype(p, size)
     return get_dev_font(size)
 
-# --- Background Music Auto-Synthesis Engine ---
-def ensure_bgm(bgm_path="bgm.mp3"):
-    if os.path.exists(bgm_path) and os.path.getsize(bgm_path) > 2000:
-        return bgm_path
+# --- Dynamic Auto-Rotating Multi-BGM Engine ---
+def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
+    if os.path.exists(bgm_path):
+        try:
+            os.remove(bgm_path)
+        except Exception:
+            pass
     if os.path.exists(os.path.join(ASSETS_DIR, "bgm.mp3")):
         return os.path.join(ASSETS_DIR, "bgm.mp3")
+
+    # 4 distinct energetic study/motivation chord progressions for rotation
+    chord_presets = [
+        "0.12*sin(2*PI*220*t)+0.08*sin(2*PI*277.18*t)+0.08*sin(2*PI*329.63*t)+0.05*sin(2*PI*440*t)", # A major
+        "0.12*sin(2*PI*196*t)+0.08*sin(2*PI*246.94*t)+0.08*sin(2*PI*293.66*t)+0.05*sin(2*PI*392*t)", # G major
+        "0.12*sin(2*PI*174.61*t)+0.08*sin(2*PI*220*t)+0.08*sin(2*PI*261.63*t)+0.05*sin(2*PI*349.23*t)", # F major
+        "0.12*sin(2*PI*164.81*t)+0.08*sin(2*PI*207.65*t)+0.08*sin(2*PI*246.94*t)+0.05*sin(2*PI*329.63*t)"  # E minor
+    ]
+    selected_expr = chord_presets[state_index % len(chord_presets)]
 
     try:
         cmd = [
             "ffmpeg", "-y", "-f", "lavfi",
-            "-i", "aevalsrc=exprs='0.035*sin(2*PI*110*t)+0.025*sin(2*PI*164.81*t)+0.02*sin(2*PI*220*t)':s=48000:d=70,lowpass=f=450",
-            "-c:a", "libmp3lame", "-b:a", "128k", bgm_path
+            "-i", f"aevalsrc=exprs='{selected_expr}':s=48000:d=70",
+            "-c:a", "libmp3lame", "-b:a", "192k", bgm_path
         ]
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if os.path.exists(bgm_path) and os.path.getsize(bgm_path) > 2000:
-            print(f"🎵 Generated ambient background audio: {bgm_path}", flush=True)
+            print(f"🎵 Generated rotating dynamic BGM variant {(state_index % len(chord_presets)) + 1}", flush=True)
             return bgm_path
     except Exception as e:
         print(f"⚠️ BGM notice: {e}", flush=True)
@@ -753,11 +765,14 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-# --- Balanced Professional Mobile Layout Engine With Audio Mix ---
+# --- Balanced Professional Mobile Layout Engine With Rotating BGM ---
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     ensure_auto_icons()
-    active_bgm = ensure_bgm(BGM_OUTPUT)
+    
+    # Load state to get unique hook_index for rotating BGM variant
+    current_state = load_progress_state()
+    active_bgm = ensure_bgm(BGM_OUTPUT, state_index=current_state.get("hook_index", 0))
 
     total_dur = get_audio_duration(audio_file)
     print(f"🎵 Voiceover Duration: {total_dur:.1f}s", flush=True)
@@ -786,7 +801,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_label = get_dev_font(26)
     font_hook_alert = get_dev_font(30)
 
-    # 100% Devanagari Hindi font to prevent tofu boxes [▯▯▯▯]
     font_wa_hin = get_dev_font(32)
     font_wa_num = get_eng_font(30)
 
@@ -839,23 +853,22 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         # Title Card (y: 175 to 320)
         d.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
         
-        # Left Badge: Clause Number (Golden Pill)
+        # Left Badge
         d.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
         d.text((120, 198), badge_text, fill="#000000", font=font_badge)
 
-        # Right Badge: Part Tag (Electric Blue Pill)
+        # Right Badge
         d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8", outline="#60A5FA", width=1)
         d.text((845, 198), part_tag_text, fill="#FFFFFF", font=font_part_tag)
 
-        # Clean Single Title Line (Bold White)
+        # Clean Single Title Line
         d.text((105, 255), clause_title, fill="#FFFFFF", font=font_title)
 
         draw_sleek_whatsapp_strip(d)
 
-        # Main Teaching Card (y: 505 to 1550)
+        # Main Teaching Card
         d.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
 
-        # Slide 1 Visual Hook Alert Card
         if idx == 1:
             d.rounded_rectangle([110, 530, 970, 600], radius=14, fill="#991B1B", outline="#FBBF24", width=2)
             d.text((130, 545), visual_hook_text, fill="#FEF08A", font=font_hook_alert)
@@ -940,12 +953,12 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-i", audio_file
     ]
 
-    # Robust Dual-Stream Audio Mixing with Auto-BGM
+    # Clearly audible Balanced Rotating BGM Mix (volume=0.22)
     voice_idx = len(slide_filenames)
     if active_bgm and os.path.exists(active_bgm) and os.path.getsize(active_bgm) > 2000:
         bgm_idx = voice_idx + 1
         cmd.extend(["-stream_loop", "-1", "-i", active_bgm])
-        full_filter = f"{video_filter}; [{voice_idx}:a]aresample=48000,volume=1.0[v_aud]; [{bgm_idx}:a]aresample=48000,volume=0.08[bgm_aud]; [v_aud][bgm_aud]amix=inputs=2:duration=first:dropout_transition=2[a]"
+        full_filter = f"{video_filter}; [{voice_idx}:a]aresample=48000,volume=1.0[v_aud]; [{bgm_idx}:a]aresample=48000,volume=0.22[bgm_aud]; [v_aud][bgm_aud]amix=inputs=2:duration=first:dropout_transition=2[a]"
         cmd.extend([
             "-filter_complex", full_filter,
             "-map", "[v]",
@@ -974,7 +987,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ])
 
     subprocess.run(cmd, check=True)
-    print("✅ Meta-Optimized 1080x1920 Reel Created with High-Retention BGM Mix.", flush=True)
+    print("✅ Meta-Optimized 1080x1920 Reel Created with Rotating Audible BGM Mix.", flush=True)
 
 # --- Bulletproof Resumable Instagram Upload ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
