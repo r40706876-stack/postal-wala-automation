@@ -6,6 +6,7 @@ import asyncio
 import subprocess
 import requests
 import textwrap
+import re
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
@@ -401,6 +402,17 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
+# Robust Multi-line Regex Extractor (Never breaks on newlines or Markdown headers)
+def extract_field_block(text, field_name, next_fields):
+    pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
+    m = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
+    if m:
+        val = m.group(1).strip()
+        val = re.sub(r"^[\"\'`]+|[\"\'`]+$", "", val).strip()
+        val = " ".join(val.split())
+        return val
+    return None
+
 # --- 100% Offline 3D Graphic Renderer ---
 def ensure_auto_icons():
     os.makedirs(ASSETS_DIR, exist_ok=True)
@@ -591,30 +603,32 @@ def generate_clause_script(state):
             raw_text = res_json["choices"][0]["message"]["content"].strip()
             data = fallback_data.copy()
 
-            for line in raw_text.splitlines():
-                clean_l = line.strip()
-                if clean_l.startswith("SEN1:"):
-                    data["sen1"] = clean_hindi_postal_terms(clean_l.replace("SEN1:", ""))
-                elif clean_l.startswith("SEN2:"):
-                    data["sen2"] = clean_hindi_postal_terms(clean_l.replace("SEN2:", ""))
-                elif clean_l.startswith("SEN3:"):
-                    data["sen3"] = clean_hindi_postal_terms(clean_l.replace("SEN3:", ""))
-                elif clean_l.startswith("QUESTION:"):
-                    data["question"] = clean_hindi_postal_terms(clean_l.replace("QUESTION:", ""))
-                elif clean_l.startswith("OPT_A:"):
-                    data["opt_a"] = clean_hindi_postal_terms(clean_l.replace("OPT_A:", ""))
-                elif clean_l.startswith("OPT_B:"):
-                    data["opt_b"] = clean_hindi_postal_terms(clean_l.replace("OPT_B:", ""))
-                elif clean_l.startswith("OPT_C:"):
-                    data["opt_c"] = clean_hindi_postal_terms(clean_l.replace("OPT_C:", ""))
-                elif clean_l.startswith("OPT_D:"):
-                    data["opt_d"] = clean_hindi_postal_terms(clean_l.replace("OPT_D:", ""))
-                elif clean_l.startswith("CORRECT:"):
-                    data["correct"] = clean_text(clean_l.replace("CORRECT:", "")).upper()[:1]
-                elif clean_l.startswith("VOICEOVER:"):
-                    data["voiceover"] = clean_hindi_postal_terms(clean_l.replace("VOICEOVER:", ""))
-                elif clean_l.startswith("CAPTION:"):
-                    data["caption"] = clean_text(clean_l.replace("CAPTION:", ""))
+            s1 = extract_field_block(raw_text, "SEN1", ["SEN2", "SEN3", "QUESTION"])
+            s2 = extract_field_block(raw_text, "SEN2", ["SEN3", "QUESTION"])
+            s3 = extract_field_block(raw_text, "SEN3", ["QUESTION"])
+            q = extract_field_block(raw_text, "QUESTION", ["OPT_A", "OPT_B"])
+            oa = extract_field_block(raw_text, "OPT_A", ["OPT_B", "OPT_C"])
+            ob = extract_field_block(raw_text, "OPT_B", ["OPT_C", "OPT_D"])
+            oc = extract_field_block(raw_text, "OPT_C", ["OPT_D", "CORRECT"])
+            od = extract_field_block(raw_text, "OPT_D", ["CORRECT", "VOICEOVER"])
+            c = extract_field_block(raw_text, "CORRECT", ["VOICEOVER", "CAPTION"])
+            vo = extract_field_block(raw_text, "VOICEOVER", ["CAPTION"])
+            cap = extract_field_block(raw_text, "CAPTION", ["VOICEOVER"])
+
+            if s1 and len(s1) > 10: data["sen1"] = clean_hindi_postal_terms(s1)
+            if s2 and len(s2) > 10: data["sen2"] = clean_hindi_postal_terms(s2)
+            if s3 and len(s3) > 10: data["sen3"] = clean_hindi_postal_terms(s3)
+            if q and len(q) > 8: data["question"] = clean_hindi_postal_terms(q)
+            if oa and len(oa) > 1: data["opt_a"] = clean_hindi_postal_terms(oa)
+            if ob and len(ob) > 1: data["opt_b"] = clean_hindi_postal_terms(ob)
+            if oc and len(oc) > 1: data["opt_c"] = clean_hindi_postal_terms(oc)
+            if od and len(od) > 1: data["opt_d"] = clean_hindi_postal_terms(od)
+            if c: data["correct"] = clean_text(c).upper()[:1]
+            if vo and len(vo) > 35: data["voiceover"] = clean_hindi_postal_terms(vo)
+            if cap and len(cap) > 10: data["caption"] = clean_text(cap)
+
+            if not data.get("voiceover") or len(data["voiceover"].strip()) < 35:
+                data["voiceover"] = fallback_data["voiceover"]
 
             return data
     except Exception as e:
@@ -656,12 +670,41 @@ def advance_progress_state(state, data):
 
     save_progress_state(state)
 
-# --- Voice Generation ---
-async def generate_voice(text, filename="voice.mp3"):
-    communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+0%")
-    await communicate.save(filename)
+# --- Safe Voice Generation With Auto-Retry & Size Verification ---
+async def generate_voice(text, filename="voice.mp3", max_retries=3):
+    if not text or len(text.strip()) < 25:
+        print("⚠️ Warning: Text too short, using emergency default text.", flush=True)
+        text = "जीडीएस से प्रमोशन लेने के लिए आपका स्वागत है पोस्टल वाला में! विभागीय परीक्षा की पक्की तैयारी के लिए पोस्टल वाला को फॉलो करें और फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें!"
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            if os.path.exists(filename):
+                try:
+                    os.remove(filename)
+                except Exception:
+                    pass
+
+            communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+0%")
+            await communicate.save(filename)
+
+            if os.path.exists(filename) and os.path.getsize(filename) > 5000:
+                print(f"✅ Voice generated successfully ({os.path.getsize(filename)} bytes) on attempt {attempt}", flush=True)
+                return
+            else:
+                size_now = os.path.getsize(filename) if os.path.exists(filename) else 0
+                print(f"⚠️ Audio file too small ({size_now} bytes) on attempt {attempt}, retrying...", flush=True)
+        except Exception as e:
+            print(f"⚠️ Edge-TTS attempt {attempt} failed: {e}", flush=True)
+
+        await asyncio.sleep(2)
+
+    if not os.path.exists(filename) or os.path.getsize(filename) < 2000:
+        raise RuntimeError("Edge-TTS failed to generate valid MP3 audio after retries!")
 
 def get_audio_duration(audio_file):
+    if not os.path.exists(audio_file) or os.path.getsize(audio_file) < 2000:
+        raise ValueError(f"Audio file is corrupted or empty: {audio_file}")
+
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", audio_file]
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
@@ -696,7 +739,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_body = get_dev_font(48)
     font_label = get_dev_font(28)
 
-    # 100% Hindi Devanagari font to prevent tofu boxes [▯▯▯▯]
+    # Pure Devanagari Hindi font to prevent tofu boxes [▯▯▯▯]
     font_wa_hin = get_dev_font(32)
     font_wa_num = get_eng_font(30)
 
@@ -934,6 +977,10 @@ def _publish_reel(video_id, user_id, access_token):
 if __name__ == "__main__":
     state = load_progress_state()
     script_data = generate_clause_script(state)
+
+    if not script_data.get("voiceover") or len(script_data["voiceover"].strip()) < 30:
+        hook = VIRAL_HOOKS[state.get("hook_index", 0) % len(VIRAL_HOOKS)]
+        script_data["voiceover"] = f"{hook} आज का महत्वपूर्ण प्रश्न है: क्लॉज {state.get('clause_no', 55)} का संबंध किससे है? इसका सही उत्तर जानने के लिए वीडियो अंत तक समझें! विभागीय परीक्षा की पक्की तैयारी के लिए पोस्टल वाला को फॉलो करें और फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें!"
 
     asyncio.run(generate_voice(script_data["voiceover"], AUDIO_OUTPUT))
     create_video_ffmpeg(script_data, AUDIO_OUTPUT, OUTPUT_VIDEO)
