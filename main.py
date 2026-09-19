@@ -427,11 +427,10 @@ def extract_field_block(text, field_name, next_fields):
         return val
     return None
 
-# --- Vector Visual Emoji Drawers (100% Crash-Free) ---
+# --- Native Pillow Vector Emojis (Zero Tofu/Dabba) ---
 def draw_visual_emoji(draw_obj, emoji_type, x, y, size=36):
-    r = size // 2
-    cx = x + r
-    cy = y + r
+    cx = x + size // 2
+    cy = y + size // 2
 
     if emoji_type == "cross":
         draw_obj.ellipse([x, y, x + size, y + size], fill="#DC2626")
@@ -444,22 +443,21 @@ def draw_visual_emoji(draw_obj, emoji_type, x, y, size=36):
         draw_obj.line([(x + size // 4, cy), (cx - 2, y + size - size // 4)], fill="#FFFFFF", width=4)
         draw_obj.line([(cx - 2, y + size - size // 4), (x + size - size // 4, y + size // 3)], fill="#FFFFFF", width=4)
 
-    elif emoji_type == "money":
-        draw_obj.ellipse([x, y, x + size, y + size], fill="#D97706")
-        draw_obj.line([(x + size // 4, y + size // 3), (x + size - size // 4, y + size // 3)], fill="#FFFFFF", width=3)
-        draw_obj.line([(x + size // 4, cy), (x + size - size // 3, cy)], fill="#FFFFFF", width=3)
-        draw_obj.arc([cx - 5, y + size // 4, x + size - 6, cy + 4], start=270, end=90, fill="#FFFFFF", width=3)
-        draw_obj.line([(cx, cy + 2), (x + size - size // 3, y + size - size // 4)], fill="#FFFFFF", width=3)
-
-    elif emoji_type == "postbox":
-        draw_obj.rounded_rectangle([x + 4, y + 4, x + size - 4, y + size - 4], radius=6, fill="#DC2626", outline="#FBBF24", width=2)
-        draw_obj.rectangle([x + 8, y + 10, x + size - 8, y + 15], fill="#0F172A")
-
     elif emoji_type == "warning":
         pts = [(cx, y + 2), (x + size - 2, y + size - 4), (x + 2, y + size - 4)]
         draw_obj.polygon(pts, fill="#F59E0B")
         draw_obj.line([(cx, y + 10), (cx, y + size - 14)], fill="#000000", width=3)
         draw_obj.ellipse([cx - 2, y + size - 10, cx + 2, y + size - 6], fill="#000000")
+
+    elif emoji_type == "question":
+        draw_obj.ellipse([x, y, x + size, y + size], fill="#1D4ED8")
+        draw_obj.arc([x + 10, y + 8, x + size - 10, y + size - 14], start=180, end=0, fill="#FFFFFF", width=3)
+        draw_obj.line([(cx, y + 18), (cx, y + size - 12)], fill="#FFFFFF", width=3)
+        draw_obj.ellipse([cx - 2, y + size - 8, cx + 2, y + size - 4], fill="#FFFFFF")
+
+    elif emoji_type == "postbox":
+        draw_obj.rounded_rectangle([x + 4, y + 4, x + size - 4, y + size - 4], radius=6, fill="#DC2626", outline="#FBBF24", width=2)
+        draw_obj.rectangle([x + 8, y + 10, x + size - 8, y + 15], fill="#0F172A")
 
 def draw_vector_arrow(draw_obj, center_x, start_y, length=30):
     end_y = start_y + length
@@ -556,7 +554,7 @@ def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
     except Exception:
         return None
 
-# --- State Management (Clause 6 onwards lock) ---
+# --- State Management (Clause 6, Part 1 Lock) ---
 def load_progress_state():
     state = {"clause_no": 6, "current_part": 1, "total_parts": 1, "hook_index": 0}
     if os.path.exists(STATE_FILE):
@@ -598,14 +596,12 @@ def advance_progress_state(state):
 
     save_progress_state(state)
 
-# --- Script Generation Engine (Groq AI with Catalog Fallback) ---
+# --- Dynamic Script Generator (Groq AI with Full Catalog Fallback) ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 6)
     current_part = state.get("current_part", 1)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
-    active_hook_voice = hook_obj["voice"]
-    active_hook_badge = hook_obj["visual_badge"]
 
     clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[6])
     clause_name = clause_info["name"]
@@ -617,16 +613,17 @@ def generate_clause_script(state):
         "clause_name": clause_name,
         "part_no": current_part,
         "total_parts": total_parts,
-        "visual_hook_badge": active_hook_badge,
+        "visual_hook_badge": hook_obj["visual_badge"],
+        "hook_voice": hook_obj["voice"],
+        "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार रविवार और राष्ट्रीय अवकाश पर सामान्य डाकघर की क्या स्थिति होती है?",
         "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": f"रविवार और सभी 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूरी तरह बंद रहते हैं, जिससे नियमित सेवाएं स्थगित रहती हैं।",
+        "sen2": "रविवार और सभी 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूरी तरह बंद रहते हैं, जिससे नियमित सेवाएं स्थगित रहती हैं।",
         "sen3": "केवल रात्रि डाकघर ही ऐसे अवकाशों पर सीमित सेवाएं प्रदान करते हैं। विभागीय परीक्षा हेतु यह अति महत्वपूर्ण नियम है।",
-        "question": f"क्लॉज {current_clause} के अनुसार रविवार व राष्ट्रीय अवकाश पर सामान्य डाकघर की क्या स्थिति होती है?",
         "opt_a": "पूर्णतः खुले रहते हैं",
         "opt_b": "पूर्णतः बंद रहते हैं",
         "opt_c": "केवल बचत बैंक कार्य होता है",
         "opt_d": "इनमें से कोई नहीं",
-        "caption": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} | विभागीय परीक्षा (GDS to MTS, Postman, PA) विशेष तैयारी। #PostalWala #GDStoMTS #PostmanExam #IndiaPost #POGuidePart1"
+        "caption": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} | विभागीय परीक्षा (GDS to MTS, Postman, PA) तैयारी। #PostalWala #GDStoMTS #PostmanExam #IndiaPost"
     }
 
     if not GROQ_API_KEY:
@@ -638,11 +635,11 @@ def generate_clause_script(state):
     Clause Number: क्लॉज {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
     Sub-Rule Focus: "{part_focus}"
 
-    Generate 3 rich, clear teaching sentences and 1 MCQ based on this rule.
-    SEN1: [Direct explanation of the rule, ~25 words]
-    SEN2: [Key official condition or trap, ~25 words]
-    SEN3: [Exam point or penalty/procedure, ~25 words]
-    QUESTION: [1 high-yield exam question in Hindi]
+    Generate:
+    QUESTION: [1 high-yield exam question directly on this clause]
+    SEN1: [Core rule explanation, ~25 words]
+    SEN2: [Key conditions/hours, ~25 words]
+    SEN3: [Official exception or trap, ~25 words]
     OPT_A: [Option A]
     OPT_B: [Option B]
     OPT_C: [Option C]
@@ -654,70 +651,79 @@ def generate_clause_script(state):
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
-            s1 = extract_field_block(raw_text, "SEN1", ["SEN2", "SEN3", "QUESTION"])
+            q = extract_field_block(raw_text, "QUESTION", ["SEN1", "OPT_A"])
+            s1 = extract_field_block(raw_text, "SEN1", ["SEN2", "QUESTION"])
             s2 = extract_field_block(raw_text, "SEN2", ["SEN3", "QUESTION"])
-            s3 = extract_field_block(raw_text, "SEN3", ["QUESTION"])
-            q = extract_field_block(raw_text, "QUESTION", ["OPT_A", "OPT_B"])
+            s3 = extract_field_block(raw_text, "SEN3", ["QUESTION", "OPT_A"])
             oa = extract_field_block(raw_text, "OPT_A", ["OPT_B", "OPT_C"])
             ob = extract_field_block(raw_text, "OPT_B", ["OPT_C", "OPT_D"])
             oc = extract_field_block(raw_text, "OPT_C", ["OPT_D"])
             od = extract_field_block(raw_text, "OPT_D", [])
 
+            if q: fallback_data["question"] = clean_hindi_postal_terms(q)
             if s1: fallback_data["sen1"] = clean_hindi_postal_terms(s1)
             if s2: fallback_data["sen2"] = clean_hindi_postal_terms(s2)
             if s3: fallback_data["sen3"] = clean_hindi_postal_terms(s3)
-            if q: fallback_data["question"] = clean_hindi_postal_terms(q)
             if oa: fallback_data["opt_a"] = clean_hindi_postal_terms(oa)
             if ob: fallback_data["opt_b"] = clean_hindi_postal_terms(ob)
             if oc: fallback_data["opt_c"] = clean_hindi_postal_terms(oc)
             if od: fallback_data["opt_d"] = clean_hindi_postal_terms(od)
     except Exception as e:
-        print(f"⚠️ Groq API note: {e}, using master catalog fallback.")
+        print(f"⚠️ Groq API warning: {e}, using master catalog fallback.")
 
     return fallback_data
 
-# Segment Packager: 100% Mirror Audio-Visual Mapping with Visual Badges
-def build_segments(script_data, state):
-    hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
-    hook = VIRAL_HOOKS[hook_idx]
+# --- The Perfect Viral Segment Structure ---
+# Slide 1: Hook + Shuru me Prashn
+# Slide 2: Niyam Point 1
+# Slide 3: Niyam Point 2 (Exception/Trap)
+# Slide 4: Wahi Prashn + Chaaron Options + Uttar CTA
+def build_segments(script_data):
+    q_txt = script_data["question"]
+    hook_v = script_data["hook_voice"]
+    hook_b = script_data["visual_hook_badge"]
 
-    s1_voice = f"{hook['voice']} {script_data['sen1']}"
-    s1_text = script_data["sen1"]
+    # Segment 1: Hook + Starting Question
+    s1_voice = f"{hook_v} आज का महत्वपूर्ण प्रश्न है: {q_txt} इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें!"
+    s1_text = f"आज का महत्वपूर्ण सवाल:\n{q_txt}\n\nसही उत्तर वीडियो में अंत तक समझें!"
 
-    s2_voice = script_data["sen2"]
-    s2_text = script_data["sen2"]
+    # Segment 2: Rule Detail 1
+    s2_voice = f"आइए नियम को समझें। {script_data['sen1']} {script_data['sen2']}"
+    s2_text = f"{script_data['sen1']}\n\n{script_data['sen2']}"
 
-    s3_voice = script_data["sen3"]
-    s3_text = script_data["sen3"]
+    # Segment 3: Rule Detail 2 / Exception
+    s3_voice = f"विभागीय परीक्षा की दृष्टि से ध्यान दें! {script_data['sen3']}"
+    s3_text = f"परीक्षा विशेष बिंदु:\n\n{script_data['sen3']}"
 
-    quiz_voice = f"आज का महत्वपूर्ण सवाल: {script_data['question']} ऑप्शन ए: {script_data['opt_a']}, या ऑप्शन बी: {script_data['opt_b']}! सही उत्तर कमेंट में बताएं और फ्री टेस्ट के लिए व्हाट्सएप करें!"
+    # Segment 4: Question Returns + Options + Comment/WhatsApp CTA
+    quiz_voice = f"तो साथियों, {q_txt} ऑप्शन ए: {script_data['opt_a']}, या ऑप्शन बी: {script_data['opt_b']}! अपना सही उत्तर अभी कमेंट करें, और फ्री टेस्ट के लिए व्हाट्सएप करें!"
 
     return [
         {
             "audio": s1_voice,
             "screen": s1_text,
-            "hook_badge": hook["visual_badge"],
-            "label": "परीक्षा बिंदु 1",
-            "emoji": "postbox",
+            "hook_badge": hook_b,
+            "label": "आज का प्रश्न",
+            "emoji": "question",
             "is_hook": True
         },
         {
             "audio": s2_voice,
             "screen": s2_text,
-            "label": "नियम व शर्तें",
-            "emoji": "cross",
+            "label": "नियम विश्लेषण #1",
+            "emoji": "postbox",
             "is_hook": False
         },
         {
             "audio": s3_voice,
             "screen": s3_text,
-            "label": "परीक्षा अपवाद",
+            "label": "परीक्षा अपवाद #2",
             "emoji": "warning",
             "is_hook": False
         },
         {
             "audio": quiz_voice,
-            "question": script_data["question"],
+            "question": q_txt,
             "opt_a": script_data["opt_a"],
             "opt_b": script_data["opt_b"],
             "opt_c": script_data["opt_c"],
@@ -737,7 +743,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- Precise Video Rendering Engine ---
+# --- Precise Rendering Engine ---
 def render_and_sync_video(script_data, segments, output_video):
     ensure_fonts()
     ensure_auto_icons()
@@ -750,7 +756,7 @@ def render_and_sync_video(script_data, segments, output_video):
     font_badge = get_dev_font(22)
     font_title = get_dev_font(34)
     font_h2 = get_dev_font(32)
-    font_body = get_dev_font(36)
+    font_body = get_dev_font(34)
     font_label = get_dev_font(26)
     font_wa_hin = get_dev_font(30)
     font_wa_num = get_eng_font(30)
@@ -795,7 +801,7 @@ def render_and_sync_video(script_data, segments, output_video):
         d = ImageDraw.Draw(img)
         draw_common_ui(d, script_data["clause_name"] if idx < 3 else "परीक्षा क्विज़: उत्तर कमेंट करें")
 
-        # Main Card
+        # Main Teaching Card
         d.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
 
         if idx < 3:
@@ -811,7 +817,7 @@ def render_and_sync_video(script_data, segments, output_video):
             d.text((165, sy + 10), seg["label"], fill="#38BDF8", font=font_label)
 
             clean_txt = sanitize_devanagari(seg["screen"])
-            wrapped = textwrap.fill(clean_txt, width=23)
+            wrapped = textwrap.fill(clean_txt, width=24)
             d.multiline_text((115, sy + 75), wrapped, fill="#F8FAFC", font=font_body, spacing=16)
 
             draw_vector_arrow(d, center_x=540, start_y=sy + 360, length=40)
@@ -821,9 +827,9 @@ def render_and_sync_video(script_data, segments, output_video):
                 ic = Image.open(asset_path).convert("RGBA").resize((280, 360), RESAMPLE_MODE)
                 img.paste(ic, (400, 1120), ic)
         else:
-            # Quiz slide
+            # Slide 4: Quiz (Shuru wala sawal yahan options ke sath aayega)
             d.rounded_rectangle([110, 530, 360, 575], radius=12, fill="#0B132B")
-            draw_visual_emoji(d, "warning", 120, 536, size=32)
+            draw_visual_emoji(d, "question", 120, 536, size=32)
             d.text((160, 538), "आज का सवाल:", fill="#FBBF24", font=font_h2)
 
             q_wrapped = textwrap.fill(sanitize_devanagari(seg["question"]), width=23)
@@ -881,9 +887,9 @@ def render_and_sync_video(script_data, segments, output_video):
     else:
         os.rename("temp_merged.mp4", output_video)
 
-    print(f"✅ Reel created successfully with full catalog & sync: {output_video}")
+    print(f"✅ Reel created successfully with start question & ending quiz: {output_video}")
 
-# --- Robust Resumable Instagram Upload ---
+# --- Instagram Resumable Upload ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
@@ -935,7 +941,7 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
 if __name__ == "__main__":
     st = load_progress_state()
     script_data = generate_clause_script(st)
-    segments = build_segments(script_data, st)
+    segments = build_segments(script_data)
     render_and_sync_video(script_data, segments, OUTPUT_VIDEO)
     post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
     advance_progress_state(st)
