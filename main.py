@@ -891,32 +891,60 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     print(f"✅ Synced & Exactly 59s-Locked Reel Created: {output_video}", flush=True)
 
 # --- HOSTED-URL UPLOADER (replaces the flaky binary /rupload resumable protocol) ---
+def _host_on_catbox(video_file):
+    """catbox.moe: persistent direct links, correct video/mp4 content-type,
+    and proper HTTP range-request support — which is what Meta's server-side
+    video fetcher needs. Returns a plain-text URL like https://files.catbox.moe/xxxx.mp4"""
+    with open(video_file, "rb") as f:
+        r = requests.post(
+            "https://catbox.moe/user/api.php",
+            data={"reqtype": "fileupload"},
+            files={"fileToUpload": (os.path.basename(video_file), f, "video/mp4")},
+            timeout=120
+        )
+    r.raise_for_status()
+    url = r.text.strip()
+    if not url.startswith("http"):
+        raise RuntimeError(f"catbox.moe unexpected response: {url}")
+    return url
+
+def _host_on_tmpfiles(video_file):
+    """Fallback host. Known to sometimes fail Meta's fetch (error 2207082)
+    because it doesn't reliably serve range requests, but kept as a backup."""
+    with open(video_file, "rb") as f:
+        r = requests.post(
+            "https://tmpfiles.org/api/v1/upload",
+            files={"file": (os.path.basename(video_file), f, "video/mp4")},
+            timeout=120
+        )
+    r.raise_for_status()
+    data = r.json()
+    raw_url = data["data"]["url"]
+    return raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/", 1)
+
 def _upload_video_get_public_url(video_file, max_attempts=3):
-    """Uploads the video to tmpfiles.org and returns a direct-download public URL
-    that Meta's Graph API can fetch server-side via `video_url`. This avoids the
-    resumable binary rupload endpoint, which was returning a non-retriable
-    'ProcessingFailedError' on every attempt."""
+    """Tries catbox.moe first (reliable for Meta's fetcher), falls back to
+    tmpfiles.org if catbox is unreachable. Logs response headers of the final
+    URL so a bad Content-Type/no-range-support is visible in the run log."""
     last_err = None
     for attempt in range(1, max_attempts + 1):
-        try:
-            print("📤 Generating temporary direct video link for Meta Graph API...", flush=True)
-            with open(video_file, "rb") as f:
-                r = requests.post(
-                    "https://tmpfiles.org/api/v1/upload",
-                    files={"file": (os.path.basename(video_file), f, "video/mp4")},
-                    timeout=120
-                )
-            r.raise_for_status()
-            data = r.json()
-            raw_url = data["data"]["url"]  # e.g. https://tmpfiles.org/12345/final_reel.mp4
-            # Convert to the direct-download form: .../dl/12345/final_reel.mp4
-            direct_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/", 1)
-            print(f"🔗 Video Hosted Link: {direct_url}", flush=True)
-            return direct_url
-        except Exception as e:
-            last_err = e
-            print(f"⚠️ Hosting attempt {attempt} failed: {e}", flush=True)
-            time.sleep(5)
+        print("📤 Generating temporary direct video link for Meta Graph API...", flush=True)
+        for host_name, host_fn in (("catbox.moe", _host_on_catbox), ("tmpfiles.org", _host_on_tmpfiles)):
+            try:
+                url = host_fn(video_file)
+                print(f"🔗 Video Hosted Link ({host_name}): {url}", flush=True)
+                try:
+                    head = requests.head(url, timeout=20, allow_redirects=True)
+                    print(f"   ℹ️ Host response: status={head.status_code} "
+                          f"content-type={head.headers.get('Content-Type')} "
+                          f"accept-ranges={head.headers.get('Accept-Ranges')}", flush=True)
+                except Exception as he:
+                    print(f"   ⚠️ Could not verify host headers: {he}", flush=True)
+                return url
+            except Exception as e:
+                last_err = e
+                print(f"⚠️ {host_name} upload failed: {e}", flush=True)
+        time.sleep(5)
     raise RuntimeError(f"Could not obtain a public video URL after {max_attempts} attempts: {last_err}")
 
 
