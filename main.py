@@ -7,6 +7,7 @@ import subprocess
 import requests
 import textwrap
 import re
+import sys
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
@@ -15,7 +16,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
-GRAPH_API_BASE = "".join(["http", "s://", "graph.", "facebook", ".com/v19.0/"])
+GRAPH_API_BASE = "https://graph.facebook.com/v19.0/"
 RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
 STATE_FILE = "progress_state.json"
@@ -405,13 +406,9 @@ def clean_hindi_postal_terms(text):
     if not text:
         return ""
     replacements = {
-        "पेन्टियों": "पत्र-पेटियों",
-        "पेन्टी": "पत्र-पेटी",
-        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें",
-        "घंटी वाली प्लेट": "घंटे वाली प्लेट",
-        "घंटी वाली": "घंटे वाली",
-        "नित्य पत्र": "वित्तीय वर्ष",
-        "नित्य वर्ष": "वित्तीय वर्ष"
+        "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
+        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
+        "घंटी वाली": "घंटे वाली", "नित्य पत्र": "वित्तीय वर्ष", "नित्य वर्ष": "वित्तीय वर्ष"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
@@ -423,11 +420,10 @@ def extract_field_block(text, field_name, next_fields):
     if m:
         val = m.group(1).strip()
         val = re.sub(r"^[\"\'`]+|[\"\'`]+$", "", val).strip()
-        val = " ".join(val.split())
-        return val
+        return " ".join(val.split())
     return None
 
-# --- Native Pillow Vector Emojis (Zero Tofu/Dabba) ---
+# --- Native Pillow Vector Badges ---
 def draw_visual_emoji(draw_obj, emoji_type, x, y, size=36):
     cx = x + size // 2
     cy = y + size // 2
@@ -524,24 +520,9 @@ def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
     mp3_files = sorted(glob.glob(os.path.join(ASSETS_DIR, "*.mp3")))
     if mp3_files:
         return mp3_files[state_index % len(mp3_files)]
-
     cached_bgm = os.path.join(ASSETS_DIR, f"bgm_{state_index % 3}.mp3")
     if os.path.exists(cached_bgm) and os.path.getsize(cached_bgm) > 10000:
         return cached_bgm
-
-    lofi_urls = [
-        "https://upload.wikimedia.org/wikipedia/commons/e/eb/Bensound-relaxing.mp3",
-        "https://upload.wikimedia.org/wikipedia/commons/4/4b/Bensound-slowmotion.mp3"
-    ]
-    try:
-        r = requests.get(lofi_urls[state_index % len(lofi_urls)], timeout=12)
-        if r.status_code == 200:
-            with open(cached_bgm, "wb") as f:
-                f.write(r.content)
-            return cached_bgm
-    except Exception:
-        pass
-
     try:
         cmd = [
             "ffmpeg", "-y", "-f", "lavfi",
@@ -554,7 +535,6 @@ def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
     except Exception:
         return None
 
-# --- State Management (Hard-Locked to Clause 6, Part 1) ---
 def load_progress_state():
     state = {"clause_no": 6, "current_part": 1, "total_parts": 1, "hook_index": 0}
     if os.path.exists(STATE_FILE):
@@ -567,8 +547,6 @@ def load_progress_state():
                 state.update(data)
         except Exception:
             pass
-    else:
-        save_progress_state(state)
     return state
 
 def save_progress_state(state):
@@ -598,7 +576,6 @@ def advance_progress_state(state):
 
     save_progress_state(state)
 
-# --- Script Generation Engine (Groq AI with Full Catalog Fallback) ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 6)
     current_part = state.get("current_part", 1)
@@ -671,63 +648,35 @@ def generate_clause_script(state):
             if oc: fallback_data["opt_c"] = clean_hindi_postal_terms(oc)
             if od: fallback_data["opt_d"] = clean_hindi_postal_terms(od)
     except Exception as e:
-        print(f"⚠️ Groq API note: {e}, using master catalog fallback.")
+        print(f"⚠️ Groq note: {e}")
 
     return fallback_data
 
-# --- The 100% Locked Viral Segment Structure ---
 def build_segments(script_data):
     q_txt = script_data["question"]
     hook_v = script_data["hook_voice"]
     hook_b = script_data["visual_hook_badge"]
 
-    # Segment 1: Hook + Shuru me Prashn
+    # Slide 1: Viral hook + Question asked directly
     s1_voice = f"{hook_v} आज का महत्वपूर्ण प्रश्न है: {q_txt} इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें!"
     s1_text = f"आज का महत्वपूर्ण सवाल:\n{q_txt}\n\nसही उत्तर वीडियो में अंत तक समझें!"
 
-    # Segment 2: Rule Detail 1
+    # Slide 2: Rule point 1
     s2_voice = f"आइए नियम को समझें। {script_data['sen1']} {script_data['sen2']}"
     s2_text = f"{script_data['sen1']}\n\n{script_data['sen2']}"
 
-    # Segment 3: Rule Detail 2 / Exception
+    # Slide 3: Rule point 2 (Exception/Trap)
     s3_voice = f"विभागीय परीक्षा की दृष्टि से ध्यान दें! {script_data['sen3']}"
     s3_text = f"परीक्षा विशेष बिंदु:\n\n{script_data['sen3']}"
 
-    # Segment 4: Options bolna BAND - Direct Question, Comment CTA aur Ending Follow Call
+    # Slide 4: Options NOT spoken aloud; direct CTA & Postal Wala outro
     quiz_voice = f"तो साथियों, {q_txt} इसका सही उत्तर आप सभी कमेंट बॉक्स में दीजिए! फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें, और अपना विभागीय परीक्षा निकालने के लिए पोस्टल वाला को फॉलो करना न भूलें!"
 
     return [
-        {
-            "audio": s1_voice,
-            "screen": s1_text,
-            "hook_badge": hook_b,
-            "label": "आज का प्रश्न",
-            "emoji": "question",
-            "is_hook": True
-        },
-        {
-            "audio": s2_voice,
-            "screen": s2_text,
-            "label": "नियम विश्लेषण #1",
-            "emoji": "postbox",
-            "is_hook": False
-        },
-        {
-            "audio": s3_voice,
-            "screen": s3_text,
-            "label": "परीक्षा अपवाद #2",
-            "emoji": "warning",
-            "is_hook": False
-        },
-        {
-            "audio": quiz_voice,
-            "question": q_txt,
-            "opt_a": script_data["opt_a"],
-            "opt_b": script_data["opt_b"],
-            "opt_c": script_data["opt_c"],
-            "opt_d": script_data["opt_d"],
-            "label": "परीक्षा क्विज़"
-        }
+        {"audio": s1_voice, "screen": s1_text, "hook_badge": hook_b, "label": "आज का प्रश्न", "emoji": "question", "is_hook": True},
+        {"audio": s2_voice, "screen": s2_text, "label": "नियम विश्लेषण #1", "emoji": "postbox", "is_hook": False},
+        {"audio": s3_voice, "screen": s3_text, "label": "परीक्षा अपवाद #2", "emoji": "warning", "is_hook": False},
+        {"audio": quiz_voice, "question": q_txt, "opt_a": script_data["opt_a"], "opt_b": script_data["opt_b"], "opt_c": script_data["opt_c"], "opt_d": script_data["opt_d"], "label": "परीक्षा क्विज़"}
     ]
 
 async def generate_segment_audio(text, outfile):
@@ -741,7 +690,6 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- Precise Video Rendering Engine (Zero Text Overflow) ---
 def render_and_sync_video(script_data, segments, output_video):
     ensure_fonts()
     ensure_auto_icons()
@@ -799,7 +747,6 @@ def render_and_sync_video(script_data, segments, output_video):
         d = ImageDraw.Draw(img)
         draw_common_ui(d, script_data["clause_name"] if idx < 3 else "परीक्षा क्विज़: उत्तर कमेंट करें")
 
-        # Main Teaching Card
         d.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
 
         if idx < 3:
@@ -825,7 +772,7 @@ def render_and_sync_video(script_data, segments, output_video):
                 ic = Image.open(asset_path).convert("RGBA").resize((280, 360), RESAMPLE_MODE)
                 img.paste(ic, (400, 1120), ic)
         else:
-            # Slide 4: Quiz
+            # Slide 4: Clean option boxes, zero boundary overflow
             d.rounded_rectangle([110, 530, 360, 575], radius=12, fill="#0B132B")
             draw_visual_emoji(d, "question", 120, 536, size=32)
             d.text((160, 538), "आज का सवाल:", fill="#FBBF24", font=font_h2)
@@ -834,13 +781,13 @@ def render_and_sync_video(script_data, segments, output_video):
             d.multiline_text((110, 595), q_wrapped, fill="#F8FAFC", font=font_h2, spacing=8)
 
             opts = [seg["opt_a"], seg["opt_b"], seg["opt_c"], seg["opt_d"]]
-            oy = 720
+            oy = 710
             for o_idx, opt in enumerate(opts):
-                d.rounded_rectangle([110, oy, 970, oy + 85], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-                d.text((135, oy + 24), f"{chr(65+o_idx)})", fill="#38BDF8", font=font_h2)
-                opt_clean = textwrap.fill(sanitize_devanagari(opt), width=22)
-                d.text((205, oy + 24), opt_clean, fill="#FFFFFF", font=font_opt)
-                oy += 105
+                d.rounded_rectangle([110, oy, 970, oy + 75], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
+                d.text((135, oy + 18), f"{chr(65+o_idx)})", fill="#38BDF8", font=font_h2)
+                opt_clean = textwrap.fill(sanitize_devanagari(opt), width=23)
+                d.text((200, oy + 18), opt_clean, fill="#FFFFFF", font=font_opt)
+                oy += 95
 
             d.rounded_rectangle([110, 1370, 970, 1490], radius=18, fill="#0B132B", outline="#F59E0B", width=2)
             draw_visual_emoji(d, "check", 130, 1405, size=40)
@@ -854,8 +801,8 @@ def render_and_sync_video(script_data, segments, output_video):
             "ffmpeg", "-y",
             "-loop", "1", "-i", slide_img,
             "-i", audio_seg_file,
-            "-c:v", "libx264", "-tune", "stillimage",
-            "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
             "-t", str(seg_dur),
             part_vid
         ]
@@ -872,6 +819,7 @@ def render_and_sync_video(script_data, segments, output_video):
     ]
     subprocess.run(cmd_concat, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
+    # Standard Meta Compliant Rendering: 30fps, yuv420p, +faststart
     if active_bgm and os.path.exists(active_bgm):
         mix_cmd = [
             "ffmpeg", "-y",
@@ -879,68 +827,105 @@ def render_and_sync_video(script_data, segments, output_video):
             "-stream_loop", "-1", "-i", active_bgm,
             "-filter_complex", "[0:a]volume=1.0[v_aud]; [1:a]volume=0.35[bgm]; [v_aud][bgm]amix=inputs=2:duration=first:dropout_transition=2[a]",
             "-map", "0:v", "-map", "[a]",
-            "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest",
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
+            "-movflags", "+faststart",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+            "-shortest",
             output_video
         ]
         subprocess.run(mix_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     else:
-        os.rename("temp_merged.mp4", output_video)
+        cmd_fix = [
+            "ffmpeg", "-y", "-i", "temp_merged.mp4",
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
+            "-movflags", "+faststart",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+            output_video
+        ]
+        subprocess.run(cmd_fix, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    print(f"✅ Reel created successfully from Clause 6: {output_video}")
+    print(f"✅ Reel created successfully from Clause {script_data['clause_no']}: {output_video}")
 
-# --- Robust Resumable Instagram Upload ---
-def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
+def post_reel_to_instagram(video_file, caption):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
 
     if not access_token or not user_id:
-        print("⚠️ IG credentials missing, skipping upload.")
-        return
+        print("⚠️ IG credentials missing.")
+        return False
 
-    last_error = None
-    for container_attempt in range(1, max_container_attempts + 1):
-        try:
-            init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
-            data = {"media_type": "REELS", "upload_type": "resumable", "caption": caption, "access_token": access_token}
-            r = requests.post(init_url, data=data, timeout=60)
-            if r.status_code != 200:
-                raise RuntimeError(f"Init fail: {r.text}")
+    init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
+    data = {
+        "media_type": "REELS",
+        "upload_type": "resumable",
+        "caption": caption,
+        "access_token": access_token
+    }
+    r = requests.post(init_url, data=data, timeout=60)
+    if r.status_code != 200:
+        print(f"❌ Init failed: {r.text}")
+        return False
 
-            res_json = r.json()
-            video_id = res_json.get("id")
-            upload_url = res_json.get("uri") or (RUPLOAD_BASE + str(video_id).strip())
+    res_json = r.json()
+    video_id = res_json.get("id")
+    upload_url = res_json.get("uri") or (RUPLOAD_BASE + str(video_id).strip())
 
-            time.sleep(10)
+    time.sleep(5)
 
-            file_size = os.path.getsize(video_file)
-            headers = {"Authorization": f"OAuth {access_token}", "offset": "0", "file_size": str(file_size), "Content-Type": "application/octet-stream"}
+    file_size = os.path.getsize(video_file)
+    headers = {
+        "Authorization": f"OAuth {access_token}",
+        "offset": "0",
+        "file_size": str(file_size)
+    }
 
-            with open(video_file, "rb") as vf:
-                up_r = requests.post(upload_url, headers=headers, data=vf.read(), timeout=600)
+    with open(video_file, "rb") as vf:
+        up_r = requests.post(upload_url, headers=headers, data=vf.read(), timeout=600)
 
-            if up_r.status_code != 200 or not up_r.json().get("success"):
-                raise RuntimeError(f"Upload fail: {up_r.text}")
+    if up_r.status_code != 200:
+        print(f"❌ Upload failed: {up_r.text}")
+        return False
 
-            for _ in range(35):
-                time.sleep(12)
-                st_res = requests.get(GRAPH_API_BASE + str(video_id).strip(), params={"fields": "status_code", "access_token": access_token}, timeout=30).json()
-                if st_res.get("status_code") == "FINISHED":
-                    pub_res = requests.post(GRAPH_API_BASE + str(user_id).strip() + "/media_publish", data={"creation_id": video_id, "access_token": access_token}, timeout=30).json()
-                    if "id" in pub_res:
-                        print(f"🎉 Reel published successfully! Post ID: {pub_res['id']}")
-                        return
-                elif st_res.get("status_code") in ["ERROR", "EXPIRED"]:
-                    raise RuntimeError(f"Status: {st_res.get('status_code')}")
-        except Exception as e:
-            last_error = str(e)
-            time.sleep(20)
+    for attempt in range(40):
+        time.sleep(10)
+        st_res = requests.get(
+            GRAPH_API_BASE + str(video_id).strip(),
+            params={"fields": "status_code", "access_token": access_token},
+            timeout=30
+        ).json()
+        status_code = st_res.get("status_code")
+        print(f"Polling Instagram status ({attempt + 1}/40): {status_code}")
+        
+        if status_code == "FINISHED":
+            pub_res = requests.post(
+                GRAPH_API_BASE + str(user_id).strip() + "/media_publish",
+                data={"creation_id": video_id, "access_token": access_token},
+                timeout=30
+            ).json()
+            if "id" in pub_res:
+                print(f"🎉 Reel published successfully! Post ID: {pub_res['id']}")
+                return True
+            else:
+                print(f"❌ Publish call failed: {pub_res}")
+                return False
+        elif status_code in ["ERROR", "EXPIRED"]:
+            print(f"❌ Processing Error: {st_res}")
+            return False
 
-    print(f"⚠️ Upload notice: {last_error}")
+    print("❌ Upload timed out.")
+    return False
 
 if __name__ == "__main__":
     st = load_progress_state()
     script_data = generate_clause_script(st)
     segments = build_segments(script_data)
     render_and_sync_video(script_data, segments, OUTPUT_VIDEO)
-    post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
-    advance_progress_state(st)
+    
+    # State update ONLY if upload is successful
+    success = post_reel_to_instagram(OUTPUT_VIDEO, script_data.get("caption", ""))
+    if success:
+        advance_progress_state(st)
+        print("✅ State updated for next run.")
+    else:
+        print("❌ Reel post failed. Exiting with status 1 to prevent false commit.")
+        sys.exit(1)
