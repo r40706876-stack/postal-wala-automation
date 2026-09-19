@@ -891,15 +891,22 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     print(f"✅ Synced & Exactly 59s-Locked Reel Created: {output_video}", flush=True)
 
 # --- HOSTED-URL UPLOADER (replaces the flaky binary /rupload resumable protocol) ---
+# A real browser User-Agent is required: bare "python-requests/x.x" gets blocked
+# (catbox -> 412 via Cloudflare) or silently served an HTML interstitial instead
+# of the file (tmpfiles.org), which then makes Meta's own video_url fetch fail
+# with error 2207082 because it never receives actual video bytes.
+_BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+}
+
 def _host_on_catbox(video_file):
-    """catbox.moe: persistent direct links, correct video/mp4 content-type,
-    and proper HTTP range-request support — which is what Meta's server-side
-    video fetcher needs. Returns a plain-text URL like https://files.catbox.moe/xxxx.mp4"""
     with open(video_file, "rb") as f:
         r = requests.post(
             "https://catbox.moe/user/api.php",
             data={"reqtype": "fileupload"},
             files={"fileToUpload": (os.path.basename(video_file), f, "video/mp4")},
+            headers=_BROWSER_HEADERS,
             timeout=120
         )
     r.raise_for_status()
@@ -908,13 +915,28 @@ def _host_on_catbox(video_file):
         raise RuntimeError(f"catbox.moe unexpected response: {url}")
     return url
 
+def _host_on_0x0(video_file):
+    """0x0.st: simple curl-style host, widely used for server-to-server automation,
+    serves the raw file directly with a correct video/mp4 content-type."""
+    with open(video_file, "rb") as f:
+        r = requests.post(
+            "https://0x0.st",
+            files={"file": (os.path.basename(video_file), f, "video/mp4")},
+            headers=_BROWSER_HEADERS,
+            timeout=120
+        )
+    r.raise_for_status()
+    url = r.text.strip()
+    if not url.startswith("http"):
+        raise RuntimeError(f"0x0.st unexpected response: {url}")
+    return url
+
 def _host_on_tmpfiles(video_file):
-    """Fallback host. Known to sometimes fail Meta's fetch (error 2207082)
-    because it doesn't reliably serve range requests, but kept as a backup."""
     with open(video_file, "rb") as f:
         r = requests.post(
             "https://tmpfiles.org/api/v1/upload",
             files={"file": (os.path.basename(video_file), f, "video/mp4")},
+            headers=_BROWSER_HEADERS,
             timeout=120
         )
     r.raise_for_status()
@@ -923,29 +945,38 @@ def _host_on_tmpfiles(video_file):
     return raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/", 1)
 
 def _upload_video_get_public_url(video_file, max_attempts=3):
-    """Tries catbox.moe first (reliable for Meta's fetcher), falls back to
-    tmpfiles.org if catbox is unreachable. Logs response headers of the final
-    URL so a bad Content-Type/no-range-support is visible in the run log."""
+    """Tries catbox.moe -> 0x0.st -> tmpfiles.org, in that order. After each
+    upload, does a GET (not HEAD — some hosts only serve the real file on GET)
+    with a browser User-Agent and checks the Content-Type actually looks like
+    a video before accepting the link, so a bad host is rejected immediately
+    instead of being handed to Meta and failing later with error 2207082."""
     last_err = None
+    hosts = (("catbox.moe", _host_on_catbox), ("0x0.st", _host_on_0x0), ("tmpfiles.org", _host_on_tmpfiles))
     for attempt in range(1, max_attempts + 1):
         print("📤 Generating temporary direct video link for Meta Graph API...", flush=True)
-        for host_name, host_fn in (("catbox.moe", _host_on_catbox), ("tmpfiles.org", _host_on_tmpfiles)):
+        for host_name, host_fn in hosts:
             try:
                 url = host_fn(video_file)
                 print(f"🔗 Video Hosted Link ({host_name}): {url}", flush=True)
                 try:
-                    head = requests.head(url, timeout=20, allow_redirects=True)
-                    print(f"   ℹ️ Host response: status={head.status_code} "
-                          f"content-type={head.headers.get('Content-Type')} "
-                          f"accept-ranges={head.headers.get('Accept-Ranges')}", flush=True)
+                    resp = requests.get(url, headers={**_BROWSER_HEADERS, "Range": "bytes=0-1023"},
+                                         timeout=20, stream=True)
+                    ctype = resp.headers.get("Content-Type", "")
+                    print(f"   ℹ️ Host response: status={resp.status_code} "
+                          f"content-type={ctype} accept-ranges={resp.headers.get('Accept-Ranges')}", flush=True)
+                    resp.close()
+                    if resp.status_code not in (200, 206) or "video" not in ctype.lower():
+                        print(f"   ⚠️ {host_name} did not serve a real video file — skipping.", flush=True)
+                        continue
                 except Exception as he:
-                    print(f"   ⚠️ Could not verify host headers: {he}", flush=True)
+                    print(f"   ⚠️ Could not verify {host_name} content — skipping: {he}", flush=True)
+                    continue
                 return url
             except Exception as e:
                 last_err = e
                 print(f"⚠️ {host_name} upload failed: {e}", flush=True)
         time.sleep(5)
-    raise RuntimeError(f"Could not obtain a public video URL after {max_attempts} attempts: {last_err}")
+    raise RuntimeError(f"Could not obtain a working public video URL after {max_attempts} attempts: {last_err}")
 
 
 def _create_reel_container(video_file, caption, user_id, access_token):
