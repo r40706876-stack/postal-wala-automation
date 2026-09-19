@@ -26,7 +26,6 @@ BGM_OUTPUT = "bgm.mp3"
 OUTPUT_VIDEO = "final_reel.mp4"
 VOICE_NAME = "hi-IN-SwaraNeural"
 
-# Assets Directory
 ASSETS_DIR = "assets"
 BOOK_3D_PATH = os.path.join(ASSETS_DIR, "3d_book.png")
 POSTBOX_3D_PATH = os.path.join(ASSETS_DIR, "3d_postbox.png")
@@ -427,30 +426,25 @@ def extract_field_block(text, field_name, next_fields):
 def draw_visual_emoji(draw_obj, emoji_type, x, y, size=36):
     cx = x + size // 2
     cy = y + size // 2
-
     if emoji_type == "cross":
         draw_obj.ellipse([x, y, x + size, y + size], fill="#DC2626")
         pad = size // 4
         draw_obj.line([(x + pad, y + pad), (x + size - pad, y + size - pad)], fill="#FFFFFF", width=4)
         draw_obj.line([(x + pad, y + size - pad), (x + size - pad, y + pad)], fill="#FFFFFF", width=4)
-
     elif emoji_type == "check":
         draw_obj.ellipse([x, y, x + size, y + size], fill="#16A34A")
         draw_obj.line([(x + size // 4, cy), (cx - 2, y + size - size // 4)], fill="#FFFFFF", width=4)
         draw_obj.line([(cx - 2, y + size - size // 4), (x + size - size // 4, y + size // 3)], fill="#FFFFFF", width=4)
-
     elif emoji_type == "warning":
         pts = [(cx, y + 2), (x + size - 2, y + size - 4), (x + 2, y + size - 4)]
         draw_obj.polygon(pts, fill="#F59E0B")
         draw_obj.line([(cx, y + 10), (cx, y + size - 14)], fill="#000000", width=3)
         draw_obj.ellipse([cx - 2, y + size - 10, cx + 2, y + size - 6], fill="#000000")
-
     elif emoji_type == "question":
         draw_obj.ellipse([x, y, x + size, y + size], fill="#1D4ED8")
         draw_obj.arc([x + 10, y + 8, x + size - 10, y + size - 14], start=180, end=0, fill="#FFFFFF", width=3)
         draw_obj.line([(cx, y + 18), (cx, y + size - 12)], fill="#FFFFFF", width=3)
         draw_obj.ellipse([cx - 2, y + size - 8, cx + 2, y + size - 4], fill="#FFFFFF")
-
     elif emoji_type == "postbox":
         draw_obj.rounded_rectangle([x + 4, y + 4, x + size - 4, y + size - 4], radius=6, fill="#DC2626", outline="#FBBF24", width=2)
         draw_obj.rectangle([x + 8, y + 10, x + size - 8, y + 15], fill="#0F172A")
@@ -535,18 +529,22 @@ def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
     except Exception:
         return None
 
+# --- Smart State Flow: Starts at Clause 6 Part 1, then continuously advances ---
 def load_progress_state():
     state = {"clause_no": 6, "current_part": 1, "total_parts": 1, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
                 data = json.load(f)
+                # Agar clause 6 se chhota hai (purana invalid state), Clause 6 set karein
                 if data.get("clause_no", 0) < 6:
                     data["clause_no"] = 6
                     data["current_part"] = 1
                 state.update(data)
         except Exception:
             pass
+    else:
+        save_progress_state(state)
     return state
 
 def save_progress_state(state):
@@ -565,9 +563,11 @@ def advance_progress_state(state):
     clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 1})
     total_parts = clause_info.get("total_parts", 1)
 
+    # Agar current clause ke aur parts bache hain toh part badhao
     if part < total_parts:
         state["current_part"] = part + 1
     else:
+        # Pura clause khatam ho gaya, toh agle clause par jao
         catalog_keys = sorted(POSTAL_CLAUSE_CATALOG.keys())
         current_idx = catalog_keys.index(clause) if clause in catalog_keys else 0
         next_idx = (current_idx + 1) % len(catalog_keys)
@@ -657,19 +657,19 @@ def build_segments(script_data):
     hook_v = script_data["hook_voice"]
     hook_b = script_data["visual_hook_badge"]
 
-    # Slide 1: Viral hook + Question asked directly
+    # Slide 1: Viral hook + Shuru me prashn
     s1_voice = f"{hook_v} आज का महत्वपूर्ण प्रश्न है: {q_txt} इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें!"
     s1_text = f"आज का महत्वपूर्ण सवाल:\n{q_txt}\n\nसही उत्तर वीडियो में अंत तक समझें!"
 
-    # Slide 2: Rule point 1
+    # Slide 2: Niyam Analysis #1
     s2_voice = f"आइए नियम को समझें। {script_data['sen1']} {script_data['sen2']}"
     s2_text = f"{script_data['sen1']}\n\n{script_data['sen2']}"
 
-    # Slide 3: Rule point 2 (Exception/Trap)
+    # Slide 3: Rule Point #2 / Exam Trap
     s3_voice = f"विभागीय परीक्षा की दृष्टि से ध्यान दें! {script_data['sen3']}"
     s3_text = f"परीक्षा विशेष बिंदु:\n\n{script_data['sen3']}"
 
-    # Slide 4: Options NOT spoken aloud; direct CTA & Postal Wala outro
+    # Slide 4: Options bolna BAND - Direct Question, Comment CTA aur Ending Follow Call
     quiz_voice = f"तो साथियों, {q_txt} इसका सही उत्तर आप सभी कमेंट बॉक्स में दीजिए! फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें, और अपना विभागीय परीक्षा निकालने के लिए पोस्टल वाला को फॉलो करना न भूलें!"
 
     return [
@@ -925,7 +925,7 @@ if __name__ == "__main__":
     success = post_reel_to_instagram(OUTPUT_VIDEO, script_data.get("caption", ""))
     if success:
         advance_progress_state(st)
-        print("✅ State updated for next run.")
+        print("✅ Reel published & State successfully advanced for next run.")
     else:
         print("❌ Reel post failed. Exiting with status 1 to prevent false commit.")
         sys.exit(1)
