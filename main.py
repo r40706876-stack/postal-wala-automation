@@ -1728,35 +1728,37 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
 
 def _create_reel_container(video_file, caption, user_id, access_token):
   print(
-      "📤 Uploading video to Catbox direct link for Meta Graph API...",
+      "📤 Uploading video to 0x0.st direct hosting for Meta Graph API...",
       flush=True,
   )
   temp_url = None
 
+  # Method 1: 0x0.st (Extremely robust plain-text direct URL host, no JSON parsing errors)
   try:
     with open(video_file, "rb") as f:
-      r_cat = requests.post(
-          "https://catbox.moe/user/api.php",
-          data={"reqtype": "fileupload"},
-          files={"fileToUpload": f},
-          timeout=120,
-      )
-      if r_cat.status_code == 200 and r_cat.text.startswith("http"):
-        temp_url = r_cat.text.strip()
+      r_0x = requests.post("https://0x0.st", files={"file": f}, timeout=120)
+      if r_0x.status_code == 200 and r_0x.text.strip().startswith("http"):
+        temp_url = r_0x.text.strip()
   except Exception as e:
-    print(f"⚠️ Catbox upload note: {e}", flush=True)
+    print(f"⚠️ 0x0.st upload note: {e}", flush=True)
 
+  # Method 2: transfer.sh (Robust CLI file sharing fallback)
   if not temp_url:
     try:
+      filename = os.path.basename(video_file)
       with open(video_file, "rb") as f:
-        r_fio = requests.post("https://file.io", files={"file": f}, timeout=60)
-        if r_fio.status_code == 200:
-          temp_url = r_fio.json().get("link")
+        r_tr = requests.put(
+            f"https://transfer.sh/{filename}", data=f, timeout=120
+        )
+        if r_tr.status_code == 200 and r_tr.text.strip().startswith("http"):
+          temp_url = r_tr.text.strip()
     except Exception as e:
-      print(f"⚠️ file.io note: {e}", flush=True)
+      print(f"⚠️ transfer.sh note: {e}", flush=True)
 
   if not temp_url:
-    raise RuntimeError("Failed to host video on direct endpoint for Meta.")
+    raise RuntimeError(
+        "Failed to host video on direct endpoint. All public hosts timed out."
+    )
 
   print(f"🔗 Video Hosted Link: {temp_url}", flush=True)
 
