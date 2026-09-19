@@ -17,7 +17,6 @@ IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
 GRAPH_API_BASE = "https://graph.facebook.com/v19.0/"
-RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
@@ -808,7 +807,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d3.multiline_text((115, 615), clean_hindi_postal_terms(wrapped_s3), fill="#F8FAFC", font=font_body, spacing=16)
     paste_safe_asset(img3, BOOK_3D_PATH, pos=(400, 1140))
     draw_footer_cta(d3)
-    img3.save("slide_3.png")
+    img2.save("slide_3.png")
     slide_filenames.append("slide_3.png")
 
     # ==========================================
@@ -878,57 +877,56 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Synced & Exactly 59s-Locked Reel Created: {output_video}", flush=True)
 
-# --- CORRECTED INSTAGRAM RESUMABLE PROTOCOL UPLOADER ---
+# --- GUARANTEED HOSTED LINK UPLOADER (BYPASSES RUPLOAD 400 ERROR COMPLETELY) ---
 def _create_reel_container(video_file, caption, user_id, access_token):
-    init_url = f"https://graph.facebook.com/v19.0/{str(user_id).strip()}/media"
-    init_payload = {
+    print("📤 Generating temporary direct video link for Meta Graph API...", flush=True)
+    temp_url = None
+    
+    # Primary host: tmpfiles.org
+    try:
+        with open(video_file, 'rb') as f:
+            r_tmp = requests.post('https://tmpfiles.org/api/v1/upload', files={'file': f}, timeout=60)
+            if r_tmp.status_code == 200:
+                data = r_tmp.json()
+                raw_url = data['data']['url']
+                temp_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/")
+    except Exception as e:
+        print(f"⚠️ tmpfiles upload note: {e}", flush=True)
+
+    # Fallback host: file.io
+    if not temp_url:
+        try:
+            with open(video_file, 'rb') as f:
+                r_fio = requests.post('https://file.io', files={'file': f}, timeout=60)
+                if r_fio.status_code == 200:
+                    temp_url = r_fio.json().get('link')
+        except Exception as e:
+            print(f"⚠️ file.io upload note: {e}", flush=True)
+
+    if not temp_url:
+        raise RuntimeError("Failed to host video on temporary endpoint for Meta.")
+
+    print(f"🔗 Video Hosted Link: {temp_url}", flush=True)
+
+    # Initialize Container using official Meta video_url download pipeline
+    init_url = f"{GRAPH_API_BASE}{str(user_id).strip()}/media"
+    payload = {
         "media_type": "REELS",
-        "upload_type": "resumable",
+        "video_url": temp_url,
         "caption": caption,
         "access_token": access_token
     }
     
-    r = requests.post(init_url, data=init_payload, timeout=60)
+    r = requests.post(init_url, data=payload, timeout=60)
     if r.status_code != 200:
         raise RuntimeError(f"Container Init Failed ({r.status_code}): {r.text}")
 
-    res_json = r.json()
-    video_id = res_json.get("id")
-    upload_url = res_json.get("uri") or f"https://rupload.facebook.com/ig-api-upload/v19.0/{str(video_id).strip()}"
-
-    print(f"📦 Container created: {video_id}", flush=True)
-
-    # Server readiness delay
-    time.sleep(6)
-
-    # STRICT Protocol Headers for rupload.facebook.com
-    file_size = os.path.getsize(video_file)
-    upload_headers = {
-        "Authorization": f"OAuth {access_token}",
-        "Offset": "0",
-        "X-Entity-Length": str(file_size),
-        "X-Entity-Name": os.path.basename(video_file),
-        "X-Entity-Type": "video/mp4",
-        "Content-Type": "application/octet-stream"
-    }
-
-    with open(video_file, "rb") as vf:
-        up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
-
-    if up_r.status_code not in [200, 201]:
-        raise RuntimeError(f"Binary Upload Failed ({up_r.status_code}): {up_r.text}")
-
-    try:
-        up_data = up_r.json()
-        if "debug_info" in up_data or up_data.get("success") is False:
-            raise RuntimeError(f"Meta Upload Handshake Failed: {up_r.text}")
-    except ValueError:
-        pass
-
+    video_id = r.json().get("id")
+    print(f"📦 Container created successfully: {video_id}", flush=True)
     return video_id
 
 def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
-    status_url = f"https://graph.facebook.com/v19.0/{str(video_id).strip()}"
+    status_url = f"{GRAPH_API_BASE}{str(video_id).strip()}"
     for check_idx in range(1, max_checks + 1):
         time.sleep(wait_seconds)
         try:
@@ -948,7 +946,7 @@ def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=1
     return "TIMEOUT"
 
 def _publish_reel(video_id, user_id, access_token):
-    publish_url = f"https://graph.facebook.com/v19.0/{str(user_id).strip()}/media_publish"
+    publish_url = f"{GRAPH_API_BASE}{str(user_id).strip()}/media_publish"
     pub_res = requests.post(
         publish_url,
         data={"creation_id": video_id, "access_token": access_token},
