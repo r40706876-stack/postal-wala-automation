@@ -33,7 +33,6 @@ QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- 6 High-Retention Rotating Viral Hooks (Voice & Visual Badges) ---
 VIRAL_HOOKS = [
     {
         "voice": "लिख कर ले लो! इस 40 सेकंड की रील से विभागीय परीक्षा में आपके 2 नंबर पक्के होने वाले हैं, आइए देखते हैं कैसे!",
@@ -61,7 +60,6 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Official PO Guide Part 1 Complete Master Catalog (Clauses 1 to 60) ---
 POSTAL_CLAUSE_CATALOG = {
     1: {
         "name": "डाक विभाग का नियंत्रण व संगठन",
@@ -421,7 +419,6 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
-# Robust Multi-line Regex Extractor
 def extract_field_block(text, field_name, next_fields):
     pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
     m = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
@@ -432,7 +429,6 @@ def extract_field_block(text, field_name, next_fields):
         return val
     return None
 
-# --- 100% Offline 3D Graphic Renderer ---
 def ensure_auto_icons():
     os.makedirs(ASSETS_DIR, exist_ok=True)
 
@@ -494,7 +490,6 @@ def ensure_auto_icons():
         except Exception:
             pass
 
-# --- Font Management ---
 def ensure_fonts():
     if not os.path.exists(DEV_FONT_PATH):
         url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
@@ -519,40 +514,64 @@ def get_eng_font(size):
             return ImageFont.truetype(p, size)
     return get_dev_font(size)
 
-# --- Dynamic Auto-Rotating Multi-BGM Engine ---
+# --- Viral Engaging Lo-Fi Downloader & Acoustic Beat Engine ---
 def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
+    # 1. Prioritize user's own MP3 collection in assets/
+    mp3_files = sorted(glob.glob(os.path.join(ASSETS_DIR, "*.mp3")))
+    if mp3_files:
+        chosen_mp3 = mp3_files[state_index % len(mp3_files)]
+        print(f"🎵 Using Real MP3 Track: {chosen_mp3}", flush=True)
+        return chosen_mp3
+
+    # 2. Automatically download a real viral copyright-free lofi study track if not cached
+    cached_online_bgm = os.path.join(ASSETS_DIR, f"viral_lofi_{state_index % 3}.mp3")
+    if os.path.exists(cached_online_bgm) and os.path.getsize(cached_online_bgm) > 10000:
+        return cached_online_bgm
+
+    lofi_urls = [
+        "https://upload.wikimedia.org/wikipedia/commons/e/eb/Bensound-relaxing.mp3",
+        "https://upload.wikimedia.org/wikipedia/commons/4/4b/Bensound-slowmotion.mp3",
+        "https://upload.wikimedia.org/wikipedia/commons/5/5a/Bensound-memories.mp3"
+    ]
+    target_url = lofi_urls[state_index % len(lofi_urls)]
+    try:
+        r = requests.get(target_url, timeout=15)
+        if r.status_code == 200 and len(r.content) > 15000:
+            with open(cached_online_bgm, "wb") as f:
+                f.write(r.content)
+            print(f"✅ Real viral study lo-fi beat cached: {cached_online_bgm}", flush=True)
+            return cached_online_bgm
+    except Exception as e:
+        print(f"⚠️ Auto-download notice: {e}, using acoustic beat synth.", flush=True)
+
+    # 3. Punchy acoustic beat fallback (kick + rhythm chord progression)
     if os.path.exists(bgm_path):
         try:
             os.remove(bgm_path)
         except Exception:
             pass
-    if os.path.exists(os.path.join(ASSETS_DIR, "bgm.mp3")):
-        return os.path.join(ASSETS_DIR, "bgm.mp3")
 
-    # 4 distinct energetic study/motivation chord progressions for rotation
-    chord_presets = [
-        "0.12*sin(2*PI*220*t)+0.08*sin(2*PI*277.18*t)+0.08*sin(2*PI*329.63*t)+0.05*sin(2*PI*440*t)", # A major
-        "0.12*sin(2*PI*196*t)+0.08*sin(2*PI*246.94*t)+0.08*sin(2*PI*293.66*t)+0.05*sin(2*PI*392*t)", # G major
-        "0.12*sin(2*PI*174.61*t)+0.08*sin(2*PI*220*t)+0.08*sin(2*PI*261.63*t)+0.05*sin(2*PI*349.23*t)", # F major
-        "0.12*sin(2*PI*164.81*t)+0.08*sin(2*PI*207.65*t)+0.08*sin(2*PI*246.94*t)+0.05*sin(2*PI*329.63*t)"  # E minor
+    rhythms = [
+        "0.18*sin(2*PI*65*t)*exp(-3*mod(t,0.5))+0.12*sin(2*PI*261.63*t)+0.09*sin(2*PI*329.63*t)",
+        "0.18*sin(2*PI*73*t)*exp(-3*mod(t,0.5))+0.12*sin(2*PI*220.00*t)+0.09*sin(2*PI*293.66*t)",
+        "0.18*sin(2*PI*55*t)*exp(-3*mod(t,0.5))+0.12*sin(2*PI*196.00*t)+0.09*sin(2*PI*246.94*t)"
     ]
-    selected_expr = chord_presets[state_index % len(chord_presets)]
+    chosen_rhythm = rhythms[state_index % len(rhythms)]
 
     try:
         cmd = [
             "ffmpeg", "-y", "-f", "lavfi",
-            "-i", f"aevalsrc=exprs='{selected_expr}':s=48000:d=70",
+            "-i", f"aevalsrc=exprs='{chosen_rhythm}':s=48000:d=70",
+            "-af", "bass=g=4:f=120,volume=1.8",
             "-c:a", "libmp3lame", "-b:a", "192k", bgm_path
         ]
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if os.path.exists(bgm_path) and os.path.getsize(bgm_path) > 2000:
-            print(f"🎵 Generated rotating dynamic BGM variant {(state_index % len(chord_presets)) + 1}", flush=True)
             return bgm_path
     except Exception as e:
-        print(f"⚠️ BGM notice: {e}", flush=True)
+        print(f"⚠️ Beat fallback error: {e}", flush=True)
     return None
 
-# --- State Management With Hook Loop Tracking ---
 def load_progress_state():
     state = {"clause_no": 55, "current_part": 2, "total_parts": 3, "hook_index": 0}
     if os.path.exists(STATE_FILE):
@@ -572,7 +591,6 @@ def save_progress_state(state):
     except Exception as e:
         print(f"⚠️ Warning saving state: {e}", flush=True)
 
-# --- Script Generation With Full Length & Full Paragraphs ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 55)
     current_part = state.get("current_part", 2)
@@ -692,7 +710,6 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- Automatic Intelligent Clause & Hook Progression ---
 def advance_progress_state(state, data):
     current_hook_idx = state.get("hook_index", 0)
     state["hook_index"] = (current_hook_idx + 1) % len(VIRAL_HOOKS)
@@ -726,10 +743,8 @@ def advance_progress_state(state, data):
 
     save_progress_state(state)
 
-# --- Safe Voice Generation With Auto-Retry & Size Verification ---
 async def generate_voice(text, filename="voice.mp3", max_retries=3):
     if not text or len(text.strip()) < 25:
-        print("⚠️ Warning: Text too short, using emergency default text.", flush=True)
         text = "जीडीएस से प्रमोशन लेने के लिए आपका स्वागत है पोस्टल वाला में! विभागीय परीक्षा की पक्की तैयारी के लिए पोस्टल वाला को फॉलो करें और फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें!"
 
     for attempt in range(1, max_retries + 1):
@@ -744,14 +759,9 @@ async def generate_voice(text, filename="voice.mp3", max_retries=3):
             await communicate.save(filename)
 
             if os.path.exists(filename) and os.path.getsize(filename) > 5000:
-                print(f"✅ Voice generated successfully ({os.path.getsize(filename)} bytes) on attempt {attempt}", flush=True)
                 return
-            else:
-                size_now = os.path.getsize(filename) if os.path.exists(filename) else 0
-                print(f"⚠️ Audio file too small ({size_now} bytes) on attempt {attempt}, retrying...", flush=True)
-        except Exception as e:
-            print(f"⚠️ Edge-TTS attempt {attempt} failed: {e}", flush=True)
-
+        except Exception:
+            pass
         await asyncio.sleep(2)
 
     if not os.path.exists(filename) or os.path.getsize(filename) < 2000:
@@ -765,17 +775,68 @@ def get_audio_duration(audio_file):
     output = subprocess.check_output(cmd).decode().strip()
     return float(output)
 
-# --- Balanced Professional Mobile Layout Engine With Rotating BGM ---
+def build_flowchart_steps(sentence):
+    if not sentence:
+        return [
+            ("काम का समय समाप्त", "action"),
+            ("↓", "arrow"),
+            ("❌ डाक स्वीकार बंद नहीं", "warning"),
+            ("↓", "arrow"),
+            ("💰 Late fee के साथ", "highlight"),
+            ("↓", "arrow"),
+            ("📮 डाक स्वीकार जारी", "success")
+        ]
+
+    # Keyword specific sequences for postal examination clarity
+    if any(k in sentence for k in ["घंटे", "समय", "खिड़कियां", "लेट फीस"]):
+        return [
+            ("काम का समय समाप्त", "action"),
+            ("↓", "arrow"),
+            ("❌ खिड़कियां बंद नहीं होतीं", "warning"),
+            ("↓", "arrow"),
+            ("💰 Late fee भुगतान नियम", "highlight"),
+            ("↓", "arrow"),
+            ("📮 डाक स्वीकार की जाती है", "success")
+        ]
+    elif any(k in sentence for k in ["शुल्क", "फीस", "रुपये", "किराया"]):
+        return [
+            ("डाक सेवा आवेदन", "action"),
+            ("↓", "arrow"),
+            ("⚠️ बिना शुल्क अमान्य", "warning"),
+            ("↓", "arrow"),
+            ("💰 निर्धारित अग्रिम शुल्क", "highlight"),
+            ("↓", "arrow"),
+            ("✅ आधिकारिक रसीद जारी", "success")
+        ]
+    else:
+        chunks = [sentence[i:i+30] for i in range(0, min(len(sentence), 90), 30)]
+        if len(chunks) >= 3:
+            return [
+                (chunks[0], "action"),
+                ("↓", "arrow"),
+                ("⚠️ " + chunks[1], "warning"),
+                ("↓", "arrow"),
+                ("✅ " + chunks[2], "success")
+            ]
+        return [
+            ("विभागीय नियम का अध्ययन", "action"),
+            ("↓", "arrow"),
+            ("❌ गलत उत्तर से बचें", "warning"),
+            ("↓", "arrow"),
+            ("📌 2 नंबर पक्के करें", "highlight"),
+            ("↓", "arrow"),
+            ("🎯 प्रमोशन सुरक्षित करें", "success")
+        ]
+
 def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final_reel.mp4"):
     ensure_fonts()
     ensure_auto_icons()
     
-    # Load state to get unique hook_index for rotating BGM variant
     current_state = load_progress_state()
     active_bgm = ensure_bgm(BGM_OUTPUT, state_index=current_state.get("hook_index", 0))
 
     total_dur = get_audio_duration(audio_file)
-    print(f"🎵 Voiceover Duration: {total_dur:.1f}s", flush=True)
+    print(f"🎵 Precise Voiceover Duration: {total_dur:.1f}s", flush=True)
 
     if total_dur > 57.0:
         tempo = round(total_dur / 54.0, 2)
@@ -785,10 +846,10 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         audio_file = adjusted_audio
         total_dur = get_audio_duration(audio_file)
 
-    n_slides = 4
-    weights = [1.0, 1.0, 1.0, 1.3]
-    total_weight = sum(weights)
-    durations = [total_dur * (w / total_weight) for w in weights]
+    sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"]]
+    char_lengths = [len(s) for s in sentences] + [110]
+    total_chars = sum(char_lengths)
+    durations = [total_dur * (cl / total_chars) for cl in char_lengths]
 
     font_brand = get_eng_font(44)
     font_sub = get_eng_font(22)
@@ -797,7 +858,7 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     font_part_tag = get_dev_font(22)
     font_title = get_dev_font(36)
     font_h2 = get_dev_font(32)
-    font_body = get_dev_font(46)
+    font_body = get_dev_font(38)
     font_label = get_dev_font(26)
     font_hook_alert = get_dev_font(30)
 
@@ -841,32 +902,25 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     clause_title = script_data['clause_name']
     visual_hook_text = script_data.get("visual_hook_badge", "🔥 लिख कर ले लो! इस रील से 2 नंबर पक्के")
 
-    sentences = [script_data["sen1"], script_data["sen2"], script_data["sen3"]]
     slide_filenames = []
 
-    # Slides 1 to 3
     for idx, sentence in enumerate(sentences, 1):
         img = Image.new("RGB", (1080, 1920), color="#060A17")
         d = ImageDraw.Draw(img)
         draw_base(d)
 
-        # Title Card (y: 175 to 320)
         d.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
         
-        # Left Badge
         d.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
         d.text((120, 198), badge_text, fill="#000000", font=font_badge)
 
-        # Right Badge
         d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8", outline="#60A5FA", width=1)
         d.text((845, 198), part_tag_text, fill="#FFFFFF", font=font_part_tag)
 
-        # Clean Single Title Line
         d.text((105, 255), clause_title, fill="#FFFFFF", font=font_title)
 
         draw_sleek_whatsapp_strip(d)
 
-        # Main Teaching Card
         d.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
 
         if idx == 1:
@@ -875,17 +929,42 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
 
             d.rounded_rectangle([110, 620, 450, 670], radius=10, fill="#0B132B")
             d.text((125, 630), "परीक्षा बिंदु #1:", fill="#38BDF8", font=font_label)
-
-            wrapped_text = textwrap.fill(sentence, width=22)
-            d.multiline_text((115, 695), wrapped_text, fill="#F8FAFC", font=font_body, spacing=20)
-            paste_safe_asset(img, BOOK_3D_PATH, pos=(390, 1100), size=(300, 410))
         else:
             d.rounded_rectangle([110, 535, 470, 588], radius=12, fill="#0B132B")
             d.text((130, 545), f"परीक्षा बिंदु #{idx}:", fill="#38BDF8", font=font_label)
 
-            wrapped_text = textwrap.fill(sentence, width=21)
-            d.multiline_text((115, 625), wrapped_text, fill="#F8FAFC", font=font_body, spacing=24)
-            paste_safe_asset(img, POSTBOX_3D_PATH, pos=(390, 1080), size=(300, 420))
+        steps = build_flowchart_steps(sentence)
+        sy = 710 if idx == 1 else 630
+        for step_text, step_type in steps:
+            if step_type == "arrow":
+                d.text((510, sy), step_text, fill="#38BDF8", font=font_h2)
+                sy += 55
+            else:
+                bg_col = "#0B132B"
+                border_col = "#38BDF8"
+                txt_col = "#F8FAFC"
+                if step_type == "warning":
+                    bg_col = "#451A03"
+                    border_col = "#F59E0B"
+                    txt_col = "#FDE047"
+                elif step_type == "highlight":
+                    bg_col = "#1E1B4B"
+                    border_col = "#818CF8"
+                    txt_col = "#C7D2FE"
+                elif step_type == "success":
+                    bg_col = "#064E3B"
+                    border_col = "#34D399"
+                    txt_col = "#D1FAE5"
+
+                d.rounded_rectangle([110, sy, 970, sy + 75], radius=14, fill=bg_col, outline=border_col, width=2)
+                wrapped_step = textwrap.fill(step_text, width=28)
+                d.text((135, sy + 20), wrapped_step, fill=txt_col, font=font_body)
+                sy += 90
+
+        if idx == 1:
+            paste_safe_asset(img, BOOK_3D_PATH, pos=(780, 1300), size=(200, 240))
+        else:
+            paste_safe_asset(img, POSTBOX_3D_PATH, pos=(780, 1300), size=(200, 240))
 
         draw_footer_cta(d)
         fname = f"slide_{idx}.png"
@@ -926,7 +1005,6 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         dq.text((205, oy + 28), textwrap.fill(opt, width=24), fill="#FFFFFF", font=font_opt_hin)
         oy += 125
 
-    # Bottom Engagement Pill
     dq.rounded_rectangle([110, 1370, 970, 1490], radius=18, fill="#0B132B", outline="#F59E0B", width=2)
     dq.text((220, 1395), "✍️ अपना सही जवाब अभी कमेंट करें!", fill="#FDE047", font=font_h2)
     dq.text((195, 1445), "देखते हैं कितने साथी सही उत्तर देते हैं!", fill="#94A3B8", font=font_badge)
@@ -953,12 +1031,12 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
         "-i", audio_file
     ]
 
-    # Clearly audible Balanced Rotating BGM Mix (volume=0.22)
     voice_idx = len(slide_filenames)
     if active_bgm and os.path.exists(active_bgm) and os.path.getsize(active_bgm) > 2000:
         bgm_idx = voice_idx + 1
         cmd.extend(["-stream_loop", "-1", "-i", active_bgm])
-        full_filter = f"{video_filter}; [{voice_idx}:a]aresample=48000,volume=1.0[v_aud]; [{bgm_idx}:a]aresample=48000,volume=0.22[bgm_aud]; [v_aud][bgm_aud]amix=inputs=2:duration=first:dropout_transition=2[a]"
+        # Upgraded to punchy audible volume level (0.38 / 38%) for high retention
+        full_filter = f"{video_filter}; [{voice_idx}:a]aresample=48000,volume=1.0[v_aud]; [{bgm_idx}:a]aresample=48000,volume=0.38[bgm_aud]; [v_aud][bgm_aud]amix=inputs=2:duration=first:dropout_transition=2[a]"
         cmd.extend([
             "-filter_complex", full_filter,
             "-map", "[v]",
@@ -987,9 +1065,8 @@ def create_video_ffmpeg(script_data, audio_file="voice.mp3", output_video="final
     ])
 
     subprocess.run(cmd, check=True)
-    print("✅ Meta-Optimized 1080x1920 Reel Created with Rotating Audible BGM Mix.", flush=True)
+    print("✅ Video created with punchy viral background audio & flowchart layout.", flush=True)
 
-# --- Bulletproof Resumable Instagram Upload ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
@@ -1075,7 +1152,6 @@ def _publish_reel(video_id, user_id, access_token):
     else:
         raise RuntimeError(f"Publish fail: {pub_res}")
 
-# --- Main Entry Point ---
 if __name__ == "__main__":
     state = load_progress_state()
     script_data = generate_clause_script(state)
