@@ -16,7 +16,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
-GRAPH_API_BASE = "".join(["http", "s://", "graph.", "facebook", ".com/v19.0/"])
+GRAPH_API_BASE = "https://graph.facebook.com/v19.0/"
 RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
 STATE_FILE = "progress_state.json"
@@ -878,7 +878,88 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Synced & Exactly 59s-Locked Reel Created: {output_video}", flush=True)
 
-# --- 3-ATTEMPT RESUMABLE INSTAGRAM UPLOADER ---
+# --- CORRECTED INSTAGRAM RESUMABLE PROTOCOL UPLOADER ---
+def _create_reel_container(video_file, caption, user_id, access_token):
+    init_url = f"https://graph.facebook.com/v19.0/{str(user_id).strip()}/media"
+    init_payload = {
+        "media_type": "REELS",
+        "upload_type": "resumable",
+        "caption": caption,
+        "access_token": access_token
+    }
+    
+    r = requests.post(init_url, data=init_payload, timeout=60)
+    if r.status_code != 200:
+        raise RuntimeError(f"Container Init Failed ({r.status_code}): {r.text}")
+
+    res_json = r.json()
+    video_id = res_json.get("id")
+    upload_url = res_json.get("uri") or f"https://rupload.facebook.com/ig-api-upload/v19.0/{str(video_id).strip()}"
+
+    print(f"📦 Container created: {video_id}", flush=True)
+
+    # Server readiness delay
+    time.sleep(6)
+
+    # STRICT Protocol Headers for rupload.facebook.com
+    file_size = os.path.getsize(video_file)
+    upload_headers = {
+        "Authorization": f"OAuth {access_token}",
+        "Offset": "0",
+        "X-Entity-Length": str(file_size),
+        "X-Entity-Name": os.path.basename(video_file),
+        "X-Entity-Type": "video/mp4",
+        "Content-Type": "application/octet-stream"
+    }
+
+    with open(video_file, "rb") as vf:
+        up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
+
+    if up_r.status_code not in [200, 201]:
+        raise RuntimeError(f"Binary Upload Failed ({up_r.status_code}): {up_r.text}")
+
+    try:
+        up_data = up_r.json()
+        if "debug_info" in up_data or up_data.get("success") is False:
+            raise RuntimeError(f"Meta Upload Handshake Failed: {up_r.text}")
+    except ValueError:
+        pass
+
+    return video_id
+
+def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
+    status_url = f"https://graph.facebook.com/v19.0/{str(video_id).strip()}"
+    for check_idx in range(1, max_checks + 1):
+        time.sleep(wait_seconds)
+        try:
+            res = requests.get(
+                status_url,
+                params={"fields": "status_code,status", "access_token": access_token},
+                timeout=30
+            ).json()
+            status = res.get("status_code")
+            print(f"   ⏳ Polling Instagram status ({check_idx}/{max_checks}): {status}", flush=True)
+            if status == "FINISHED":
+                return "FINISHED"
+            elif status in ["ERROR", "EXPIRED"]:
+                return status
+        except Exception:
+            continue
+    return "TIMEOUT"
+
+def _publish_reel(video_id, user_id, access_token):
+    publish_url = f"https://graph.facebook.com/v19.0/{str(user_id).strip()}/media_publish"
+    pub_res = requests.post(
+        publish_url,
+        data={"creation_id": video_id, "access_token": access_token},
+        timeout=30
+    )
+    pub_res_data = pub_res.json()
+    if "id" in pub_res_data:
+        print(f"🎉 Post published! Instagram Media ID: {pub_res_data['id']}", flush=True)
+    else:
+        raise RuntimeError(f"Publish fail: {pub_res.text}")
+
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
@@ -892,10 +973,7 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
         print(f"\n🚀 [UPLOAD] Starting Attempt {container_attempt} of {max_container_attempts}...", flush=True)
         try:
             video_id = _create_reel_container(video_file, caption, user_id, access_token)
-            print(f"📦 Container created with ID: {video_id}", flush=True)
-
             status = _poll_container_status(video_id, access_token)
-            print(f"📊 Container status: {status}", flush=True)
 
             if status == "FINISHED":
                 _publish_reel(video_id, user_id, access_token)
@@ -913,67 +991,6 @@ def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts
 
     print(f"\n❌ Upload failed after 3 attempts: {last_error}", flush=True)
     return False
-
-def _create_reel_container(video_file, caption, user_id, access_token):
-    init_url = GRAPH_API_BASE + str(user_id).strip() + "/media"
-    data = {
-        "media_type": "REELS",
-        "upload_type": "resumable",
-        "caption": caption,
-        "access_token": access_token
-    }
-    r = requests.post(init_url, data=data, timeout=60)
-    if r.status_code != 200:
-        raise RuntimeError(f"Container init fail: {r.text}")
-
-    res_json = r.json()
-    video_id = res_json.get("id")
-    upload_url = res_json.get("uri") or (RUPLOAD_BASE + str(video_id).strip())
-
-    time.sleep(12)
-
-    file_size = os.path.getsize(video_file)
-    upload_headers = {
-        "Authorization": f"OAuth {access_token}",
-        "offset": "0",
-        "file_size": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
-
-    with open(video_file, "rb") as vf:
-        video_bytes = vf.read()
-
-    up_r = requests.post(upload_url, headers=upload_headers, data=video_bytes, timeout=600)
-
-    if up_r.status_code != 200 or not up_r.json().get("success"):
-        raise RuntimeError(f"Upload fail: {up_r.text}")
-
-    return video_id
-
-def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
-    status_url = GRAPH_API_BASE + str(video_id).strip()
-    for check_idx in range(1, max_checks + 1):
-        time.sleep(wait_seconds)
-        try:
-            res = requests.get(status_url, params={"fields": "status_code,status", "access_token": access_token}, timeout=30).json()
-            status = res.get("status_code")
-            print(f"   ⏳ Polling Instagram status ({check_idx}/{max_checks}): {status}", flush=True)
-            if status == "FINISHED":
-                return "FINISHED"
-            elif status in ["ERROR", "EXPIRED"]:
-                return status
-        except Exception:
-            continue
-    return "TIMEOUT"
-
-def _publish_reel(video_id, user_id, access_token):
-    publish_url = GRAPH_API_BASE + str(user_id).strip() + "/media_publish"
-    pub_res = requests.post(publish_url, data={"creation_id": video_id, "access_token": access_token}, timeout=30)
-    pub_res_data = pub_res.json()
-    if "id" in pub_res_data:
-        print(f"🎉 Post published! Instagram Media ID: {pub_res_data['id']}", flush=True)
-    else:
-        raise RuntimeError(f"Publish fail: {pub_res.text}")
 
 # --- MAIN RUNNER ---
 if __name__ == "__main__":
