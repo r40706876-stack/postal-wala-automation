@@ -61,15 +61,25 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Official PO Guide Part 1 Catalog ---
+# --- Master Catalog: Clause 6 has 2 parts, then Clause 7 has 2 parts ---
 POSTAL_CLAUSE_CATALOG = {
     1: {"name": "डाक विभाग का नियंत्रण व संगठन", "total_parts": 2, "part_1_focus": "संचार मंत्रालय के अधीन, महानिदेशक डाक सेवा शीर्ष प्रशासनिक प्रमुख, मुख्यालय डाक भवन नई दिल्ली।", "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और बोर्ड सचिव के दायित्व।"},
     2: {"name": "डाकघरों के प्रकार और श्रेणियां", "total_parts": 2, "part_1_focus": "डाकघर की 3 श्रेणियां (HO, SO, BO)। प्रधान डाकघर (HO) मुख्य लेखा कार्यालय होता है।", "part_2_focus": "उप डाकघर (SO) और शाखा डाकघर (BO)। ग्रामीण क्षेत्रों में BO के कार्य के घंटे न्यूनतम 4 और अधिकतम 5 घंटे।"},
     3: {"name": "रात्रि डाकघर के नियम", "total_parts": 2, "part_1_focus": "महानिदेशक (DG) द्वारा स्थापना और कार्य समय रात 8:30 बजे तक बढ़ाने का विशेष अधिकार।", "part_2_focus": "रविवार और राष्ट्रीय डाक अवकाश पर सुबह 10 से शाम 5 बजे तक कार्य, केवल सीमित सेवाएं।"},
     4: {"name": "मोबाइल डाकघर", "total_parts": 1, "part_1_focus": "बड़े शहरों में देर शाम तक डाक व पार्सल बुकिंग सुविधा, कोई बचत बैंक या मनीऑर्डर कार्य नहीं होता।"},
     5: {"name": "डाकघर के कामकाज के घंटे", "total_parts": 2, "part_1_focus": "सामान्य डाक लेन-देन, रजिस्ट्री बुकिंग, मनीऑर्डर और बचत बैंक के अलग-अलग निर्धारित समय सीमा के नियम।", "part_2_focus": "सार्वजनिक कार्य के घंटे समाप्त होने के बाद लेट फीस के साथ डाक स्वीकार करने के नियम।"},
-    6: {"name": "रविवार और डाक अवकाश पर कार्य", "total_parts": 1, "part_1_focus": "रविवार और 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूर्णतः बंद रहते हैं, केवल रात्रि डाकघर सीमित सेवाएं देते हैं।"},
-    7: {"name": "डाक टिकटों और लेखन-सामग्री का विक्रय", "total_parts": 2, "part_1_focus": "प्रत्येक डाकघर में कार्य के घंटों के दौरान डाक टिकट और स्टेशनरी की उपलब्धता अनिवार्य।", "part_2_focus": "डाक टिकट काउंटर पर फटे-पुराने नोट न देने और सही मुद्रा में भुगतान करने के नियम।"},
+    6: {
+        "name": "रविवार और डाक अवकाश पर कार्य",
+        "total_parts": 2,
+        "part_1_focus": "रविवार और 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूरी तरह बंद रहते हैं और कोई नियमित वितरण नहीं होता।",
+        "part_2_focus": "रविवार और अवकाश के दिन केवल रात्रि डाकघर सुबह 10 से शाम 5 बजे तक सीमित सेवाएं (रजिस्ट्री बुकिंग, टिकट बिक्री) देते हैं।"
+    },
+    7: {
+        "name": "डाक टिकटों और लेखन-सामग्री का विक्रय",
+        "total_parts": 2,
+        "part_1_focus": "प्रत्येक डाकघर में कार्य के घंटों के दौरान जनता के लिए डाक टिकट और स्टेशनरी की उपलब्धता सुनिश्चित करना अनिवार्य।",
+        "part_2_focus": "डाक टिकट काउंटर पर फटे-पुराने नोट न देने और सही मुद्रा में भुगतान करने के विभागीय नियम।"
+    },
     8: {"name": "फिलाटेलिक ब्यूरो और डाक टिकट संग्रह", "total_parts": 1, "part_1_focus": "स्मारक डाक टिकटों की बिक्री, फिलाटेलिक डिपॉजिट अकाउंट (PDA) खोलने की सुविधाएं।"},
     9: {"name": "फ्रैंकिंग मशीन के नियम व लाइसेंस", "total_parts": 2, "part_1_focus": "डाक महानिदेशक या मंडल प्रमुख द्वारा लाइसेंस जारी करना, लाल रंग की स्याही की छाप।", "part_2_focus": "फ्रैंकिंग मीटर रीसेट, एडवांस भुगतान पर छूट और पोस्टिंग की शर्तें।"},
     10: {"name": "अप्रयुक्त व जाली टिकटों का निषेध", "total_parts": 1, "part_1_focus": "काटे गए, फटे या जाली टिकटों का उपयोग आईपीसी की धारा 263-A के तहत दंडनीय अपराध है।"}
@@ -183,20 +193,25 @@ def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
     except Exception:
         return None
 
+# --- HAR HALAT ME CLAUSE 6 PART 1 SE START HOGA ---
 def load_progress_state():
-    state = {"clause_no": 6, "current_part": 1, "total_parts": 1, "hook_index": 0}
+    state = {"clause_no": 6, "current_part": 1, "total_parts": 2, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
                 data = json.load(f)
-                if data.get("clause_no", 0) < 6:
-                    data["clause_no"] = 6
-                    data["current_part"] = 1
-                state.update(data)
+                # Agar state pehle se Clause 6 Part 1 se piche ya galat set hai toh enforce Clause 6 Part 1
+                if data.get("clause_no", 0) != 6 or data.get("current_part", 0) != 1:
+                    # Pehla execution strictly Clause 6 Part 1 se hi shuru ho
+                    state["clause_no"] = 6
+                    state["current_part"] = 1
+                    state["hook_index"] = data.get("hook_index", 0)
+                else:
+                    state.update(data)
         except Exception:
             pass
-    else:
-        save_progress_state(state)
+    save_progress_state(state)
+    state["total_parts"] = POSTAL_CLAUSE_CATALOG.get(state["clause_no"], {}).get("total_parts", 2)
     return state
 
 def save_progress_state(state):
@@ -212,17 +227,21 @@ def advance_progress_state(state):
 
     clause = state.get("clause_no", 6)
     part = state.get("current_part", 1)
-    clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 1})
-    total_parts = clause_info.get("total_parts", 1)
+    clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 2})
+    total_parts = clause_info.get("total_parts", 2)
 
+    # Clause 6 Part 1 -> Clause 6 Part 2 -> Clause 7 Part 1 -> Clause 7 Part 2
     if part < total_parts:
         state["current_part"] = part + 1
+        state["total_parts"] = total_parts
     else:
         catalog_keys = sorted(POSTAL_CLAUSE_CATALOG.keys())
         current_idx = catalog_keys.index(clause) if clause in catalog_keys else 0
         next_idx = (current_idx + 1) % len(catalog_keys)
-        state["clause_no"] = catalog_keys[next_idx]
+        next_clause = catalog_keys[next_idx]
+        state["clause_no"] = next_clause
         state["current_part"] = 1
+        state["total_parts"] = POSTAL_CLAUSE_CATALOG.get(next_clause, {}).get("total_parts", 2)
 
     save_progress_state(state)
 
@@ -234,7 +253,7 @@ def generate_clause_script(state):
 
     clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[6])
     clause_name = clause_info["name"]
-    total_parts = clause_info["total_parts"]
+    total_parts = clause_info.get("total_parts", 2)
     part_focus = clause_info.get(f"part_{current_part}_focus", clause_info.get("part_1_focus", ""))
 
     fallback_data = {
@@ -244,15 +263,15 @@ def generate_clause_script(state):
         "total_parts": total_parts,
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
-        "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार रविवार और राष्ट्रीय अवकाश पर सामान्य डाकघर की क्या स्थिति होती है?",
+        "question": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार रविवार और राष्ट्रीय अवकाश पर सामान्य डाकघर की क्या स्थिति होती है?",
         "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": "रविवार और सभी 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूरी तरह बंद रहते हैं, जिससे नियमित सेवाएं स्थगित रहती हैं।",
-        "sen3": "केवल रात्रि डाकघर ही ऐसे अवकाशों पर सीमित सेवाएं प्रदान करते हैं। विभागीय परीक्षा हेतु यह अति महत्वपूर्ण नियम है।",
-        "opt_a": "पूर्णतः खुले रहते हैं",
-        "opt_b": "पूर्णतः बंद रहते हैं",
+        "sen2": "रविवार और सभी 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूरी तरह बंद रहते हैं और कोई नियमित वितरण नहीं होता।",
+        "sen3": "केवल रात्रि डाकघर ऐसे दिनों में निर्धारित समय सीमा तक सीमित सेवाएं प्रदान करते हैं।",
+        "opt_a": "पूर्णतः बंद रहते हैं",
+        "opt_b": "पूर्णतः खुले रहते हैं",
         "opt_c": "केवल बचत बैंक कार्य होता है",
         "opt_d": "इनमें से कोई नहीं",
-        "caption": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} | विभागीय परीक्षा (GDS to MTS, Postman, PA) तैयारी। #PostalWala #GDStoMTS #PostmanExam #IndiaPost"
+        "caption": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} भाग {current_part} | विभागीय परीक्षा (GDS to MTS, Postman, PA) तैयारी। #PostalWala #GDStoMTS #PostmanExam #IndiaPost"
     }
 
     if not GROQ_API_KEY:
@@ -265,7 +284,7 @@ def generate_clause_script(state):
     Sub-Rule Focus: "{part_focus}"
 
     Generate:
-    QUESTION: [1 crisp high-yield exam question directly on this clause]
+    QUESTION: [1 crisp high-yield exam question directly on this clause & part]
     SEN1: [Core rule explanation, ~22 words]
     SEN2: [Key conditions/working hours, ~22 words]
     SEN3: [Official exception or trap, ~22 words]
@@ -323,7 +342,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- 100% Synced Rendering With Automatic Proportional Speed Clamp (<54s) ---
+# --- EXACT 57-SECOND LOCKED RENDERING ENGINE ---
 def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ensure_fonts()
     ensure_auto_icons()
@@ -339,24 +358,20 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         asyncio.run(generate_segment_audio(seg_text, seg_file))
         raw_durations.append(get_audio_duration(seg_file))
 
-    # Concat raw audios
     with open("audio_concat.txt", "w") as f:
         for i in range(4):
             f.write(f"file 'audio_seg_{i}.mp3'\n")
     subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", "audio_concat.txt", "-c", "copy", "raw_master.mp3"], check=True)
     
     total_dur = get_audio_duration("raw_master.mp3")
-    print(f"🎵 Initial Voiceover Duration: {total_dur:.1f}s", flush=True)
+    print(f"🎵 Raw Master Duration: {total_dur:.1f}s", flush=True)
 
-    # If duration > 54s, speed-up proportionally keeping 100% slide sync
-    if total_dur > 54.0:
-        tempo = round(total_dur / 52.0, 2)
-        subprocess.run(["ffmpeg", "-y", "-i", "raw_master.mp3", "-filter:a", f"atempo={tempo}", "final_master.mp3"], check=True)
-        durations = [d / (total_dur / 52.0) for d in raw_durations]
-        print(f"⏩ Speed-adjusted master audio to: {sum(durations):.1f}s", flush=True)
-    else:
-        durations = raw_durations
-        os.replace("raw_master.mp3", "final_master.mp3")
+    # EXACT 57.0s SPEED LOCK
+    target_lock_dur = 57.0
+    tempo_scale = round(total_dur / target_lock_dur, 4)
+    subprocess.run(["ffmpeg", "-y", "-i", "raw_master.mp3", "-filter:a", f"atempo={tempo_scale}", "final_master.mp3"], check=True)
+    durations = [d / tempo_scale for d in raw_durations]
+    print(f"🔒 Locked Video Exactly to: {sum(durations):.1f}s (Scale Factor: {tempo_scale})", flush=True)
 
     font_brand = get_eng_font(44)
     font_sub = get_eng_font(22)
@@ -524,9 +539,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print("✅ 100% Synced & Duration-Locked (<54s) Reel Created.", flush=True)
+    print(f"✅ Synced & 57s-Locked Reel Created: {output_video}", flush=True)
 
-# --- Exact Working Resumable Upload Architecture With Full Terminal Logs ---
+# --- 3-Attempt Resumable Upload Architecture ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
