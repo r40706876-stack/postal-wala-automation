@@ -554,7 +554,7 @@ def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
     except Exception:
         return None
 
-# --- State Management (Clause 6, Part 1 Lock) ---
+# --- State Management (Hard-Locked to Clause 6, Part 1) ---
 def load_progress_state():
     state = {"clause_no": 6, "current_part": 1, "total_parts": 1, "hook_index": 0}
     if os.path.exists(STATE_FILE):
@@ -567,6 +567,8 @@ def load_progress_state():
                 state.update(data)
         except Exception:
             pass
+    else:
+        save_progress_state(state)
     return state
 
 def save_progress_state(state):
@@ -596,7 +598,7 @@ def advance_progress_state(state):
 
     save_progress_state(state)
 
-# --- Dynamic Script Generator (Groq AI with Full Catalog Fallback) ---
+# --- Script Generation Engine (Groq AI with Full Catalog Fallback) ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 6)
     current_part = state.get("current_part", 1)
@@ -636,9 +638,9 @@ def generate_clause_script(state):
     Sub-Rule Focus: "{part_focus}"
 
     Generate:
-    QUESTION: [1 high-yield exam question directly on this clause]
+    QUESTION: [1 crisp high-yield exam question directly on this clause]
     SEN1: [Core rule explanation, ~25 words]
-    SEN2: [Key conditions/hours, ~25 words]
+    SEN2: [Key conditions/working hours, ~25 words]
     SEN3: [Official exception or trap, ~25 words]
     OPT_A: [Option A]
     OPT_B: [Option B]
@@ -669,21 +671,17 @@ def generate_clause_script(state):
             if oc: fallback_data["opt_c"] = clean_hindi_postal_terms(oc)
             if od: fallback_data["opt_d"] = clean_hindi_postal_terms(od)
     except Exception as e:
-        print(f"⚠️ Groq API warning: {e}, using master catalog fallback.")
+        print(f"⚠️ Groq API note: {e}, using master catalog fallback.")
 
     return fallback_data
 
-# --- The Perfect Viral Segment Structure ---
-# Slide 1: Hook + Shuru me Prashn
-# Slide 2: Niyam Point 1
-# Slide 3: Niyam Point 2 (Exception/Trap)
-# Slide 4: Wahi Prashn + Chaaron Options + Uttar CTA
+# --- The 100% Locked Viral Segment Structure ---
 def build_segments(script_data):
     q_txt = script_data["question"]
     hook_v = script_data["hook_voice"]
     hook_b = script_data["visual_hook_badge"]
 
-    # Segment 1: Hook + Starting Question
+    # Segment 1: Hook + Shuru me Prashn
     s1_voice = f"{hook_v} आज का महत्वपूर्ण प्रश्न है: {q_txt} इसका सही उत्तर जानने के लिए वीडियो में अंत तक बने रहें!"
     s1_text = f"आज का महत्वपूर्ण सवाल:\n{q_txt}\n\nसही उत्तर वीडियो में अंत तक समझें!"
 
@@ -695,8 +693,8 @@ def build_segments(script_data):
     s3_voice = f"विभागीय परीक्षा की दृष्टि से ध्यान दें! {script_data['sen3']}"
     s3_text = f"परीक्षा विशेष बिंदु:\n\n{script_data['sen3']}"
 
-    # Segment 4: Question Returns + Options + Comment/WhatsApp CTA
-    quiz_voice = f"तो साथियों, {q_txt} ऑप्शन ए: {script_data['opt_a']}, या ऑप्शन बी: {script_data['opt_b']}! अपना सही उत्तर अभी कमेंट करें, और फ्री टेस्ट के लिए व्हाट्सएप करें!"
+    # Segment 4: Options bolna BAND - Direct Question, Comment CTA aur Ending Follow Call
+    quiz_voice = f"तो साथियों, {q_txt} इसका सही उत्तर आप सभी कमेंट बॉक्स में दीजिए! फ्री मॉक टेस्ट के लिए स्क्रीन पर दिए नंबर पर व्हाट्सएप करें, और अपना विभागीय परीक्षा निकालने के लिए पोस्टल वाला को फॉलो करना न भूलें!"
 
     return [
         {
@@ -743,7 +741,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- Precise Rendering Engine ---
+# --- Precise Video Rendering Engine (Zero Text Overflow) ---
 def render_and_sync_video(script_data, segments, output_video):
     ensure_fonts()
     ensure_auto_icons()
@@ -755,14 +753,14 @@ def render_and_sync_video(script_data, segments, output_video):
     font_trust = get_eng_font(20)
     font_badge = get_dev_font(22)
     font_title = get_dev_font(34)
-    font_h2 = get_dev_font(32)
+    font_h2 = get_dev_font(30)
     font_body = get_dev_font(34)
     font_label = get_dev_font(26)
     font_wa_hin = get_dev_font(30)
     font_wa_num = get_eng_font(30)
     font_cta = get_eng_font(30)
     font_cta_dev = get_dev_font(30)
-    font_opt = get_dev_font(32)
+    font_opt = get_dev_font(28)
     font_hook = get_dev_font(30)
 
     def draw_common_ui(d, title_text):
@@ -827,21 +825,22 @@ def render_and_sync_video(script_data, segments, output_video):
                 ic = Image.open(asset_path).convert("RGBA").resize((280, 360), RESAMPLE_MODE)
                 img.paste(ic, (400, 1120), ic)
         else:
-            # Slide 4: Quiz (Shuru wala sawal yahan options ke sath aayega)
+            # Slide 4: Quiz
             d.rounded_rectangle([110, 530, 360, 575], radius=12, fill="#0B132B")
             draw_visual_emoji(d, "question", 120, 536, size=32)
             d.text((160, 538), "आज का सवाल:", fill="#FBBF24", font=font_h2)
 
-            q_wrapped = textwrap.fill(sanitize_devanagari(seg["question"]), width=23)
-            d.multiline_text((110, 595), q_wrapped, fill="#F8FAFC", font=font_h2, spacing=10)
+            q_wrapped = textwrap.fill(sanitize_devanagari(seg["question"]), width=24)
+            d.multiline_text((110, 595), q_wrapped, fill="#F8FAFC", font=font_h2, spacing=8)
 
             opts = [seg["opt_a"], seg["opt_b"], seg["opt_c"], seg["opt_d"]]
-            oy = 740
+            oy = 720
             for o_idx, opt in enumerate(opts):
-                d.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
-                d.text((135, oy + 25), f"{chr(65+o_idx)})", fill="#38BDF8", font=font_h2)
-                d.text((205, oy + 25), sanitize_devanagari(opt), fill="#FFFFFF", font=font_opt)
-                oy += 115
+                d.rounded_rectangle([110, oy, 970, oy + 85], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+                d.text((135, oy + 24), f"{chr(65+o_idx)})", fill="#38BDF8", font=font_h2)
+                opt_clean = textwrap.fill(sanitize_devanagari(opt), width=22)
+                d.text((205, oy + 24), opt_clean, fill="#FFFFFF", font=font_opt)
+                oy += 105
 
             d.rounded_rectangle([110, 1370, 970, 1490], radius=18, fill="#0B132B", outline="#F59E0B", width=2)
             draw_visual_emoji(d, "check", 130, 1405, size=40)
@@ -887,9 +886,9 @@ def render_and_sync_video(script_data, segments, output_video):
     else:
         os.rename("temp_merged.mp4", output_video)
 
-    print(f"✅ Reel created successfully with start question & ending quiz: {output_video}")
+    print(f"✅ Reel created successfully from Clause 6: {output_video}")
 
-# --- Instagram Resumable Upload ---
+# --- Robust Resumable Instagram Upload ---
 def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
     access_token = os.getenv("IG_ACCESS_TOKEN")
     user_id = os.getenv("IG_USER_ID")
