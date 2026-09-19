@@ -890,13 +890,45 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Synced & Exactly 59s-Locked Reel Created: {output_video}", flush=True)
 
-# --- STRICT RESUMABLE BINARY PROTOCOL UPLOADER ---
+# --- HOSTED-URL UPLOADER (replaces the flaky binary /rupload resumable protocol) ---
+def _upload_video_get_public_url(video_file, max_attempts=3):
+    """Uploads the video to tmpfiles.org and returns a direct-download public URL
+    that Meta's Graph API can fetch server-side via `video_url`. This avoids the
+    resumable binary rupload endpoint, which was returning a non-retriable
+    'ProcessingFailedError' on every attempt."""
+    last_err = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            print("📤 Generating temporary direct video link for Meta Graph API...", flush=True)
+            with open(video_file, "rb") as f:
+                r = requests.post(
+                    "https://tmpfiles.org/api/v1/upload",
+                    files={"file": (os.path.basename(video_file), f, "video/mp4")},
+                    timeout=120
+                )
+            r.raise_for_status()
+            data = r.json()
+            raw_url = data["data"]["url"]  # e.g. https://tmpfiles.org/12345/final_reel.mp4
+            # Convert to the direct-download form: .../dl/12345/final_reel.mp4
+            direct_url = raw_url.replace("tmpfiles.org/", "tmpfiles.org/dl/", 1)
+            print(f"🔗 Video Hosted Link: {direct_url}", flush=True)
+            return direct_url
+        except Exception as e:
+            last_err = e
+            print(f"⚠️ Hosting attempt {attempt} failed: {e}", flush=True)
+            time.sleep(5)
+    raise RuntimeError(f"Could not obtain a public video URL after {max_attempts} attempts: {last_err}")
+
+
 def _create_reel_container(video_file, caption, user_id, access_token):
-    # Step 1: Initialize Resumable Container
+    # Step 1: Get a public URL for the rendered video (Meta fetches it server-side).
+    video_url = _upload_video_get_public_url(video_file)
+
+    # Step 2: Create the media container pointing at that URL — no binary upload needed.
     init_url = f"{GRAPH_API_BASE}{str(user_id).strip()}/media"
     init_payload = {
         "media_type": "REELS",
-        "upload_type": "resumable",
+        "video_url": video_url,
         "caption": caption,
         "access_token": access_token
     }
@@ -907,27 +939,10 @@ def _create_reel_container(video_file, caption, user_id, access_token):
 
     res_json = r.json()
     video_id = res_json.get("id")
-    upload_url = res_json.get("uri") or f"{RUPLOAD_BASE}{str(video_id).strip()}"
+    if not video_id:
+        raise RuntimeError(f"Container Init returned no id: {r.text}")
 
-    print(f"📦 Container created: {video_id}", flush=True)
-
-    # Step 2: Binary Upload with exact protocol
-    file_size = os.path.getsize(video_file)
-    upload_headers = {
-        "Authorization": f"OAuth {access_token}",
-        "offset": "0",
-        "file_size": str(file_size),
-        "Content-Type": "application/octet-stream"
-    }
-
-    with open(video_file, "rb") as vf:
-        video_data = vf.read()
-
-    up_r = requests.post(upload_url, headers=upload_headers, data=video_data, timeout=600)
-
-    if up_r.status_code not in [200, 201]:
-        raise RuntimeError(f"Binary Upload Failed ({up_r.status_code}): {up_r.text}")
-
+    print(f"📦 Container created successfully: {video_id}", flush=True)
     return video_id
 
 def _poll_container_status(video_id, access_token, max_checks=40, wait_seconds=15):
