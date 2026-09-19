@@ -61,7 +61,7 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Master Catalog: Clause 6 has 2 parts, then Clause 7 has 2 parts ---
+# --- Master Catalog ---
 POSTAL_CLAUSE_CATALOG = {
     1: {"name": "डाक विभाग का नियंत्रण व संगठन", "total_parts": 2, "part_1_focus": "संचार मंत्रालय के अधीन, महानिदेशक डाक सेवा शीर्ष प्रशासनिक प्रमुख, मुख्यालय डाक भवन नई दिल्ली।", "part_2_focus": "डाक सेवा बोर्ड (PSB) की संरचना: चेयरमैन (सचिव), 6 पूर्णकालिक सदस्य और बोर्ड सचिव के दायित्व।"},
     2: {"name": "डाकघरों के प्रकार और श्रेणियां", "total_parts": 2, "part_1_focus": "डाकघर की 3 श्रेणियां (HO, SO, BO)। प्रधान डाकघर (HO) मुख्य लेखा कार्यालय होता है।", "part_2_focus": "उप डाकघर (SO) और शाखा डाकघर (BO)। ग्रामीण क्षेत्रों में BO के कार्य के घंटे न्यूनतम 4 और अधिकतम 5 घंटे।"},
@@ -72,7 +72,7 @@ POSTAL_CLAUSE_CATALOG = {
         "name": "रविवार और डाक अवकाश पर कार्य",
         "total_parts": 2,
         "part_1_focus": "रविवार और 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूरी तरह बंद रहते हैं और कोई नियमित वितरण नहीं होता।",
-        "part_2_focus": "रविवार और अवकाश के दिन केवल रात्रि डाकघर सुबह 10 से शाम 5 बजे तक सीमित सेवाएं (रजिस्ट्री बुकिंग, टिकट बिक्री) देते हैं।"
+        "part_2_focus": "रविवार और अवकाश के दिन केवल रात्रि डाकघर सुबह 10 से शाम 5 बजे तक सीमित सेवाएं (रजिस्ट्री बुकिंग, टिकट बिक्री) देते हैं."
     },
     7: {
         "name": "डाक टिकटों और लेखन-सामग्री का विक्रय",
@@ -193,21 +193,14 @@ def ensure_bgm(bgm_path="bgm.mp3", state_index=0):
     except Exception:
         return None
 
-# --- HAR HALAT ME CLAUSE 6 PART 1 SE START HOGA ---
+# --- ERROR-FREE PROGRESS STATE ---
 def load_progress_state():
     state = {"clause_no": 6, "current_part": 1, "total_parts": 2, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
                 data = json.load(f)
-                # Agar state pehle se Clause 6 Part 1 se piche ya galat set hai toh enforce Clause 6 Part 1
-                if data.get("clause_no", 0) != 6 or data.get("current_part", 0) != 1:
-                    # Pehla execution strictly Clause 6 Part 1 se hi shuru ho
-                    state["clause_no"] = 6
-                    state["current_part"] = 1
-                    state["hook_index"] = data.get("hook_index", 0)
-                else:
-                    state.update(data)
+                state.update(data)
         except Exception:
             pass
     save_progress_state(state)
@@ -230,7 +223,6 @@ def advance_progress_state(state):
     clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 2})
     total_parts = clause_info.get("total_parts", 2)
 
-    # Clause 6 Part 1 -> Clause 6 Part 2 -> Clause 7 Part 1 -> Clause 7 Part 2
     if part < total_parts:
         state["current_part"] = part + 1
         state["total_parts"] = total_parts
@@ -263,15 +255,15 @@ def generate_clause_script(state):
         "total_parts": total_parts,
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
-        "question": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार रविवार और राष्ट्रीय अवकाश पर सामान्य डाकघर की क्या स्थिति होती है?",
+        "question": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अंतर्गत मुख्य प्रावधान क्या है?",
         "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": "रविवार और सभी 16 राजपत्रित अवकाशों पर सामान्य डाकघर पूरी तरह बंद रहते हैं और कोई नियमित वितरण नहीं होता।",
-        "sen3": "केवल रात्रि डाकघर ऐसे दिनों में निर्धारित समय सीमा तक सीमित सेवाएं प्रदान करते हैं।",
-        "opt_a": "पूर्णतः बंद रहते हैं",
-        "opt_b": "पूर्णतः खुले रहते हैं",
-        "opt_c": "केवल बचत बैंक कार्य होता है",
+        "sen2": "यह विभागीय परीक्षा (GDS to MTS, Postman, PA) के लिए बेहद महत्वपूर्ण नियम है।",
+        "sen3": "उम्मीदवारों को इस नियम से जुड़े अपवादों का विशेष रूप से ध्यान रखना चाहिए।",
+        "opt_a": "विभाग के निर्देशानुसार",
+        "opt_b": "महानिदेशक के आदेशानुसार",
+        "opt_c": "मानक नियम के तहत",
         "opt_d": "इनमें से कोई नहीं",
-        "caption": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} भाग {current_part} | विभागीय परीक्षा (GDS to MTS, Postman, PA) तैयारी। #PostalWala #GDStoMTS #PostmanExam #IndiaPost"
+        "caption": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} भाग {current_part} | विभागीय परीक्षा तैयारी। #PostalWala #GDStoMTS #PostmanExam #IndiaPost"
     }
 
     if not GROQ_API_KEY:
@@ -366,7 +358,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     total_dur = get_audio_duration("raw_master.mp3")
     print(f"🎵 Raw Master Duration: {total_dur:.1f}s", flush=True)
 
-    # EXACT 57.0s SPEED LOCK
     target_lock_dur = 57.0
     tempo_scale = round(total_dur / target_lock_dur, 4)
     subprocess.run(["ffmpeg", "-y", "-i", "raw_master.mp3", "-filter:a", f"atempo={tempo_scale}", "final_master.mp3"], check=True)
@@ -415,7 +406,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
 
     slide_filenames = []
 
-    # Slide 1: Hook + Sawal
+    # Slide 1: Hook + Question + Options Included Visually from Start!
     img1 = Image.new("RGB", (1080, 1920), color="#060A17")
     d1 = ImageDraw.Draw(img1)
     draw_base(d1)
@@ -427,13 +418,24 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d1.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     draw_whatsapp_strip(d1)
     d1.rounded_rectangle([80, 505, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
-    d1.rounded_rectangle([110, 535, 970, 605], radius=14, fill="#991B1B", outline="#FBBF24", width=2)
-    d1.text((175, 550), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
-    d1.rounded_rectangle([110, 625, 480, 675], radius=10, fill="#0B132B")
-    d1.text((165, 635), "आज का प्रश्न:", fill="#38BDF8", font=font_label)
-    wrapped_q1 = textwrap.fill(f"आज का महत्वपूर्ण सवाल:\n{script_data['question']}\n\nसही उत्तर वीडियो में अंत तक समझें!", width=24)
-    d1.multiline_text((115, 700), clean_hindi_postal_terms(wrapped_q1), fill="#F8FAFC", font=font_body, spacing=16)
-    paste_safe_asset(img1, BOOK_3D_PATH, pos=(400, 1120))
+    
+    # Hook badge on Slide 1
+    d1.rounded_rectangle([110, 525, 970, 585], radius=12, fill="#991B1B", outline="#FBBF24", width=2)
+    d1.text((135, 538), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
+    
+    # Question on Slide 1
+    d1.text((110, 605), "आज का सवाल:", fill="#38BDF8", font=font_label)
+    d1.multiline_text((110, 645), textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=25), fill="#F8FAFC", font=font_h2, spacing=8)
+    
+    # Options A, B, C, D on Slide 1 visually
+    opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
+    oy = 790
+    for o_idx, opt in enumerate(opts):
+        d1.rounded_rectangle([110, oy, 970, oy + 70], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
+        d1.text((135, oy + 16), f"{chr(65+o_idx)})", fill="#38BDF8", font=font_h2)
+        d1.text((195, oy + 16), textwrap.fill(clean_hindi_postal_terms(opt), width=24), fill="#FFFFFF", font=font_opt)
+        oy += 85
+
     draw_footer_cta(d1)
     img1.save("slide_1.png")
     slide_filenames.append("slide_1.png")
