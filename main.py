@@ -131,7 +131,7 @@ POSTAL_CLAUSE_CATALOG = {
     },
     12: {
         "name": "डाक टिकट चिपकाने की सही विधि", "total_parts": 1,
-        "part_1_focus": "लिफाफे के पते वाले भाग पर ऊपर दाहिने कोने में ही डाक टिकट चिपकाना अनिवार्य नियम है।",
+        "part_1_focus": "लिफाफे के पते वाले भाग पर ऊपर दाहिने कोने में ही डाक टिकट चिपकाना अनिवार्य नियम है।"
     },
     13: {
         "name": "विशेष सुरक्षा लिफाफों का प्रयोग", "total_parts": 1,
@@ -444,7 +444,7 @@ def get_font(size):
     return ImageFont.load_default()
 
 def load_progress_state():
-    state = {"clause_no": 8, "current_part": 1, "total_parts": 2, "hook_index": 0}
+    state = {"clause_no": 9, "current_part": 1, "total_parts": 5, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -453,7 +453,7 @@ def load_progress_state():
                     state.update(saved)
         except Exception:
             pass
-    current_clause = state.get("clause_no", 8)
+    current_clause = state.get("clause_no", 9)
     state["total_parts"] = POSTAL_CLAUSE_CATALOG.get(current_clause, {}).get("total_parts", 1)
     save_progress_state(state)
     return state
@@ -469,7 +469,7 @@ def advance_progress_state(state):
     hook_idx = state.get("hook_index", 0)
     state["hook_index"] = (hook_idx + 1) % len(VIRAL_HOOKS)
 
-    clause = state.get("clause_no", 8)
+    clause = state.get("clause_no", 9)
     part = state.get("current_part", 1)
     clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 1})
     total_parts = clause_info.get("total_parts", 1)
@@ -490,12 +490,12 @@ def advance_progress_state(state):
     print(f"⏩ Advanced Progress to: Clause {state['clause_no']} (Part {state['current_part']}/{state['total_parts']})", flush=True)
 
 def generate_clause_script(state):
-    current_clause = state.get("clause_no", 8)
+    current_clause = state.get("clause_no", 9)
     current_part = state.get("current_part", 1)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
 
-    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[8])
+    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[9])
     clause_name = clause_info["name"]
     total_parts = clause_info.get("total_parts", 1)
     
@@ -510,13 +510,13 @@ def generate_clause_script(state):
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
         "hook_display_text": hook_obj["hook_text"],
-        "question": "फिलाटेलिक ब्यूरो विशेष स्मारक टिकटों का वितरण किसके जरिए करते हैं?",
+        "question": "फ्रैंकिंग मशीन का लाइसेंस किस अधिकारी द्वारा जारी किया जाता है?",
         "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
         "sen2": "परीक्षार्थी ध्यान रखें कि इसके आधिकारिक अपवादों में ही अक्सर गलतियां होती हैं।",
-        "opt_a": "केवल प्रथम दिवस पर",
-        "opt_b": "पूरे वर्ष के दौरान",
-        "opt_c": "केवल रविवार को",
-        "opt_d": "केवल त्योहारों पर",
+        "opt_a": "पोस्टमास्टर द्वारा",
+        "opt_b": "डाक महानिदेशक द्वारा",
+        "opt_c": "उप-मंडल प्रमुख द्वारा",
+        "opt_d": "क्षेत्रीय प्रबंधक द्वारा",
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})। सही उत्तर कमेंट करें! फ्री विभागीय नोट्स व टेस्ट हेतु WhatsApp करें: 8989971379 #PostalWala #GDStoMTS #PostmanExam #IndiaPost"
     }
 
@@ -601,7 +601,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     subprocess.run(ffmpeg_concat_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     
     total_dur = sum(durations)
-    print(f"🎵 Audio Flow Generated: Total {total_dur:.1f}s | Segment Durations: {[round(d, 1) for d in durations]}", flush=True)
+    print(f"🎵 Dynamic Audio Flow Generated: Total {total_dur:.1f}s | Durations: {[round(d, 1) for d in durations]}", flush=True)
 
     font_brand = get_font(44)
     font_sub = get_font(22)
@@ -634,15 +634,13 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         d.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
         d.text((120, 1605), "पूरी तैयारी के लिए फॉलो करें:  @POSTAL_WALA", fill="#FFFFFF", font=font_cta)
 
-    # -------------------------------------------------------------------------
-    # PROGRESSIVE MULTI-FRAME ANIMATION BUILDER
-    # Every 1.5 - 2.5s the screen triggers a new visual element!
-    # -------------------------------------------------------------------------
     frames = []
     frame_durs = []
 
-    # ==================== SLIDE 1 (HOOK) ====================
-    # Step 1A: Alert Badge Explodes on screen
+    # =========================================================================
+    # SLIDE 1 (HOOK): 3-STAGE POP ANIMATION + LIVE INDICATOR
+    # =========================================================================
+    # Step 1A: Live Indicator + Red Warning Badge
     img1a = Image.new("RGB", (1080, 1920), color="#060A17")
     d1a = ImageDraw.Draw(img1a)
     draw_base(d1a)
@@ -652,32 +650,48 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d1a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
     d1a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
     d1a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
+    
+    # Outer Neon Card
     d1a.rounded_rectangle([80, 360, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
-    d1a.rounded_rectangle([110, 430, 970, 550], radius=16, fill="#991B1B", outline="#FBBF24", width=3)
-    d1a.text((150, 465), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
+    
+    # LIVE Pill Indicator
+    d1a.rounded_rectangle([110, 395, 410, 445], radius=12, fill="#7F1D1D", outline="#EF4444", width=2)
+    d1a.text((130, 402), "● LIVE EXAM ALERT", fill="#FCA5A5", font=font_label)
+
+    # Red Warning Badge Pops
+    d1a.rounded_rectangle([110, 470, 970, 580], radius=16, fill="#991B1B", outline="#FBBF24", width=3)
+    d1a.text((150, 500), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
     draw_footer_cta(d1a)
     img1a.save("f_1a.png")
     frames.append("f_1a.png")
-    frame_durs.append(round(durations[0] * 0.40, 2))
+    frame_durs.append(round(durations[0] * 0.35, 2))
 
-    # Step 1B: Headline + Topic Card Pop
+    # Step 1B: Headline Box Pops
     img1b = img1a.copy()
     d1b = ImageDraw.Draw(img1b)
-    d1b.rounded_rectangle([110, 620, 450, 675], radius=10, fill="#0B132B", outline="#38BDF8", width=2)
-    d1b.text((130, 630), "विभागीय परीक्षा विशेष:", fill="#38BDF8", font=font_label)
+    d1b.rounded_rectangle([110, 630, 480, 685], radius=10, fill="#0B132B", outline="#38BDF8", width=2)
+    d1b.text((130, 640), "विभागीय परीक्षा विशेष:", fill="#38BDF8", font=font_label)
     wrapped_hook = textwrap.fill(clean_hindi_postal_terms(script_data["hook_display_text"]), width=20)
     d1b.multiline_text((115, 730), wrapped_hook, fill="#FFFFFF", font=font_h1, spacing=16)
-    d1b.rounded_rectangle([110, 1080, 970, 1260], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
-    d1b.text((150, 1115), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])}", fill="#FDE047", font=font_h2)
-    d1b.text((150, 1180), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
-    d1b.rounded_rectangle([110, 1400, 970, 1490], radius=16, fill="#064E3B", outline="#10B981", width=2)
-    d1b.text((200, 1425), "👉 25 सेकंड में पूरा नियम समझें!", fill="#34D399", font=font_h2)
     img1b.save("f_1b.png")
     frames.append("f_1b.png")
-    frame_durs.append(round(durations[0] * 0.60, 2))
+    frame_durs.append(round(durations[0] * 0.35, 2))
 
-    # ==================== SLIDE 2 (RULE ANALYSIS) ====================
-    # Step 2A: Rule Statement Card
+    # Step 1C: Subject Pill & Teaser Pop
+    img1c = img1b.copy()
+    d1c = ImageDraw.Draw(img1c)
+    d1c.rounded_rectangle([110, 1080, 970, 1260], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
+    d1c.text((150, 1115), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])}", fill="#FDE047", font=font_h2)
+    d1c.text((150, 1180), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
+    d1c.rounded_rectangle([110, 1400, 970, 1490], radius=16, fill="#064E3B", outline="#10B981", width=2)
+    d1c.text((200, 1425), ">> 25 सेकंड में पूरा नियम समझें!", fill="#34D399", font=font_h2)
+    img1c.save("f_1c.png")
+    frames.append("f_1c.png")
+    frame_durs.append(round(durations[0] * 0.30, 2))
+
+    # =========================================================================
+    # SLIDE 2 (RULE): 2-STEP REVEAL
+    # =========================================================================
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
     draw_base(d2a)
@@ -688,7 +702,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d2a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
     d2a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     draw_whatsapp_strip(d2a)
-    d2a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
+    
+    # Outer Neon Card
+    d2a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     d2a.rounded_rectangle([110, 530, 480, 585], radius=10, fill="#0B132B")
     d2a.text((150, 540), "नियम विश्लेषण #1:", fill="#38BDF8", font=font_label)
     wrapped_s2 = textwrap.fill(script_data['sen1'], width=22)
@@ -698,17 +714,18 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_2a.png")
     frame_durs.append(round(durations[1] * 0.50, 2))
 
-    # Step 2B: Dynamic Bottom Teaser Appears
+    # Teaser pops
     img2b = img2a.copy()
     d2b = ImageDraw.Draw(img2b)
     d2b.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-    d2b.text((160, 1400), "आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु 👉", fill="#38BDF8", font=font_h2)
+    d2b.text((160, 1400), "आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु >>", fill="#38BDF8", font=font_h2)
     img2b.save("f_2b.png")
     frames.append("f_2b.png")
     frame_durs.append(round(durations[1] * 0.50, 2))
 
-    # ==================== SLIDE 3 (TRAP POINT) ====================
-    # Step 3A: Trap Header Card
+    # =========================================================================
+    # SLIDE 3 (TRAP): 2-STEP WARNING REVEAL
+    # =========================================================================
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
     draw_base(d3a)
@@ -719,7 +736,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d3a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
     d3a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     draw_whatsapp_strip(d3a)
-    d3a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
+    
+    # Outer Amber Card
+    d3a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#F59E0B", width=3)
     d3a.rounded_rectangle([110, 530, 480, 585], radius=10, fill="#0B132B")
     d3a.text((150, 540), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
     wrapped_s3 = textwrap.fill(f"परीक्षा विशेष बिंदु:\n\n{script_data['sen2']}", width=22)
@@ -729,17 +748,19 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_3a.png")
     frame_durs.append(round(durations[2] * 0.50, 2))
 
-    # Step 3B: Quiz Alert Banner Appears
+    # Quiz alert banner pops
     img3b = img3a.copy()
     d3b = ImageDraw.Draw(img3b)
     d3b.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#FBBF24", width=2)
-    d3b.text((180, 1400), "अब आज का सवाल: उत्तर कमेंट करें 👉", fill="#FDE047", font=font_h2)
+    d3b.text((180, 1400), "अब आज का सवाल: उत्तर कमेंट करें >>", fill="#FDE047", font=font_h2)
     img3b.save("f_3b.png")
     frames.append("f_3b.png")
     frame_durs.append(round(durations[2] * 0.50, 2))
 
-    # ==================== SLIDE 4 (QUIZ & OPTIONS) ====================
-    # Step 4A: Question Only (Viewer concentrates on question)
+    # =========================================================================
+    # SLIDE 4 (QUIZ): KBC STYLE 4-STAGE PROGRESSIVE OPTION REVEAL
+    # =========================================================================
+    # Step 4A: Only Question Card
     img4a = Image.new("RGB", (1080, 1920), color="#060A17")
     d4a = ImageDraw.Draw(img4a)
     draw_base(d4a)
@@ -749,7 +770,8 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d4a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
     d4a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
     d4a.text((105, 255), "परीक्षा क्विज़: उत्तर कमेंट करें", fill="#FDE047", font=font_title)
-    d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
+    
+    d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     d4a.rounded_rectangle([110, 380, 360, 435], radius=10, fill="#0B132B")
     d4a.text((140, 390), "आज का सवाल:", fill="#FBBF24", font=font_h2)
     wrapped_q4 = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=23)
@@ -757,42 +779,65 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_footer_cta(d4a)
     img4a.save("f_4a.png")
     frames.append("f_4a.png")
-    frame_durs.append(round(durations[3] * 0.35, 2))
+    frame_durs.append(round(durations[3] * 0.25, 2))
 
-    # Step 4B: Options A, B, C, D + Glowing Comment CTA Pop In
+    # Step 4B: Option A & B Pop
     img4b = img4a.copy()
     d4b = ImageDraw.Draw(img4b)
     q_lines = wrapped_q4.count("\n") + 1
     start_oy = 460 + (q_lines * 42) + 50
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     labels = ["A", "B", "C", "D"]
-    oy = start_oy
-    for o_idx, opt in enumerate(opts):
+    for o_idx in range(2):
+        oy = start_oy + (o_idx * 120)
         d4b.rounded_rectangle([110, oy, 970, oy + 90], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
         d4b.text((135, oy + 22), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-        d4b.text((200, oy + 24), textwrap.fill(clean_hindi_postal_terms(opt), width=23), fill="#FFFFFF", font=font_opt)
-        oy += 120
-    d4b.rounded_rectangle([110, 1370, 970, 1490], radius=18, fill="#064E3B", outline="#34D399", width=2)
-    d4b.text((180, 1410), "💬 अपना उत्तर (A, B, C, D) कमेंट करें!", fill="#FDE047", font=font_h2)
+        d4b.text((200, oy + 24), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
     img4b.save("f_4b.png")
     frames.append("f_4b.png")
-    frame_durs.append(round(durations[3] * 0.65, 2))
+    frame_durs.append(round(durations[3] * 0.25, 2))
+
+    # Step 4C: Option C & D Pop
+    img4c = img4b.copy()
+    d4c = ImageDraw.Draw(img4c)
+    for o_idx in range(2, 4):
+        oy = start_oy + (o_idx * 120)
+        d4c.rounded_rectangle([110, oy, 970, oy + 90], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        d4c.text((135, oy + 22), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        d4c.text((200, oy + 24), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
+    img4c.save("f_4c.png")
+    frames.append("f_4c.png")
+    frame_durs.append(round(durations[3] * 0.25, 2))
+
+    # Step 4D: Glowing Green CTA Bar Pops
+    img4d = img4c.copy()
+    d4d = ImageDraw.Draw(img4d)
+    d4d.rounded_rectangle([110, 1370, 970, 1490], radius=18, fill="#064E3B", outline="#34D399", width=3)
+    d4d.text((180, 1410), "💬 अपना उत्तर (A, B, C, D) कमेंट करें!", fill="#FDE047", font=font_h2)
+    img4d.save("f_4d.png")
+    frames.append("f_4d.png")
+    frame_durs.append(round(durations[3] * 0.25, 2))
 
     # =========================================================================
-    # FFMPEG RENDER (8 STEPS REVEAL + LIVE MOTION PROGRESS BAR)
+    # FFMPEG RENDER: DUAL-TRACK PROGRESS BAR WITH DYNAMIC GLOWING HEAD
     # =========================================================================
     inputs = []
     filter_parts = ""
     for i, fname in enumerate(frames):
         inputs.extend(["-i", fname])
-        safe_dur = max(0.5, frame_durs[i])
+        safe_dur = max(0.4, frame_durs[i])
         filter_parts += f"[{i}:v]loop=loop=-1:size=1:start=0,trim=duration={safe_dur}[v{i}]; "
 
     concat_str = "".join([f"[v{i}]" for i in range(len(frames))])
     base_v_filter = f"{filter_parts}{concat_str}concat=n={len(frames)}:v=1:a=0,scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,format=yuv420p"
     
-    # Animated Progress Bar that travels across top edge
-    progress_bar_filter = f"{base_v_filter},drawbox=x=0:y=0:w='iw*(t/{total_dur})':h=12:color=#F43F5E@1:t=fill[v]"
+    # Modern Dual Layer Progress Bar: Dark Track + Red Runner + Glowing Yellow Head
+    progress_bar_filter = (
+        f"{base_v_filter},"
+        f"drawbox=x=0:y=0:w=iw:h=14:color=#1E293B@1:t=fill,"
+        f"drawbox=x=0:y=0:w='iw*(t/{total_dur})':h=14:color=#F43F5E@1:t=fill,"
+        f"drawbox=x='max(0, iw*(t/{total_dur})-16)':y=0:w=16:h=14:color=#FEF08A@1:t=fill[v]"
+    )
 
     cmd = ["ffmpeg", "-y", *inputs, "-i", "final_master.mp3"]
     voice_idx = len(frames)
@@ -819,7 +864,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Dynamic 8-Step Progressive Animated Reel Created: {output_video}", flush=True)
+    print(f"✅ Dynamic High-Animation Reel Created: {output_video}", flush=True)
 
 # --- RESUMABLE PROTOCOL UPLOADER ---
 def _create_reel_container(video_file, caption, user_id, access_token):
