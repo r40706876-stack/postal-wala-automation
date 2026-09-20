@@ -211,8 +211,9 @@ def generate_clause_script(state):
     if not GROQ_API_KEY:
         return fallback_data
 
+    # --- ULTRA-STRICT PROMPT TO PREVENT HALLUCINATIONS AND IRRELEVANT OPTIONS ---
     prompt = f"""
-    You are the Senior Chief Examiner for India Post Departmental Examinations.
+    You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard).
     Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
 
     OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf':
@@ -220,8 +221,13 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    Generate EXACTLY 4 distinct, short, highly exam-oriented MCQ questions based on this text in fluid Hindi.
-    Format strictly using these tags, keeping text short and clean:
+    STRICT RULES FOR EXAM GENERATION:
+    1. Generate EXACTLY 4 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text.
+    2. ABSOLUTE CONSTRAINT FOR OPTIONS (A, B, C, D): Every single option must use authentic postal terminology (e.g., registered post, insurance, insured cover, booking refusal, official receipt, fine, penalty, restricted articles, sealed packet, etc.). 
+    3. STRICTLY FORBIDDEN: Never generate bizarre, unrelated, or hallucinated options like crops, agriculture, food items, or non-postal daily life objects. All distractors must look like real departmental exam options.
+    4. Keep questions and options short, clear, and in professional Hindi.
+
+    Format strictly using these tags line-by-line:
     SEN1: ...
     SEN2: ...
     PARAM1_TITLE: ...
@@ -262,7 +268,6 @@ def generate_clause_script(state):
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
             
-            # Super-robust line-by-line parser to eliminate all parsing errors completely
             for line in raw_text.split('\n'):
                 if ':' in line:
                     parts = line.split(':', 1)
@@ -513,7 +518,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- FIXED ANIMATED QUIZ VIDEO (CLEAN LAYOUT & NO OVERLAPPING TEXT) ---
+# --- STRICT FIXED ANIMATED QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -699,9 +704,9 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload fixed clean quiz reel into folder [skip ci]"], check=True)
+        subprocess.run(["git", "commit", -m, "Auto-upload strict clean quiz reel into folder [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("🎉 Successfully pushed fixed quiz reel to GitHub folder!", flush=True)
+        print("🎉 Successfully pushed strict quiz reel to GitHub folder!", flush=True)
     except Exception as e:
         print(f"⚠️ Git push note: {e}", flush=True)
 
@@ -717,10 +722,10 @@ if __name__ == "__main__":
     render_concept_video(script_data, CONCEPT_VIDEO)
     
     # 2. Generate Fixed Animated Quiz Video inside folder
-    print("🧠 Generating Fixed Animation Quiz Reel...", flush=True)
+    print("🧠 Generating Strict Animation Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
     # 3. Auto push to GitHub folder
     auto_commit_and_push_reels()
     
-    print("🎉 Done! Fixed quiz reel generated inside the 'generated_reels' folder.", flush=True)
+    print("🎉 Done! Strict quiz reel generated inside the 'generated_reels' folder.", flush=True)
