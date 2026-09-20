@@ -516,11 +516,11 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- STRICT 32-SECOND LOCKED PROFESSIONAL QUIZ VIDEO ---
+# --- PROFESSIONAL SLOW & STEADY 32-SEC LOCKED QUIZ VIDEO (BUG-FREE) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
-    intro_audio_text = "🚨 सावधान! विभागीय परीक्षा का सबसे महत्वपूर्ण टेस्ट। 4 कठिन सवाल, सभी के सही उत्तर अंत में!"
+    intro_audio_text = "🚨 सावधान! विभागीय परीक्षा का सबसे महत्वपूर्ण टेस्ट। चार कठिन सवाल आ रहे हैं, पेन और पेपर लेकर खुद सही उत्तर देने की कोशिश करें, सभी के सही उत्तर वीडियो के अंत में बताए जाएंगे!"
     intro_file = "audio_quiz_intro.mp3"
     asyncio.run(generate_segment_audio(intro_audio_text, intro_file))
     intro_dur = get_audio_duration(intro_file)
@@ -574,7 +574,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         q_lines = wrapped_q.count("\n") + 1
         
         q_box_bottom = 440 + (q_lines * 30)
-        start_oy = max(q_box_bottom + 15, 520)
+        start_oy = max(q_box_bottom + 18, 520)
 
         opt_heights = []
         wrapped_opts = []
@@ -584,7 +584,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
             o_lines = w_opt.count("\n") + 1
             opt_heights.append(max(85, o_lines * 24 + 20))
 
-        # Step 1: Question + Option A
+        # Step 1: Question + Option A (Comfortable reading pace)
         img_s1 = base_img.copy()
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
@@ -599,7 +599,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         f1_name = f"anim_q{idx+1}_step1.png"
         img_s1.save(f1_name)
         frames.append(f1_name)
-        frame_durs.append(0.9)
+        frame_durs.append(1.3)
 
         # Step 2: Options B & C
         img_s2 = img_s1.copy()
@@ -615,9 +615,9 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         f2_name = f"anim_q{idx+1}_step2.png"
         img_s2.save(f2_name)
         frames.append(f2_name)
-        frame_durs.append(0.9)
+        frame_durs.append(1.3)
 
-        # Step 3: Option D + Timer box
+        # Step 3: Option D + Timer box (Ample time to think and review options)
         img_s3 = img_s2.copy()
         d3 = ImageDraw.Draw(img_s3)
         
@@ -631,9 +631,9 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         f3_name = f"anim_q{idx+1}_step3.png"
         img_s3.save(f3_name)
         frames.append(f3_name)
-        frame_durs.append(1.8)
+        frame_durs.append(2.6)
 
-    # Grand Finale Reveal Screen (Strictly Managed to fit 32 Sec total)
+    # Grand Finale Reveal Screen (Bug-Free Clean Layout)
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -657,12 +657,13 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     img_ans.save(ans_fname)
     frames.append(ans_fname)
     
+    # Precise duration calculation to lock total video exactly at 32.0 seconds
     current_calc_dur = intro_dur + sum(frame_durs[:-1])
-    finale_dur = max(6.0, 32.0 - current_calc_dur)
+    finale_dur = max(7.0, 32.0 - current_calc_dur)
     frame_durs.append(round(finale_dur, 2))
 
     total_dur = intro_dur + sum(frame_durs[:-1]) + finale_dur
-    print(f"⏱️ Locked Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
+    print(f"⏱️ Locked Slow & Steady Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
 
     filter_parts = f"[0:a]aresample=48000[voice]; "
     for i, fname in enumerate(frames):
@@ -704,7 +705,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ 32-Sec Locked Professional Quiz Reel Created: {output_video}", flush=True)
+    print(f"✅ Professional 32-Sec Slow & Steady Quiz Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
@@ -713,9 +714,9 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload 32s locked professional quiz reel into folder [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload slow & steady 32s professional quiz reel [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("🎉 Successfully pushed 32s locked quiz reel to GitHub folder!", flush=True)
+        print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
     except Exception as e:
         print(f"⚠️ Git push note: {e}", flush=True)
 
@@ -730,11 +731,11 @@ if __name__ == "__main__":
     print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate 32-Sec Locked Professional Quiz Video inside folder
-    print("🧠 Generating 32-Sec Locked Professional Quiz Reel...", flush=True)
+    # 2. Generate Professional Slow & Steady Quiz Video inside folder
+    print("🧠 Generating Professional Slow & Steady Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
     # 3. Auto push to GitHub folder
     auto_commit_and_push_reels()
     
-    print("🎉 Done! 32-second locked quiz reel generated inside the 'generated_reels' folder.", flush=True)
+    print("🎉 Done! Professional slow & steady quiz reel generated inside the 'generated_reels' folder.", flush=True)
