@@ -69,7 +69,23 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Dynamic PDF Extractor Engine ---
+# --- Robust Title & Text Sanitizer Engine ---
+def clean_extracted_title(title):
+    if not title:
+        return "विभागीय नियम"
+    title = re.sub(r"^[:\-\s\.]+", "", title)
+    bad_map = {
+        "टिविंग": "पैकिंग",
+        "टिवक": "टिकट",
+        "पै किं ग": "पैकिंग",
+        "विकि": "टिकट",
+        "प्रस्थान": "मुद्रण"
+    }
+    for k, v in bad_map.items():
+        if k in title:
+            title = title.replace(k, v)
+    return clean_text(title)
+
 def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
     default_title = f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}"
     default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} का आधिकारिक विभागीय नियम।"
@@ -96,11 +112,11 @@ def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
                 if len(matched_text) >= 2500:
                     break
 
-        final_title = found_title if found_title else default_title
+        final_title = clean_extracted_title(found_title if found_title else default_title)
         final_text = matched_text.strip() if matched_text.strip() else default_text
         
         print(f"✅ Extracted Title: '{final_title}' for Clause {clause_no}", flush=True)
-        return clean_hindi_postal_terms(final_title[:60]), clean_hindi_postal_terms(final_text[:2500])
+        return final_title[:60], clean_hindi_postal_terms(final_text[:2500])
     except Exception as e:
         print(f"⚠️ PDF Extraction Error: {e}", flush=True)
     return default_title, default_text
@@ -115,22 +131,17 @@ def clean_text(text):
 def clean_hindi_postal_terms(text):
     if not text:
         return ""
+    text = re.sub(r"^[:\-\s\.]+", "", text)
     replacements = {
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
         "घंटी वाली": "घंटे वाली", "नित्य पत्र": "वित्तीय वर्ष", "नित्य वर्ष": "वित्तीय वर्ष",
-        "विकि": "टिकट", "प्रस्थान": "मुद्रण"
+        "विकि": "टिकट", "प्रस्थान": "मुद्रण", "टिविंग": "पैकिंग"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
+    text = re.sub(r"^[:\s]+", "", text)
     return clean_text(text)
-
-def clean_text_for_tts(text):
-    if not text:
-        return ""
-    text_no_brackets = re.sub(r'\s*\([^)]*\)', '', text)
-    cleaned = re.sub(r'[a-zA-Z]+', '', text_no_brackets)
-    return " ".join(cleaned.split())
 
 def extract_field_block(text, field_name, next_fields):
     pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
@@ -201,7 +212,7 @@ def advance_progress_state(state):
     save_progress_state(state)
     print(f"⏩ Advanced Progress to: Clause {state['clause_no']} (Part {state['current_part']}/{state['total_parts']})", flush=True)
 
-# --- STRICT CLEAN HINDI-CENTRIC SCRIPT GENERATOR ---
+# --- STRICT 100% PURE HINDI SCRIPT GENERATOR ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
@@ -245,9 +256,9 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    STRICT HINDI-CENTRIC RULES (TEMPERATURE 0.0):
+    STRICT 100% PURE HINDI RULES (TEMPERATURE 0.0):
     1. Base all facts, rules, and questions STRICTLY and SOLELY on the extracted text above.
-    2. SCREEN TEXT MUST BE IN CLEAR, CRISP HINDI: Avoid long clunky bilingual strings that overflow boxes. Keep sentences concise, perfectly fitting inside visual containers without wrapping issues.
+    2. ALL SCREEN TEXT (SEN1, SEN2, PARAM1_TITLE, PARAM1_VAL, PARAM2_TITLE, PARAM2_VAL, TRAP_POINT, QUESTION, OPT_A, OPT_B, OPT_C, OPT_D) MUST BE IN FLUID, ERROR-FREE HINDI ONLY. DO NOT USE ANY ENGLISH WORDS IN THE TEXT FIELDS.
     3. SEN1: State the exact operational rule from this text in clear Hindi (max 12-14 words).
     4. SEN2: State the specific legal exception, trap or penalty in clear Hindi (max 12-14 words). MUST NOT REPEAT SEN1.
     5. PARAM1_TITLE & PARAM1_VAL: First core condition in concise Hindi.
@@ -309,13 +320,10 @@ def generate_clause_script(state):
     return fallback_data
 
 def get_slide_segments(script_data):
-    voice_sen1 = clean_text_for_tts(script_data['sen1'])
-    voice_sen2 = clean_text_for_tts(script_data['sen2'])
-    
     return [
         f"{script_data['hook_voice']}",
-        f"{voice_sen1 if voice_sen1 else script_data['sen1']}",
-        f"परीक्षा विशेष बिंदु: {voice_sen2 if voice_sen2 else script_data['sen2']}",
+        f"{script_data['sen1']}",
+        f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
         f"सवाल स्क्रीन पर है! सही उत्तर A, B, C या D कमेंट करें और पोस्टल वाला को फॉलो करें!"
     ]
 
@@ -675,7 +683,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Clean Hindi-Centric Master Kinetic Reel Created: {output_video}", flush=True)
+    print(f"✅ 100% Pure Hindi Master Kinetic Reel Created: {output_video}", flush=True)
 
 # --- RESUMABLE PROTOCOL UPLOADER ---
 def _create_reel_container(video_file, caption, user_id, access_token):
