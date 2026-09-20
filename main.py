@@ -52,6 +52,40 @@ OFFICIAL_PO_GUIDE_TITLES = {
     20: "पंजीकृत समाचार पत्र"
 }
 
+# --- High-Retention Viral Hooks (<3.5s, No Word Repetition) ---
+VIRAL_HOOKS = [
+    {
+        "voice": "विभागीय परीक्षा में यह एक नियम बार-बार आता है, देखिए!",
+        "visual_badge": "[ ! ] 100% पक्का सवाल",
+        "hook_text": "विभागीय परीक्षा में बार-बार दोहराया जाने वाला सबसे महत्वपूर्ण क्लॉज!"
+    },
+    {
+        "voice": "जीडीएस परीक्षा में 90% छात्र इस एक नियम में फेल होते हैं!",
+        "visual_badge": "[ ! ] 90% छात्र फेल",
+        "hook_text": "इस क्लॉज के आधिकारिक अपवाद में सबसे ज्यादा परीक्षार्थी गलती करते हैं!"
+    },
+    {
+        "voice": "प्रमोशन पक्का करने के लिए यह नियम आज ही समझ लीजिए!",
+        "visual_badge": "[ ! ] मेरिट लिस्ट बूस्टर",
+        "hook_text": "जीडीएस से पोस्टमैन व पी.ए. बनने के लिए इस नियम को आज ही रट लीजिए!"
+    },
+    {
+        "voice": "डाक विभाग की परीक्षा का सबसे पसंदीदा नियम, ध्यान से समझें!",
+        "visual_badge": "[ ! ] परीक्षक का पसंदीदा",
+        "hook_text": "सीधे 2 अंक पक्के करने वाला डाक घर गाइड का अनिवार्य नियम!"
+    },
+    {
+        "voice": "पोस्टमैन या पी.ए. बनना है तो यह रील बिल्कुल स्किप मत करना!",
+        "visual_badge": "[ ! ] प्रमोशन स्पेशल",
+        "hook_text": "विभागीय परीक्षा पास करने के लिए यह क्लॉज पढ़ना अनिवार्य है!"
+    },
+    {
+        "voice": "डाक घर गाइड का यह नियम कई लोगों का प्रमोशन रोक देता है!",
+        "visual_badge": "[ ! ] परीक्षा रेड अलर्ट",
+        "hook_text": "सावधान: इस नियम की छोटी सी गलती आपका विभागीय प्रमोशन रोक सकती है!"
+    }
+]
+
 def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=PDF_FILE_PATH):
     if clause_no in OFFICIAL_PO_GUIDE_TITLES:
         final_title = OFFICIAL_PO_GUIDE_TITLES[clause_no]
@@ -180,6 +214,8 @@ def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
     total_parts = state.get("total_parts", 1)
+    hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
+    hook_obj = VIRAL_HOOKS[hook_idx]
 
     official_title, official_pdf_text = extract_clause_from_pdf(current_clause, current_part, total_parts)
 
@@ -188,9 +224,9 @@ def generate_clause_script(state):
         "clause_name": official_title,
         "part_no": current_part,
         "total_parts": total_parts,
-        "visual_hook_badge": f"[ ! ] क्लॉज {current_clause} स्पेशल",
-        "hook_voice": f"ध्यान दें! पोस्टल गाइड क्लॉज {current_clause}। इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!",
-        "hook_display_text": f"पोस्टल गाइड भाग 1 - क्लॉज {current_clause} के सबसे कठिन परीक्षा प्रश्न!",
+        "visual_hook_badge": hook_obj["visual_badge"],
+        "hook_voice": hook_obj["voice"],
+        "hook_display_text": hook_obj["hook_text"],
         "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
         "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
         "param1_title": "परीक्षा मुख्य बिंदु",
@@ -347,13 +383,14 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- CONCEPT RULE VIDEO ---
+# --- CONCEPT RULE VIDEO (UPDATED KINETIC FLOW FROM MAIN 9) ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     segment_audios = [
         script_data["hook_voice"],
         script_data["sen1"],
-        f"परीक्षा विशेष बिंदु: {script_data['sen2']}"
+        f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
+        f"आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु!"
     ]
     durations = []
     for i, seg_text in enumerate(segment_audios):
@@ -361,9 +398,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         asyncio.run(generate_segment_audio(seg_text, seg_file, rate="+0%"))
         durations.append(get_audio_duration(seg_file))
 
-    concat_filter = "".join([f"[{i}:a]" for i in range(3)]) + "concat=n=3:v=0:a=1[aout]"
+    concat_filter = "".join([f"[{i}:a]" for i in range(4)]) + "concat=n=4:v=0:a=1[aout]"
     ffmpeg_concat_cmd = ["ffmpeg", "-y"]
-    for i in range(3):
+    for i in range(4):
         ffmpeg_concat_cmd.extend(["-i", f"audio_concept_{i}.mp3"])
     ffmpeg_concat_cmd.extend(["-filter_complex", concat_filter, "-map", "[aout]", "-c:a", "libmp3lame", "-b:a", "192k", "concept_master.mp3"])
     subprocess.run(ffmpeg_concat_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -382,6 +419,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     font_wa_hin = get_font(28)
     font_wa_num = get_font(28)
     font_cta = get_font(30)
+    font_opt = get_font(28)
     font_hook = get_font(36)
 
     def draw_base(d):
@@ -398,7 +436,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
 
     def draw_footer_cta(d):
         d.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
-        d.text((120, 1605), "फ्री मॉक के लिए MOCK कमेंट करें और फॉलो करें!", fill="#FFFFFF", font=font_cta)
+        d.text((120, 1605), "पूरी तैयारी के लिए फॉलो करें:  @POSTAL_WALA", fill="#FFFFFF", font=font_cta)
 
     frames = []
     frame_durs = []
@@ -434,9 +472,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         if step >= 3:
             d.rounded_rectangle([110, 1080, 970, 1260], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
             d.text((150, 1115), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])}", fill="#FDE047", font=font_h2)
-            d.text((150, 1180), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_body)
+            d.text((150, 1180), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
             d.rounded_rectangle([110, 1400, 970, 1490], radius=16, fill="#064E3B", outline="#10B981", width=2)
-            d.text((200, 1425), ">> नियम को ध्यान से समझें!", fill="#34D399", font=font_h2)
+            d.text((200, 1425), ">> 25 सेकंड में पूरा नियम समझें!", fill="#34D399", font=font_h2)
 
         draw_footer_cta(d)
         return img
@@ -457,6 +495,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         frames.append(fn)
         frame_durs.append(round(st_d, 2))
 
+    # Slide 2: Rule with 2 Parameter Cards
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
     draw_base(d2a)
@@ -478,10 +517,11 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d2a.rounded_rectangle([130, 850, 430, 895], radius=8, fill="#0284C7")
     d2a.text((145, 858), f"[ {script_data.get('param1_title', 'परीक्षा मुख्य बिंदु')} ]", fill="#FFFFFF", font=font_label)
     d2a.text((145, 915), script_data.get('param1_val', 'नियम अनुसार मान्य'), fill="#E0F2FE", font=font_h2)
+    
     draw_footer_cta(d2a)
     img2a.save("c_2a.png")
     frames.append("c_2a.png")
-    frame_durs.append(round(durations[1] * 0.45, 2))
+    frame_durs.append(round(durations[1] * 0.40, 2))
 
     img2b = img2a.copy()
     d2b = ImageDraw.Draw(img2b)
@@ -491,8 +531,17 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d2b.text((145, 1095), script_data.get('param2_val', 'आधिकारिक नियम'), fill="#FEF3C7", font=font_h2)
     img2b.save("c_2b.png")
     frames.append("c_2b.png")
-    frame_durs.append(round(durations[1] * 0.55, 2))
+    frame_durs.append(round(durations[1] * 0.35, 2))
 
+    img2c = img2b.copy()
+    d2c = ImageDraw.Draw(img2c)
+    d2c.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+    d2c.text((160, 1400), "आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु >>", fill="#38BDF8", font=font_h2)
+    img2c.save("c_2c.png")
+    frames.append("c_2c.png")
+    frame_durs.append(round(durations[1] * 0.25, 2))
+
+    # Slide 3: Trap Point
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
     draw_base(d3a)
@@ -513,7 +562,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     draw_footer_cta(d3a)
     img3a.save("c_3a.png")
     frames.append("c_3a.png")
-    frame_durs.append(round(durations[2] * 0.40, 2))
+    frame_durs.append(round(durations[2] * 0.35, 2))
 
     img3b = img3a.copy()
     d3b = ImageDraw.Draw(img3b)
@@ -527,7 +576,15 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d3b.multiline_text((145, 960), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=14)
     img3b.save("c_3b.png")
     frames.append("c_3b.png")
-    frame_durs.append(round(durations[2] * 0.60, 2))
+    frame_durs.append(round(durations[2] * 0.35, 2))
+
+    img3c = img3b.copy()
+    d3c = ImageDraw.Draw(img3c)
+    d3c.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#FBBF24", width=2)
+    d3c.text((180, 1400), "अब आगे देखिए क्विज़ वीडियो >>", fill="#FDE047", font=font_h2)
+    img3c.save("c_3c.png")
+    frames.append("c_3c.png")
+    frame_durs.append(round(durations[2] * 0.30, 2))
 
     inputs = []
     filter_parts = ""
@@ -803,7 +860,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Quiz Reel Created Successfully: {output_video}", flush=True)
 
-# --- AUTO-COMMIT & PUSH (BOTH VIDEOS PUSHED TOGETHER) ---
+# --- AUTO-COMMIT & PUSH ---
 def auto_commit_and_push_reels():
     try:
         print("📤 Committing and pushing reels to GitHub repository...", flush=True)
@@ -816,7 +873,7 @@ def auto_commit_and_push_reels():
     except Exception as e:
         print(f"⚠️ Git push note: {e}", flush=True)
 
-# --- MAIN RUNNER (SEQUENCE: 1. RULE VIDEO -> 2. QUIZ VIDEO) ---
+# --- MAIN RUNNER ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
