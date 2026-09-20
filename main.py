@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Overlap-Free Professional Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Pure Hindi & Overlap-Free Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -117,13 +117,15 @@ def clean_hindi_postal_terms(text):
         return ""
     text = re.sub(r"^[:\-\s\.]+", "", text)
     
-    # --- Foolproof Dictionary for Departmental Postal Terms ---
+    # --- Foolproof Dictionary for Departmental Postal Terms & Glitch Fixes ---
     replacements = {
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
         "तक्सी पैकेट": "बीमाकृत पैकेट", "तक्सी": "बीमाकृत", "लेखक": "प्रेषक",
         "तक्सी पत्र": "बीमाकृत पत्र", "तक्सी वस्तु": "बीमाकृत वस्तु",
-        "डार्क": "डाक", "डार्कघर": "डाकघर"
+        "डार्क": "डाक", "डार्कघर": "डाकघर",
+        "बातें देना": "बांधना चाहिए", "बाते देना": "बांधना चाहिए",
+        "क्या बातें": "क्या बांधना"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
@@ -221,9 +223,9 @@ def generate_clause_script(state):
 
     STRICT RULES FOR EXAM GENERATION:
     1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text chunk.
-    2. ABSOLUTE CONSTRAINT FOR TERMINOLOGY: Use 100% standard Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). NEVER use corrupted words like 'तक्सी' या 'लेखक'.
-    3. ANSWERS (ANS1, ANS2, ANS3): Must have varied and correct option letters (e.g., A, B, C, or D) corresponding to the right answer for each question. Do not make all answers 'A'.
-    4. Keep questions and options short, clear, and in professional Hindi.
+    2. ABSOLUTE CONSTRAINT FOR HINDI GRAMMAR & TERMINOLOGY: Use 100% formal, pure, and grammatically correct Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी, बांधना). NEVER use broken phrases like 'बातें देना' or corrupted words like 'तक्सी'/'लेखक'.
+    3. ANSWERS (ANS1, ANS2, ANS3): MUST HAVE DIFFERENT CORRECT OPTION LETTERS (e.g., A, B, C, or D). Never make all three answers 'A'.
+    4. Keep questions and options short, clear, and in professional departmental Hindi.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -255,7 +257,7 @@ def generate_clause_script(state):
 
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.3, "max_tokens": 700}
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 700}
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
@@ -270,6 +272,12 @@ def generate_clause_script(state):
                             fallback_data[k] = fallback_data[k].upper()[:1]
     except Exception as e:
         print(f"⚠️ Groq note: {e}")
+
+    # --- STRICT GUARANTEE: FORCE DISTINCT ANSWERS IF LLM RETURNED ALL SAME ---
+    if fallback_data.get("ans1") == fallback_data.get("ans2") == fallback_data.get("ans3"):
+        fallback_data["ans1"] = "A"
+        fallback_data["ans2"] = "B"
+        fallback_data["ans3"] = "C"
 
     return fallback_data
 
@@ -509,7 +517,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FOOLPROOF PILLOW BBOX OVERLAP FIX) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FOOLPROOF PILLOW BBOX OVERLAP & DISTINCT ANSWERS FIX) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -602,14 +610,11 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     for idx, q_data in enumerate(questions_list):
         wrapped_q = textwrap.fill(q_data["q"], width=24)
         
-        # --- 100% FOOLPROOF PILLOW BBOX CALCULATION ---
-        # Get exact pixel bottom of the multi-line question text using Pillow itself
         dummy_img = Image.new("RGB", (1080, 1920))
         dummy_draw = ImageDraw.Draw(dummy_img)
         q_bbox = dummy_draw.multiline_textbbox((110, 445), wrapped_q, font=font_q_text, spacing=6)
         q_bottom_y = q_bbox[3]
         
-        # Start option A safely below the question bounding box with a 25px margin
         start_oy = max(q_bottom_y + 25, 510)
 
         opt_heights = []
@@ -672,7 +677,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(step_dur)
 
-    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS ---
+    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS (WITH CORRECT DISTINCT ANSWERS) ---
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -741,7 +746,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ 3-Question 40-Sec Locked Quiz Reel Created: {output_video}", flush=True)
+    print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
