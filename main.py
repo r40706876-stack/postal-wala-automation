@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Overlap-Free Professional Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Crisp 3-Question 32-Sec Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -51,15 +51,15 @@ OFFICIAL_PO_GUIDE_TITLES = {
     20: "पंजीकृत समाचार पत्र"
 }
 
-# --- High-Retention Viral Hooks ---
+# --- Short & Punchy Viral Hooks (No Waste) ---
 VIRAL_HOOKS = [
     {
-        "voice": "विभागीय परीक्षा का यह सबसे महत्वपूर्ण सवाल, ध्यान से देखिए!",
+        "voice": "विभागीय परीक्षा का यह सबसे महत्वपूर्ण सवाल, जल्दी से सही उत्तर सोचिए!",
         "visual_badge": "[ ! ] 100% पक्का सवाल",
         "hook_text": "विभागीय परीक्षा में बार-बार दोहराया जाने वाला सबसे महत्वपूर्ण क्लॉज!"
     },
     {
-        "voice": "90% छात्र इस नियम में गलती करते हैं, जल्दी से सही उत्तर सोचिए!",
+        "voice": "90% छात्र इस सवाल में गलती करते हैं, उत्तर दीजिए!",
         "visual_badge": "[ ! ] 90% छात्र फेल",
         "hook_text": "इस क्लॉज के आधिकारिक अपवाद में सबसे ज्यादा परीक्षार्थी गलती करते हैं!"
     }
@@ -202,10 +202,9 @@ def generate_clause_script(state):
         "q1": f"डाक गाइड क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक नियम", "b1": "अन्य प्रावधान", "c1": "सामान्य निर्देश", "d1": "इनमें से कोई नहीं", "ans1": "A",
         "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "सीमाएं व शर्तें", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "A",
         "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "बुकिंग अस्वीकार", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "A",
-        "q4": "यह निर्देश किस पुस्तिका से संबंधित है?", "a4": "पोस्टल गाइड भाग 1", "b4": "पोस्टल गाइड भाग 2", "c4": "वॉल्यूम 6", "d4": "इनमें से कोई नहीं", "ans4": "A",
 
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n💬 अपना सही उत्तर कमेंट करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
-        "quiz_caption": f"🧠 रैपिड फायर क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 4 धमाकेदार सवाल! सभी के सही उत्तर वीडियो के **लास्ट में** दिए गए हैं, अंत तक देखें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
+        "quiz_caption": f"🧠 क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! सभी के सही उत्तर वीडियो के **लास्ट में** दिए गए हैं, अंत तक देखें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
     }
 
     if not GROQ_API_KEY:
@@ -221,10 +220,9 @@ def generate_clause_script(state):
     \"\"\"
 
     STRICT RULES FOR EXAM GENERATION:
-    1. Generate EXACTLY 4 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text.
-    2. ABSOLUTE CONSTRAINT FOR OPTIONS (A, B, C, D): Every single option must use authentic postal terminology (e.g., registered post, insurance, insured cover, booking refusal, official receipt, fine, penalty, restricted articles, sealed packet, etc.). 
-    3. STRICTLY FORBIDDEN: Never generate bizarre, unrelated, or hallucinated options like crops, agriculture, food items, or non-postal daily life objects. All distractors must look like real departmental exam options.
-    4. Keep questions and options short, clear, and in professional Hindi.
+    1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text.
+    2. ABSOLUTE CONSTRAINT FOR OPTIONS (A, B, C, D): Every single option must use authentic postal terminology.
+    3. Keep questions and options short, clear, and in professional Hindi.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -252,17 +250,11 @@ def generate_clause_script(state):
     C3: ...
     D3: ...
     ANS3: A
-    Q4: ...
-    A4: ...
-    B4: ...
-    C4: ...
-    D4: ...
-    ANS4: A
     """
 
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 800}
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 700}
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
@@ -280,11 +272,11 @@ def generate_clause_script(state):
 
     return fallback_data
 
-async def generate_segment_audio(text, outfile):
+async def generate_segment_audio(text, outfile, rate="+10%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
         except Exception: pass
-    communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+0%")
+    communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=rate)
     await communicate.save(outfile)
 
 def get_audio_duration(path):
@@ -302,7 +294,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     durations = []
     for i, seg_text in enumerate(segment_audios):
         seg_file = f"audio_concept_{i}.mp3"
-        asyncio.run(generate_segment_audio(seg_text, seg_file))
+        asyncio.run(generate_segment_audio(seg_text, seg_file, rate="+0%"))
         durations.append(get_audio_duration(seg_file))
 
     concat_filter = "".join([f"[{i}:a]" for i in range(3)]) + "concat=n=3:v=0:a=1[aout]"
@@ -516,34 +508,33 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- FLAWLESS DYNAMIC HEIGHT & OVERLAP-FREE QUIZ VIDEO ---
+# --- 3-QUESTION FLAWLESS OVERLAP-FREE 32-SEC QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
     questions_list = [
-        {"q_num": "सवाल 1/4", "q": script_data["q1"], "opts": [script_data["a1"], script_data["b1"], script_data["c1"], script_data["d1"]], "ans": script_data["ans1"]},
-        {"q_num": "सवाल 2/4", "q": script_data["q2"], "opts": [script_data["a2"], script_data["b2"], script_data["c2"], script_data["d2"]], "ans": script_data["ans2"]},
-        {"q_num": "सवाल 3/4", "q": script_data["q3"], "opts": [script_data["a3"], script_data["b3"], script_data["c3"], script_data["d3"]], "ans": script_data["ans3"]},
-        {"q_num": "सवाल 4/4", "q": script_data["q4"], "opts": [script_data["a4"], script_data["b4"], script_data["c4"], script_data["d4"]], "ans": script_data["ans4"]},
+        {"q_num": "सवाल 1/3", "q": script_data["q1"], "opts": [script_data["a1"], script_data["b1"], script_data["c1"], script_data["d1"]], "ans": script_data["ans1"]},
+        {"q_num": "सवाल 2/3", "q": script_data["q2"], "opts": [script_data["a2"], script_data["b2"], script_data["c2"], script_data["d2"]], "ans": script_data["ans2"]},
+        {"q_num": "सवाल 3/3", "q": script_data["q3"], "opts": [script_data["a3"], script_data["b3"], script_data["c3"], script_data["d3"]], "ans": script_data["ans3"]},
     ]
 
-    intro_text = "सावधान! विभागीय परीक्षा का सबसे महत्वपूर्ण टेस्ट, पेन-पेपर लेकर तैयार हो जाइए!"
+    intro_text = "विभागीय परीक्षा का सबसे महत्वपूर्ण सवाल, जल्दी से सही उत्तर सोचिए!"
     intro_audio_file = "audio_q_intro.mp3"
-    asyncio.run(generate_segment_audio(intro_text, intro_audio_file))
+    asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+10%"))
 
     audio_files = [intro_audio_file]
     segment_durations = [get_audio_duration(intro_audio_file)]
 
     for idx, q_data in enumerate(questions_list):
-        q_speech = f"{q_data['q_num']}. {q_data['q']}"
+        q_speech = f"{q_data['q']}"
         q_audio_file = f"audio_q_{idx+1}.mp3"
-        asyncio.run(generate_segment_audio(q_speech, q_audio_file))
+        asyncio.run(generate_segment_audio(q_speech, q_audio_file, rate="+10%"))
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
-    finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, सवाल तीन का - {questions_list[2]['ans']}, और सवाल चार का सही उत्तर है - {questions_list[3]['ans']}।"
+    finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, और सवाल तीन का सही उत्तर है - {questions_list[2]['ans']}।"
     finale_audio_file = "audio_q_finale.mp3"
-    asyncio.run(generate_segment_audio(finale_speech, finale_audio_file))
+    asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+10%"))
     audio_files.append(finale_audio_file)
     segment_durations.append(get_audio_duration(finale_audio_file))
 
@@ -563,8 +554,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_trust = get_font(18)
     font_badge = get_font(20)
     font_title = get_font(32)
-    font_q_text = get_font(26)   # Optimized for multi-line fitting
-    font_opt_text = get_font(22) # Optimized option size to prevent vertical overlap
+    font_q_text = get_font(25)
+    font_opt_text = get_font(22)
     font_h2 = get_font(24)
     font_cta = get_font(26)
 
@@ -597,8 +588,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     intro_img = base_img.copy()
     d_intro = ImageDraw.Draw(intro_img)
     d_intro.rounded_rectangle([110, 550, 970, 850], radius=20, fill="#182848", outline="#FBBF24", width=3)
-    d_intro.text((180, 630), "🚨 विभागीय परीक्षा का सबसे बड़ा टेस्ट!", fill="#FDE047", font=font_title)
-    d_intro.text((180, 710), "4 कठिन सवाल — पेन और पेपर लेकर तैयार रहें", fill="#FFFFFF", font=font_h2)
+    d_intro.text((180, 630), "🚨 विभागीय परीक्षा का सबसे महत्वपूर्ण सवाल!", fill="#FDE047", font=font_title)
+    d_intro.text((180, 710), "जल्दी से सही उत्तर सोचिए!", fill="#FFFFFF", font=font_h2)
     intro_frame_name = "quiz_intro_frame.png"
     intro_img.save(intro_frame_name)
     frames.append(intro_frame_name)
@@ -607,22 +598,19 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     labels = ["A", "B", "C", "D"]
 
     for idx, q_data in enumerate(questions_list):
-        # Dynamically wrap question text properly
-        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=32)
+        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=30)
         q_lines = wrapped_q.count("\n") + 1
         
-        # Calculate dynamic bottom for question container to avoid overlapping options
-        q_box_bottom = 400 + (q_lines * 32)
-        start_oy = max(q_box_bottom + 15, 510)
+        q_box_bottom = 430 + (q_lines * 32)
+        start_oy = max(q_box_bottom + 18, 520)
 
         opt_heights = []
         wrapped_opts = []
         for opt in q_data["opts"]:
-            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=34)
+            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=32)
             wrapped_opts.append(w_opt)
             o_lines = w_opt.count("\n") + 1
-            # Dynamic height per option box based on exact number of lines
-            opt_heights.append(max(75, o_lines * 28 + 18))
+            opt_heights.append(max(80, o_lines * 26 + 18))
 
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
@@ -632,7 +620,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
-        d1.multiline_text((110, 440), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=4)
+        d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=4)
         
         oy = start_oy
         d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
@@ -644,16 +632,16 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f1_name)
         frame_durs.append(step_dur)
 
-        # --- STEP 2: Options B & C (Accurate Dynamic Positioning) ---
+        # --- STEP 2: Options B & C ---
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         
-        curr_y = start_oy + opt_heights[0] + 12
+        curr_y = start_oy + opt_heights[0] + 14
         for o_idx in range(1, 3):
             d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
             d2.text((135, curr_y + 12), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
             d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=2)
-            curr_y += opt_heights[o_idx] + 12
+            curr_y += opt_heights[o_idx] + 14
         
         f2_name = f"anim_q{idx+1}_step2.png"
         img_s2.save(f2_name)
@@ -676,25 +664,24 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(step_dur)
 
-    # --- GRAND FINALE SCREEN (SAFE HYPHEN FORMAT) ---
+    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS ---
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
-    d_ans.rounded_rectangle([110, 380, 620, 440], radius=10, fill="#064E3B", outline="#10B981", width=2)
-    d_ans.text((130, 392), "🎉 महा-फिनाले: सभी 4 सवालों के सही उत्तर", fill="#34D399", font=font_h2)
+    d_ans.rounded_rectangle([110, 380, 650, 440], radius=10, fill="#064E3B", outline="#10B981", width=2)
+    d_ans.text((130, 392), "🎉 महा-फिनाले: सभी 3 सवालों के सही उत्तर", fill="#34D399", font=font_h2)
 
-    ans_y_start = 465
+    ans_y_start = 480
     answers_text = [
         f"सवाल 1 का सही उत्तर - [ {script_data.get('ans1', 'A')} ]",
         f"सवाल 2 का सही उत्तर - [ {script_data.get('ans2', 'A')} ]",
-        f"सवाल 3 का सही उत्तर - [ {script_data.get('ans3', 'A')} ]",
-        f"सवाल 4 का सही उत्तर - [ {script_data.get('ans4', 'A')} ]"
+        f"सवाल 3 का सही उत्तर - [ {script_data.get('ans3', 'A')} ]"
     ]
     
     for a_idx, ans_str in enumerate(answers_text):
-        ay = ans_y_start + (a_idx * 155)
-        d_ans.rounded_rectangle([110, ay, 970, ay + 125], radius=16, fill="#182848", outline="#FBBF24", width=2)
-        d_ans.text((140, ay + 38), clean_hindi_postal_terms(ans_str), fill="#FDE047", font=font_title)
+        ay = ans_y_start + (a_idx * 180)
+        d_ans.rounded_rectangle([110, ay, 970, ay + 140], radius=16, fill="#182848", outline="#FBBF24", width=2)
+        d_ans.text((140, ay + 45), clean_hindi_postal_terms(ans_str), fill="#FDE047", font=font_title)
 
     ans_fname = "quiz_answers_reveal.png"
     img_ans.save(ans_fname)
@@ -702,7 +689,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     frame_durs.append(segment_durations[-1])
 
     total_dur = sum(frame_durs)
-    print(f"⏱️ Total Synced Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
+    print(f"⏱️ Total 3-Question Synced Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
 
     filter_parts = ""
     for i, fname in enumerate(frames):
@@ -746,7 +733,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Overlap-Free Professional Quiz Reel Created: {output_video}", flush=True)
+    print(f"✅ 3-Question Overlap-Free Professional Quiz Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
@@ -755,6 +742,28 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload overlap-free 32s professional quiz reel [skip ci]"], call=True) # wait, subprocess.run doesn't take call parameter, wait check=True is standard
-        # Let's fix that minor syntax issue in auto_commit_and_push_reels just to be safe:
-        # subprocess.run(["git", "commit", "-m", "...", "[skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question overlap-free 32s professional quiz reel [skip ci]"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
+    except Exception as e:
+        print(f"⚠️ Git push note: {e}", flush=True)
+
+# --- MAIN RUNNER ---
+if __name__ == "__main__":
+    st = load_progress_state()
+    print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
+    
+    script_data = generate_clause_script(st)
+    
+    # 1. Generate Normal Concept Video (Untouched)
+    print("🎬 Generating Concept Reel...", flush=True)
+    render_concept_video(script_data, CONCEPT_VIDEO)
+    
+    # 2. Generate 3-Question Overlap-Free Quiz Video inside folder
+    print("🧠 Generating 3-Question Overlap-Free Quiz Reel...", flush=True)
+    render_quiz_video(script_data, QUIZ_VIDEO)
+    
+    # 3. Auto push to GitHub folder
+    auto_commit_and_push_reels()
+    
+    print("🎉 Done! 3-question overlap-free quiz reel generated inside the 'generated_reels' folder.", flush=True)
