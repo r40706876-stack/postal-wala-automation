@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Large Font & Crisp Hook Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Crisp 3-Question 32-Sec Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -174,7 +174,7 @@ def generate_clause_script(state):
         "total_parts": total_parts,
         "visual_hook_badge": f"[ ! ] क्लॉज {current_clause} स्पेशल",
         "hook_voice": f"पोस्टल गाइड क्लॉज {current_clause} का सबसे महत्वपूर्ण सवाल, जल्दी से सोचिए!",
-        "hook_text": f"पोस्टल गाइड भाग 1 - क्लॉज {current_clause} के सबसे कठिन परीक्षा प्रश्न!",
+        "hook_display_text": f"पोस्टल गाइड भाग 1 - क्लॉज {current_clause} के सबसे कठिन परीक्षा प्रश्न!",
         "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
         "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
         "param1_title": "परीक्षा मुख्य बिंदु",
@@ -502,7 +502,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         {"q_num": "सवाल 3/3", "q": script_data["q3"], "opts": [script_data["a3"], script_data["b3"], script_data["c3"], script_data["d3"]], "ans": script_data["ans3"]},
     ]
 
-    # Crisp clause-specific hook with +10% fast speech
     intro_text = script_data["hook_voice"]
     intro_audio_file = "audio_q_intro.mp3"
     asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+10%"))
@@ -517,7 +516,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
-    # Finale Voiceover with Mock Comment CTA
     finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, और सवाल तीन का सही उत्तर है - {questions_list[2]['ans']}। फ्री मॉक टेस्ट के लिए मॉक कमेंट करें!"
     finale_audio_file = "audio_q_finale.mp3"
     asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+10%"))
@@ -540,10 +538,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_trust = get_font(18)
     font_badge = get_font(20)
     font_title = get_font(32)
-    
-    # --- LARGER & CLEANER FONTS TO FILL SCREEN SPACE ---
-    font_q_text = get_font(30)   # Larger question font
-    font_opt_text = get_font(26) # Larger option font
+    font_q_text = get_font(30)
+    font_opt_text = get_font(26)
     font_h2 = get_font(24)
     font_cta = get_font(26)
 
