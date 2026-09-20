@@ -29,8 +29,8 @@ FONT_PATH = "Mukta-Bold.ttf"
 REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
-CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini Primary TTS + Edge-TTS Fallback
+CONCEPT_VIDEO = "concept_reel.mp4"
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4")
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -278,7 +278,7 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- AUDIO GENERATION: GOOGLE AI STUDIO (PRIMARY PREFERENCE) WITH EDGE-TTS FALLBACK ---
+# --- AUDIO GENERATION: GEMINI API PRIMARY PREFERENCE WITH EDGE-TTS FALLBACK ---
 async def generate_segment_audio(text, outfile, rate="+12%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
@@ -347,7 +347,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- NORMAL CONCEPT VIDEO (UNTOUCHED) ---
+# --- NORMAL CONCEPT VIDEO ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     segment_audios = [
@@ -572,7 +572,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (GEMINI TTS PREFERENCE + EDGE-TTS FALLBACK) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -732,7 +732,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(step_dur)
 
-    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS (WITH CORRECT DISTINCT ANSWERS) ---
+    # --- GRAND FINALE SCREEN ---
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -803,14 +803,14 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Quiz Reel Created Successfully: {output_video}", flush=True)
 
-# --- Auto-Commit Function to Push Reels to GitHub Folder ---
+# --- AUTO-COMMIT & PUSH (SYNTAX ERROR FIXED) ---
 def auto_commit_and_push_reels():
     try:
         print("📤 Committing and pushing reels to GitHub repository...", flush=True)
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", -m", "Auto-upload 3-question 40s professional quiz reel [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question 40s professional quiz reel [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
         print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
     except Exception as e:
@@ -823,11 +823,11 @@ if __name__ == "__main__":
     
     script_data = generate_clause_script(st)
     
-    # 1. Generate Normal Concept Video (Untouched)
+    # 1. Generate Normal Concept Video
     print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate 3-Question 40-Sec Locked Quiz Video inside folder
+    # 2. Generate 3-Question 40-Sec Locked Quiz Video
     print("🧠 Generating 3-Question 40-Sec Locked Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
@@ -838,14 +838,13 @@ if __name__ == "__main__":
         st["current_part"] = 1
         st["clause_no"] += 1
         
-    # Recalculate total parts for the new state
     _, pdf_text = extract_clause_from_pdf(st["clause_no"], st["current_part"])
     st["total_parts"] = get_dynamic_total_parts(pdf_text)
     
     save_progress_state(st)
     print(f"🔄 Next Target Set -> Clause {st['clause_no']} Part {st['current_part']}/{st['total_parts']}", flush=True)
     
-    # 3. Auto push to GitHub folder & progress state
+    # 3. Auto push to GitHub
     auto_commit_and_push_reels()
     
     print("🎉 Done! Reel generated and progress updated successfully.", flush=True)
