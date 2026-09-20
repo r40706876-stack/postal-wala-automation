@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Flawless Voice-Synced 32-Sec Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Flawless Synced 32-Sec Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -54,12 +54,12 @@ OFFICIAL_PO_GUIDE_TITLES = {
 # --- High-Retention Viral Hooks ---
 VIRAL_HOOKS = [
     {
-        "voice": "विभागीय परीक्षा में यह एक नियम बार-बार आता है, देखिए!",
+        "voice": "विभागीय परीक्षा का यह सबसे महत्वपूर्ण सवाल, ध्यान से देखिए!",
         "visual_badge": "[ ! ] 100% पक्का सवाल",
         "hook_text": "विभागीय परीक्षा में बार-बार दोहराया जाने वाला सबसे महत्वपूर्ण क्लॉज!"
     },
     {
-        "voice": "जीडीएस परीक्षा में 90% छात्र इस एक नियम में फेल होते हैं!",
+        "voice": "90% छात्र इस नियम में गलती करते हैं, जल्दी से सही उत्तर सोचिए!",
         "visual_badge": "[ ! ] 90% छात्र फेल",
         "hook_text": "इस क्लॉज के आधिकारिक अपवाद में सबसे ज्यादा परीक्षार्थी गलती करते हैं!"
     }
@@ -516,7 +516,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- FLAWLESS AUDIO-SYNCHED 32-SEC LOCKED QUIZ VIDEO ---
+# --- FLAWLESS SYNCHED & CRISP VOICE QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -527,8 +527,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         {"q_num": "सवाल 4/4", "q": script_data["q4"], "opts": [script_data["a4"], script_data["b4"], script_data["c4"], script_data["d4"]], "ans": script_data["ans4"]},
     ]
 
-    # 1. Generate Voiceover Audio Segments with smooth padding
-    intro_text = "सावधान! विभागीय परीक्षा का सबसे महत्वपूर्ण टेस्ट। चार कठिन सवाल आ रहे हैं, पेन और पेपर लेकर तैयार हो जाइए!"
+    # 1. Short & Punchy Hook + Question-Only Voiceover (Options NOT read out loud)
+    intro_text = "सावधान! विभागीय परीक्षा का सबसे महत्वपूर्ण टेस्ट, पेन-पेपर लेकर तैयार हो जाइए!"
     intro_audio_file = "audio_q_intro.mp3"
     asyncio.run(generate_segment_audio(intro_text, intro_audio_file))
 
@@ -536,14 +536,14 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     segment_durations = [get_audio_duration(intro_audio_file)]
 
     for idx, q_data in enumerate(questions_list):
-        q_speech = f"{q_data['q_num']}. {q_data['q']}. विकल्प ए: {q_data['opts'][0]}, विकल्प बी: {q_data['opts'][1]}, विकल्प सी: {q_data['opts'][2]}, विकल्प डी: {q_data['opts'][3]}"
+        q_speech = f"{q_data['q_num']}. {q_data['q']}"
         q_audio_file = f"audio_q_{idx+1}.mp3"
         asyncio.run(generate_segment_audio(q_speech, q_audio_file))
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
     # Finale Voiceover
-    finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर है विकल्प {questions_list[0]['ans']}, सवाल दो का {questions_list[1]['ans']}, सवाल तीन का {questions_list[2]['ans']}, और सवाल चार का सही उत्तर है विकल्प {questions_list[3]['ans']}।"
+    finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, सवाल तीन का - {questions_list[2]['ans']}, और सवाल चार का सही उत्तर है - {questions_list[3]['ans']}।"
     finale_audio_file = "audio_q_finale.mp3"
     asyncio.run(generate_segment_audio(finale_speech, finale_audio_file))
     audio_files.append(finale_audio_file)
@@ -560,8 +560,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ffmpeg_audio_cmd.extend(["-filter_complex", concat_filter_audio, "-map", "[aout]", "-c:a", "libmp3lame", "-b:a", "192k", "quiz_voice_master.mp3"])
     subprocess.run(ffmpeg_audio_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     
-    total_voice_dur = get_audio_duration("quiz_voice_master.mp3")
-
     font_brand = get_font(40)
     font_sub = get_font(20)
     font_trust = get_font(18)
@@ -703,7 +701,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     frame_durs.append(segment_durations[-1])
 
     total_dur = sum(frame_durs)
-    print(f"⏱️ Total Flawless Voice-Synced Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
+    print(f"⏱️ Total Synced Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
 
     filter_parts = ""
     for i, fname in enumerate(frames):
@@ -715,7 +713,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     progress_bar_filter = (
         f"{base_v_filter},"
         f"drawbox=x=0:y=0:w=iw:h=14:color=#1E293B@1:t=fill,"
-        f"drawbox=x=0:y=0:w='iw*(t/{total_dur})':h=14:color=#FBBF24@1:t=fill,"
+        f"drawbox=x=0:y=0:w='iw*(t/{total_dur})':h=14:color=#F43F5E@1:t=fill,"
         f"drawbox=x='max(0, iw*(t/{total_dur})-20)':y=0:w=20:h=14:color=#FEF08A@1:t=fill[v]"
     )
 
@@ -747,7 +745,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Flawless Audio-Synced Professional Quiz Reel Created: {output_video}", flush=True)
+    print(f"✅ Perfectly Synced Professional Quiz Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
@@ -756,7 +754,7 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload flawless voice-synced 32s professional quiz reel [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload perfectly synced 32s professional quiz reel [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
         print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
     except Exception as e:
@@ -773,11 +771,11 @@ if __name__ == "__main__":
     print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate Flawless Audio-Synced Quiz Video inside folder
-    print("🧠 Generating Flawless Voice-Synced Quiz Reel...", flush=True)
+    # 2. Generate Perfectly Synced Quiz Video inside folder
+    print("🧠 Generating Perfectly Synced Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
     # 3. Auto push to GitHub folder
     auto_commit_and_push_reels()
     
-    print("🎉 Done! Flawless audio-synced quiz reel generated inside the 'generated_reels' folder.", flush=True)
+    print("🎉 Done! Perfectly synced quiz reel generated inside the 'generated_reels' folder.", flush=True)
