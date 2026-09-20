@@ -30,7 +30,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini TTS Primary + Edge-TTS Fallback
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini Primary TTS + Edge-TTS Fallback
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -810,7 +810,7 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question 40s professional quiz reel [skip ci]"], check=True)
+        subprocess.run(["git", "commit", -m", "Auto-upload 3-question 40s professional quiz reel [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
         print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
     except Exception as e:
@@ -831,7 +831,21 @@ if __name__ == "__main__":
     print("🧠 Generating 3-Question 40-Sec Locked Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
-    # 3. Auto push to GitHub folder
+    # --- AUTOMATIC PROGRESS INCREMENT LOGIC ---
+    if st["current_part"] < st["total_parts"]:
+        st["current_part"] += 1
+    else:
+        st["current_part"] = 1
+        st["clause_no"] += 1
+        
+    # Recalculate total parts for the new state
+    _, pdf_text = extract_clause_from_pdf(st["clause_no"], st["current_part"])
+    st["total_parts"] = get_dynamic_total_parts(pdf_text)
+    
+    save_progress_state(st)
+    print(f"🔄 Next Target Set -> Clause {st['clause_no']} Part {st['current_part']}/{st['total_parts']}", flush=True)
+    
+    # 3. Auto push to GitHub folder & progress state
     auto_commit_and_push_reels()
     
-    print("🎉 Done! 3-question 40-sec locked quiz reel generated inside the 'generated_reels' folder.", flush=True)
+    print("🎉 Done! Reel generated and progress updated successfully.", flush=True)
