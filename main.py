@@ -14,6 +14,7 @@ from pypdf import PdfReader
 
 # --- Environment Variables ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
 IG_USER_ID = os.getenv("IG_USER_ID")
 
@@ -29,7 +30,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Pure Hindi & Overlap-Free Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini Primary + Edge-TTS Fallback Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -117,15 +118,13 @@ def clean_hindi_postal_terms(text):
         return ""
     text = re.sub(r"^[:\-\s\.]+", "", text)
     
-    # --- Foolproof Dictionary for Departmental Postal Terms & Glitch Fixes ---
     replacements = {
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
         "तक्सी पैकेट": "बीमाकृत पैकेट", "तक्सी": "बीमाकृत", "लेखक": "प्रेषक",
         "तक्सी पत्र": "बीमाकृत पत्र", "तक्सी वस्तु": "बीमाकृत वस्तु",
         "डार्क": "डाक", "डार्कघर": "डाकघर",
-        "बातें देना": "बांधना चाहिए", "बाते देना": "बांधना चाहिए",
-        "क्या बातें": "क्या बांधना"
+        "बातें देना": "बांधना चाहिए", "बाते देना": "बांधना चाहिए"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
@@ -273,7 +272,6 @@ def generate_clause_script(state):
     except Exception as e:
         print(f"⚠️ Groq note: {e}")
 
-    # --- STRICT GUARANTEE: FORCE DISTINCT ANSWERS IF LLM RETURNED ALL SAME ---
     if fallback_data.get("ans1") == fallback_data.get("ans2") == fallback_data.get("ans3"):
         fallback_data["ans1"] = "A"
         fallback_data["ans2"] = "B"
@@ -281,12 +279,71 @@ def generate_clause_script(state):
 
     return fallback_data
 
+# --- AUDIO GENERATION: GOOGLE AI STUDIO (PRIMARY) WITH EDGE-TTS FALLBACK ---
 async def generate_segment_audio(text, outfile, rate="+12%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
         except Exception: pass
-    communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=rate)
-    await communicate.save(outfile)
+        
+    success = False
+    
+    # 1. Primary Priority: Google AI Studio (Gemini TTS API)
+    if GEMINI_API_KEY:
+        try:
+            from google import genai
+            from google.genai import types
+            
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            response = client.models.generate_content(
+                model="gemini-3.1-flash-tts-preview",
+                contents=text,
+                config=types.GenerateContentConfig(
+                    response_modalities=["AUDIO"],
+                    speech_config=types.SpeechConfig(
+                        voice_config=types.VoiceConfig(
+                            prebuilt_voice_config=types.PrebuiltVoiceConfig(
+                                voice_name="Puck"
+                            )
+                        )
+                    )
+                )
+            )
+            
+            audio_bytes = None
+            for candidate in response.candidates:
+                if candidate.content and candidate.content.parts:
+                    for part in candidate.content.parts:
+                        if part.inline_data and part.inline_data.data:
+                            audio_bytes = part.inline_data.data
+                            break
+                if audio_bytes:
+                    break
+                    
+            if audio_bytes:
+                temp_pcm = outfile + ".pcm"
+                with open(temp_pcm, "wb") as f:
+                    f.write(audio_bytes)
+                
+                # Convert PCM output from Gemini TTS to MP3 using ffmpeg
+                subprocess.run([
+                    "ffmpeg", "-y", "-f", "s16le", "-ar", "24000", "-ac", "1",
+                    "-i", temp_pcm, "-codec:a", "libmp3lame", "-b:a", "192k", outfile
+                ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                
+                if os.path.exists(temp_pcm):
+                    os.remove(temp_pcm)
+                    
+                if os.path.exists(outfile) and os.path.getsize(outfile) > 1000:
+                    success = True
+                    print(f"🎙️ Audio generated using Google AI Studio (Gemini TTS)", flush=True)
+        except Exception as e:
+            print(f"⚠️ Google AI Studio TTS note (switching to Edge-TTS fallback): {e}", flush=True)
+
+    # 2. Secondary Fallback: Edge-TTS (Purana AI) if Gemini fails or key is missing
+    if not success:
+        communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=rate)
+        await communicate.save(outfile)
+        print(f"🎙️ Audio generated using Edge-TTS fallback", flush=True)
 
 def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
@@ -517,7 +574,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FOOLPROOF PILLOW BBOX OVERLAP & DISTINCT ANSWERS FIX) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (PRIMARY: GEMINI TTS, FALLBACK: EDGE-TTS) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -746,7 +803,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Concept Reel Created: {output_video}", flush=True)
+    print(f"✅ Quiz Reel Created Successfully: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
