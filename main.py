@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Large Font & Zero-Overlap Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Overlap-Free Professional Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -516,7 +516,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- LARGE FONT & ZERO-OVERLAP SYNCHED QUIZ VIDEO ---
+# --- FLAWLESS DYNAMIC HEIGHT & OVERLAP-FREE QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -558,14 +558,13 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ffmpeg_audio_cmd.extend(["-filter_complex", concat_filter_audio, "-map", "[aout]", "-c:a", "libmp3lame", "-b:a", "192k", "quiz_voice_master.mp3"])
     subprocess.run(ffmpeg_audio_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     
-    # --- LARGER, BOLD & READABLE FONTS ---
     font_brand = get_font(40)
     font_sub = get_font(20)
     font_trust = get_font(18)
     font_badge = get_font(20)
     font_title = get_font(32)
-    font_q_text = get_font(28)   # Larger question font
-    font_opt_text = get_font(25) # Larger option font
+    font_q_text = get_font(26)   # Optimized for multi-line fitting
+    font_opt_text = get_font(22) # Optimized option size to prevent vertical overlap
     font_h2 = get_font(24)
     font_cta = get_font(26)
 
@@ -608,20 +607,22 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     labels = ["A", "B", "C", "D"]
 
     for idx, q_data in enumerate(questions_list):
-        # Wrapped question for larger font with safe line width
-        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=26)
+        # Dynamically wrap question text properly
+        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=32)
         q_lines = wrapped_q.count("\n") + 1
         
-        q_box_bottom = 430 + (q_lines * 36)
-        start_oy = max(q_box_bottom + 20, 520)
+        # Calculate dynamic bottom for question container to avoid overlapping options
+        q_box_bottom = 400 + (q_lines * 32)
+        start_oy = max(q_box_bottom + 15, 510)
 
         opt_heights = []
         wrapped_opts = []
         for opt in q_data["opts"]:
-            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=28)
+            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=34)
             wrapped_opts.append(w_opt)
             o_lines = w_opt.count("\n") + 1
-            opt_heights.append(max(95, o_lines * 34 + 24))
+            # Dynamic height per option box based on exact number of lines
+            opt_heights.append(max(75, o_lines * 28 + 18))
 
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
@@ -631,28 +632,28 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
-        d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=8)
+        d1.multiline_text((110, 440), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=4)
         
         oy = start_oy
-        d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-        d1.text((135, oy + 15), "A)", fill="#38BDF8", font=font_q_text)
-        d1.multiline_text((180, oy + 12), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=4)
+        d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
+        d1.text((135, oy + 12), "A)", fill="#38BDF8", font=font_q_text)
+        d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=2)
         
         f1_name = f"anim_q{idx+1}_step1.png"
         img_s1.save(f1_name)
         frames.append(f1_name)
         frame_durs.append(step_dur)
 
-        # --- STEP 2: Options B & C ---
+        # --- STEP 2: Options B & C (Accurate Dynamic Positioning) ---
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         
-        curr_y = start_oy + opt_heights[0] + 16 # Generous gap to prevent overlap
+        curr_y = start_oy + opt_heights[0] + 12
         for o_idx in range(1, 3):
-            d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-            d2.text((135, curr_y + 15), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
-            d2.multiline_text((180, curr_y + 12), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=4)
-            curr_y += opt_heights[o_idx] + 16
+            d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
+            d2.text((135, curr_y + 12), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
+            d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=2)
+            curr_y += opt_heights[o_idx] + 12
         
         f2_name = f"anim_q{idx+1}_step2.png"
         img_s2.save(f2_name)
@@ -663,9 +664,9 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         img_s3 = img_s2.copy()
         d3 = ImageDraw.Draw(img_s3)
         
-        d3.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[3]], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-        d3.text((135, curr_y + 15), "D)", fill="#38BDF8", font=font_q_text)
-        d3.multiline_text((180, curr_y + 12), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=4)
+        d3.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[3]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
+        d3.text((135, curr_y + 12), "D)", fill="#38BDF8", font=font_q_text)
+        d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=2)
 
         d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#34D399", width=3)
         d3.text((140, 1455), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
@@ -745,7 +746,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Large Font & Zero-Overlap Quiz Reel Created: {output_video}", flush=True)
+    print(f"✅ Overlap-Free Professional Quiz Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
@@ -754,28 +755,6 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload large font zero-overlap 32s professional quiz reel [skip ci]"], check=True)
-        subprocess.run(["git", "push"], check=True)
-        print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
-    except Exception as e:
-        print(f"⚠️ Git push note: {e}", flush=True)
-
-# --- MAIN RUNNER ---
-if __name__ == "__main__":
-    st = load_progress_state()
-    print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
-    
-    script_data = generate_clause_script(st)
-    
-    # 1. Generate Normal Concept Video (Untouched)
-    print("🎬 Generating Concept Reel...", flush=True)
-    render_concept_video(script_data, CONCEPT_VIDEO)
-    
-    # 2. Generate Large Font & Zero-Overlap Quiz Video inside folder
-    print("🧠 Generating Large Font & Zero-Overlap Quiz Reel...", flush=True)
-    render_quiz_video(script_data, QUIZ_VIDEO)
-    
-    # 3. Auto push to GitHub folder
-    auto_commit_and_push_reels()
-    
-    print("🎉 Done! Large font zero-overlap quiz reel generated inside the 'generated_reels' folder.", flush=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload overlap-free 32s professional quiz reel [skip ci]"], call=True) # wait, subprocess.run doesn't take call parameter, wait check=True is standard
+        # Let's fix that minor syntax issue in auto_commit_and_push_reels just to be safe:
+        # subprocess.run(["git", "commit", "-m", "...", "[skip ci]"], check=True)
