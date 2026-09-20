@@ -10,6 +10,7 @@ import re
 import sys
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
+from pypdf import PdfReader
 
 # --- Environment Variables ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -20,6 +21,7 @@ GRAPH_API_BASE = "https://graph.facebook.com/v19.0/"
 RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/"
 
 STATE_FILE = "progress_state.json"
+PDF_FILE_PATH = "mts content .pdf"
 FONT_PATH = "Mukta-Bold.ttf"
 OUTPUT_VIDEO = "final_reel.mp4"
 BGM_OUTPUT = "bgm.mp3"
@@ -33,7 +35,7 @@ QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- POINT 4 FIX: Fast Hooks (<3.5s) & Zero Word Repetition ---
+# --- High-Retention Viral Hooks (<3.5s, No Word Repetition) ---
 VIRAL_HOOKS = [
     {
         "voice": "विभागीय परीक्षा में यह एक नियम बार-बार आता है, देखिए!",
@@ -67,7 +69,7 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Master Catalog: Naturally Sized Parts (Clauses 1 to 60 Complete) ---
+# --- Master Catalog: Naturally Sized Parts Breakdown (Clauses 1 to 60) ---
 POSTAL_CLAUSE_CATALOG = {
     1: {
         "name": "डाक विभाग का नियंत्रण व संगठन", "total_parts": 2,
@@ -122,7 +124,7 @@ POSTAL_CLAUSE_CATALOG = {
     },
     10: {
         "name": "अप्रयुक्त व जाली टिकटों का निषेध", "total_parts": 1,
-        "part_1_focus": "प्रयुक्त डाक टिकटों का पुनः उपयोग करना भारतीय कानून के तहत दंडनीय अपराध है।"
+        "part_1_focus": "प्रयुक्त डाक टिकटों का पुनः उपयोग करना भारतीय दंड संहिता के तहत गंभीर और दंडनीय अपराध है।"
     },
     11: {
         "name": "डाक महसूल का अग्रिम भुगतान", "total_parts": 2,
@@ -395,7 +397,31 @@ POSTAL_CLAUSE_CATALOG = {
     }
 }
 
-# --- POINT 1 FIX: Clean text without stripping brackets ---
+# --- PDF Extractor Engine ---
+def extract_clause_text_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
+    if not os.path.exists(pdf_path):
+        print(f"⚠️ PDF file not found at: {pdf_path}", flush=True)
+        return ""
+    try:
+        reader = PdfReader(pdf_path)
+        pattern = re.compile(rf"(?:क्लॉज|Clause|नियम)\s*{clause_no}\b", re.IGNORECASE)
+        matched_pages = []
+
+        for page in reader.pages:
+            text = page.extract_text() or ""
+            if pattern.search(text):
+                matched_pages.append(text)
+                if len(matched_pages) >= 2:
+                    break
+
+        combined = " ".join(matched_pages).strip()
+        if combined:
+            print(f"✅ Extracted {len(combined)} chars for Clause {clause_no} from '{pdf_path}'", flush=True)
+            return combined[:2500]
+    except Exception as e:
+        print(f"⚠️ PDF Extraction Error: {e}", flush=True)
+    return ""
+
 def clean_text(text):
     if not text:
         return ""
@@ -445,7 +471,7 @@ def get_font(size):
     return ImageFont.load_default()
 
 def load_progress_state():
-    state = {"clause_no": 9, "current_part": 5, "total_parts": 5, "hook_index": 0}
+    state = {"clause_no": 11, "current_part": 1, "total_parts": 2, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -454,7 +480,7 @@ def load_progress_state():
                     state.update(saved)
         except Exception:
             pass
-    current_clause = state.get("clause_no", 9)
+    current_clause = state.get("clause_no", 11)
     state["total_parts"] = POSTAL_CLAUSE_CATALOG.get(current_clause, {}).get("total_parts", 1)
     save_progress_state(state)
     return state
@@ -470,8 +496,8 @@ def advance_progress_state(state):
     hook_idx = state.get("hook_index", 0)
     state["hook_index"] = (hook_idx + 1) % len(VIRAL_HOOKS)
 
-    clause = state.get("clause_no", 9)
-    part = state.get("current_part", 5)
+    clause = state.get("clause_no", 11)
+    part = state.get("current_part", 1)
     clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 1})
     total_parts = clause_info.get("total_parts", 1)
 
@@ -490,19 +516,20 @@ def advance_progress_state(state):
     save_progress_state(state)
     print(f"⏩ Advanced Progress to: Clause {state['clause_no']} (Part {state['current_part']}/{state['total_parts']})", flush=True)
 
-# --- POINT 2 & 3 FIX: Factual Parameters, Distinct Trap, Logical MCQ ---
+# --- STRICT ZERO-HALLUCINATION SCRIPT GENERATOR ---
 def generate_clause_script(state):
-    current_clause = state.get("clause_no", 9)
-    current_part = state.get("current_part", 5)
+    current_clause = state.get("clause_no", 11)
+    current_part = state.get("current_part", 1)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
 
-    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[9])
+    clause_info = POSTAL_CLAUSE_CATALOG.get(current_clause, POSTAL_CLAUSE_CATALOG[11])
     clause_name = clause_info["name"]
     total_parts = clause_info.get("total_parts", 1)
-    
-    part_key = f"part_{current_part}_focus"
-    part_focus = clause_info.get(part_key, clause_info.get("part_1_focus", ""))
+    part_focus = clause_info.get(f"part_{current_part}_focus", clause_info.get("part_1_focus", ""))
+
+    # Extract Official Text from PDF
+    official_pdf_text = extract_clause_text_from_pdf(current_clause)
 
     fallback_data = {
         "clause_no": current_clause,
@@ -512,18 +539,18 @@ def generate_clause_script(state):
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
         "hook_display_text": hook_obj["hook_text"],
-        "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": "गलत छाप लग जाने पर 3 माह की अवधि बीतने के बाद रिफंड का कोई दावा स्वीकार्य नहीं होगा।",
-        "param1_title": "दावा समय-सीमा",
-        "param1_val": "3 माह के भीतर मान्य",
-        "param2_title": "विभागीय कटौती",
-        "param2_val": "5% शुल्क की कटौती",
-        "trap_point": "3 माह बीतने के बाद रिफंड का दावा पूर्णतः निरस्त कर दिया जाता है।",
-        "question": "फ्रैंकिंग मशीन की गलत छाप पर रिफंड का दावा कितने समय में करना अनिवार्य है?",
-        "opt_a": "3 माह के भीतर",
-        "opt_b": "6 माह के भीतर",
-        "opt_c": "1 वर्ष के भीतर",
-        "opt_d": "1 माह के भीतर",
+        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार {part_focus}",
+        "sen2": "अवैतनिक या कम भुगतान वाली डाक पर वितरण के समय दोगुना डाक शुल्क वसूला जाता है।",
+        "param1_title": "अनिवार्य शर्त",
+        "param1_val": "पूर्ण अग्रिम डाक महसूल",
+        "param2_title": "कम भुगतान प्रभार",
+        "param2_val": "कमी का दोगुना शुल्क",
+        "trap_point": "कम डाक टिकट लगी वस्तु पर वितरण के समय कमी का दोगुना प्रभार देय होता है।",
+        "question": "कम डाकभार वाली अंतरदेशीय डाक पर वितरण के समय कितना शुल्क वसूला जाता है?",
+        "opt_a": "कमी का दोगुना शुल्क",
+        "opt_b": "केवल वास्तविक कमी",
+        "opt_c": "₹50 अतिरिक्त जुर्माना",
+        "opt_d": "कोई प्रभार नहीं",
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
@@ -531,21 +558,27 @@ def generate_clause_script(state):
         return fallback_data
 
     prompt = f"""
-    You are the Senior Chief Examiner for India Post Departmental Examinations for 'Postal Wala'.
-    Topic: 'Post Office Guide Part 1', Clause: {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
-    Core Rule Focus: "{part_focus}"
+    You are the Senior Chief Examiner for India Post Examinations.
+    Topic: Post Office Guide Part 1, Clause: {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
+    Micro-Focus for this Part: "{part_focus}"
 
-    Strictly generate pure Hindi departmental exam content adhering to these non-negotiable rules:
-    1. SEN1: The core rule statement in simple Hindi (12-14 words).
-    2. SEN2: Crucial departmental trap or exception. DO NOT REPEAT SEN1 (12-14 words).
-    3. PARAM1_TITLE: First key exam parameter label (max 2-3 words, e.g. दावा समय-सीमा).
-    4. PARAM1_VAL: First parameter value/rule (max 3-4 words, e.g. 3 माह के भीतर).
-    5. PARAM2_TITLE: Second key parameter label (max 2-3 words, e.g. विभागीय कटौती).
-    6. PARAM2_VAL: Second parameter value/rule (max 3-4 words, e.g. 5% शुल्क कटौती).
-    7. TRAP_POINT: Exact trap/warning note for Slide 3 red box (8-12 words).
-    8. QUESTION: 1 high-yield logical exam question based strictly on this rule (max 12 words). DO NOT ASK SILLY TIME/DAY QUESTIONS.
-    9. OPT_A: 100% correct departmental answer (2-4 words).
-    10. OPT_B, OPT_C, OPT_D: 3 realistic plausible incorrect departmental options (2-4 words each).
+    OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf':
+    \"\"\"
+    {official_pdf_text if official_pdf_text else part_focus}
+    \"\"\"
+
+    NON-NEGOTIABLE EXAM RULES (ZERO HALLUCINATION, TEMPERATURE 0.0):
+    1. Base all facts ONLY on the official extracted text and the Micro-Focus provided above.
+    2. SEN1: State the exact operational rule of this micro-focus (12-14 words).
+    3. SEN2: State the specific legal exception, trap or penalty for this part (12-14 words). DO NOT REPEAT SEN1.
+    4. PARAM1_TITLE: First key parameter label (max 2-3 words).
+    5. PARAM1_VAL: First parameter value from this text (max 3-4 words).
+    6. PARAM2_TITLE: Second key parameter label (max 2-3 words).
+    7. PARAM2_VAL: Second parameter value from this text (max 3-4 words).
+    8. TRAP_POINT: Clear penalty/trap note for Slide 3 red box (8-12 words).
+    9. QUESTION: High-yield departmental MCQ question from this exact part (max 12 words). NO SILLY TIME/DAY QUESTIONS.
+    10. OPT_A: The 100% correct answer according to this rule (2-4 words).
+    11. OPT_B, OPT_C, OPT_D: 3 plausible departmental options (2-4 words each).
 
     FORMAT:
     SEN1: ...
@@ -561,9 +594,10 @@ def generate_clause_script(state):
     OPT_C: ...
     OPT_D: ...
     """
+
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.2, "max_tokens": 450}
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 450}
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
@@ -695,7 +729,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
             d.rounded_rectangle([110, 395, 410, 445], radius=12, fill="#180C0E", outline="#3F1215", width=1)
             d.text((130, 402), "[ ! ] LIVE EXAM ALERT", fill="#7F1D1D", font=font_label)
 
-        # Danger Alert Badge (Opening Bracket Guaranteed)
+        # Danger Alert Badge
         d.rounded_rectangle([110, 470, 970, 580], radius=16, fill="#991B1B", outline="#FBBF24", width=3)
         d.text((150, 500), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
 
@@ -732,7 +766,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         frame_durs.append(round(st_d, 2))
 
     # =========================================================================
-    # SLIDE 2 (RULE): 2 HIGH-YIELD PARAMETER CARDS (NO FAKE DO/DON'T)
+    # SLIDE 2 (RULE): 2 BALANCED FACTUAL PARAMETER CARDS
     # =========================================================================
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
@@ -752,10 +786,10 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d2a.multiline_text((120, 610), clean_hindi_postal_terms(wrapped_s2), fill="#F8FAFC", font=font_body, spacing=14)
 
     # Parameter Card 1 (Cyan Box)
-    d2a.rounded_rectangle([110, 830, 970, 960], radius=16, fill="#082F49", outline="#38BDF8", width=2)
-    d2a.rounded_rectangle([130, 845, 410, 890], radius=8, fill="#0284C7")
-    d2a.text((145, 852), f"[ {script_data.get('param1_title', 'परीक्षा मुख्य बिंदु')} ]", fill="#FFFFFF", font=font_label)
-    d2a.text((145, 905), script_data.get('param1_val', 'नियम अनुसार मान्य'), fill="#E0F2FE", font=font_h2)
+    d2a.rounded_rectangle([110, 830, 970, 970], radius=16, fill="#082F49", outline="#38BDF8", width=2)
+    d2a.rounded_rectangle([130, 850, 430, 895], radius=8, fill="#0284C7")
+    d2a.text((145, 858), f"[ {script_data.get('param1_title', 'परीक्षा मुख्य बिंदु')} ]", fill="#FFFFFF", font=font_label)
+    d2a.text((145, 915), script_data.get('param1_val', 'नियम अनुसार मान्य'), fill="#E0F2FE", font=font_h2)
     
     draw_footer_cta(d2a)
     img2a.save("f_2a.png")
@@ -765,10 +799,10 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     # Parameter Card 2 (Amber Box)
     img2b = img2a.copy()
     d2b = ImageDraw.Draw(img2b)
-    d2b.rounded_rectangle([110, 990, 970, 1120], radius=16, fill="#451A03", outline="#F59E0B", width=2)
-    d2b.rounded_rectangle([130, 1005, 410, 1050], radius=8, fill="#D97706")
-    d2b.text((145, 1012), f"[ {script_data.get('param2_title', 'विभागीय शर्त')} ]", fill="#FFFFFF", font=font_label)
-    d2b.text((145, 1065), script_data.get('param2_val', 'आधिकारिक छूट व नियम'), fill="#FEF3C7", font=font_h2)
+    d2b.rounded_rectangle([110, 1010, 970, 1150], radius=16, fill="#451A03", outline="#F59E0B", width=2)
+    d2b.rounded_rectangle([130, 1030, 430, 1075], radius=8, fill="#D97706")
+    d2b.text((145, 1038), f"[ {script_data.get('param2_title', 'विभागीय शर्त')} ]", fill="#FFFFFF", font=font_label)
+    d2b.text((145, 1095), script_data.get('param2_val', 'आधिकारिक नियम'), fill="#FEF3C7", font=font_h2)
     img2b.save("f_2b.png")
     frames.append("f_2b.png")
     frame_durs.append(round(durations[1] * 0.35, 2))
@@ -783,7 +817,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frame_durs.append(round(durations[1] * 0.25, 2))
 
     # =========================================================================
-    # SLIDE 3 (TRAP): NO EMPTY VOID, TEXT INSIDE RED BOX
+    # SLIDE 3 (TRAP): ZERO EMPTY VOID, FULL TEXT INSIDE RED BOX
     # =========================================================================
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
@@ -796,7 +830,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d3a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     draw_whatsapp_strip(d3a)
     
-    # Outer Card
     d3a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#F59E0B", width=3)
     d3a.rounded_rectangle([110, 520, 480, 575], radius=10, fill="#0B132B")
     d3a.text((150, 530), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
@@ -808,19 +841,17 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_3a.png")
     frame_durs.append(round(durations[2] * 0.35, 2))
 
-    # Red Warning Box Appears WITH FULL TEXT INSIDE (Zero Blank Box)
+    # Red Warning Box Appears WITH FULL TEXT INSIDE
     img3b = img3a.copy()
     d3b = ImageDraw.Draw(img3b)
     d3b.rounded_rectangle([80, 480, 1000, 1550], radius=24, outline="#EF4444", width=4)
-    
-    d3b.rounded_rectangle([110, 870, 970, 1180], radius=18, fill="#380A0A", outline="#EF4444", width=3)
-    d3b.rounded_rectangle([130, 890, 460, 940], radius=8, fill="#7F1D1D")
-    d3b.text((145, 898), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
+    d3b.rounded_rectangle([110, 850, 970, 1200], radius=18, fill="#380A0A", outline="#EF4444", width=3)
+    d3b.rounded_rectangle([130, 875, 460, 925], radius=8, fill="#7F1D1D")
+    d3b.text((145, 883), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
     
     trap_txt = script_data.get("trap_point", script_data["sen2"])
     wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=21)
-    d3b.multiline_text((145, 970), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=14)
-    
+    d3b.multiline_text((145, 960), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=14)
     img3b.save("f_3b.png")
     frames.append("f_3b.png")
     frame_durs.append(round(durations[2] * 0.35, 2))
@@ -835,7 +866,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frame_durs.append(round(durations[2] * 0.30, 2))
 
     # =========================================================================
-    # SLIDE 4 (QUIZ): KBC STAGGER + LIVE 5-SECOND COUNTDOWN TIMER (POINT 5 & 6 KEPT)
+    # SLIDE 4 (QUIZ): KBC STAGGER + BALANCED SPACING + LIVE 5-SECOND TIMER
     # =========================================================================
     img4a = Image.new("RGB", (1080, 1920), color="#060A17")
     d4a = ImageDraw.Draw(img4a)
@@ -856,18 +887,18 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_4a.png")
     frame_durs.append(round(durations[3] * 0.15, 2))
 
-    # Option A & B Drop
+    # Option A & B Drop (Evenly distributed spacing)
     img4b = img4a.copy()
     d4b = ImageDraw.Draw(img4b)
     q_lines = wrapped_q4.count("\n") + 1
-    start_oy = 460 + (q_lines * 42) + 45
+    start_oy = 460 + (q_lines * 42) + 50
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     labels = ["A", "B", "C", "D"]
     for o_idx in range(2):
-        oy = start_oy + (o_idx * 115)
-        d4b.rounded_rectangle([110, oy, 970, oy + 85], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
-        d4b.text((135, oy + 20), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-        d4b.text((200, oy + 22), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
+        oy = start_oy + (o_idx * 135)
+        d4b.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        d4b.text((135, oy + 24), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        d4b.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
     img4b.save("f_4b.png")
     frames.append("f_4b.png")
     frame_durs.append(round(durations[3] * 0.15, 2))
@@ -876,10 +907,10 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img4c = img4b.copy()
     d4c = ImageDraw.Draw(img4c)
     for o_idx in range(2, 4):
-        oy = start_oy + (o_idx * 115)
-        d4c.rounded_rectangle([110, oy, 970, oy + 85], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
-        d4c.text((135, oy + 20), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-        d4c.text((200, oy + 22), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
+        oy = start_oy + (o_idx * 135)
+        d4c.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        d4c.text((135, oy + 24), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        d4c.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
     img4c.save("f_4c.png")
     frames.append("f_4c.png")
     frame_durs.append(round(durations[3] * 0.15, 2))
@@ -968,7 +999,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Corrected Master Kinetic Reel Created: {output_video}", flush=True)
+    print(f"✅ Master Kinetic Reel with PDF Context Created: {output_video}", flush=True)
 
 # --- RESUMABLE PROTOCOL UPLOADER ---
 def _create_reel_container(video_file, caption, user_id, access_token):
