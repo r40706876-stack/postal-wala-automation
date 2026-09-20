@@ -124,6 +124,15 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
+def clean_text_for_tts(text):
+    if not text:
+        return ""
+    # Remove English text inside parentheses for pure Hindi audio voiceover
+    text_no_brackets = re.sub(r'\s*\([^)]*\)', '', text)
+    # Remove remaining English letters to ensure Swara speaks 100% pure Hindi
+    cleaned = re.sub(r'[a-zA-Z]+', '', text_no_brackets)
+    return " ".join(cleaned.split())
+
 def extract_field_block(text, field_name, next_fields):
     pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
     m = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
@@ -163,7 +172,6 @@ def load_progress_state():
                     state.update(saved)
         except Exception:
             pass
-    # Automatically determine parts based on content length or default to 1
     state["total_parts"] = 1
     save_progress_state(state)
     return state
@@ -186,7 +194,6 @@ def advance_progress_state(state):
     if part < total_parts:
         state["current_part"] = part + 1
     else:
-        # Move to next clause sequentially up to 60
         next_clause = clause + 1 if clause < 60 else 1
         state["clause_no"] = next_clause
         state["current_part"] = 1
@@ -195,14 +202,13 @@ def advance_progress_state(state):
     save_progress_state(state)
     print(f"⏩ Advanced Progress to: Clause {state['clause_no']} (Part {state['current_part']}/{state['total_parts']})", flush=True)
 
-# --- STRICT ZERO-HALLUCINATION SCRIPT GENERATOR ---
+# --- STRICT BILINGUAL SCRIPT GENERATOR ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
 
-    # Live extraction of Official Title & Text from PDF
     official_title, official_pdf_text = extract_clause_from_pdf(current_clause)
 
     fallback_data = {
@@ -213,18 +219,18 @@ def generate_clause_script(state):
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
         "hook_display_text": hook_obj["hook_text"],
-        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
-        "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
-        "param1_title": "परीक्षा मुख्य बिंदु",
-        "param1_val": "आधिकारिक नियम मान्य",
-        "param2_title": "विभागीय शर्त",
-        "param2_val": "नियमों का पालन अनिवार्य",
-        "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं।",
+        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है (Official Rule Applicable)।",
+        "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं (Exam Exception)।",
+        "param1_title": "परीक्षा मुख्य बिंदु (Key Point)",
+        "param1_val": "आधिकारिक नियम मान्य (Valid Rule)",
+        "param2_title": "विभागीय शर्त (Condition)",
+        "param2_val": "नियमों का पालन अनिवार्य (Mandatory)",
+        "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं (Exam Trap)।",
         "question": "डाक घर गाइड भाग 1 के क्लॉज किस विषय से संबंधित है?",
-        "opt_a": "आधिकारिक विभागीय नियम",
-        "opt_b": "अतिरिक्त शुल्क प्रावधान",
-        "opt_c": "केवल सामान्य निर्देश",
-        "opt_d": "इनमें से कोई नहीं",
+        "opt_a": "आधिकारिक विभागीय नियम (Official Rule)",
+        "opt_b": "अतिरिक्त शुल्क प्रावधान (Extra Fee)",
+        "opt_c": "केवल सामान्य निर्देश (General)",
+        "opt_d": "इनमें से कोई नहीं (None)",
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause}।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
@@ -240,17 +246,17 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    STRICT ZERO-HALLUCINATION RULES (TEMPERATURE 0.0):
+    STRICT BILINGUAL & ZERO-HALLUCINATION RULES (TEMPERATURE 0.0):
     1. Base all facts, rules, and questions STRICTLY and SOLELY on the extracted text above.
-    2. NEVER invent commercial terms like "कैश ऑन डिलीवरी", "पोस्ट पेड" or outside rules.
-    3. SEN1: State the exact operational rule from this text (12-14 words).
-    4. SEN2: State the specific legal exception, trap or penalty (12-14 words). MUST NOT REPEAT SEN1.
-    5. PARAM1_TITLE & PARAM1_VAL: First core condition/limit (Title max 2-3 words, Val max 3-4 words).
-    6. PARAM2_TITLE & PARAM2_VAL: Second core penalty/condition (Title max 2-3 words, Val max 3-4 words).
-    7. TRAP_POINT: Clear penalty/trap note for Slide 3 red box (8-12 words).
-    8. QUESTION: High-yield departmental MCQ question directly from this text (max 12 words).
-    9. OPT_A: The 100% correct answer according to the text (2-4 words).
-    10. OPT_B, OPT_C, OPT_D: 3 plausible departmental distractors (2-4 words each).
+    2. SCREEN TEXT MUST BE BILINGUAL: Provide all text fields (SEN1, SEN2, PARAM1, PARAM2, TRAP_POINT, QUESTION, OPTIONS) in fluent Hindi, followed immediately by the key official English postal term/phrase in parentheses `( )` so viewers see both Hindi and English on screen.
+    3. SEN1: State the exact operational rule from this text in bilingual format (12-14 words).
+    4. SEN2: State the specific legal exception, trap or penalty in bilingual format (12-14 words). MUST NOT REPEAT SEN1.
+    5. PARAM1_TITLE & PARAM1_VAL: First core condition in bilingual format.
+    6. PARAM2_TITLE & PARAM2_VAL: Second core condition in bilingual format.
+    7. TRAP_POINT: Clear penalty/trap note for Slide 3 red box in bilingual format (8-12 words).
+    8. QUESTION: High-yield departmental MCQ question directly from this text in bilingual format (max 12 words).
+    9. OPT_A: The 100% correct answer in bilingual format.
+    10. OPT_B, OPT_C, OPT_D: 3 plausible departmental distractors in bilingual format.
 
     FORMAT:
     SEN1: ...
@@ -304,10 +310,14 @@ def generate_clause_script(state):
     return fallback_data
 
 def get_slide_segments(script_data):
+    # AUDIO MUST BE 100% PURE HINDI (Filtered via clean_text_for_tts to remove English & Brackets)
+    voice_sen1 = clean_text_for_tts(script_data['sen1'])
+    voice_sen2 = clean_text_for_tts(script_data['sen2'])
+    
     return [
         f"{script_data['hook_voice']}",
-        f"{script_data['sen1']}",
-        f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
+        f"{voice_sen1 if voice_sen1 else script_data['sen1']}",
+        f"परीक्षा विशेष बिंदु: {voice_sen2 if voice_sen2 else script_data['sen2']}",
         f"सवाल स्क्रीन पर है! सही उत्तर A, B, C या D कमेंट करें और पोस्टल वाला को फॉलो करें!"
     ]
 
@@ -436,7 +446,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         frame_durs.append(round(st_d, 2))
 
     # =========================================================================
-    # SLIDE 2 (RULE): 2 BALANCED FACTUAL PARAMETER CARDS
+    # SLIDE 2 (RULE): 2 BALANCED BILINGUAL PARAMETER CARDS
     # =========================================================================
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
@@ -667,7 +677,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Fully Dynamic Master Kinetic Reel Created: {output_video}", flush=True)
+    print(f"✅ Fully Bilingual Master Kinetic Reel Created: {output_video}", flush=True)
 
 # --- RESUMABLE PROTOCOL UPLOADER ---
 def _create_reel_container(video_file, caption, user_id, access_token):
