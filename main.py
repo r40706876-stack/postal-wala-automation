@@ -511,7 +511,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- RENDER FULL ANIMATION RAPID-FIRE 4-QUESTION QUIZ VIDEO ---
+# --- RENDER FULL ANIMATION RAPID-FIRE 4-QUESTION QUIZ VIDEO (FIXED) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -644,11 +644,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
 
     total_dur = intro_dur + sum(frame_durs[:-1]) + 8.0
 
-    inputs = [intro_file]
     filter_parts = f"[0:a]aresample=48000[voice]; "
-    
     for i, fname in enumerate(frames):
-        inputs.extend(["-i", fname])
         filter_parts += f"[{i+1}:v]loop=loop=-1:size=1:start=0,trim=duration={frame_durs[i]}[v{i}]; "
 
     concat_str = "".join([f"[v{i}]" for i in range(len(frames))])
@@ -661,14 +658,14 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         f"drawbox=x='max(0, iw*(t/{total_dur})-20)':y=0:w=20:h=14:color=#FEF08A@1:t=fill[v]"
     )
 
-    cmd = ["ffmpeg", "-y"]
-    for inp in inputs:
-        cmd.extend(["-i", inp])
+    cmd = ["ffmpeg", "-y", "-i", intro_file]
+    for fname in frames:
+        cmd.extend(["-i", fname])
 
     has_bgm = os.path.exists(BGM_OUTPUT)
     if has_bgm:
         cmd.extend(["-stream_loop", "-1", "-i", BGM_OUTPUT])
-        bgm_idx = len(inputs)
+        bgm_idx = len(frames) + 1
         audio_filter = (
             f"[voice]aresample=48000,volume=1.0[v_out]; "
             f"[{bgm_idx}:a]aresample=48000,volume=0.10[bgm]; "
