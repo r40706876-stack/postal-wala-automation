@@ -30,7 +30,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini Primary + Edge-TTS Fallback Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini Primary TTS + Edge-TTS Fallback Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -123,8 +123,7 @@ def clean_hindi_postal_terms(text):
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
         "तक्सी पैकेट": "बीमाकृत पैकेट", "तक्सी": "बीमाकृत", "लेखक": "प्रेषक",
         "तक्सी पत्र": "बीमाकृत पत्र", "तक्सी वस्तु": "बीमाकृत वस्तु",
-        "डार्क": "डाक", "डार्कघर": "डाकघर",
-        "बातें देना": "बांधना चाहिए", "बाते देना": "बांधना चाहिए"
+        "डार्क": "डाक", "डार्कघर": "डाकघर"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
@@ -222,9 +221,9 @@ def generate_clause_script(state):
 
     STRICT RULES FOR EXAM GENERATION:
     1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text chunk.
-    2. ABSOLUTE CONSTRAINT FOR HINDI GRAMMAR & TERMINOLOGY: Use 100% formal, pure, and grammatically correct Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी, बांधना). NEVER use broken phrases like 'बातें देना' or corrupted words like 'तक्सी'/'लेखक'.
+    2. ABSOLUTE CONSTRAINT FOR TERMINOLOGY: Use 100% standard Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). NEVER use corrupted words like 'तक्सी' or 'लेखक'.
     3. ANSWERS (ANS1, ANS2, ANS3): MUST HAVE DIFFERENT CORRECT OPTION LETTERS (e.g., A, B, C, or D). Never make all three answers 'A'.
-    4. Keep questions and options short, clear, and in professional departmental Hindi.
+    4. Keep questions and options short, clear, and in professional Hindi.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -287,7 +286,7 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
         
     success = False
     
-    # 1. Primary Priority: Google AI Studio (Gemini TTS API)
+    # 1. Primary Preference: Google AI Studio (Gemini TTS API)
     if GEMINI_API_KEY:
         try:
             from google import genai
@@ -324,7 +323,6 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
                 with open(temp_pcm, "wb") as f:
                     f.write(audio_bytes)
                 
-                # Convert PCM output from Gemini TTS to MP3 using ffmpeg
                 subprocess.run([
                     "ffmpeg", "-y", "-f", "s16le", "-ar", "24000", "-ac", "1",
                     "-i", temp_pcm, "-codec:a", "libmp3lame", "-b:a", "192k", outfile
@@ -339,7 +337,7 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
         except Exception as e:
             print(f"⚠️ Google AI Studio TTS note (switching to Edge-TTS fallback): {e}", flush=True)
 
-    # 2. Secondary Fallback: Edge-TTS (Purana AI) if Gemini fails or key is missing
+    # 2. Secondary Fallback: Edge-TTS (Purana AI Method) if Gemini fails
     if not success:
         communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=rate)
         await communicate.save(outfile)
@@ -574,7 +572,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (PRIMARY: GEMINI TTS, FALLBACK: EDGE-TTS) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (GEMINI TTS PREFERENCE + EDGE-TTS FALLBACK) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
