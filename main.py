@@ -29,7 +29,7 @@ FONT_PATH = "Mukta-Bold.ttf"
 REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
-CONCEPT_VIDEO = "concept_reel.mp4"
+CONCEPT_VIDEO = os.path.join(REELS_DIR, "concept_reel.mp4")
 QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4")
 
 BGM_OUTPUT = "bgm.mp3"
@@ -210,7 +210,6 @@ def generate_clause_script(state):
     if not GROQ_API_KEY:
         return fallback_data
 
-    # Strict PO Guide Part 1 cross-verification and fluent Hindi prompt
     prompt = f"""
     You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard).
     Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
@@ -279,7 +278,7 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- AUDIO GENERATION: GEMINI API PRIMARY PREFERENCE WITH EDGE-TTS FALLBACK ---
+# --- AUDIO GENERATION: GOOGLE AI STUDIO (GEMINI TTS API) PRIMARY PREFERENCE WITH EDGE-TTS FALLBACK ---
 async def generate_segment_audio(text, outfile, rate="+12%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
@@ -348,7 +347,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- NORMAL CONCEPT VIDEO ---
+# --- CONCEPT RULE VIDEO ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     segment_audios = [
@@ -571,7 +570,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Concept Reel Created: {output_video}", flush=True)
+    print(f"✅ Concept Rule Reel Created: {output_video}", flush=True)
 
 # --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
@@ -804,32 +803,32 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Quiz Reel Created Successfully: {output_video}", flush=True)
 
-# --- AUTO-COMMIT & PUSH ---
+# --- AUTO-COMMIT & PUSH (BOTH VIDEOS PUSHED TOGETHER) ---
 def auto_commit_and_push_reels():
     try:
         print("📤 Committing and pushing reels to GitHub repository...", flush=True)
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question 40s professional quiz reel [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload Rule and Quiz reels [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
+        print("🎉 Successfully pushed rule and quiz reels to GitHub folder!", flush=True)
     except Exception as e:
         print(f"⚠️ Git push note: {e}", flush=True)
 
-# --- MAIN RUNNER ---
+# --- MAIN RUNNER (SEQUENCE: 1. RULE VIDEO -> 2. QUIZ VIDEO) ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
     
     script_data = generate_clause_script(st)
     
-    # 1. Generate Normal Concept Video
-    print("🎬 Generating Concept Reel...", flush=True)
+    # 1. Generate Concept Rule Reel First
+    print("🎬 Generating Concept Rule Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate 3-Question 40-Sec Locked Quiz Video
-    print("🧠 Generating 3-Question 40-Sec Locked Quiz Reel...", flush=True)
+    # 2. Generate 3-Question Quiz Reel Second
+    print("🧠 Generating 3-Question Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
     # --- AUTOMATIC PROGRESS INCREMENT LOGIC ---
@@ -845,7 +844,7 @@ if __name__ == "__main__":
     save_progress_state(st)
     print(f"🔄 Next Target Set -> Clause {st['clause_no']} Part {st['current_part']}/{st['total_parts']}", flush=True)
     
-    # 3. Auto push to GitHub
+    # 3. Auto push both reels to GitHub
     auto_commit_and_push_reels()
     
-    print("🎉 Done! Reel generated and progress updated successfully.", flush=True)
+    print("🎉 Done! Both reels generated and progress updated successfully.", flush=True)
