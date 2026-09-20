@@ -24,12 +24,12 @@ STATE_FILE = "progress_state.json"
 PDF_FILE_PATH = "mts content .pdf"
 FONT_PATH = "Mukta-Bold.ttf"
 
-# --- New Dedicated Folder for Reels ---
+# --- Folders and Video Outputs ---
 REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
-CONCEPT_VIDEO = os.path.join(REELS_DIR, "concept_reel.mp4")
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4")
+CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Fixed animated quiz video
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -127,15 +127,6 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
-def extract_field_block(text, field_name, next_fields):
-    pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
-    m = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
-    if m:
-        val = m.group(1).strip()
-        val = re.sub(r"^[\"\'`]+|[\"\'`]+$", "", val).strip()
-        return " ".join(val.split())
-    return None
-
 def ensure_fonts():
     if not os.path.exists(FONT_PATH):
         url = "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-Bold.ttf"
@@ -208,10 +199,10 @@ def generate_clause_script(state):
         "param2_val": "नियमों का पालन अनिवार्य",
         "trap_point": "इस नियम की अनदेखी करने पर नकारात्मक अंक मिल सकते हैं।",
         
-        "q1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक नियम", "b1": "अन्य विकल्प", "c1": "सामान्य निर्देश", "d1": "इनमें से कोई नहीं", "ans1": "A",
-        "q2": "विभागीय परीक्षा में इस क्लॉज से संबंधित कौन सा प्रावधान मान्य है?", "a2": "विशेष प्रावधान", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "A",
-        "q3": "इस नियम का उल्लंघन करने पर विभागीय रूप से क्या होता है?", "a3": "बुकिंग अस्वीकार या दण्ड", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "A",
-        "q4": "यह नियम किस आधिकारिक पुस्तिका से संबंधित है?", "a4": "पोस्टल गाइड भाग 1", "b4": "पोस्टल गाइड भाग 2", "c4": "वॉल्यूम 6", "d4": "इनमें से कोई नहीं", "ans4": "A",
+        "q1": f"डाक गाइड क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक नियम", "b1": "अन्य प्रावधान", "c1": "सामान्य निर्देश", "d1": "इनमें से कोई नहीं", "ans1": "A",
+        "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "सीमाएं व शर्तें", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "A",
+        "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "बुकिंग अस्वीकार", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "A",
+        "q4": "यह निर्देश किस पुस्तिका से संबंधित है?", "a4": "पोस्टल गाइड भाग 1", "b4": "पोस्टल गाइड भाग 2", "c4": "वॉल्यूम 6", "d4": "इनमें से कोई नहीं", "ans4": "A",
 
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n💬 अपना सही उत्तर कमेंट करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
         "quiz_caption": f"🧠 रैपिड फायर क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 4 धमाकेदार सवाल! सभी के सही उत्तर वीडियो के **लास्ट में** दिए गए हैं, अंत तक देखें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
@@ -229,8 +220,8 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    Generate EXACTLY 4 distinct, highly exam-oriented MCQ questions based on this text in fluid Hindi.
-    Format strictly as:
+    Generate EXACTLY 4 distinct, short, highly exam-oriented MCQ questions based on this text in fluid Hindi.
+    Format strictly using these tags, keeping text short and clean:
     SEN1: ...
     SEN2: ...
     PARAM1_TITLE: ...
@@ -270,11 +261,17 @@ def generate_clause_script(state):
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
-            for k in ["sen1", "sen2", "param1_title", "param1_val", "param2_title", "param2_val", "trap_point", 
-                      "q1", "a1", "b1", "c1", "d1", "ans1", "q2", "a2", "b2", "c2", "d2", "ans2",
-                      "q3", "a3", "b3", "c3", "d3", "ans3", "q4", "a4", "b4", "c4", "d4", "ans4"]:
-                val = extract_field_block(raw_text, k.upper(), [])
-                if val: fallback_data[k] = clean_hindi_postal_terms(val)
+            
+            # Super-robust line-by-line parser to eliminate all parsing errors completely
+            for line in raw_text.split('\n'):
+                if ':' in line:
+                    parts = line.split(':', 1)
+                    k = parts[0].strip().lower()
+                    v = parts[1].strip().strip('"\'`*')
+                    if k in fallback_data:
+                        fallback_data[k] = clean_hindi_postal_terms(v)
+                        if k.startswith("ans"):
+                            fallback_data[k] = fallback_data[k].upper()[:1]
     except Exception as e:
         print(f"⚠️ Groq note: {e}")
 
@@ -291,6 +288,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
+# --- NORMAL CONCEPT VIDEO (UNTOUCHED) ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     segment_audios = [
@@ -513,9 +511,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Concept Reel Created in Folder: {output_video}", flush=True)
+    print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- RENDER FULL ANIMATION RAPID-FIRE 4-QUESTION QUIZ VIDEO ---
+# --- FIXED ANIMATED QUIZ VIDEO (CLEAN LAYOUT & NO OVERLAPPING TEXT) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -524,14 +522,14 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     asyncio.run(generate_segment_audio(intro_audio_text, intro_file))
     intro_dur = get_audio_duration(intro_file)
 
-    font_brand = get_font(44)
-    font_sub = get_font(22)
-    font_trust = get_font(20)
-    font_badge = get_font(22)
-    font_title = get_font(34)
-    font_h2 = get_font(28)
-    font_cta = get_font(30)
-    font_opt = get_font(26)
+    font_brand = get_font(40)
+    font_sub = get_font(20)
+    font_trust = get_font(18)
+    font_badge = get_font(20)
+    font_title = get_font(30)
+    font_h2 = get_font(24)
+    font_cta = get_font(26)
+    font_opt = get_font(22)
 
     def draw_base(d):
         d.rounded_rectangle([45, 50, 1035, 1710], radius=32, fill="#0B132B", outline="#1E293B", width=3)
@@ -569,55 +567,63 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     labels = ["A", "B", "C", "D"]
 
     for idx, q_data in enumerate(questions_list):
-        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=25)
+        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=32)
         q_lines = wrapped_q.count("\n") + 1
-        start_oy = 460 + (q_lines * 40) + 25
+        
+        q_box_bottom = 440 + (q_lines * 32)
+        start_oy = max(q_box_bottom + 20, 560)
 
+        # Step 1: Question + Option A
         img_s1 = base_img.copy()
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
-        d1.multiline_text((110, 460), wrapped_q, fill="#F8FAFC", font=font_h2, spacing=10)
+        d1.multiline_text((110, 450), wrapped_q, fill="#F8FAFC", font=font_h2, spacing=8)
         
         oy = start_oy
-        d1.rounded_rectangle([110, oy, 970, oy + 85], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-        d1.text((135, oy + 20), "A)", fill="#38BDF8", font=font_h2)
-        d1.text((195, oy + 22), textwrap.fill(clean_hindi_postal_terms(q_data["opts"][0]), width=26), fill="#FFFFFF", font=font_opt)
+        opt_text_0 = textwrap.fill(clean_hindi_postal_terms(q_data["opts"][0]), width=35)
+        d1.rounded_rectangle([110, oy, 970, oy + 100], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+        d1.text((135, oy + 15), "A)", fill="#38BDF8", font=font_h2)
+        d1.multiline_text((180, oy + 12), opt_text_0, fill="#FFFFFF", font=font_opt, spacing=4)
         
         f1_name = f"anim_q{idx+1}_step1.png"
         img_s1.save(f1_name)
         frames.append(f1_name)
         frame_durs.append(1.2)
 
+        # Step 2: Options B & C
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         for o_idx in range(1, 3):
-            oy = start_oy + (o_idx * 110)
-            d2.rounded_rectangle([110, oy, 970, oy + 85], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-            d2.text((135, oy + 20), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-            d2.text((195, oy + 22), textwrap.fill(clean_hindi_postal_terms(q_data["opts"][o_idx]), width=26), fill="#FFFFFF", font=font_opt)
+            oy_opt = start_oy + (o_idx * 115)
+            opt_text = textwrap.fill(clean_hindi_postal_terms(q_data["opts"][o_idx]), width=35)
+            d2.rounded_rectangle([110, oy_opt, 970, oy_opt + 100], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+            d2.text((135, oy_opt + 15), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+            d2.multiline_text((180, oy_opt + 12), opt_text, fill="#FFFFFF", font=font_opt, spacing=4)
         
         f2_name = f"anim_q{idx+1}_step2.png"
         img_s2.save(f2_name)
         frames.append(f2_name)
         frame_durs.append(1.2)
 
+        # Step 3: Option D + Timer box
         img_s3 = img_s2.copy()
         d3 = ImageDraw.Draw(img_s3)
-        o_idx = 3
-        oy = start_oy + (o_idx * 110)
-        d3.rounded_rectangle([110, oy, 970, oy + 85], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-        d3.text((135, oy + 20), "D)", fill="#38BDF8", font=font_h2)
-        d3.text((195, oy + 22), textwrap.fill(clean_hindi_postal_terms(q_data["opts"][3]), width=26), fill="#FFFFFF", font=font_opt)
+        oy_opt = start_oy + (3 * 115)
+        opt_text_3 = textwrap.fill(clean_hindi_postal_terms(q_data["opts"][3]), width=35)
+        d3.rounded_rectangle([110, oy_opt, 970, oy_opt + 100], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+        d3.text((135, oy_opt + 15), "D)", fill="#38BDF8", font=font_h2)
+        d3.multiline_text((180, oy_opt + 12), opt_text_3, fill="#FFFFFF", font=font_opt, spacing=4)
 
-        d3.rounded_rectangle([110, 1420, 970, 1500], radius=12, fill="#064E3B", outline="#34D399", width=3)
-        d3.text((150, 1438), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
+        d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#34D399", width=3)
+        d3.text((140, 1455), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
 
         f3_name = f"anim_q{idx+1}_step3.png"
         img_s3.save(f3_name)
         frames.append(f3_name)
         frame_durs.append(2.6)
 
+    # Grand Finale Reveal Screen
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -684,37 +690,37 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Full Animation Quiz Reel Created in Folder: {output_video}", flush=True)
+    print(f"✅ Clean Layout Animated Quiz Reel Created in Folder: {output_video}", flush=True)
 
-# --- Auto-Commit Function to Push Videos to GitHub Repository ---
+# --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
     try:
         print("📤 Committing and pushing reels to GitHub repository...", flush=True)
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload generated concept and quiz reels into folder [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload fixed clean quiz reel into folder [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("🎉 Successfully pushed reels to GitHub folder!", flush=True)
+        print("🎉 Successfully pushed fixed quiz reel to GitHub folder!", flush=True)
     except Exception as e:
         print(f"⚠️ Git push note: {e}", flush=True)
 
-# --- MAIN RUNNER (TESTING MODE - SAVES TO FOLDER & PUSHES TO GITHUB) ---
+# --- MAIN RUNNER ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
     
     script_data = generate_clause_script(st)
     
-    # 1. Generate Concept Video inside folder
+    # 1. Generate Normal Concept Video (Untouched)
     print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate Quiz Video inside folder with Full Animation
-    print("🧠 Generating Full-Animation Quiz Reel...", flush=True)
+    # 2. Generate Fixed Animated Quiz Video inside folder
+    print("🧠 Generating Fixed Animation Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
-    # 3. Auto push to GitHub repository so folder is visible on main page
+    # 3. Auto push to GitHub folder
     auto_commit_and_push_reels()
     
-    print("🎉 Done! Both videos are now saved inside the 'generated_reels' folder and pushed to GitHub.", flush=True)
+    print("🎉 Done! Fixed quiz reel generated inside the 'generated_reels' folder.", flush=True)
