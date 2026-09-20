@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Fixed animated quiz video
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 32-Sec Locked Professional Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -211,7 +211,6 @@ def generate_clause_script(state):
     if not GROQ_API_KEY:
         return fallback_data
 
-    # --- ULTRA-STRICT PROMPT TO PREVENT HALLUCINATIONS AND IRRELEVANT OPTIONS ---
     prompt = f"""
     You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard).
     Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
@@ -267,7 +266,6 @@ def generate_clause_script(state):
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
-            
             for line in raw_text.split('\n'):
                 if ':' in line:
                     parts = line.split(':', 1)
@@ -518,11 +516,11 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- STRICT FIXED ANIMATED QUIZ VIDEO ---
+# --- STRICT 32-SECOND LOCKED PROFESSIONAL QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
-    intro_audio_text = "सावधान! विभागीय परीक्षा का सबसे महत्वपूर्ण टेस्ट। चार कठिन सवाल आ रहे हैं, सभी के सही उत्तर वीडियो के अंत में बताए जाएंगे, तब तक पेन-पेपर लेकर खुद सही उत्तर देने की कोशिश करें!"
+    intro_audio_text = "🚨 सावधान! विभागीय परीक्षा का सबसे महत्वपूर्ण टेस्ट। 4 कठिन सवाल, सभी के सही उत्तर अंत में!"
     intro_file = "audio_quiz_intro.mp3"
     asyncio.run(generate_segment_audio(intro_audio_text, intro_file))
     intro_dur = get_audio_duration(intro_file)
@@ -534,7 +532,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_title = get_font(30)
     font_h2 = get_font(24)
     font_cta = get_font(26)
-    font_opt = get_font(22)
+    font_opt = get_font(21)
 
     def draw_base(d):
         d.rounded_rectangle([45, 50, 1035, 1710], radius=32, fill="#0B132B", outline="#1E293B", width=3)
@@ -572,53 +570,60 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     labels = ["A", "B", "C", "D"]
 
     for idx, q_data in enumerate(questions_list):
-        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=32)
+        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=30)
         q_lines = wrapped_q.count("\n") + 1
         
-        q_box_bottom = 440 + (q_lines * 32)
-        start_oy = max(q_box_bottom + 20, 560)
+        q_box_bottom = 440 + (q_lines * 30)
+        start_oy = max(q_box_bottom + 15, 520)
+
+        opt_heights = []
+        wrapped_opts = []
+        for opt in q_data["opts"]:
+            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=32)
+            wrapped_opts.append(w_opt)
+            o_lines = w_opt.count("\n") + 1
+            opt_heights.append(max(85, o_lines * 24 + 20))
 
         # Step 1: Question + Option A
         img_s1 = base_img.copy()
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
-        d1.multiline_text((110, 450), wrapped_q, fill="#F8FAFC", font=font_h2, spacing=8)
+        d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_h2, spacing=6)
         
         oy = start_oy
-        opt_text_0 = textwrap.fill(clean_hindi_postal_terms(q_data["opts"][0]), width=35)
-        d1.rounded_rectangle([110, oy, 970, oy + 100], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-        d1.text((135, oy + 15), "A)", fill="#38BDF8", font=font_h2)
-        d1.multiline_text((180, oy + 12), opt_text_0, fill="#FFFFFF", font=font_opt, spacing=4)
+        d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+        d1.text((135, oy + 12), "A)", fill="#38BDF8", font=font_h2)
+        d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt, spacing=2)
         
         f1_name = f"anim_q{idx+1}_step1.png"
         img_s1.save(f1_name)
         frames.append(f1_name)
-        frame_durs.append(1.2)
+        frame_durs.append(0.9)
 
         # Step 2: Options B & C
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
+        
+        curr_y = start_oy + opt_heights[0] + 12
         for o_idx in range(1, 3):
-            oy_opt = start_oy + (o_idx * 115)
-            opt_text = textwrap.fill(clean_hindi_postal_terms(q_data["opts"][o_idx]), width=35)
-            d2.rounded_rectangle([110, oy_opt, 970, oy_opt + 100], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-            d2.text((135, oy_opt + 15), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-            d2.multiline_text((180, oy_opt + 12), opt_text, fill="#FFFFFF", font=font_opt, spacing=4)
+            d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+            d2.text((135, curr_y + 12), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+            d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt, spacing=2)
+            curr_y += opt_heights[o_idx] + 12
         
         f2_name = f"anim_q{idx+1}_step2.png"
         img_s2.save(f2_name)
         frames.append(f2_name)
-        frame_durs.append(1.2)
+        frame_durs.append(0.9)
 
         # Step 3: Option D + Timer box
         img_s3 = img_s2.copy()
         d3 = ImageDraw.Draw(img_s3)
-        oy_opt = start_oy + (3 * 115)
-        opt_text_3 = textwrap.fill(clean_hindi_postal_terms(q_data["opts"][3]), width=35)
-        d3.rounded_rectangle([110, oy_opt, 970, oy_opt + 100], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-        d3.text((135, oy_opt + 15), "D)", fill="#38BDF8", font=font_h2)
-        d3.multiline_text((180, oy_opt + 12), opt_text_3, fill="#FFFFFF", font=font_opt, spacing=4)
+        
+        d3.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[3]], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+        d3.text((135, curr_y + 12), "D)", fill="#38BDF8", font=font_h2)
+        d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt, spacing=2)
 
         d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#34D399", width=3)
         d3.text((140, 1455), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
@@ -626,34 +631,38 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         f3_name = f"anim_q{idx+1}_step3.png"
         img_s3.save(f3_name)
         frames.append(f3_name)
-        frame_durs.append(2.6)
+        frame_durs.append(1.8)
 
-    # Grand Finale Reveal Screen
+    # Grand Finale Reveal Screen (Strictly Managed to fit 32 Sec total)
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
-    d_ans.rounded_rectangle([110, 380, 520, 435], radius=10, fill="#064E3B", outline="#10B981", width=2)
-    d_ans.text((130, 390), "🎉 सभी चारों सवालों के सही उत्तर", fill="#34D399", font=font_h2)
+    d_ans.rounded_rectangle([110, 380, 620, 440], radius=10, fill="#064E3B", outline="#10B981", width=2)
+    d_ans.text((130, 392), "🎉 महा-फिनाले: सभी 4 सवालों के सही उत्तर", fill="#34D399", font=font_h2)
 
-    ans_y_start = 470
+    ans_y_start = 465
     answers_text = [
-        f"Q1 (सवाल 1): सही उत्तर -> [{script_data.get('ans1', 'A')}]",
-        f"Q2 (सवाल 2): सही उत्तर -> [{script_data.get('ans2', 'A')}]",
-        f"Q3 (सवाल 3): सही उत्तर -> [{script_data.get('ans3', 'A')}]",
-        f"Q4 (सवाल 4): सही उत्तर -> [{script_data.get('ans4', 'A')}]"
+        f"सवाल 1 का सही उत्तर ➔ [ {script_data.get('ans1', 'A')} ]",
+        f"सवाल 2 का सही उत्तर ➔ [ {script_data.get('ans2', 'A')} ]",
+        f"सवाल 3 का सही उत्तर ➔ [ {script_data.get('ans3', 'A')} ]",
+        f"सवाल 4 का सही उत्तर ➔ [ {script_data.get('ans4', 'A')} ]"
     ]
     
     for a_idx, ans_str in enumerate(answers_text):
         ay = ans_y_start + (a_idx * 155)
         d_ans.rounded_rectangle([110, ay, 970, ay + 125], radius=16, fill="#182848", outline="#FBBF24", width=2)
-        d_ans.text((140, ay + 35), clean_hindi_postal_terms(ans_str), fill="#FDE047", font=font_title)
+        d_ans.text((140, ay + 38), clean_hindi_postal_terms(ans_str), fill="#FDE047", font=font_title)
 
     ans_fname = "quiz_answers_reveal.png"
     img_ans.save(ans_fname)
     frames.append(ans_fname)
-    frame_durs.append(8.0)
+    
+    current_calc_dur = intro_dur + sum(frame_durs[:-1])
+    finale_dur = max(6.0, 32.0 - current_calc_dur)
+    frame_durs.append(round(finale_dur, 2))
 
-    total_dur = intro_dur + sum(frame_durs[:-1]) + 8.0
+    total_dur = intro_dur + sum(frame_durs[:-1]) + finale_dur
+    print(f"⏱️ Locked Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
 
     filter_parts = f"[0:a]aresample=48000[voice]; "
     for i, fname in enumerate(frames):
@@ -691,11 +700,11 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         "-c:v", "libx264", "-preset", "medium", "-profile:v", "main", "-level", "4.0",
         "-pix_fmt", "yuv420p", "-r", "30", "-g", "60",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
-        "-movflags", "+faststart", "-shortest", output_video
+        "-movflags", "+faststart", "-t", "32.0", output_video
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Clean Layout Animated Quiz Reel Created in Folder: {output_video}", flush=True)
+    print(f"✅ 32-Sec Locked Professional Quiz Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
@@ -704,9 +713,9 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", -m, "Auto-upload strict clean quiz reel into folder [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload 32s locked professional quiz reel into folder [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("🎉 Successfully pushed strict quiz reel to GitHub folder!", flush=True)
+        print("🎉 Successfully pushed 32s locked quiz reel to GitHub folder!", flush=True)
     except Exception as e:
         print(f"⚠️ Git push note: {e}", flush=True)
 
@@ -721,11 +730,11 @@ if __name__ == "__main__":
     print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate Fixed Animated Quiz Video inside folder
-    print("🧠 Generating Strict Animation Quiz Reel...", flush=True)
+    # 2. Generate 32-Sec Locked Professional Quiz Video inside folder
+    print("🧠 Generating 32-Sec Locked Professional Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
     # 3. Auto push to GitHub folder
     auto_commit_and_push_reels()
     
-    print("🎉 Done! Strict quiz reel generated inside the 'generated_reels' folder.", flush=True)
+    print("🎉 Done! 32-second locked quiz reel generated inside the 'generated_reels' folder.", flush=True)
