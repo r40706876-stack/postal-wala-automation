@@ -69,7 +69,7 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Dynamic PDF Extractor Engine (Directly Reads Official Title & Text from PO Guide 1) ---
+# --- Dynamic PDF Extractor Engine ---
 def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
     default_title = f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}"
     default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} का आधिकारिक विभागीय नियम।"
@@ -118,7 +118,8 @@ def clean_hindi_postal_terms(text):
     replacements = {
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
-        "घंटी वाली": "घंटे वाली", "नित्य पत्र": "वित्तीय वर्ष", "नित्य वर्ष": "वित्तीय वर्ष"
+        "घंटी वाली": "घंटे वाली", "नित्य पत्र": "वित्तीय वर्ष", "नित्य वर्ष": "वित्तीय वर्ष",
+        "विकि": "टिकट", "प्रस्थान": "मुद्रण"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
@@ -127,9 +128,7 @@ def clean_hindi_postal_terms(text):
 def clean_text_for_tts(text):
     if not text:
         return ""
-    # Remove English text inside parentheses for pure Hindi audio voiceover
     text_no_brackets = re.sub(r'\s*\([^)]*\)', '', text)
-    # Remove remaining English letters to ensure Swara speaks 100% pure Hindi
     cleaned = re.sub(r'[a-zA-Z]+', '', text_no_brackets)
     return " ".join(cleaned.split())
 
@@ -202,7 +201,7 @@ def advance_progress_state(state):
     save_progress_state(state)
     print(f"⏩ Advanced Progress to: Clause {state['clause_no']} (Part {state['current_part']}/{state['total_parts']})", flush=True)
 
-# --- STRICT BILINGUAL SCRIPT GENERATOR ---
+# --- STRICT CLEAN HINDI-CENTRIC SCRIPT GENERATOR ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
@@ -219,18 +218,18 @@ def generate_clause_script(state):
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
         "hook_display_text": hook_obj["hook_text"],
-        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है (Official Rule Applicable)।",
-        "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं (Exam Exception)।",
-        "param1_title": "परीक्षा मुख्य बिंदु (Key Point)",
-        "param1_val": "आधिकारिक नियम मान्य (Valid Rule)",
-        "param2_title": "विभागीय शर्त (Condition)",
-        "param2_val": "नियमों का पालन अनिवार्य (Mandatory)",
-        "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं (Exam Trap)।",
+        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
+        "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
+        "param1_title": "परीक्षा मुख्य बिंदु",
+        "param1_val": "आधिकारिक नियम मान्य",
+        "param2_title": "विभागीय शर्त",
+        "param2_val": "नियमों का पालन अनिवार्य",
+        "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं।",
         "question": "डाक घर गाइड भाग 1 के क्लॉज किस विषय से संबंधित है?",
-        "opt_a": "आधिकारिक विभागीय नियम (Official Rule)",
-        "opt_b": "अतिरिक्त शुल्क प्रावधान (Extra Fee)",
-        "opt_c": "केवल सामान्य निर्देश (General)",
-        "opt_d": "इनमें से कोई नहीं (None)",
+        "opt_a": "आधिकारिक विभागीय नियम",
+        "opt_b": "अतिरिक्त शुल्क प्रावधान",
+        "opt_c": "केवल सामान्य निर्देश",
+        "opt_d": "इनमें से कोई नहीं",
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause}।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
@@ -246,17 +245,17 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    STRICT BILINGUAL & ZERO-HALLUCINATION RULES (TEMPERATURE 0.0):
+    STRICT HINDI-CENTRIC RULES (TEMPERATURE 0.0):
     1. Base all facts, rules, and questions STRICTLY and SOLELY on the extracted text above.
-    2. SCREEN TEXT MUST BE BILINGUAL: Provide all text fields (SEN1, SEN2, PARAM1, PARAM2, TRAP_POINT, QUESTION, OPTIONS) in fluent Hindi, followed immediately by the key official English postal term/phrase in parentheses `( )` so viewers see both Hindi and English on screen.
-    3. SEN1: State the exact operational rule from this text in bilingual format (12-14 words).
-    4. SEN2: State the specific legal exception, trap or penalty in bilingual format (12-14 words). MUST NOT REPEAT SEN1.
-    5. PARAM1_TITLE & PARAM1_VAL: First core condition in bilingual format.
-    6. PARAM2_TITLE & PARAM2_VAL: Second core condition in bilingual format.
-    7. TRAP_POINT: Clear penalty/trap note for Slide 3 red box in bilingual format (8-12 words).
-    8. QUESTION: High-yield departmental MCQ question directly from this text in bilingual format (max 12 words).
-    9. OPT_A: The 100% correct answer in bilingual format.
-    10. OPT_B, OPT_C, OPT_D: 3 plausible departmental distractors in bilingual format.
+    2. SCREEN TEXT MUST BE IN CLEAR, CRISP HINDI: Avoid long clunky bilingual strings that overflow boxes. Keep sentences concise, perfectly fitting inside visual containers without wrapping issues.
+    3. SEN1: State the exact operational rule from this text in clear Hindi (max 12-14 words).
+    4. SEN2: State the specific legal exception, trap or penalty in clear Hindi (max 12-14 words). MUST NOT REPEAT SEN1.
+    5. PARAM1_TITLE & PARAM1_VAL: First core condition in concise Hindi.
+    6. PARAM2_TITLE & PARAM2_VAL: Second core condition in concise Hindi.
+    7. TRAP_POINT: Clear penalty/trap note for Slide 3 red box in concise Hindi (max 8-10 words).
+    8. QUESTION: High-yield departmental MCQ question directly from this text in Hindi (max 12 words).
+    9. OPT_A: The 100% correct answer in concise Hindi (max 2-4 words).
+    10. OPT_B, OPT_C, OPT_D: 3 plausible departmental distractors in concise Hindi (max 2-4 words each).
 
     FORMAT:
     SEN1: ...
@@ -310,7 +309,6 @@ def generate_clause_script(state):
     return fallback_data
 
 def get_slide_segments(script_data):
-    # AUDIO MUST BE 100% PURE HINDI (Filtered via clean_text_for_tts to remove English & Brackets)
     voice_sen1 = clean_text_for_tts(script_data['sen1'])
     voice_sen2 = clean_text_for_tts(script_data['sen2'])
     
@@ -446,7 +444,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         frame_durs.append(round(st_d, 2))
 
     # =========================================================================
-    # SLIDE 2 (RULE): 2 BALANCED BILINGUAL PARAMETER CARDS
+    # SLIDE 2 (RULE): 2 BALANCED PARAMETER CARDS
     # =========================================================================
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
@@ -462,7 +460,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d2a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     d2a.rounded_rectangle([110, 520, 480, 575], radius=10, fill="#0B132B")
     d2a.text((150, 530), "नियम विश्लेषण #1:", fill="#38BDF8", font=font_label)
-    wrapped_s2 = textwrap.fill(script_data['sen1'], width=22)
+    wrapped_s2 = textwrap.fill(script_data['sen1'], width=24)
     d2a.multiline_text((120, 610), clean_hindi_postal_terms(wrapped_s2), fill="#F8FAFC", font=font_body, spacing=14)
 
     # Parameter Card 1 (Cyan Box)
@@ -514,7 +512,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d3a.rounded_rectangle([110, 520, 480, 575], radius=10, fill="#0B132B")
     d3a.text((150, 530), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
     
-    wrapped_s3 = textwrap.fill(script_data['sen2'], width=22)
+    wrapped_s3 = textwrap.fill(script_data['sen2'], width=24)
     d3a.multiline_text((120, 610), clean_hindi_postal_terms(wrapped_s3), fill="#F8FAFC", font=font_body, spacing=16)
     draw_footer_cta(d3a)
     img3a.save("f_3a.png")
@@ -530,7 +528,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d3b.text((145, 883), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
     
     trap_txt = script_data.get("trap_point", script_data["sen2"])
-    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=21)
+    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=23)
     d3b.multiline_text((145, 960), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=14)
     img3b.save("f_3b.png")
     frames.append("f_3b.png")
@@ -560,7 +558,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     d4a.rounded_rectangle([110, 380, 360, 435], radius=10, fill="#0B132B")
     d4a.text((140, 390), "आज का सवाल:", fill="#FBBF24", font=font_h2)
-    wrapped_q4 = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=23)
+    wrapped_q4 = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=25)
     d4a.multiline_text((110, 460), wrapped_q4, fill="#F8FAFC", font=font_h2, spacing=10)
     draw_footer_cta(d4a)
     img4a.save("f_4a.png")
@@ -578,7 +576,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         oy = start_oy + (o_idx * 135)
         d4b.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
         d4b.text((135, oy + 24), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-        d4b.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
+        d4b.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=25), fill="#FFFFFF", font=font_opt)
     img4b.save("f_4b.png")
     frames.append("f_4b.png")
     frame_durs.append(round(durations[3] * 0.15, 2))
@@ -590,7 +588,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         oy = start_oy + (o_idx * 135)
         d4c.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
         d4c.text((135, oy + 24), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-        d4c.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=23), fill="#FFFFFF", font=font_opt)
+        d4c.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=25), fill="#FFFFFF", font=font_opt)
     img4c.save("f_4c.png")
     frames.append("f_4c.png")
     frame_durs.append(round(durations[3] * 0.15, 2))
@@ -677,7 +675,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Fully Bilingual Master Kinetic Reel Created: {output_video}", flush=True)
+    print(f"✅ Clean Hindi-Centric Master Kinetic Reel Created: {output_video}", flush=True)
 
 # --- RESUMABLE PROTOCOL UPLOADER ---
 def _create_reel_container(video_file, caption, user_id, access_token):
