@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 38-Sec Locked Quiz Reel with Clause Hook
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 38-Sec Locked Quiz Reel with Accurate Answers
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -184,8 +184,8 @@ def generate_clause_script(state):
         "trap_point": "इस नियम की अनदेखी करने पर नकारात्मक अंक मिल सकते हैं।",
         
         "q1": f"डाक गाइड क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक नियम", "b1": "अन्य प्रावधान", "c1": "सामान्य निर्देश", "d1": "इनमें से कोई नहीं", "ans1": "A",
-        "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "सीमाएं व शर्तें", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "A",
-        "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "बुकिंग अस्वीकार", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "A",
+        "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "सीमाएं व शर्तें", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "B",
+        "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "बुकिंग अस्वीकार", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "C",
 
         "caption": f"🚨 पोस्टल गाइड क्लॉज {current_clause} स्पेशल टेस्ट! डाक घर गाइड भाग 1 (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
         "quiz_caption": f"🧠 क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
@@ -206,7 +206,8 @@ def generate_clause_script(state):
     STRICT RULES FOR EXAM GENERATION:
     1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text.
     2. ABSOLUTE CONSTRAINT FOR OPTIONS (A, B, C, D): Every single option must use authentic postal terminology.
-    3. Keep questions and options short, clear, and in professional Hindi.
+    3. ANSWERS (ANS1, ANS2, ANS3): Must have varied and correct option letters (e.g., A, B, C, or D) corresponding to the right answer for each question. Do not make all answers 'A'.
+    4. Keep questions and options short, clear, and in professional Hindi.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -227,13 +228,13 @@ def generate_clause_script(state):
     B2: ...
     C2: ...
     D2: ...
-    ANS2: A
+    ANS2: B
     Q3: ...
     A3: ...
     B3: ...
     C3: ...
     D3: ...
-    ANS3: A
+    ANS3: C
     """
 
     try:
@@ -653,7 +654,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(step_dur)
 
-    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS ---
+    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS (FIXED ANSWER MAPPING) ---
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -663,8 +664,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ans_y_start = 480
     answers_text = [
         f"सवाल 1 का सही उत्तर - [ {script_data.get('ans1', 'A')} ]",
-        f"सवाल 2 का सही उत्तर - [ {script_data.get('ans2', 'A')} ]",
-        f"सवाल 3 का सही उत्तर - [ {script_data.get('ans3', 'A')} ]"
+        f"सवाल 2 का सही उत्तर - [ {script_data.get('ans2', 'B')} ]",
+        f"सवाल 3 का सही उत्तर - [ {script_data.get('ans3', 'C')} ]"
     ]
     
     for a_idx, ans_str in enumerate(answers_text):
