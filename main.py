@@ -23,8 +23,14 @@ RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/"
 STATE_FILE = "progress_state.json"
 PDF_FILE_PATH = "mts content .pdf"
 FONT_PATH = "Mukta-Bold.ttf"
-CONCEPT_VIDEO = "concept_reel.mp4"
-QUIZ_VIDEO = "quiz_reel.mp4"
+
+# --- New Dedicated Folder for Reels ---
+REELS_DIR = "generated_reels"
+os.makedirs(REELS_DIR, exist_ok=True)
+
+CONCEPT_VIDEO = os.path.join(REELS_DIR, "concept_reel.mp4")
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4")
+
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
 
@@ -202,7 +208,6 @@ def generate_clause_script(state):
         "param2_val": "नियमों का पालन अनिवार्य",
         "trap_point": "इस नियम की अनदेखी करने पर नकारात्मक अंक मिल सकते हैं।",
         
-        # Exam Oriented 4 Questions
         "q1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक नियम", "b1": "अन्य विकल्प", "c1": "सामान्य निर्देश", "d1": "इनमें से कोई नहीं", "ans1": "A",
         "q2": "विभागीय परीक्षा में इस क्लॉज से संबंधित कौन सा प्रावधान मान्य है?", "a2": "विशेष प्रावधान", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "A",
         "q3": "इस नियम का उल्लंघन करने पर विभागीय रूप से क्या होता है?", "a3": "बुकिंग अस्वीकार या दण्ड", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "A",
@@ -286,7 +291,6 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- RENDER CONCEPT VIDEO (Slides 1, 2, 3) ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     segment_audios = [
@@ -509,9 +513,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Concept Reel Created: {output_video}", flush=True)
+    print(f"✅ Concept Reel Created in Folder: {output_video}", flush=True)
 
-# --- RENDER FULL ANIMATION RAPID-FIRE 4-QUESTION QUIZ VIDEO (FIXED) ---
+# --- RENDER FULL ANIMATION RAPID-FIRE 4-QUESTION QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -569,7 +573,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         q_lines = wrapped_q.count("\n") + 1
         start_oy = 460 + (q_lines * 40) + 25
 
-        # Step 1: Question + Option A
         img_s1 = base_img.copy()
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
@@ -586,7 +589,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f1_name)
         frame_durs.append(1.2)
 
-        # Step 2: Options B & C
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         for o_idx in range(1, 3):
@@ -600,7 +602,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f2_name)
         frame_durs.append(1.2)
 
-        # Step 3: Option D + Timer box
         img_s3 = img_s2.copy()
         d3 = ImageDraw.Draw(img_s3)
         o_idx = 3
@@ -617,7 +618,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(2.6)
 
-    # Grand Finale Reveal Screen
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -684,23 +684,37 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Full Animation Quiz Reel Created Successfully: {output_video}", flush=True)
+    print(f"✅ Full Animation Quiz Reel Created in Folder: {output_video}", flush=True)
 
-# --- MAIN RUNNER (TESTING MODE - LOCAL SAVING ONLY) ---
+# --- Auto-Commit Function to Push Videos to GitHub Repository ---
+def auto_commit_and_push_reels():
+    try:
+        print("📤 Committing and pushing reels to GitHub repository...", flush=True)
+        subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
+        subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload generated concept and quiz reels into folder [skip ci]"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        print("🎉 Successfully pushed reels to GitHub folder!", flush=True)
+    except Exception as e:
+        print(f"⚠️ Git push note: {e}", flush=True)
+
+# --- MAIN RUNNER (TESTING MODE - SAVES TO FOLDER & PUSHES TO GITHUB) ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
     
     script_data = generate_clause_script(st)
     
-    # 1. Generate Concept Video locally
-    print("🎬 Generating Concept Reel locally...", flush=True)
+    # 1. Generate Concept Video inside folder
+    print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
-    print(f"✅ Concept Reel successfully generated: {CONCEPT_VIDEO}", flush=True)
     
-    # 2. Generate Quiz Video locally with Full Animation
-    print("🧠 Generating Full-Animation Quiz Reel locally...", flush=True)
+    # 2. Generate Quiz Video inside folder with Full Animation
+    print("🧠 Generating Full-Animation Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
-    print(f"✅ Quiz Reel successfully generated: {QUIZ_VIDEO}", flush=True)
     
-    print("🎉 Testing Mode Complete! Both MP4 files are saved locally/in your repository folder. You can play and test them with 0% account risk.", flush=True)
+    # 3. Auto push to GitHub repository so folder is visible on main page
+    auto_commit_and_push_reels()
+    
+    print("🎉 Done! Both videos are now saved inside the 'generated_reels' folder and pushed to GitHub.", flush=True)
