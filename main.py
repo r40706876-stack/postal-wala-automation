@@ -163,6 +163,15 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
+def extract_field_block(text, field_name, next_fields):
+    pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
+    m = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
+    if m:
+        val = m.group(1).strip()
+        val = re.sub(r"^[\"\'`]+|[\"\'`]+$", "", val).strip()
+        return " ".join(val.split())
+    return None
+
 def ensure_fonts():
     if not os.path.exists(FONT_PATH):
         url = "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-Bold.ttf"
@@ -233,7 +242,12 @@ def generate_clause_script(state):
         "param1_val": "आधिकारिक नियम मान्य",
         "param2_title": "विभागीय शर्त",
         "param2_val": "नियमों का पालन अनिवार्य",
-        "trap_point": "इस नियम की अनदेखी करने पर नकारात्मक अंक मिल सकते हैं।",
+        "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं।",
+        "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार मुख्य प्रावधान क्या है?",
+        "opt_a": "आधिकारिक विभागीय नियम",
+        "opt_b": "अतिरिक्त शुल्क प्रावधान",
+        "opt_c": "केवल सामान्य निर्देश",
+        "opt_d": "इनमें से कोई नहीं",
         
         "q1": f"डाक गाइड क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक नियम", "b1": "अन्य प्रावधान", "c1": "सामान्य निर्देश", "d1": "इनमें से कोई नहीं", "ans1": "A",
         "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "सीमाएं व शर्तें", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "B",
@@ -258,8 +272,8 @@ def generate_clause_script(state):
     STRICT RULES FOR EXAM GENERATION (PO GUIDE PART 1 AUTHENTICATION):
     1. Cross-verify and generate questions strictly based on the official, authoritative rules of **Post Office Guide Part 1 (PO Guide Part 1)** available in your training knowledge to ensure 100% exam-oriented accuracy, ignoring any raw OCR/text errors in the local PDF extract.
     2. HINDI PHRASING & TERMINOLOGY: Use 100% standard, professional, and natural departmental Hindi phrasing (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). Avoid awkward machine-translated phrasing or unnatural literal translations. Ensure proper professional departmental exam terminology.
-    3. ANSWERS (ANS1, ANS2, ANS3): MUST HAVE DIFFERENT CORRECT OPTION LETTERS (e.g., A, B, C, or D). Never make all three answers 'A'.
-    4. Keep questions and options short, clear, and professional.
+    3. QUESTION & OPTIONS: Provide a high-yield MCQ question (QUESTION), correct option (OPT_A), and 3 distractors (OPT_B, OPT_C, OPT_D) in brief Hindi.
+    4. ANSWERS (ANS1, ANS2, ANS3): MUST HAVE DIFFERENT CORRECT OPTION LETTERS (e.g., A, B, C, or D). Never make all three answers 'A'.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -269,6 +283,11 @@ def generate_clause_script(state):
     PARAM2_TITLE: ...
     PARAM2_VAL: ...
     TRAP_POINT: ...
+    QUESTION: ...
+    OPT_A: ...
+    OPT_B: ...
+    OPT_C: ...
+    OPT_D: ...
     Q1: ...
     A1: ...
     B1: ...
@@ -295,6 +314,19 @@ def generate_clause_script(state):
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
+            
+            q_val = extract_field_block(raw_text, "QUESTION", ["OPT_A", "SEN1"])
+            oa_val = extract_field_block(raw_text, "OPT_A", ["OPT_B", "QUESTION"])
+            ob_val = extract_field_block(raw_text, "OPT_B", ["OPT_C", "QUESTION"])
+            oc_val = extract_field_block(raw_text, "OPT_C", ["OPT_D", "QUESTION"])
+            od_val = extract_field_block(raw_text, "OPT_D", ["Q1", "QUESTION"])
+
+            if q_val: fallback_data["question"] = clean_hindi_postal_terms(q_val)
+            if oa_val: fallback_data["opt_a"] = clean_hindi_postal_terms(oa_val)
+            if ob_val: fallback_data["opt_b"] = clean_hindi_postal_terms(ob_val)
+            if oc_val: fallback_data["opt_c"] = clean_hindi_postal_terms(oc_val)
+            if od_val: fallback_data["opt_d"] = clean_hindi_postal_terms(od_val)
+
             for line in raw_text.split('\n'):
                 if ':' in line:
                     parts = line.split(':', 1)
@@ -383,14 +415,14 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- CONCEPT RULE VIDEO (UPDATED KINETIC FLOW FROM MAIN 9) ---
+# --- CONCEPT RULE VIDEO (4 SLIDES INCLUDING QUESTION & TIMER SLIDE) ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     segment_audios = [
         script_data["hook_voice"],
         script_data["sen1"],
         f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
-        f"आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु!"
+        "सवाल स्क्रीन पर है! सही उत्तर A, B, C या ड़ कमेंट करें और पोस्टल वाला को फॉलो करें!"
     ]
     durations = []
     for i, seg_text in enumerate(segment_audios):
@@ -421,6 +453,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     font_cta = get_font(30)
     font_opt = get_font(28)
     font_hook = get_font(36)
+    font_timer = get_font(32)
 
     def draw_base(d):
         d.rounded_rectangle([45, 50, 1035, 1710], radius=32, fill="#0B132B", outline="#1E293B", width=3)
@@ -581,10 +614,82 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     img3c = img3b.copy()
     d3c = ImageDraw.Draw(img3c)
     d3c.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#FBBF24", width=2)
-    d3c.text((180, 1400), "अब आगे देखिए क्विज़ वीडियो >>", fill="#FDE047", font=font_h2)
+    d3c.text((180, 1400), "अब आज का सवाल: उत्तर कमेंट करें >>", fill="#FDE047", font=font_h2)
     img3c.save("c_3c.png")
     frames.append("c_3c.png")
     frame_durs.append(round(durations[2] * 0.30, 2))
+
+    # Slide 4: Question & Live Countdown Timer (Included in Concept Video!)
+    img4a = Image.new("RGB", (1080, 1920), color="#060A17")
+    d4a = ImageDraw.Draw(img4a)
+    draw_base(d4a)
+    d4a.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#FBBF24", width=2)
+    d4a.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
+    d4a.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
+    d4a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
+    d4a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
+    d4a.text((105, 255), "परीक्षा क्विज़: उत्तर कमेंट करें", fill="#FDE047", font=font_title)
+    d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
+    d4a.rounded_rectangle([110, 380, 360, 435], radius=10, fill="#0B132B")
+    d4a.text((140, 390), "आज का सवाल:", fill="#FBBF24", font=font_h2)
+    wrapped_q4 = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=25)
+    d4a.multiline_text((110, 460), wrapped_q4, fill="#F8FAFC", font=font_h2, spacing=10)
+    draw_footer_cta(d4a)
+    img4a.save("c_4a.png")
+    frames.append("c_4a.png")
+    frame_durs.append(round(durations[3] * 0.15, 2))
+
+    img4b = img4a.copy()
+    d4b = ImageDraw.Draw(img4b)
+    q_lines = wrapped_q4.count("\n") + 1
+    start_oy = 460 + (q_lines * 42) + 50
+    opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
+    labels = ["A", "B", "C", "D"]
+    for o_idx in range(2):
+        oy = start_oy + (o_idx * 135)
+        d4b.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        d4b.text((135, oy + 24), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        d4b.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=25), fill="#FFFFFF", font=font_opt)
+    img4b.save("c_4b.png")
+    frames.append("c_4b.png")
+    frame_durs.append(round(durations[3] * 0.15, 2))
+
+    img4c = img4b.copy()
+    d4c = ImageDraw.Draw(img4c)
+    for o_idx in range(2, 4):
+        oy = start_oy + (o_idx * 135)
+        d4c.rounded_rectangle([110, oy, 970, oy + 95], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        d4c.text((135, oy + 24), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        d4c.text((200, oy + 26), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=25), fill="#FFFFFF", font=font_opt)
+    img4c.save("c_4c.png")
+    frames.append("c_4c.png")
+    frame_durs.append(round(durations[3] * 0.15, 2))
+
+    countdown_steps = [
+        ("05", "#FDE047", "#064E3B", "#34D399"),
+        ("04", "#FDE047", "#064E3B", "#34D399"),
+        ("03", "#FB923C", "#7C2D12", "#FB923C"),
+        ("02", "#F87171", "#7F1D1D", "#EF4444"),
+        ("01", "#EF4444", "#991B1B", "#FCA5A5")
+    ]
+    
+    quiz_rem_dur = max(3.5, durations[3] * 0.55)
+    per_timer_dur = round(quiz_rem_dur / 5.0, 2)
+
+    for c_idx, (sec_str, timer_color, bar_bg, bar_outline) in enumerate(countdown_steps):
+        img_cd = img4c.copy()
+        d_cd = ImageDraw.Draw(img_cd)
+        
+        d_cd.rounded_rectangle([110, 1270, 970, 1345], radius=14, fill="#0B132B", outline=timer_color, width=2)
+        d_cd.text((260, 1285), f"⏳ समय शेष: {sec_str} सेकंड", fill=timer_color, font=font_timer)
+
+        d_cd.rounded_rectangle([110, 1375, 970, 1490], radius=18, fill=bar_bg, outline=bar_outline, width=3)
+        d_cd.text((180, 1415), ">> अपना उत्तर (A, B, C, D) कमेंट करें!", fill="#FFFFFF", font=font_h2)
+
+        cd_fname = f"c_4_timer_{c_idx}.png"
+        img_cd.save(cd_fname)
+        frames.append(cd_fname)
+        frame_durs.append(per_timer_dur)
 
     inputs = []
     filter_parts = ""
@@ -627,7 +732,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Concept Rule Reel Created: {output_video}", flush=True)
+    print(f"✅ Concept Rule Reel Created (Complete with Question Slide): {output_video}", flush=True)
 
 # --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
@@ -880,7 +985,7 @@ if __name__ == "__main__":
     
     script_data = generate_clause_script(st)
     
-    # 1. Generate Concept Rule Reel First
+    # 1. Generate Concept Rule Reel First (Includes complete 4 slides up to question & timer)
     print("🎬 Generating Concept Rule Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
