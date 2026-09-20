@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Terminology Clean & Overlap-Free Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Overlap-Free & Terminology Clean Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -117,7 +117,7 @@ def clean_hindi_postal_terms(text):
         return ""
     text = re.sub(r"^[:\-\s\.]+", "", text)
     
-    # --- Permanent Foolproof Dictionary for Departmental Postal Terms ---
+    # --- Foolproof Dictionary for Departmental Postal Terms ---
     replacements = {
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
@@ -509,7 +509,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FOOLPROOF TERMINOLOGY & OVERLAP-FREE) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (PERMANENT DYNAMIC LAYOUT OVERLAP FIX) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -540,9 +540,9 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     segment_durations.append(get_audio_duration(finale_audio_file))
 
     concat_filter_audio = ""
-    for i in range(len(audio_files)):
+    for i in range(audio_files.__len__()):
         concat_filter_audio += f"[{i}:a]"
-    concat_filter_audio += f"concat=n={len(audio_files)}:v=0:a=1[aout]"
+    concat_filter_audio += f"concat=n={audio_files.__len__()}:v=0:a=1[aout]"
 
     ffmpeg_audio_cmd = ["ffmpeg", "-y"]
     for af in audio_files:
@@ -556,8 +556,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_badge = get_font(20)
     font_title = get_font(32)
     
-    font_q_text = get_font(32)
-    font_opt_text = get_font(25) # Safe font size for zero overlap
+    font_q_text = get_font(30)
+    font_opt_text = get_font(24) # Compact, readable size to completely prevent overflow
     font_h2 = get_font(24)
     font_cta = get_font(24)
 
@@ -603,16 +603,18 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         wrapped_q = textwrap.fill(q_data["q"], width=24)
         q_lines = wrapped_q.count("\n") + 1
         
-        q_box_bottom = 390 + (q_lines * 38)
-        start_oy = max(q_box_bottom + 18, 500)
+        # --- ROBUST DYNAMIC QUESTION & OPTION HEIGHT CALCULATOR ---
+        q_box_height = max(70, q_lines * 34 + 16)
+        start_oy = 380 + q_box_height + 15
 
         opt_heights = []
         wrapped_opts = []
         for opt in q_data["opts"]:
-            w_opt = textwrap.fill(opt, width=26)
+            w_opt = textwrap.fill(opt, width=28)
             wrapped_opts.append(w_opt)
             o_lines = w_opt.count("\n") + 1
-            opt_heights.append(max(85, o_lines * 30 + 22))
+            # Fully dynamic option box height with safe breathing room
+            opt_heights.append(max(75, o_lines * 28 + 20))
 
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
@@ -626,7 +628,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         
         oy = start_oy
         d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
-        d1.text((135, oy + 12), "A)", fill="#38BDF8", font=font_q_text)
+        d1.text((135, oy + 10), "A)", fill="#38BDF8", font=font_q_text)
         d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=2)
         
         f1_name = f"anim_q{idx+1}_step1.png"
@@ -641,7 +643,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         curr_y = start_oy + opt_heights[0] + 12
         for o_idx in range(1, 3):
             d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
-            d2.text((135, curr_y + 12), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
+            d2.text((135, curr_y + 10), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
             d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=2)
             curr_y += opt_heights[o_idx] + 12
         
@@ -655,7 +657,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d3 = ImageDraw.Draw(img_s3)
         
         d3.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[3]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
-        d3.text((135, curr_y + 12), "D)", fill="#38BDF8", font=font_q_text)
+        d3.text((135, curr_y + 10), "D)", fill="#38BDF8", font=font_q_text)
         d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=2)
 
         d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#10B981", width=3)
