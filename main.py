@@ -69,11 +69,15 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Robust Title & Text Sanitizer Engine ---
+# --- Robust Title & Text Sanitizer Engine with Matra Fixer ---
 def clean_extracted_title(title):
     if not title:
         return "विभागीय नियम"
     title = re.sub(r"^[:\-\s\.]+", "", title)
+    # Fix broken internal unicode spaces in Hindi letters (Jaise 'प ॉस्टिंग' -> 'पोस्टिंग')
+    title = re.sub(r'(?<=[क-ह])\s+(?=[ा-ॉं])', '', title)
+    title = re.sub(r'\s+([ा-ॉं])', r'\1', title)
+    
     bad_map = {
         "टिविंग": "पैकिंग",
         "टिवक": "टिकट",
@@ -149,6 +153,10 @@ def clean_hindi_postal_terms(text):
     if not text:
         return ""
     text = re.sub(r"^[:\-\s\.]+", "", text)
+    # Fix broken internal unicode spaces across all strings
+    text = re.sub(r'(?<=[क-ह])\s+(?=[ा-ॉं])', '', text)
+    text = re.sub(r'\s+([ा-ॉं])', r'\1', text)
+    
     replacements = {
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
