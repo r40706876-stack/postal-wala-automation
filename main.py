@@ -128,8 +128,8 @@ POSTAL_CLAUSE_CATALOG = {
     },
     11: {
         "name": "डाक महसूल का अग्रिम भुगतान", "total_parts": 2,
-        "part_1_focus": "डाक वस्तुओं पर डाकभार का पूर्ण अग्रिम भुगतान अनिवार्य है ताकि डाक का त्वरित प्रेषण हो।",
-        "part_2_focus": "अवैतनिक या कम भुगतान वाली डाक पर वितरण के समय सामान्य डाक शुल्क से दोगुना प्रभार वसूला जाता है।"
+        "part_1_focus": "डाक वस्तुओं पर डाकभार का पूर्ण अग्रिम भुगतान अनिवार्य है। अवैतनिक या अपर्याप्त भुगतान वाली डाक को रोका जा सकता है।",
+        "part_2_focus": "अवैतनिक या कम भुगतान वाली अंतरदेशीय डाक पर वितरण के समय वास्तविक कमी का दोगुना डाक शुल्क वसूला जाता है।"
     },
     12: {
         "name": "डाक टिकट चिपकाने की सही विधि", "total_parts": 1,
@@ -404,7 +404,7 @@ def extract_clause_text_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
         return ""
     try:
         reader = PdfReader(pdf_path)
-        pattern = re.compile(rf"(?:क्लॉज|Clause|नियम)\s*{clause_no}\b", re.IGNORECASE)
+        pattern = re.compile(rf"(?:क्लॉज|clause|नियम)\s*[-:]?\s*{clause_no}\b", re.IGNORECASE)
         matched_pages = []
 
         for page in reader.pages:
@@ -471,7 +471,7 @@ def get_font(size):
     return ImageFont.load_default()
 
 def load_progress_state():
-    state = {"clause_no": 11, "current_part": 1, "total_parts": 2, "hook_index": 0}
+    state = {"clause_no": 11, "current_part": 2, "total_parts": 2, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -497,7 +497,7 @@ def advance_progress_state(state):
     state["hook_index"] = (hook_idx + 1) % len(VIRAL_HOOKS)
 
     clause = state.get("clause_no", 11)
-    part = state.get("current_part", 1)
+    part = state.get("current_part", 2)
     clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 1})
     total_parts = clause_info.get("total_parts", 1)
 
@@ -519,7 +519,7 @@ def advance_progress_state(state):
 # --- STRICT ZERO-HALLUCINATION SCRIPT GENERATOR ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 11)
-    current_part = state.get("current_part", 1)
+    current_part = state.get("current_part", 2)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
 
@@ -528,57 +528,78 @@ def generate_clause_script(state):
     total_parts = clause_info.get("total_parts", 1)
     part_focus = clause_info.get(f"part_{current_part}_focus", clause_info.get("part_1_focus", ""))
 
-    # Extract Official Text from PDF
     official_pdf_text = extract_clause_text_from_pdf(current_clause)
+    context_text = official_pdf_text if len(official_pdf_text.strip()) > 60 else part_focus
 
-    fallback_data = {
-        "clause_no": current_clause,
-        "clause_name": clause_name,
-        "part_no": current_part,
-        "total_parts": total_parts,
-        "visual_hook_badge": hook_obj["visual_badge"],
-        "hook_voice": hook_obj["voice"],
-        "hook_display_text": hook_obj["hook_text"],
-        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": "अवैतनिक या कम भुगतान वाली डाक पर वितरण के समय दोगुना डाक शुल्क वसूला जाता है।",
-        "param1_title": "अनिवार्य शर्त",
-        "param1_val": "पूर्ण अग्रिम डाक महसूल",
-        "param2_title": "कम भुगतान प्रभार",
-        "param2_val": "कमी का दोगुना शुल्क",
-        "trap_point": "कम डाक टिकट लगी वस्तु पर वितरण के समय कमी का दोगुना प्रभार देय होता है।",
-        "question": "कम डाकभार वाली अंतरदेशीय डाक पर वितरण के समय कितना शुल्क वसूला जाता है?",
-        "opt_a": "कमी का दोगुना शुल्क",
-        "opt_b": "केवल वास्तविक कमी",
-        "opt_c": "₹50 अतिरिक्त जुर्माना",
-        "opt_d": "कोई प्रभार नहीं",
-        "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
-    }
+    # Solid Fallback: Clause 11 specific facts
+    if current_part == 2:
+        fallback_data = {
+            "clause_no": current_clause,
+            "clause_name": clause_name,
+            "part_no": current_part,
+            "total_parts": total_parts,
+            "visual_hook_badge": hook_obj["visual_badge"],
+            "hook_voice": hook_obj["voice"],
+            "hook_display_text": hook_obj["hook_text"],
+            "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार कम महसूल वाली डाक पर विशेष प्रभार लगता है।",
+            "sen2": "अवैतनिक या कम भुगतान वाली अंतरदेशीय डाक पर वितरण के समय कमी का दोगुना शुल्क वसूला जाएगा।",
+            "param1_title": "कम भुगतान प्रभार",
+            "param1_val": "कमी का दोगुना शुल्क",
+            "param2_title": "विभागीय वसूली",
+            "param2_val": "वितरण काउंटर पर देय",
+            "trap_point": "कम डाक टिकट लगी वस्तु पर प्रेषक या पाने वाले से कमी का ठीक दोगुना प्रभार लिया जाता है।",
+            "question": "कम डाक महसूल वाली अंतरदेशीय डाक पर वितरण के समय कितना प्रभार वसूला जाता है?",
+            "opt_a": "कमी का दोगुना प्रभार",
+            "opt_b": "केवल वास्तविक कमी",
+            "opt_c": "₹50 अतिरिक्त जुर्माना",
+            "opt_d": "कोई अतिरिक्त प्रभार नहीं",
+            "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
+        }
+    else:
+        fallback_data = {
+            "clause_no": current_clause,
+            "clause_name": clause_name,
+            "part_no": current_part,
+            "total_parts": total_parts,
+            "visual_hook_badge": hook_obj["visual_badge"],
+            "hook_voice": hook_obj["voice"],
+            "hook_display_text": hook_obj["hook_text"],
+            "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार सभी डाक वस्तुओं पर पूर्ण अग्रिम भुगतान अनिवार्य है।",
+            "sen2": "अवैतनिक या अपर्याप्त भुगतान वाली डाक को विभाग द्वारा रोक कर विलंबित किया जा सकता है।",
+            "param1_title": "अनिवार्य नियम",
+            "param1_val": "पूर्ण अग्रिम महसूल",
+            "param2_title": "भुगतान माध्यम",
+            "param2_val": "केवल वैध डाक टिकट",
+            "trap_point": "डाक महसूल का अग्रिम भुगतान न होने पर डाक का सामान्य प्रेषण रोक दिया जाता है।",
+            "question": "डाक घर गाइड भाग 1 के अनुसार डाक वस्तुओं पर महसूल भुगतान की क्या शर्त है?",
+            "opt_a": "पूर्ण अग्रिम भुगतान",
+            "opt_b": "वितरण पश्चात भुगतान",
+            "opt_c": "मासिक बिल भुगतान",
+            "opt_d": "वार्षिक एकमुश्त भुगतान",
+            "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
+        }
 
     if not GROQ_API_KEY:
         return fallback_data
 
     prompt = f"""
-    You are the Senior Chief Examiner for India Post Examinations.
+    You are the Senior Chief Examiner for India Post Departmental Examinations.
     Topic: Post Office Guide Part 1, Clause: {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
     Micro-Focus for this Part: "{part_focus}"
+    Official Reference Text: "{context_text}"
 
-    OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf':
-    \"\"\"
-    {official_pdf_text if official_pdf_text else part_focus}
-    \"\"\"
-
-    NON-NEGOTIABLE EXAM RULES (ZERO HALLUCINATION, TEMPERATURE 0.0):
-    1. Base all facts ONLY on the official extracted text and the Micro-Focus provided above.
-    2. SEN1: State the exact operational rule of this micro-focus (12-14 words).
-    3. SEN2: State the specific legal exception, trap or penalty for this part (12-14 words). DO NOT REPEAT SEN1.
-    4. PARAM1_TITLE: First key parameter label (max 2-3 words).
-    5. PARAM1_VAL: First parameter value from this text (max 3-4 words).
-    6. PARAM2_TITLE: Second key parameter label (max 2-3 words).
-    7. PARAM2_VAL: Second parameter value from this text (max 3-4 words).
+    STRICT NEGATIVE CONSTRAINTS (ZERO TOLERANCE FOR HALLUCINATION):
+    1. Base statements STRICTLY on official Post Office Guide 1 rules.
+    2. NEVER invent commercial terms like "कैश ऑन डिलीवरी", "पोस्ट पेड" or "त्वरित प्रेषण".
+    3. DO NOT repeat the same phrase across SEN1, SEN2 and TRAP_POINT. Each must provide distinct departmental value.
+    4. SEN1: State the exact operational rule of this micro-focus (12-14 words).
+    5. SEN2: State the specific legal exception, trap or penalty for this part (12-14 words). DO NOT REPEAT SEN1.
+    6. PARAM1_TITLE & PARAM1_VAL: First core condition/limit (Title max 2-3 words, Val max 3-4 words).
+    7. PARAM2_TITLE & PARAM2_VAL: Second core penalty/condition (Title max 2-3 words, Val max 3-4 words).
     8. TRAP_POINT: Clear penalty/trap note for Slide 3 red box (8-12 words).
-    9. QUESTION: High-yield departmental MCQ question from this exact part (max 12 words). NO SILLY TIME/DAY QUESTIONS.
+    9. QUESTION: High-yield departmental MCQ question from this exact part (max 12 words).
     10. OPT_A: The 100% correct answer according to this rule (2-4 words).
-    11. OPT_B, OPT_C, OPT_D: 3 plausible departmental options (2-4 words each).
+    11. OPT_B, OPT_C, OPT_D: 3 plausible departmental options (2-4 words each, e.g. वास्तविक कमी, दोगुना शुल्क, कोई प्रभार नहीं).
 
     FORMAT:
     SEN1: ...
@@ -887,7 +908,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_4a.png")
     frame_durs.append(round(durations[3] * 0.15, 2))
 
-    # Option A & B Drop (Evenly distributed spacing)
+    # Option A & B Drop
     img4b = img4a.copy()
     d4b = ImageDraw.Draw(img4b)
     q_lines = wrapped_q4.count("\n") + 1
