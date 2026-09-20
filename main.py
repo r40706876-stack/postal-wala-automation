@@ -38,20 +38,6 @@ VOICE_NAME = "hi-IN-SwaraNeural"
 ASSETS_DIR = "assets"
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- Official PO Guide Part 1 Clause Titles Dictionary ---
-OFFICIAL_PO_GUIDE_TITLES = {
-    1: "पंजीकृत वस्तुएं",
-    12: "डाक टिकट चिपकाने की विधि",
-    13: "खराब या विकृत डाक टिकट",
-    14: "काल्पनिक डाक टिकट",
-    15: "पैकिंग",
-    16: "सीलिंग",
-    17: "मुद्राओं की पोस्टिंग",
-    18: "बीमा नियम",
-    19: "मूल्य देय डाक (वीपीपी)",
-    20: "पंजीकृत समाचार पत्र"
-}
-
 # --- High-Retention Viral Hooks (<3.5s, No Word Repetition) ---
 VIRAL_HOOKS = [
     {
@@ -86,29 +72,33 @@ VIRAL_HOOKS = [
     }
 ]
 
+# --- Dynamic PDF Title & Text Extractor (Reads Directly from Your PDF) ---
 def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=PDF_FILE_PATH):
-    if clause_no in OFFICIAL_PO_GUIDE_TITLES:
-        final_title = OFFICIAL_PO_GUIDE_TITLES[clause_no]
-    else:
-        final_title = f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}"
-
+    default_title = f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}"
     default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} का आधिकारिक विभागीय नियम।"
     
     if not os.path.exists(pdf_path):
-        return final_title, default_text
+        return default_title, default_text
 
     try:
         reader = PdfReader(pdf_path)
         pattern = re.compile(rf"(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{clause_no}\b", re.IGNORECASE)
         matched_text = ""
+        extracted_title = None
 
         for page in reader.pages:
             txt = page.extract_text() or ""
+            for line in txt.split('\n'):
+                if pattern.search(line):
+                    clean_line = re.sub(r"(?:क्लॉज|Clause|नियम)\s*[-:]?\s*\d+\b", "", line).strip(" :-–_")
+                    if clean_line and len(clean_line) > 2 and not extracted_title:
+                        extracted_title = clean_line[:60]
             if pattern.search(txt):
                 matched_text += txt + "\n"
                 if len(matched_text) >= 4000:
                     break
 
+        final_title = extracted_title if extracted_title else default_title
         full_text = matched_text.strip() if matched_text.strip() else default_text
         
         if total_parts > 1 and len(full_text) > 200:
@@ -121,10 +111,10 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=P
         else:
             part_text = full_text
 
-        return final_title[:60], clean_hindi_postal_terms(part_text[:2500])
+        return final_title, clean_hindi_postal_terms(part_text[:2500])
     except Exception as e:
         print(f"⚠️ PDF Extraction Error: {e}", flush=True)
-    return final_title, default_text
+    return default_title, default_text
 
 def get_dynamic_total_parts(pdf_text):
     if not pdf_text:
@@ -193,7 +183,7 @@ def get_font(size):
     return ImageFont.load_default()
 
 def load_progress_state():
-    state = {"clause_no": 1, "current_part": 1, "total_parts": 1, "hook_index": 0}
+    state = {"clause_no": 2, "current_part": 1, "total_parts": 1, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -203,7 +193,11 @@ def load_progress_state():
         except Exception:
             pass
             
-    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 1), state.get("current_part", 1), state.get("total_parts", 1))
+    # Strictly locking to Clause 2, Part 1 for this run
+    state["clause_no"] = 2
+    state["current_part"] = 1
+    
+    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 2), state.get("current_part", 1), state.get("total_parts", 1))
     state["total_parts"] = get_dynamic_total_parts(pdf_text)
     
     if state["current_part"] > state["total_parts"]:
@@ -220,7 +214,7 @@ def save_progress_state(state):
         pass
 
 def generate_clause_script(state):
-    current_clause = state.get("clause_no", 1)
+    current_clause = state.get("clause_no", 2)
     current_part = state.get("current_part", 1)
     total_parts = state.get("total_parts", 1)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
@@ -270,9 +264,9 @@ def generate_clause_script(state):
     \"\"\"
 
     STRICT RULES FOR EXAM GENERATION (PO GUIDE PART 1 AUTHENTICATION):
-    1. Cross-verify and generate questions strictly based on the official, authoritative rules of **Post Office Guide Part 1 (PO Guide Part 1)** available in your training knowledge to ensure 100% exam-oriented accuracy, ignoring any raw OCR/text errors in the local PDF extract.
-    2. HINDI PHRASING & TERMINOLOGY: Use 100% standard, professional, and natural departmental Hindi phrasing (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). Avoid awkward machine-translated phrasing or unnatural literal translations. Ensure proper professional departmental exam terminology.
-    3. QUESTION & OPTIONS: Provide a high-yield MCQ question (QUESTION), correct option (OPT_A), and 3 distractors (OPT_B, OPT_C, OPT_D) in brief Hindi.
+    1. Cross-verify and generate 100% exam-oriented questions strictly based on the official, authoritative rules of **Post Office Guide Part 1 (PO Guide Part 1)** for GDS to MTS, Postman (PM), and Postal Assistant (PA) examinations.
+    2. HINDI PHRASING & TERMINOLOGY: Use 100% standard, professional, and natural departmental Hindi phrasing (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). Avoid awkward machine-translated phrasing.
+    3. QUESTION & OPTIONS: Provide high-yield MCQ questions (QUESTION, Q1, Q2, Q3), correct options, and distractor options in brief professional Hindi.
     4. ANSWERS (ANS1, ANS2, ANS3): MUST HAVE DIFFERENT CORRECT OPTION LETTERS (e.g., A, B, C, or D). Never make all three answers 'A'.
 
     Format strictly using these tags line-by-line:
@@ -422,7 +416,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         script_data["hook_voice"],
         script_data["sen1"],
         f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
-        "सवाल स्क्रीन पर है! सही उत्तर A, B, C या ड़ कमेंट करें और पोस्टल वाला को फॉलो करें!"
+        "सवाल स्क्रीन पर है! सही उत्तर A, B, C या D कमेंट करें और पोस्टल वाला को फॉलो करें!"
     ]
     durations = []
     for i, seg_text in enumerate(segment_audios):
