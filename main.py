@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 40-Sec Locked Professional Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Terminology Clean & Overlap-Free Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -76,7 +76,6 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=P
 
         full_text = matched_text.strip() if matched_text.strip() else default_text
         
-        # --- Part-wise Chunking to prevent duplicate questions across parts ---
         if total_parts > 1 and len(full_text) > 200:
             chunk_len = max(100, len(full_text) // total_parts)
             start = (current_part - 1) * chunk_len
@@ -117,9 +116,14 @@ def clean_hindi_postal_terms(text):
     if not text:
         return ""
     text = re.sub(r"^[:\-\s\.]+", "", text)
+    
+    # --- Permanent Foolproof Dictionary for Departmental Postal Terms ---
     replacements = {
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
-        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट"
+        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
+        "तक्सी पैकेट": "बीमाकृत पैकेट", "तक्सी": "बीमाकृत", "लेखक": "प्रेषक",
+        "तक्सी पत्र": "बीमाकृत पत्र", "तक्सी वस्तु": "बीमाकृत वस्तु",
+        "डार्क": "डाक", "डार्कघर": "डाकघर"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
@@ -217,7 +221,7 @@ def generate_clause_script(state):
 
     STRICT RULES FOR EXAM GENERATION:
     1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text chunk.
-    2. ABSOLUTE CONSTRAINT FOR OPTIONS (A, B, C, D): Every single option must use authentic postal terminology (e.g., प्रेषक, बीमा, पंजीकृत, आदि). Never use incorrect terms like लेखक.
+    2. ABSOLUTE CONSTRAINT FOR TERMINOLOGY: Use 100% standard Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). NEVER use corrupted words like 'तक्सी' or 'लेखक'.
     3. ANSWERS (ANS1, ANS2, ANS3): Must have varied and correct option letters (e.g., A, B, C, or D) corresponding to the right answer for each question. Do not make all answers 'A'.
     4. Keep questions and options short, clear, and in professional Hindi.
 
@@ -505,14 +509,14 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (LARGER FONTS, CLEAN FINALE SCREEN) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FOOLPROOF TERMINOLOGY & OVERLAP-FREE) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
     questions_list = [
-        {"q_num": "सवाल 1/3", "q": script_data["q1"], "opts": [script_data["a1"], script_data["b1"], script_data["c1"], script_data["d1"]], "ans": script_data["ans1"]},
-        {"q_num": "सवाल 2/3", "q": script_data["q2"], "opts": [script_data["a2"], script_data["b2"], script_data["c2"], script_data["d2"]], "ans": script_data["ans2"]},
-        {"q_num": "सवाल 3/3", "q": script_data["q3"], "opts": [script_data["a3"], script_data["b3"], script_data["c3"], script_data["d3"]], "ans": script_data["ans3"]},
+        {"q_num": "सवाल 1/3", "q": clean_hindi_postal_terms(script_data["q1"]), "opts": [clean_hindi_postal_terms(script_data["a1"]), clean_hindi_postal_terms(script_data["b1"]), clean_hindi_postal_terms(script_data["c1"]), clean_hindi_postal_terms(script_data["d1"])], "ans": script_data["ans1"]},
+        {"q_num": "सवाल 2/3", "q": clean_hindi_postal_terms(script_data["q2"]), "opts": [clean_hindi_postal_terms(script_data["a2"]), clean_hindi_postal_terms(script_data["b2"]), clean_hindi_postal_terms(script_data["c2"]), clean_hindi_postal_terms(script_data["d2"])], "ans": script_data["ans2"]},
+        {"q_num": "सवाल 3/3", "q": clean_hindi_postal_terms(script_data["q3"]), "opts": [clean_hindi_postal_terms(script_data["a3"]), clean_hindi_postal_terms(script_data["b3"]), clean_hindi_postal_terms(script_data["c3"]), clean_hindi_postal_terms(script_data["d3"])], "ans": script_data["ans3"]},
     ]
 
     intro_text = f"पोस्टल गाइड क्लॉज {script_data['clause_no']}! इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!"
@@ -529,7 +533,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
-    # --- UPDATED FINALE VOICE: Direct screen check prompt + MOCK comment & Follow CTA ---
     finale_speech = f"सारे प्रश्नों के सही उत्तर स्क्रीन पर चेक कर लो दोस्तों! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करना न भूलें!"
     finale_audio_file = "audio_q_finale.mp3"
     asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+12%"))
@@ -553,9 +556,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_badge = get_font(20)
     font_title = get_font(32)
     
-    # --- EVEN LARGER FONTS TO FILL EMPTY SCREEN SPACE ---
-    font_q_text = get_font(34)   # Increased from 30 to fill space
-    font_opt_text = get_font(28) # Increased from 25 to fill space
+    font_q_text = get_font(32)
+    font_opt_text = get_font(25) # Safe font size for zero overlap
     font_h2 = get_font(24)
     font_cta = get_font(24)
 
@@ -598,20 +600,19 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     labels = ["A", "B", "C", "D"]
 
     for idx, q_data in enumerate(questions_list):
-        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=24)
+        wrapped_q = textwrap.fill(q_data["q"], width=24)
         q_lines = wrapped_q.count("\n") + 1
         
-        # --- LARGE GAP BETWEEN QUESTION AND OPTIONS TO PREVENT OVERLAP ---
-        q_box_bottom = 400 + (q_lines * 42)
-        start_oy = max(q_box_bottom + 25, 520)
+        q_box_bottom = 390 + (q_lines * 38)
+        start_oy = max(q_box_bottom + 18, 500)
 
         opt_heights = []
         wrapped_opts = []
         for opt in q_data["opts"]:
-            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=26)
+            w_opt = textwrap.fill(opt, width=26)
             wrapped_opts.append(w_opt)
             o_lines = w_opt.count("\n") + 1
-            opt_heights.append(max(95, o_lines * 36 + 22))
+            opt_heights.append(max(85, o_lines * 30 + 22))
 
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
@@ -621,12 +622,12 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
-        d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=6)
+        d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=4)
         
         oy = start_oy
         d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
         d1.text((135, oy + 12), "A)", fill="#38BDF8", font=font_q_text)
-        d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=4)
+        d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=2)
         
         f1_name = f"anim_q{idx+1}_step1.png"
         img_s1.save(f1_name)
@@ -637,12 +638,12 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         
-        curr_y = start_oy + opt_heights[0] + 16
+        curr_y = start_oy + opt_heights[0] + 12
         for o_idx in range(1, 3):
             d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
             d2.text((135, curr_y + 12), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
-            d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=4)
-            curr_y += opt_heights[o_idx] + 16
+            d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=2)
+            curr_y += opt_heights[o_idx] + 12
         
         f2_name = f"anim_q{idx+1}_step2.png"
         img_s2.save(f2_name)
@@ -655,7 +656,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         
         d3.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[3]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
         d3.text((135, curr_y + 12), "D)", fill="#38BDF8", font=font_q_text)
-        d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=4)
+        d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=2)
 
         d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#10B981", width=3)
         d3.text((140, 1455), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
@@ -665,7 +666,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(step_dur)
 
-    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS (WITH CORRECT DYNAMIC ANSWERS) ---
+    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS ---
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
