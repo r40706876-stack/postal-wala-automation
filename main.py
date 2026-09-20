@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Crisp 3-Question 32-Sec Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 38-Sec Locked Quiz Reel with Clause Hook
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -173,7 +173,7 @@ def generate_clause_script(state):
         "part_no": current_part,
         "total_parts": total_parts,
         "visual_hook_badge": f"[ ! ] क्लॉज {current_clause} स्पेशल",
-        "hook_voice": f"पोस्टल गाइड क्लॉज {current_clause} का सबसे महत्वपूर्ण सवाल, जल्दी से सोचिए!",
+        "hook_voice": f"ध्यान दें! पोस्टल गाइड क्लॉज {current_clause}। इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!",
         "hook_display_text": f"पोस्टल गाइड भाग 1 - क्लॉज {current_clause} के सबसे कठिन परीक्षा प्रश्न!",
         "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
         "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
@@ -187,8 +187,8 @@ def generate_clause_script(state):
         "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "सीमाएं व शर्तें", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "A",
         "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "बुकिंग अस्वीकार", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "A",
 
-        "caption": f"🚨 पोस्टल गाइड क्लॉज {current_clause} स्पेशल टेस्ट! डाक घर गाइड भाग 1 (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
-        "quiz_caption": f"🧠 क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
+        "caption": f"🚨 पोस्टल गाइड क्लॉज {current_clause} स्पेशल टेस्ट! डाक घर गाइड भाग 1 (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
+        "quiz_caption": f"🧠 क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
     }
 
     if not GROQ_API_KEY:
@@ -318,7 +318,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
 
     def draw_footer_cta(d):
         d.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
-        d.text((120, 1605), "फ्री मॉक टेस्ट के लिए MOCK कमेंट करें!", fill="#FFFFFF", font=font_cta)
+        d.text((120, 1605), "फ्री मॉक के लिए MOCK कमेंट करें और फॉलो करें!", fill="#FFFFFF", font=font_cta)
 
     frames = []
     frame_durs = []
@@ -492,7 +492,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION LARGER FONT & CRISP HOOK QUIZ VIDEO ---
+# --- 3-QUESTION 38-SEC LOCKED QUIZ VIDEO (LARGE FONT, BIG GAP, 3-SEC HOOK) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -502,7 +502,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         {"q_num": "सवाल 3/3", "q": script_data["q3"], "opts": [script_data["a3"], script_data["b3"], script_data["c3"], script_data["d3"]], "ans": script_data["ans3"]},
     ]
 
-    intro_text = script_data["hook_voice"]
+    # ~3 second crisp hook mentioning the exact clause
+    intro_text = f"पोस्टल गाइड क्लॉज {script_data['clause_no']}! इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!"
     intro_audio_file = "audio_q_intro.mp3"
     asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+10%"))
 
@@ -516,7 +517,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
-    finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, और सवाल तीन का सही उत्तर है - {questions_list[2]['ans']}। फ्री मॉक टेस्ट के लिए मॉक कमेंट करें!"
+    # Finale Voiceover with Mock Comment & Follow CTA
+    finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, और सवाल तीन का सही उत्तर है - {questions_list[2]['ans']}। फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करना न भूलें!"
     finale_audio_file = "audio_q_finale.mp3"
     asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+10%"))
     audio_files.append(finale_audio_file)
@@ -538,10 +540,12 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_trust = get_font(18)
     font_badge = get_font(20)
     font_title = get_font(32)
-    font_q_text = get_font(30)
-    font_opt_text = get_font(26)
+    
+    # --- LARGER FONTS & SPACIOUS PADDING TO PREVENT OVERLAP ---
+    font_q_text = get_font(30)   # Large bold question text
+    font_opt_text = get_font(25) # Large option text
     font_h2 = get_font(24)
-    font_cta = get_font(26)
+    font_cta = get_font(24)
 
     def draw_base(d):
         d.rounded_rectangle([45, 50, 1035, 1710], radius=32, fill="#0B132B", outline="#1E293B", width=3)
@@ -552,7 +556,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
 
     def draw_footer_cta(d):
         d.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
-        d.text((120, 1605), "फ्री मॉक टेस्ट के लिए MOCK कमेंट करें!", fill="#FFFFFF", font=font_cta)
+        d.text((95, 1605), "फ्री मॉक के लिए MOCK कमेंट करें और फॉलो करें!", fill="#FFFFFF", font=font_cta)
 
     base_img = Image.new("RGB", (1080, 1920), color="#060A17")
     d_base = ImageDraw.Draw(base_img)
@@ -572,8 +576,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     intro_img = base_img.copy()
     d_intro = ImageDraw.Draw(intro_img)
     d_intro.rounded_rectangle([110, 520, 970, 880], radius=20, fill="#182848", outline="#FBBF24", width=3)
-    d_intro.text((150, 600), f"🔥 पोस्टल गाइड क्लॉज {script_data['clause_no']} स्पेशल!", fill="#FDE047", font=font_title)
-    d_intro.text((150, 690), "जल्दी से सही उत्तर सोचिए!", fill="#FFFFFF", font=font_q_text)
+    d_intro.text((150, 600), f"📌 पोस्टल गाइड क्लॉज {script_data['clause_no']} स्पेशल!", fill="#FDE047", font=font_title)
+    d_intro.text((150, 690), "पेपर में इससे ये प्रश्न बन सकते हैं!", fill="#FFFFFF", font=font_q_text)
     intro_frame_name = "quiz_intro_frame.png"
     intro_img.save(intro_frame_name)
     frames.append(intro_frame_name)
@@ -585,8 +589,9 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=26)
         q_lines = wrapped_q.count("\n") + 1
         
-        q_box_bottom = 430 + (q_lines * 38)
-        start_oy = max(q_box_bottom + 16, 510)
+        # --- LARGE GAP BETWEEN QUESTION AND OPTIONS TO PREVENT OVERLAP ---
+        q_box_bottom = 430 + (q_lines * 40)
+        start_oy = max(q_box_bottom + 25, 530)
 
         opt_heights = []
         wrapped_opts = []
@@ -594,7 +599,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
             w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=28)
             wrapped_opts.append(w_opt)
             o_lines = w_opt.count("\n") + 1
-            opt_heights.append(max(90, o_lines * 32 + 20))
+            opt_heights.append(max(95, o_lines * 34 + 22))
 
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
@@ -609,7 +614,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         oy = start_oy
         d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
         d1.text((135, oy + 12), "A)", fill="#38BDF8", font=font_q_text)
-        d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=3)
+        d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=4)
         
         f1_name = f"anim_q{idx+1}_step1.png"
         img_s1.save(f1_name)
@@ -620,12 +625,12 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         
-        curr_y = start_oy + opt_heights[0] + 12
+        curr_y = start_oy + opt_heights[0] + 16 # Generous vertical spacing between options
         for o_idx in range(1, 3):
             d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
             d2.text((135, curr_y + 12), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
-            d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=3)
-            curr_y += opt_heights[o_idx] + 12
+            d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=4)
+            curr_y += opt_heights[o_idx] + 16
         
         f2_name = f"anim_q{idx+1}_step2.png"
         img_s2.save(f2_name)
@@ -638,7 +643,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         
         d3.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[3]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
         d3.text((135, curr_y + 12), "D)", fill="#38BDF8", font=font_q_text)
-        d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=3)
+        d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=4)
 
         d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#10B981", width=3)
         d3.text((140, 1455), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
@@ -713,11 +718,11 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         "-c:v", "libx264", "-preset", "medium", "-profile:v", "main", "-level", "4.0",
         "-pix_fmt", "yuv420p", "-r", "30", "-g", "60",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
-        "-movflags", "+faststart", "-t", "32.0", output_video
+        "-movflags", "+faststart", "-t", "38.0", output_video
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ 3-Question Larger Font Quiz Reel Created: {output_video}", flush=True)
+    print(f"✅ 3-Question 38-Sec Locked Quiz Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
@@ -726,7 +731,7 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question larger font 32s professional quiz reel [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question 38s professional quiz reel [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
         print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
     except Exception as e:
@@ -743,11 +748,11 @@ if __name__ == "__main__":
     print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate 3-Question Larger Font Quiz Video inside folder
-    print("🧠 Generating 3-Question Larger Font Quiz Reel...", flush=True)
+    # 2. Generate 3-Question 38-Sec Locked Quiz Video inside folder
+    print("🧠 Generating 3-Question 38-Sec Locked Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
     # 3. Auto push to GitHub folder
     auto_commit_and_push_reels()
     
-    print("🎉 Done! 3-question larger font quiz reel generated inside the 'generated_reels' folder.", flush=True)
+    print("🎉 Done! 3-question 38-sec locked quiz reel generated inside the 'generated_reels' folder.", flush=True)
