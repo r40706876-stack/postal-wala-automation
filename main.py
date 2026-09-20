@@ -33,37 +33,37 @@ QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- High-Retention Viral Hooks ---
+# --- High-Retention Viral Hooks (Unique Text, Zero Word Repetition) ---
 VIRAL_HOOKS = [
     {
         "voice": "लिख कर ले लो! विभागीय परीक्षा में यह नियम बार-बार पूछा जाता है, आइए देखते हैं!",
-        "visual_badge": "लिख कर ले लो! 2 नंबर पक्के",
-        "hook_text": "विभागीय परीक्षा में बार-बार आने वाला सबसे महत्वपूर्ण नियम!"
+        "visual_badge": "[ ! ] 100% पक्का सवाल",
+        "hook_text": "विभागीय परीक्षा में बार-बार दोहराया जाने वाला सबसे महत्वपूर्ण क्लॉज!"
     },
     {
         "voice": "जीडीएस से एमटीएस और पोस्टमैन परीक्षा में 90% लोग इस एक नियम में गलती करते हैं!",
-        "visual_badge": "सावधान: 90% लोग फेल होते हैं!",
-        "hook_text": "90% परीक्षार्थी इस नियम में गलत उत्तर देकर आते हैं!"
+        "visual_badge": "[ ! ] 90% छात्र फेल",
+        "hook_text": "इस क्लॉज के आधिकारिक अपवाद में सबसे ज्यादा परीक्षार्थी गलती करते हैं!"
     },
     {
         "voice": "अगर इस बार प्रमोशन पक्का करना है, तो इस नियम को ध्यान से समझ लो!",
-        "visual_badge": "दम है तो सही उत्तर देकर दिखाओ!",
-        "hook_text": "इस बार जीडीएस से प्रमोशन पक्का करने के लिए यह नियम समझें!"
+        "visual_badge": "[ ! ] मेरिट लिस्ट बूस्टर",
+        "hook_text": "जीडीएस से पोस्टमैन व पी.ए. बनने के लिए इस नियम को आज ही रट लीजिए!"
     },
     {
         "voice": "डाक विभाग की परीक्षा का सबसे पसंदीदा नियम! 25 सेकंड में इसे हमेशा के लिए रट लो!",
-        "visual_badge": "परीक्षा में बार-बार आने वाला नियम",
-        "hook_text": "डाक विभाग की परीक्षाओं में बार-बार दोहराया जाने वाला क्लॉज!"
+        "visual_badge": "[ ! ] परीक्षक का पसंदीदा",
+        "hook_text": "सीधे 2 अंक पक्के करने वाला डाक घर गाइड का अनिवार्य नियम!"
     },
     {
         "voice": "अगर पोस्टमैन या पी.ए. बनना है, तो इस रील को 1 सेकंड भी स्किप मत करना!",
-        "visual_badge": "जीडीएस से प्रमोशन का पक्का मौका!",
-        "hook_text": "जीडीएस से पोस्टमैन या पी.ए. बनने के लिए अनिवार्य नियम!"
+        "visual_badge": "[ ! ] प्रमोशन स्पेशल",
+        "hook_text": "विभागीय परीक्षा पास करने के लिए यह क्लॉज पढ़ना अनिवार्य है!"
     },
     {
         "voice": "क्या आपको पता है? डाक घर गाइड का यह नियम कई लोगों का प्रमोशन रोक देता है!",
-        "visual_badge": "चेतावनी: यह नियम प्रमोशन रोक सकता है!",
-        "hook_text": "सावधान: इस नियम की गलती आपका प्रमोशन रोक सकती है!"
+        "visual_badge": "[ ! ] परीक्षा रेड अलर्ट",
+        "hook_text": "सावधान: इस नियम की छोटी सी गलती आपका विभागीय प्रमोशन रोक सकती है!"
     }
 ]
 
@@ -444,7 +444,7 @@ def get_font(size):
     return ImageFont.load_default()
 
 def load_progress_state():
-    state = {"clause_no": 9, "current_part": 3, "total_parts": 5, "hook_index": 0}
+    state = {"clause_no": 9, "current_part": 4, "total_parts": 5, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -470,7 +470,7 @@ def advance_progress_state(state):
     state["hook_index"] = (hook_idx + 1) % len(VIRAL_HOOKS)
 
     clause = state.get("clause_no", 9)
-    part = state.get("current_part", 3)
+    part = state.get("current_part", 4)
     clause_info = POSTAL_CLAUSE_CATALOG.get(clause, {"total_parts": 1})
     total_parts = clause_info.get("total_parts", 1)
 
@@ -491,7 +491,7 @@ def advance_progress_state(state):
 
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 9)
-    current_part = state.get("current_part", 3)
+    current_part = state.get("current_part", 4)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
 
@@ -510,51 +510,66 @@ def generate_clause_script(state):
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
         "hook_display_text": hook_obj["hook_text"],
-        "question": "फ्रैंकिंग मशीन के अग्रिम भुगतान पर कितना कमीशन मिलता है?",
         "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": "यह छूट केवल अग्रिम भुगतान पर ही लागू होती है, वार्षिक नहीं।",
-        "flow1": "अग्रिम रीसेट भुगतान",
-        "flow2": "विभागीय कमीशन दर",
-        "flow3": "शुद्ध नकद छूट लाभ",
-        "opt_a": "तीन प्रतिशत",
-        "opt_b": "पांच प्रतिशत",
-        "opt_c": "दस प्रतिशत",
-        "opt_d": "पंद्रह प्रतिशत",
+        "sen2": "यदि कोई फ्रैंक डाक लेटर बॉक्स में मिले, तो उसे पूर्णतः अवैतनिक मानकर दोगुना महसूल वसूला जाएगा।",
+        "dont_title": "लेटर बॉक्स में पोस्टिंग",
+        "dont_desc": "पूर्णतः वर्जित व अमान्य",
+        "do_title": "डाकघर काउंटर प्रस्तुति",
+        "do_desc": "केवल खिड़की पर ही स्वीकार्य",
+        "question": "फ्रैंक की गई डाक को वैध प्रेषण हेतु कहाँ प्रस्तुत करना अनिवार्य है?",
+        "opt_a": "डाकघर खिड़की पर",
+        "opt_b": "सामान्य लेटर बॉक्स में",
+        "opt_c": "मेल मोटर वैन में",
+        "opt_d": "शाखा पोस्टमैन के पास",
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
     if not GROQ_API_KEY:
         return fallback_data
 
+    # Strict prompt to eliminate repetitive facts and nonsensical MCQs
     prompt = f"""
-    You are the Senior Chief Instructor for India Post Examinations for 'Postal Wala'.
+    You are the Senior Chief Examiner for India Post Departmental Examinations for 'Postal Wala'.
     Topic: 'Post Office Guide Part 1', Clause: {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
     Core Rule Focus: "{part_focus}"
 
-    Generate crisp pure Hindi exam content (Strictly follow word limits):
-    QUESTION: [1 short departmental exam MCQ question, max 12 words]
-    SEN1: [Core rule statement in simple Hindi, exactly 12-14 words]
-    SEN2: [Crucial exam exception or trap point, exactly 12-14 words]
-    FLOW1: [Step 1 Infographic keyword for flowchart, 2-3 words, e.g. अग्रिम भुगतान]
-    FLOW2: [Step 2 Infographic keyword for flowchart, 2-3 words, e.g. निर्धारित कमीशन]
-    FLOW3: [Step 3 Infographic result for flowchart, 2-3 words, e.g. शुद्ध छूट लाभ]
-    OPT_A: [Option A, 2-4 words]
-    OPT_B: [Option B, 2-4 words]
-    OPT_C: [Option C, 2-4 words]
-    OPT_D: [Option D, 2-4 words]
+    Strictly generate pure Hindi departmental content adhering to these non-negotiable rules:
+    1. SEN1: The core operational procedure (exactly 12-14 words).
+    2. SEN2: Must state a completely DIFFERENT legal trap, fine, or penalty related to this clause. NEVER REPEAT SEN1 (exactly 12-14 words).
+    3. DONT_TITLE: The prohibited act under this rule (max 3-4 words, e.g. लेटर बॉक्स में पोस्टिंग).
+    4. DONT_DESC: Official legal consequence (max 4-5 words, e.g. पूर्णतः वर्जित व अमान्य).
+    5. DO_TITLE: The mandatory authorized act (max 3-4 words, e.g. डाकघर काउंटर प्रस्तुति).
+    6. DO_DESC: Official requirement (max 4-5 words, e.g. केवल खिड़की पर स्वीकार्य).
+    7. QUESTION: 1 high-yield logical exam question testing WHO, WHERE, or PENALTY (max 12 words). DO NOT ASK NONSENSICAL TIME QUESTIONS.
+    8. OPT_A: The 100% correct departmental answer (2-4 words).
+    9. OPT_B, OPT_C, OPT_D: 3 plausible, realistic incorrect departmental distractors (2-4 words each).
+
+    FORMAT:
+    SEN1: ...
+    SEN2: ...
+    DONT_TITLE: ...
+    DONT_DESC: ...
+    DO_TITLE: ...
+    DO_DESC: ...
+    QUESTION: ...
+    OPT_A: ...
+    OPT_B: ...
+    OPT_C: ...
+    OPT_D: ...
     """
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.2, "max_tokens": 400}
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.2, "max_tokens": 450}
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
             q = extract_field_block(raw_text, "QUESTION", ["SEN1", "OPT_A"])
             s1 = extract_field_block(raw_text, "SEN1", ["SEN2", "QUESTION"])
-            s2 = extract_field_block(raw_text, "SEN2", ["FLOW1", "OPT_A", "QUESTION"])
-            f1 = extract_field_block(raw_text, "FLOW1", ["FLOW2", "OPT_A"])
-            f2 = extract_field_block(raw_text, "FLOW2", ["FLOW3", "OPT_A"])
-            f3 = extract_field_block(raw_text, "FLOW3", ["OPT_A", "OPT_B"])
+            s2 = extract_field_block(raw_text, "SEN2", ["DONT_TITLE", "QUESTION"])
+            dt = extract_field_block(raw_text, "DONT_TITLE", ["DONT_DESC", "DO_TITLE"])
+            dd = extract_field_block(raw_text, "DONT_DESC", ["DO_TITLE", "QUESTION"])
+            dot = extract_field_block(raw_text, "DO_TITLE", ["DO_DESC", "QUESTION"])
+            dod = extract_field_block(raw_text, "DO_DESC", ["QUESTION", "OPT_A"])
             oa = extract_field_block(raw_text, "OPT_A", ["OPT_B", "OPT_C"])
             ob = extract_field_block(raw_text, "OPT_B", ["OPT_C", "OPT_D"])
             oc = extract_field_block(raw_text, "OPT_C", ["OPT_D"])
@@ -563,9 +578,10 @@ def generate_clause_script(state):
             if q: fallback_data["question"] = clean_hindi_postal_terms(q)
             if s1: fallback_data["sen1"] = clean_hindi_postal_terms(s1)
             if s2: fallback_data["sen2"] = clean_hindi_postal_terms(s2)
-            if f1: fallback_data["flow1"] = clean_hindi_postal_terms(f1)
-            if f2: fallback_data["flow2"] = clean_hindi_postal_terms(f2)
-            if f3: fallback_data["flow3"] = clean_hindi_postal_terms(f3)
+            if dt: fallback_data["dont_title"] = clean_hindi_postal_terms(dt)
+            if dd: fallback_data["dont_desc"] = clean_hindi_postal_terms(dd)
+            if dot: fallback_data["do_title"] = clean_hindi_postal_terms(dot)
+            if dod: fallback_data["do_desc"] = clean_hindi_postal_terms(dod)
             if oa: fallback_data["opt_a"] = clean_hindi_postal_terms(oa)
             if ob: fallback_data["opt_b"] = clean_hindi_postal_terms(ob)
             if oc: fallback_data["opt_c"] = clean_hindi_postal_terms(oc)
@@ -648,16 +664,11 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         d.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
         d.text((120, 1605), "पूरी तैयारी के लिए फॉलो करें:  @POSTAL_WALA", fill="#FFFFFF", font=font_cta)
 
-    # Native Pillow Downward Neon Arrow (Zero Tofu Boxes)
-    def draw_neon_down_arrow(d, cx, y_start, y_end, color="#38BDF8"):
-        d.line([(cx, y_start), (cx, y_end - 8)], fill=color, width=4)
-        d.polygon([(cx - 10, y_end - 8), (cx + 10, y_end - 8), (cx, y_end)], fill=color)
-
     frames = []
     frame_durs = []
 
     # =========================================================================
-    # SLIDE 1 (HOOK): REAL-TIME SIREN BLINK ENGINE (~0.35s PULSE)
+    # SLIDE 1 (HOOK): REAL-TIME SIREN BLINK ENGINE (ZERO WORD REPETITION)
     # =========================================================================
     def build_slide1_frame(step, pill_state=True):
         img = Image.new("RGB", (1080, 1920), color="#060A17")
@@ -679,6 +690,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
             d.rounded_rectangle([110, 395, 410, 445], radius=12, fill="#180C0E", outline="#3F1215", width=1)
             d.text((130, 402), "[ ! ] LIVE EXAM ALERT", fill="#7F1D1D", font=font_label)
 
+        # Danger Alert Badge
         d.rounded_rectangle([110, 470, 970, 580], radius=16, fill="#991B1B", outline="#FBBF24", width=3)
         d.text((150, 500), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
 
@@ -715,9 +727,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         frame_durs.append(round(st_d, 2))
 
     # =========================================================================
-    # SLIDE 2 (RULE): PROGRESSIVE VISUAL FLOWCHART (Step 1 -> Step 2 -> Step 3)
+    # SLIDE 2 (RULE): DO'S VS DON'TS VISUAL INFOGRAPHIC (POINT 1 FIX)
     # =========================================================================
-    # Step 2A: Rule Statement + Flowchart Box 1 (Cyan Theme)
+    # Step 2A: Rule Statement + Card 1 (Red Warning / What's Prohibited)
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
     draw_base(d2a)
@@ -729,58 +741,47 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d2a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     draw_whatsapp_strip(d2a)
     
-    # Outer Frame
     d2a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     d2a.rounded_rectangle([110, 520, 480, 575], radius=10, fill="#0B132B")
     d2a.text((150, 530), "नियम विश्लेषण #1:", fill="#38BDF8", font=font_label)
     wrapped_s2 = textwrap.fill(script_data['sen1'], width=22)
     d2a.multiline_text((120, 610), clean_hindi_postal_terms(wrapped_s2), fill="#F8FAFC", font=font_body, spacing=14)
 
-    # Visual Flow Box 1 (Y: 820)
-    d2a.rounded_rectangle([120, 820, 960, 905], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-    d2a.rounded_rectangle([135, 835, 220, 890], radius=8, fill="#0284C7")
-    d2a.text((155, 845), "01", fill="#FFFFFF", font=font_flow)
-    d2a.text((245, 845), script_data.get("flow1", "अग्रिम भुगतान"), fill="#38BDF8", font=font_h2)
+    # INFOGRAPHIC CARD 1: What is Forbidden (Red)
+    d2a.rounded_rectangle([110, 840, 970, 980], radius=16, fill="#180C0E", outline="#EF4444", width=2)
+    d2a.rounded_rectangle([130, 860, 370, 905], radius=8, fill="#7F1D1D")
+    d2a.text((150, 868), "[ ❌ वर्जित प्रक्रिया ]", fill="#FECACA", font=font_label)
+    d2a.text((390, 865), script_data.get("dont_title", "लेटर बॉक्स में पोस्टिंग"), fill="#FFFFFF", font=font_h2)
+    d2a.text((150, 925), f"असर: {script_data.get('dont_desc', 'पूर्णतः वर्जित व अमान्य')}", fill="#F87171", font=font_opt)
+    
     draw_footer_cta(d2a)
     img2a.save("f_2a.png")
     frames.append("f_2a.png")
-    frame_durs.append(round(durations[1] * 0.30, 2))
+    frame_durs.append(round(durations[1] * 0.40, 2))
 
-    # Step 2B: Arrow 1 + Flow Box 2 (Amber Theme - Y: 960)
+    # Step 2B: Card 2 Drops (Green: Authorized Procedure)
     img2b = img2a.copy()
     d2b = ImageDraw.Draw(img2b)
-    draw_neon_down_arrow(d2b, 540, 915, 950, color="#38BDF8")
-    d2b.rounded_rectangle([120, 960, 960, 1045], radius=14, fill="#0B132B", outline="#F59E0B", width=2)
-    d2b.rounded_rectangle([135, 975, 220, 1030], radius=8, fill="#D97706")
-    d2b.text((155, 985), "02", fill="#FFFFFF", font=font_flow)
-    d2b.text((245, 985), script_data.get("flow2", "विभागीय कमीशन दर"), fill="#FDE047", font=font_h2)
+    d2b.rounded_rectangle([110, 1020, 970, 1160], radius=16, fill="#06281E", outline="#10B981", width=2)
+    d2b.rounded_rectangle([130, 1040, 390, 1085], radius=8, fill="#065F46")
+    d2b.text((150, 1048), "[ ✔️ अनिवार्य प्रक्रिया ]", fill="#A7F3D0", font=font_label)
+    d2b.text((410, 1045), script_data.get("do_title", "डाकघर काउंटर प्रस्तुति"), fill="#FFFFFF", font=font_h2)
+    d2b.text((150, 1105), f"शर्त: {script_data.get('do_desc', 'केवल खिड़की पर स्वीकार्य')}", fill="#34D399", font=font_opt)
     img2b.save("f_2b.png")
     frames.append("f_2b.png")
-    frame_durs.append(round(durations[1] * 0.30, 2))
+    frame_durs.append(round(durations[1] * 0.35, 2))
 
-    # Step 2C: Arrow 2 + Flow Box 3 (Emerald Green Result Theme - Y: 1100)
+    # Step 2C: Teaser Action Box Drops
     img2c = img2b.copy()
     d2c = ImageDraw.Draw(img2c)
-    draw_neon_down_arrow(d2c, 540, 1055, 1090, color="#F59E0B")
-    d2c.rounded_rectangle([120, 1100, 960, 1185], radius=14, fill="#064E3B", outline="#34D399", width=3)
-    d2c.rounded_rectangle([135, 1115, 220, 1170], radius=8, fill="#059669")
-    d2c.text((155, 1125), "03", fill="#FFFFFF", font=font_flow)
-    d2c.text((245, 1125), script_data.get("flow3", "शुद्ध नकद छूट लाभ"), fill="#FFFFFF", font=font_h2)
+    d2c.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+    d2c.text((160, 1400), "आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु >>", fill="#38BDF8", font=font_h2)
     img2c.save("f_2c.png")
     frames.append("f_2c.png")
     frame_durs.append(round(durations[1] * 0.25, 2))
 
-    # Step 2D: Teaser Action Box Drops at Bottom
-    img2d = img2c.copy()
-    d2d = ImageDraw.Draw(img2d)
-    d2d.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
-    d2d.text((160, 1400), "आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु >>", fill="#38BDF8", font=font_h2)
-    img2d.save("f_2d.png")
-    frames.append("f_2d.png")
-    frame_durs.append(round(durations[1] * 0.15, 2))
-
     # =========================================================================
-    # SLIDE 3 (TRAP): 3-STAGE DANGER PULSE
+    # SLIDE 3 (TRAP): 3-STAGE DANGER PULSE (NO REPETITION)
     # =========================================================================
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
@@ -822,7 +823,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frame_durs.append(round(durations[2] * 0.30, 2))
 
     # =========================================================================
-    # SLIDE 4 (QUIZ): KBC STAGGER + LIVE 5-SECOND COUNTDOWN TIMER
+    # SLIDE 4 (QUIZ): KBC STAGGER + LIVE 5-SECOND COUNTDOWN TIMER (PRESERVED)
     # =========================================================================
     img4a = Image.new("RGB", (1080, 1920), color="#060A17")
     d4a = ImageDraw.Draw(img4a)
@@ -905,7 +906,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     # =========================================================================
     img1c = build_slide1_frame(step=3, pill_state=True)
     img1c.save("carousel_slide_1.png")
-    img2d.save("carousel_slide_2.png")
+    img2c.save("carousel_slide_2.png")
     img3c.save("carousel_slide_3.png")
     img_cd.save("carousel_slide_4.png")
     print("📸 Exported 4 High-Res Carousel Slides: carousel_slide_1 to 4.png", flush=True)
