@@ -30,7 +30,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini Primary TTS + Edge-TTS Fallback Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # Gemini TTS Primary + Edge-TTS Fallback
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -278,7 +278,7 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- AUDIO GENERATION: GOOGLE AI STUDIO (PRIMARY) WITH EDGE-TTS FALLBACK ---
+# --- AUDIO GENERATION: GOOGLE AI STUDIO (PRIMARY PREFERENCE) WITH EDGE-TTS FALLBACK ---
 async def generate_segment_audio(text, outfile, rate="+12%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
@@ -337,7 +337,7 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
         except Exception as e:
             print(f"⚠️ Google AI Studio TTS note (switching to Edge-TTS fallback): {e}", flush=True)
 
-    # 2. Secondary Fallback: Edge-TTS (Purana AI Method) if Gemini fails
+    # 2. Secondary Fallback: Edge-TTS if Gemini fails
     if not success:
         communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=rate)
         await communicate.save(outfile)
