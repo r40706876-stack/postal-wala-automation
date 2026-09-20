@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Overlap-Free & Terminology Clean Quiz Reel
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 100% Overlap-Free Professional Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -221,7 +221,7 @@ def generate_clause_script(state):
 
     STRICT RULES FOR EXAM GENERATION:
     1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text chunk.
-    2. ABSOLUTE CONSTRAINT FOR TERMINOLOGY: Use 100% standard Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). NEVER use corrupted words like 'तक्सी' or 'लेखक'.
+    2. ABSOLUTE CONSTRAINT FOR TERMINOLOGY: Use 100% standard Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). NEVER use corrupted words like 'तक्सी' या 'लेखक'.
     3. ANSWERS (ANS1, ANS2, ANS3): Must have varied and correct option letters (e.g., A, B, C, or D) corresponding to the right answer for each question. Do not make all answers 'A'.
     4. Keep questions and options short, clear, and in professional Hindi.
 
@@ -509,7 +509,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (PERMANENT DYNAMIC LAYOUT OVERLAP FIX) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FOOLPROOF PILLOW BBOX OVERLAP FIX) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -540,9 +540,9 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     segment_durations.append(get_audio_duration(finale_audio_file))
 
     concat_filter_audio = ""
-    for i in range(audio_files.__len__()):
+    for i in range(len(audio_files)):
         concat_filter_audio += f"[{i}:a]"
-    concat_filter_audio += f"concat=n={audio_files.__len__()}:v=0:a=1[aout]"
+    concat_filter_audio += f"concat=n={len(audio_files)}:v=0:a=1[aout]"
 
     ffmpeg_audio_cmd = ["ffmpeg", "-y"]
     for af in audio_files:
@@ -556,8 +556,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_badge = get_font(20)
     font_title = get_font(32)
     
-    font_q_text = get_font(30)
-    font_opt_text = get_font(24) # Compact, readable size to completely prevent overflow
+    font_q_text = get_font(28)
+    font_opt_text = get_font(24)
     font_h2 = get_font(24)
     font_cta = get_font(24)
 
@@ -601,11 +601,16 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
 
     for idx, q_data in enumerate(questions_list):
         wrapped_q = textwrap.fill(q_data["q"], width=24)
-        q_lines = wrapped_q.count("\n") + 1
         
-        # --- ROBUST DYNAMIC QUESTION & OPTION HEIGHT CALCULATOR ---
-        q_box_height = max(70, q_lines * 34 + 16)
-        start_oy = 380 + q_box_height + 15
+        # --- 100% FOOLPROOF PILLOW BBOX CALCULATION ---
+        # Get exact pixel bottom of the multi-line question text using Pillow itself
+        dummy_img = Image.new("RGB", (1080, 1920))
+        dummy_draw = ImageDraw.Draw(dummy_img)
+        q_bbox = dummy_draw.multiline_textbbox((110, 445), wrapped_q, font=font_q_text, spacing=6)
+        q_bottom_y = q_bbox[3]
+        
+        # Start option A safely below the question bounding box with a 25px margin
+        start_oy = max(q_bottom_y + 25, 510)
 
         opt_heights = []
         wrapped_opts = []
@@ -613,8 +618,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
             w_opt = textwrap.fill(opt, width=28)
             wrapped_opts.append(w_opt)
             o_lines = w_opt.count("\n") + 1
-            # Fully dynamic option box height with safe breathing room
-            opt_heights.append(max(75, o_lines * 28 + 20))
+            opt_heights.append(max(75, o_lines * 26 + 18))
 
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
@@ -624,12 +628,12 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
-        d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=4)
+        d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=6)
         
         oy = start_oy
         d1.rounded_rectangle([110, oy, 970, oy + opt_heights[0]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
-        d1.text((135, oy + 10), "A)", fill="#38BDF8", font=font_q_text)
-        d1.multiline_text((180, oy + 10), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=2)
+        d1.text((135, oy + 8), "A)", fill="#38BDF8", font=font_q_text)
+        d1.multiline_text((180, oy + 8), wrapped_opts[0], fill="#FFFFFF", font=font_opt_text, spacing=2)
         
         f1_name = f"anim_q{idx+1}_step1.png"
         img_s1.save(f1_name)
@@ -643,8 +647,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         curr_y = start_oy + opt_heights[0] + 12
         for o_idx in range(1, 3):
             d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
-            d2.text((135, curr_y + 10), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
-            d2.multiline_text((180, curr_y + 10), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=2)
+            d2.text((135, curr_y + 8), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
+            d2.multiline_text((180, curr_y + 8), wrapped_opts[o_idx], fill="#FFFFFF", font=font_opt_text, spacing=2)
             curr_y += opt_heights[o_idx] + 12
         
         f2_name = f"anim_q{idx+1}_step2.png"
@@ -657,8 +661,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d3 = ImageDraw.Draw(img_s3)
         
         d3.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[3]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
-        d3.text((135, curr_y + 10), "D)", fill="#38BDF8", font=font_q_text)
-        d3.multiline_text((180, curr_y + 10), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=2)
+        d3.text((135, curr_y + 8), "D)", fill="#38BDF8", font=font_q_text)
+        d3.multiline_text((180, curr_y + 8), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=2)
 
         d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#10B981", width=3)
         d3.text((140, 1455), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
