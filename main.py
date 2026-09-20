@@ -29,7 +29,7 @@ REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
 
 CONCEPT_VIDEO = "concept_reel.mp4" # Normal concept video (Untouched)
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 38-Sec Locked Quiz Reel with Accurate Answers
+QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4") # 40-Sec Locked Professional Quiz Reel
 
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
@@ -257,7 +257,7 @@ def generate_clause_script(state):
 
     return fallback_data
 
-async def generate_segment_audio(text, outfile, rate="+10%"):
+async def generate_segment_audio(text, outfile, rate="+12%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
         except Exception: pass
@@ -493,7 +493,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 38-SEC LOCKED QUIZ VIDEO (LARGE FONT, BIG GAP, 3-SEC HOOK) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FAST VOICE, NO CLIPPING, 40-SEC LOCK) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -503,10 +503,10 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         {"q_num": "सवाल 3/3", "q": script_data["q3"], "opts": [script_data["a3"], script_data["b3"], script_data["c3"], script_data["d3"]], "ans": script_data["ans3"]},
     ]
 
-    # ~3 second crisp hook mentioning the exact clause
+    # ~3 second crisp hook mentioning the exact clause with +12% speed
     intro_text = f"पोस्टल गाइड क्लॉज {script_data['clause_no']}! इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!"
     intro_audio_file = "audio_q_intro.mp3"
-    asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+10%"))
+    asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+12%"))
 
     audio_files = [intro_audio_file]
     segment_durations = [get_audio_duration(intro_audio_file)]
@@ -514,14 +514,14 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     for idx, q_data in enumerate(questions_list):
         q_speech = f"{q_data['q']}"
         q_audio_file = f"audio_q_{idx+1}.mp3"
-        asyncio.run(generate_segment_audio(q_speech, q_audio_file, rate="+10%"))
+        asyncio.run(generate_segment_audio(q_speech, q_audio_file, rate="+12%"))
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
     # Finale Voiceover with Mock Comment & Follow CTA
     finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, और सवाल तीन का सही उत्तर है - {questions_list[2]['ans']}। फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करना न भूलें!"
     finale_audio_file = "audio_q_finale.mp3"
-    asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+10%"))
+    asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+12%"))
     audio_files.append(finale_audio_file)
     segment_durations.append(get_audio_duration(finale_audio_file))
 
@@ -542,7 +542,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_badge = get_font(20)
     font_title = get_font(32)
     
-    # --- LARGER FONTS & SPACIOUS PADDING TO PREVENT OVERLAP ---
+    # --- LARGE FONTS & SPACIOUS PADDING TO PREVENT OVERLAP ---
     font_q_text = get_font(30)   # Large bold question text
     font_opt_text = get_font(25) # Large option text
     font_h2 = get_font(24)
@@ -626,7 +626,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         
-        curr_y = start_oy + opt_heights[0] + 16 # Generous vertical spacing between options
+        curr_y = start_oy + opt_heights[0] + 16
         for o_idx in range(1, 3):
             d2.rounded_rectangle([110, curr_y, 970, curr_y + opt_heights[o_idx]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
             d2.text((135, curr_y + 12), f"{labels[o_idx]})", fill="#38BDF8", font=font_q_text)
@@ -654,7 +654,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(step_dur)
 
-    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS (FIXED ANSWER MAPPING) ---
+    # --- GRAND FINALE SCREEN FOR 3 QUESTIONS (WITH CORRECT DYNAMIC ANSWERS) ---
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -719,11 +719,11 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         "-c:v", "libx264", "-preset", "medium", "-profile:v", "main", "-level", "4.0",
         "-pix_fmt", "yuv420p", "-r", "30", "-g", "60",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
-        "-movflags", "+faststart", "-t", "38.0", output_video
+        "-movflags", "+faststart", "-t", "40.0", output_video
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ 3-Question 38-Sec Locked Quiz Reel Created: {output_video}", flush=True)
+    print(f"✅ 3-Question 40-Sec Locked Quiz Reel Created: {output_video}", flush=True)
 
 # --- Auto-Commit Function to Push Reels to GitHub Folder ---
 def auto_commit_and_push_reels():
@@ -732,7 +732,7 @@ def auto_commit_and_push_reels():
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
-        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question 38s professional quiz reel [skip ci]"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-upload 3-question 40s professional quiz reel [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
         print("🎉 Successfully pushed professional quiz reel to GitHub folder!", flush=True)
     except Exception as e:
@@ -749,11 +749,11 @@ if __name__ == "__main__":
     print("🎬 Generating Concept Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
-    # 2. Generate 3-Question 38-Sec Locked Quiz Video inside folder
-    print("🧠 Generating 3-Question 38-Sec Locked Quiz Reel...", flush=True)
+    # 2. Generate 3-Question 40-Sec Locked Quiz Video inside folder
+    print("🧠 Generating 3-Question 40-Sec Locked Quiz Reel...", flush=True)
     render_quiz_video(script_data, QUIZ_VIDEO)
     
     # 3. Auto push to GitHub folder
     auto_commit_and_push_reels()
     
-    print("🎉 Done! 3-question 38-sec locked quiz reel generated inside the 'generated_reels' folder.", flush=True)
+    print("🎉 Done! 3-question 40-sec locked quiz reel generated inside the 'generated_reels' folder.", flush=True)
