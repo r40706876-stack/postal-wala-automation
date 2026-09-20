@@ -51,7 +51,7 @@ OFFICIAL_PO_GUIDE_TITLES = {
     20: "पंजीकृत समाचार पत्र"
 }
 
-def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
+def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=PDF_FILE_PATH):
     if clause_no in OFFICIAL_PO_GUIDE_TITLES:
         final_title = OFFICIAL_PO_GUIDE_TITLES[clause_no]
     else:
@@ -71,11 +71,23 @@ def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
             txt = page.extract_text() or ""
             if pattern.search(txt):
                 matched_text += txt + "\n"
-                if len(matched_text) >= 2500:
+                if len(matched_text) >= 4000:
                     break
 
-        final_text = matched_text.strip() if matched_text.strip() else default_text
-        return final_title[:60], clean_hindi_postal_terms(final_text[:2500])
+        full_text = matched_text.strip() if matched_text.strip() else default_text
+        
+        # --- Part-wise Chunking to prevent duplicate questions across parts ---
+        if total_parts > 1 and len(full_text) > 200:
+            chunk_len = max(100, len(full_text) // total_parts)
+            start = (current_part - 1) * chunk_len
+            end = start + chunk_len if current_part < total_parts else len(full_text)
+            part_text = full_text[start:end]
+            if len(part_text.strip()) < 50:
+                part_text = full_text
+        else:
+            part_text = full_text
+
+        return final_title[:60], clean_hindi_postal_terms(part_text[:2500])
     except Exception as e:
         print(f"⚠️ PDF Extraction Error: {e}", flush=True)
     return final_title, default_text
@@ -144,7 +156,7 @@ def load_progress_state():
         except Exception:
             pass
             
-    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 1))
+    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 1), state.get("current_part", 1), state.get("total_parts", 1))
     state["total_parts"] = get_dynamic_total_parts(pdf_text)
     
     if state["current_part"] > state["total_parts"]:
@@ -165,7 +177,7 @@ def generate_clause_script(state):
     current_part = state.get("current_part", 1)
     total_parts = state.get("total_parts", 1)
 
-    official_title, official_pdf_text = extract_clause_from_pdf(current_clause)
+    official_title, official_pdf_text = extract_clause_from_pdf(current_clause, current_part, total_parts)
 
     fallback_data = {
         "clause_no": current_clause,
@@ -198,14 +210,14 @@ def generate_clause_script(state):
     You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard).
     Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
 
-    OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf':
+    OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf' (Part {current_part} of {total_parts}):
     \"\"\"
     {official_pdf_text}
     \"\"\"
 
     STRICT RULES FOR EXAM GENERATION:
-    1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text.
-    2. ABSOLUTE CONSTRAINT FOR OPTIONS (A, B, C, D): Every single option must use authentic postal terminology.
+    1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text chunk.
+    2. ABSOLUTE CONSTRAINT FOR OPTIONS (A, B, C, D): Every single option must use authentic postal terminology (e.g., प्रेषक, बीमा, पंजीकृत, आदि). Never use incorrect terms like लेखक.
     3. ANSWERS (ANS1, ANS2, ANS3): Must have varied and correct option letters (e.g., A, B, C, or D) corresponding to the right answer for each question. Do not make all answers 'A'.
     4. Keep questions and options short, clear, and in professional Hindi.
 
@@ -239,7 +251,7 @@ def generate_clause_script(state):
 
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 700}
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.3, "max_tokens": 700}
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
@@ -493,7 +505,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Concept Reel Created: {output_video}", flush=True)
 
-# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (FAST VOICE, NO CLIPPING, 40-SEC LOCK) ---
+# --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO (LARGER FONTS, CLEAN FINALE SCREEN) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     
@@ -503,7 +515,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         {"q_num": "सवाल 3/3", "q": script_data["q3"], "opts": [script_data["a3"], script_data["b3"], script_data["c3"], script_data["d3"]], "ans": script_data["ans3"]},
     ]
 
-    # ~3 second crisp hook mentioning the exact clause with +12% speed
     intro_text = f"पोस्टल गाइड क्लॉज {script_data['clause_no']}! इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!"
     intro_audio_file = "audio_q_intro.mp3"
     asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+12%"))
@@ -518,8 +529,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
-    # Finale Voiceover with Mock Comment & Follow CTA
-    finale_speech = f"अब बारी है सही उत्तरों की। सवाल एक का सही उत्तर - {questions_list[0]['ans']}, सवाल दो का - {questions_list[1]['ans']}, और सवाल तीन का सही उत्तर है - {questions_list[2]['ans']}। फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करना न भूलें!"
+    # --- UPDATED FINALE VOICE: Direct screen check prompt + MOCK comment & Follow CTA ---
+    finale_speech = f"सारे प्रश्नों के सही उत्तर स्क्रीन पर चेक कर लो दोस्तों! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करना न भूलें!"
     finale_audio_file = "audio_q_finale.mp3"
     asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+12%"))
     audio_files.append(finale_audio_file)
@@ -542,9 +553,9 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_badge = get_font(20)
     font_title = get_font(32)
     
-    # --- LARGE FONTS & SPACIOUS PADDING TO PREVENT OVERLAP ---
-    font_q_text = get_font(30)   # Large bold question text
-    font_opt_text = get_font(25) # Large option text
+    # --- EVEN LARGER FONTS TO FILL EMPTY SCREEN SPACE ---
+    font_q_text = get_font(34)   # Increased from 30 to fill space
+    font_opt_text = get_font(28) # Increased from 25 to fill space
     font_h2 = get_font(24)
     font_cta = get_font(24)
 
@@ -587,20 +598,20 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     labels = ["A", "B", "C", "D"]
 
     for idx, q_data in enumerate(questions_list):
-        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=26)
+        wrapped_q = textwrap.fill(clean_hindi_postal_terms(q_data["q"]), width=24)
         q_lines = wrapped_q.count("\n") + 1
         
         # --- LARGE GAP BETWEEN QUESTION AND OPTIONS TO PREVENT OVERLAP ---
-        q_box_bottom = 430 + (q_lines * 40)
-        start_oy = max(q_box_bottom + 25, 530)
+        q_box_bottom = 400 + (q_lines * 42)
+        start_oy = max(q_box_bottom + 25, 520)
 
         opt_heights = []
         wrapped_opts = []
         for opt in q_data["opts"]:
-            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=28)
+            w_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=26)
             wrapped_opts.append(w_opt)
             o_lines = w_opt.count("\n") + 1
-            opt_heights.append(max(95, o_lines * 34 + 22))
+            opt_heights.append(max(95, o_lines * 36 + 22))
 
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
