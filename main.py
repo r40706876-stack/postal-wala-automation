@@ -210,20 +210,21 @@ def generate_clause_script(state):
     if not GROQ_API_KEY:
         return fallback_data
 
+    # Strict PO Guide Part 1 cross-verification and fluent Hindi prompt
     prompt = f"""
     You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard).
     Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
 
-    OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf' (Part {current_part} of {total_parts}):
+    Reference Text (Context/Topic Tracker):
     \"\"\"
     {official_pdf_text}
     \"\"\"
 
-    STRICT RULES FOR EXAM GENERATION:
-    1. Generate EXACTLY 3 distinct, highly accurate, exam-oriented MCQ questions based strictly on the provided text chunk.
-    2. ABSOLUTE CONSTRAINT FOR TERMINOLOGY: Use 100% standard Departmental Postal Guide Part 1 Hindi terminology (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). NEVER use corrupted words like 'तक्सी' or 'लेखक'.
+    STRICT RULES FOR EXAM GENERATION (PO GUIDE PART 1 AUTHENTICATION):
+    1. Cross-verify and generate questions strictly based on the official, authoritative rules of **Post Office Guide Part 1 (PO Guide Part 1)** available in your training knowledge to ensure 100% exam-oriented accuracy, ignoring any raw OCR/text errors in the local PDF extract.
+    2. HINDI PHRASING & TERMINOLOGY: Use 100% standard, professional, and natural departmental Hindi phrasing (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). Avoid awkward machine-translated phrasing or unnatural literal translations. Ensure proper professional departmental exam terminology.
     3. ANSWERS (ANS1, ANS2, ANS3): MUST HAVE DIFFERENT CORRECT OPTION LETTERS (e.g., A, B, C, or D). Never make all three answers 'A'.
-    4. Keep questions and options short, clear, and in professional Hindi.
+    4. Keep questions and options short, clear, and professional.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -803,7 +804,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Quiz Reel Created Successfully: {output_video}", flush=True)
 
-# --- AUTO-COMMIT & PUSH (SYNTAX ERROR FIXED) ---
+# --- AUTO-COMMIT & PUSH ---
 def auto_commit_and_push_reels():
     try:
         print("📤 Committing and pushing reels to GitHub repository...", flush=True)
