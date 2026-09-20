@@ -72,7 +72,7 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Dynamic PDF Title & Text Extractor (Reads Directly from Your PDF) ---
+# --- Advanced PDF Extractor (Captures Full Clause Text) ---
 def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=PDF_FILE_PATH):
     default_title = f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}"
     default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} का आधिकारिक विभागीय नियम।"
@@ -82,21 +82,36 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=P
 
     try:
         reader = PdfReader(pdf_path)
-        pattern = re.compile(rf"(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{clause_no}\b", re.IGNORECASE)
+        full_pdf_text = ""
+        for page in reader.pages:
+            full_pdf_text += (page.extract_text() or "") + "\n"
+
+        start_pattern = re.compile(rf"(?:क्लॉज|Clause|नियम|\b)\s*[-:]?\s*{clause_no}\b", re.IGNORECASE)
+        next_pattern = re.compile(rf"(?:क्लॉज|Clause|नियम|\b)\s*[-:]?\s*{clause_no + 1}\b", re.IGNORECASE)
+
+        lines = full_pdf_text.split('\n')
+        capturing = False
         matched_text = ""
         extracted_title = None
-
-        for page in reader.pages:
-            txt = page.extract_text() or ""
-            for line in txt.split('\n'):
-                if pattern.search(line):
-                    clean_line = re.sub(r"(?:क्लॉज|Clause|नियम)\s*[-:]?\s*\d+\b", "", line).strip(" :-–_")
-                    if clean_line and len(clean_line) > 2 and not extracted_title:
-                        extracted_title = clean_line[:60]
-            if pattern.search(txt):
-                matched_text += txt + "\n"
-                if len(matched_text) >= 4000:
+        
+        for line in lines:
+            if start_pattern.search(line) and not capturing:
+                capturing = True
+                clean_line = re.sub(r"(?:क्लॉज|Clause|नियम|\b)\s*[-:]?\s*\d+\b", "", line).strip(" :-–_")
+                if clean_line and len(clean_line) > 2 and not extracted_title:
+                    extracted_title = clean_line[:60]
+                continue
+            
+            if capturing:
+                if next_pattern.search(line) and len(matched_text.strip()) > 50:
                     break
+                matched_text += line + "\n"
+
+        if len(matched_text.strip()) < 50:
+            for page in reader.pages:
+                txt = page.extract_text() or ""
+                if start_pattern.search(txt):
+                    matched_text += txt + "\n"
 
         final_title = extracted_title if extracted_title else default_title
         full_text = matched_text.strip() if matched_text.strip() else default_text
@@ -111,7 +126,7 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=P
         else:
             part_text = full_text
 
-        return final_title, clean_hindi_postal_terms(part_text[:2500])
+        return final_title, clean_hindi_postal_terms(part_text[:3500])
     except Exception as e:
         print(f"⚠️ PDF Extraction Error: {e}", flush=True)
     return default_title, default_text
@@ -120,13 +135,14 @@ def get_dynamic_total_parts(pdf_text):
     if not pdf_text:
         return 1
     char_count = len(pdf_text.strip())
-    if char_count < 300:
+    # Enhanced threshold to ensure comprehensive clauses get sufficient parts
+    if char_count < 250:
         return 1
-    elif char_count < 700:
+    elif char_count < 600:
         return 2
-    elif char_count < 1200:
+    elif char_count < 1100:
         return 3
-    elif char_count < 1800:
+    elif char_count < 1600:
         return 4
     else:
         return 5
@@ -193,10 +209,7 @@ def load_progress_state():
         except Exception:
             pass
             
-    # Strictly locking to Clause 2, Part 1 for this run
-    state["clause_no"] = 2
-    state["current_part"] = 1
-    
+    # Keep current target as Clause 2 (or resume from saved state)
     _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 2), state.get("current_part", 1), state.get("total_parts", 1))
     state["total_parts"] = get_dynamic_total_parts(pdf_text)
     
@@ -348,7 +361,6 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
         
     success = False
     
-    # 1. Primary Preference: Google AI Studio (Gemini TTS API)
     if GEMINI_API_KEY:
         try:
             from google import genai
@@ -399,7 +411,6 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
         except Exception as e:
             print(f"⚠️ Google AI Studio TTS note (switching to Edge-TTS fallback): {e}", flush=True)
 
-    # 2. Secondary Fallback: Edge-TTS if Gemini fails
     if not success:
         communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=rate)
         await communicate.save(outfile)
@@ -568,7 +579,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     frames.append("c_2c.png")
     frame_durs.append(round(durations[1] * 0.25, 2))
 
-    # Slide 3: Trap Point
+    # Slide 3: Trap Point (Foolproof Dynamic Layout & Text Fitting)
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
     draw_base(d3a)
@@ -580,12 +591,12 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d3a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     draw_whatsapp_strip(d3a)
     
-    d3a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#F59E0B", width=3)
-    d3a.rounded_rectangle([110, 520, 480, 575], radius=10, fill="#0B132B")
-    d3a.text((150, 530), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
+    d3a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=3)
+    d3a.rounded_rectangle([110, 510, 450, 565], radius=10, fill="#0B132B")
+    d3a.text((130, 520), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
     
-    wrapped_s3 = textwrap.fill(script_data['sen2'], width=24)
-    d3a.multiline_text((120, 610), clean_hindi_postal_terms(wrapped_s3), fill="#F8FAFC", font=font_body, spacing=16)
+    wrapped_s3 = textwrap.fill(script_data['sen2'], width=27)
+    d3a.multiline_text((110, 585), clean_hindi_postal_terms(wrapped_s3), fill="#F8FAFC", font=font_body, spacing=12)
     draw_footer_cta(d3a)
     img3a.save("c_3a.png")
     frames.append("c_3a.png")
@@ -594,21 +605,31 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     img3b = img3a.copy()
     d3b = ImageDraw.Draw(img3b)
     d3b.rounded_rectangle([80, 480, 1000, 1550], radius=24, outline="#EF4444", width=4)
-    d3b.rounded_rectangle([110, 850, 970, 1200], radius=18, fill="#380A0A", outline="#EF4444", width=3)
-    d3b.rounded_rectangle([130, 875, 460, 925], radius=8, fill="#7F1D1D")
-    d3b.text((145, 883), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
     
     trap_txt = script_data.get("trap_point", script_data["sen2"])
-    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=23)
-    d3b.multiline_text((145, 960), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=14)
+    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=27)
+    trap_lines = wrapped_trap.count("\n") + 1
+    
+    s3_lines = wrapped_s3.count("\n") + 1
+    sen2_bottom = 585 + (s3_lines * 42)
+    
+    trap_top = max(780, sen2_bottom + 15)
+    trap_box_height = max(240, (trap_lines * 36) + 85)
+    trap_bottom = min(1360, trap_top + trap_box_height)
+
+    d3b.rounded_rectangle([110, trap_top, 970, trap_bottom], radius=18, fill="#380A0A", outline="#EF4444", width=3)
+    d3b.rounded_rectangle([130, trap_top + 15, 460, trap_top + 65], radius=8, fill="#7F1D1D")
+    d3b.text((145, trap_top + 23), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
+    
+    d3b.multiline_text((130, trap_top + 80), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=10)
     img3b.save("c_3b.png")
     frames.append("c_3b.png")
     frame_durs.append(round(durations[2] * 0.35, 2))
 
     img3c = img3b.copy()
     d3c = ImageDraw.Draw(img3c)
-    d3c.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#FBBF24", width=2)
-    d3c.text((180, 1400), "अब आज का सवाल: उत्तर कमेंट करें >>", fill="#FDE047", font=font_h2)
+    d3c.rounded_rectangle([110, 1380, 970, 1470], radius=14, fill="#0B132B", outline="#FBBF24", width=2)
+    d3c.text((180, 1410), "अब आज का सवाल: उत्तर कमेंट करें >>", fill="#FDE047", font=font_h2)
     img3c.save("c_3c.png")
     frames.append("c_3c.png")
     frame_durs.append(round(durations[2] * 0.30, 2))
@@ -979,7 +1000,7 @@ if __name__ == "__main__":
     
     script_data = generate_clause_script(st)
     
-    # 1. Generate Concept Rule Reel First (Includes complete 4 slides up to question & timer)
+    # 1. Generate Concept Rule Reel First
     print("🎬 Generating Concept Rule Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
