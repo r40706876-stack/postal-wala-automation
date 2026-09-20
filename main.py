@@ -79,7 +79,9 @@ def clean_extracted_title(title):
         "टिवक": "टिकट",
         "पै किं ग": "पैकिंग",
         "विकि": "टिकट",
-        "प्रस्थान": "मुद्रण"
+        "प्रस्थान": "मुद्रण",
+        "सीव िंग": "सीलिंग",
+        "सीविंग": "सीलिंग"
     }
     for k, v in bad_map.items():
         if k in title:
@@ -115,11 +117,26 @@ def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
         final_title = clean_extracted_title(found_title if found_title else default_title)
         final_text = matched_text.strip() if matched_text.strip() else default_text
         
-        print(f"✅ Extracted Title: '{final_title}' for Clause {clause_no}", flush=True)
         return final_title[:60], clean_hindi_postal_terms(final_text[:2500])
     except Exception as e:
         print(f"⚠️ PDF Extraction Error: {e}", flush=True)
     return default_title, default_text
+
+# --- Smart Dynamic Part Calculator based on PDF Text Length ---
+def get_dynamic_total_parts(pdf_text):
+    if not pdf_text:
+        return 1
+    char_count = len(pdf_text.strip())
+    if char_count < 300:
+        return 1
+    elif char_count < 700:
+        return 2
+    elif char_count < 1200:
+        return 3
+    elif char_count < 1800:
+        return 4
+    else:
+        return 5
 
 def clean_text(text):
     if not text:
@@ -136,7 +153,7 @@ def clean_hindi_postal_terms(text):
         "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
         "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
         "घंटी वाली": "घंटे वाली", "नित्य पत्र": "वित्तीय वर्ष", "नित्य वर्ष": "वित्तीय वर्ष",
-        "विकि": "टिकट", "प्रस्थान": "मुद्रण", "टिविंग": "पैकिंग"
+        "विकि": "टिकट", "प्रस्थान": "मुद्रण", "टिविंग": "पैकिंग", "सीव िंग": "सीलिंग", "सीविंग": "सीलिंग"
     }
     for bad_w, good_w in replacements.items():
         text = text.replace(bad_w, good_w)
@@ -182,7 +199,13 @@ def load_progress_state():
                     state.update(saved)
         except Exception:
             pass
-    state["total_parts"] = 1
+            
+    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 1))
+    state["total_parts"] = get_dynamic_total_parts(pdf_text)
+    
+    if state["current_part"] > state["total_parts"]:
+        state["current_part"] = 1
+        
     save_progress_state(state)
     return state
 
@@ -207,7 +230,9 @@ def advance_progress_state(state):
         next_clause = clause + 1 if clause < 60 else 1
         state["clause_no"] = next_clause
         state["current_part"] = 1
-        state["total_parts"] = 1
+        
+        _, next_pdf_text = extract_clause_from_pdf(next_clause)
+        state["total_parts"] = get_dynamic_total_parts(next_pdf_text)
 
     save_progress_state(state)
     print(f"⏩ Advanced Progress to: Clause {state['clause_no']} (Part {state['current_part']}/{state['total_parts']})", flush=True)
@@ -216,6 +241,7 @@ def advance_progress_state(state):
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
+    total_parts = state.get("total_parts", 1)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
 
@@ -225,7 +251,7 @@ def generate_clause_script(state):
         "clause_no": current_clause,
         "clause_name": official_title,
         "part_no": current_part,
-        "total_parts": 1,
+        "total_parts": total_parts,
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
         "hook_display_text": hook_obj["hook_text"],
@@ -241,7 +267,7 @@ def generate_clause_script(state):
         "opt_b": "अतिरिक्त शुल्क प्रावधान",
         "opt_c": "केवल सामान्य निर्देश",
         "opt_d": "इनमें से कोई नहीं",
-        "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause}।\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
+        "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n💬 अपना सही उत्तर कमेंट करें!\n📩 इस क्लॉज की पूरी Free PDF और टेस्ट के लिए अभी कमेंट करें 'NOTES'!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
     if not GROQ_API_KEY:
@@ -249,7 +275,7 @@ def generate_clause_script(state):
 
     prompt = f"""
     You are the Senior Chief Examiner for India Post Departmental Examinations.
-    Topic: Post Office Guide Part 1, Clause: {current_clause}, Official Title Extracted: "{official_title}"
+    Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title Extracted: "{official_title}"
 
     OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf':
     \"\"\"
@@ -257,14 +283,14 @@ def generate_clause_script(state):
     \"\"\"
 
     STRICT 100% PURE HINDI RULES (TEMPERATURE 0.0):
-    1. Base all facts, rules, and questions STRICTLY and SOLELY on the extracted text above.
+    1. Base all facts, rules, and questions STRICTLY and SOLELY on the extracted text above, focusing specifically on Part {current_part} of {total_parts}.
     2. ALL SCREEN TEXT (SEN1, SEN2, PARAM1_TITLE, PARAM1_VAL, PARAM2_TITLE, PARAM2_VAL, TRAP_POINT, QUESTION, OPT_A, OPT_B, OPT_C, OPT_D) MUST BE IN FLUID, ERROR-FREE HINDI ONLY. DO NOT USE ANY ENGLISH WORDS IN THE TEXT FIELDS.
-    3. SEN1: State the exact operational rule from this text in clear Hindi (max 12-14 words).
+    3. SEN1: State the exact operational rule for this part in clear Hindi (max 12-14 words).
     4. SEN2: State the specific legal exception, trap or penalty in clear Hindi (max 12-14 words). MUST NOT REPEAT SEN1.
     5. PARAM1_TITLE & PARAM1_VAL: First core condition in concise Hindi.
     6. PARAM2_TITLE & PARAM2_VAL: Second core condition in concise Hindi.
     7. TRAP_POINT: Clear penalty/trap note for Slide 3 red box in concise Hindi (max 8-10 words).
-    8. QUESTION: High-yield departmental MCQ question directly from this text in Hindi (max 12 words).
+    8. QUESTION: High-yield departmental MCQ question directly from this part in Hindi (max 12 words).
     9. OPT_A: The 100% correct answer in concise Hindi (max 2-4 words).
     10. OPT_B, OPT_C, OPT_D: 3 plausible departmental distractors in concise Hindi (max 2-4 words each).
 
@@ -683,7 +709,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ 100% Pure Hindi Master Kinetic Reel Created: {output_video}", flush=True)
+    print(f"✅ Dynamic Part-Wise Kinetic Reel Created: {output_video}", flush=True)
 
 # --- RESUMABLE PROTOCOL UPLOADER ---
 def _create_reel_container(video_file, caption, user_id, access_token):
