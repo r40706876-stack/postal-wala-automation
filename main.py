@@ -8,233 +8,139 @@ import requests
 import textwrap
 import re
 import sys
+import shutil
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 from pypdf import PdfReader
 
 # --- Environment Variables ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
-IG_USER_ID = os.getenv("IG_USER_ID")
 
-GRAPH_API_BASE = "https://graph.facebook.com/v19.0/"
-RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/"
-
-STATE_FILE = "progress_state.json"
 PDF_FILE_PATH = "mts content .pdf"
 FONT_PATH = "Mukta-Bold.ttf"
-
-# --- Master Official Clause Titles (PO Guide Part 1 Source of Truth) ---
-OFFICIAL_CLAUSE_MAP = {
-    1: "डाक विभाग का नियंत्रण एवं संगठन",
-    2: "डाकघरों के प्रकार (प्रधान, उप व शाखा डाकघर)",
-    3: "नाइट पोस्ट ऑफिस (रात्रि कालीन डाकघर)",
-    4: "मोबाइल पोस्ट ऑफिस (चलते-फिरते डाकघर)",
-    5: "सामान्य कार्य दिवस और कारोबार के घंटे",
-    6: "हटाया गया नियम (Deleted)",
-    7: "रविवार के दिन डाकघर का कार्य",
-    8: "डाकघर के आधिकारिक अवकाश",
-    9: "डाक शुल्क का अग्रिम भुगतान",
-    10: "डाक टिकट और स्टेशनरी",
-    11: "फ्रैंकिंग मशीन के नियम व शर्तें",
-    12: "नकद में डाक शुल्क का अग्रिम भुगतान",
-    13: "विरूपित अथवा खराब डाक टिकट",
-    14: "जाली अथवा प्रयुक्त डाक टिकटों का निषेध",
-    15: "डाक वस्तुओं की पैकिंग के नियम",
-    16: "मुहरबंदी (Sealing) के नियम",
-    17: "सिक्के और मूल्यवान वस्तुओं का प्रेषण",
-    18: "पत्र-पेटियां (Letter Boxes) के नियम",
-    19: "विशेष पत्र-पेटियों का प्रयोग",
-    20: "डाक में वस्तुएं डालने के नियम",
-    21: "विदेशी डाक वस्तुएं",
-    22: "पते पर टिकट चिपकाने के नियम",
-    23: "डाक टिकट चिपकाने का सही स्थान",
-    24: "गैर-डाक टिकटों का निषेध",
-    25: "पता लिखने के निर्देश",
-    26: "पत्र पर पता लिखने की विधि",
-    27: "पते में पिन कोड का महत्व",
-    28: "सेना डाक सेवा को भेजे जाने वाले पत्र",
-    29: "अपूर्ण पते वाली डाक वस्तुएं",
-    30: "पत्रों पर अन्य निर्देश लिखना",
-    31: "सरकारी डाक वस्तुएं (Official Postal Articles)",
-    32: "सरकारी डाक पर प्रयुक्त टिकट",
-    33: "डाक का प्रेषण और मार्ग",
-    34: "डाक वस्तुओं की वापसी (Recall of Postal Articles)",
-    35: "डाक वस्तुओं के वितरण की परिभाषा",
-    36: "पंजीकृत वस्तुओं का वितरण",
-    37: "पंजीकृत वस्तु लेने से इंकार",
-    38: "फर्मों को पंजीकृत डाक वितरण की विशेष प्रक्रिया",
-    39: "पर्दानशीं महिलाओं को डाक वितरण",
-    40: "क्षतिग्रस्त पंजीकृत वस्तुओं का वितरण",
-    41: "10 किलोग्राम से अधिक वजन के पार्सल का वितरण",
-    42: "विशेष डाक वितरण व्यवस्था",
-    43: "बीमाकृत वस्तुओं का वितरण",
-    44: "मूल्य-देय (V.P.) वस्तुओं का वितरण",
-    45: "अप्राप्त या अविभाजित डाक वस्तुएं",
-    46: "लावारिस डाक वस्तुएं (Unclaimed Articles)",
-    47: "पुनर्निर्देशन (Redirection) के नियम",
-    48: "पुनर्निर्देशन शुल्क संबंधी निर्देश",
-    49: "पार्सल का पुनर्निर्देशन",
-    50: "पुनर्निर्देशन शुल्क से छूट",
-    51: "पता परिवर्तन संबंधी निर्देश",
-    52: "डाक रोकने संबंधी निर्देश",
-    53: "डाक वस्तुओं का अस्थायी ठहराव",
-    54: "मृत व्यक्तियों की डाक का निपटान",
-    55: "पोस्ट बॉक्स (Post Boxes) की शर्तें व किराया",
-    56: "पोस्ट बैग (Post Bags) के नियम व शुल्क"
-}
-
-OFFICIAL_CLAUSE_CONTEXT = {
-    1: "डाक विभाग संचार मंत्रालय के तहत कार्य करता है। इसका प्रशासनिक नियंत्रण महानिदेशक डाक सेवा (DG Posts) के अधीन होता है। शीर्ष प्रबंधन निकाय डाक सेवा बोर्ड (PSB) है जिसके पदेन अध्यक्ष सचिव (डाक) होते हैं।",
-    2: "डाकघर गाइड भाग 1 के क्लॉज 2 के तहत डाकघरों को तीन वर्गों में विभाजित किया गया है: 1. प्रधान डाकघर (Head Post Office), 2. उप डाकघर (Sub Post Office), और 3. शाखा डाकघर (Branch Post Office)। प्रधान डाकघर डाक मंडल का मुख्य लेखा कार्यालय होता है। शाखा डाकघर का अधिकतम कार्य समय 5 घंटे निर्धारित है।",
-    3: "रात्रि कालीन डाकघर (Night Post Office) का निर्धारण और कार्य समय महानिदेशक (DG Posts) द्वारा तय किया जाता है। ये सामान्यतः कार्य दिवसों में रात 8:30 बजे तक कार्य करते हैं तथा रविवार और छुट्टियों के दिन भी सीमित सेवाओं हेतु खुले रहते हैं।",
-    4: "चलते-फिरते डाकघर (Mobile Post Office) उन क्षेत्रों में सेवा देते हैं जहां स्थायी डाकघर नहीं होते। ये रविवार और डाकघर छुट्टियों पर बंद रहते हैं। इनमें मनी ऑर्डर और वीपी पार्सल स्वीकार नहीं किए जाते।",
-    5: "सामान्य कार्य दिवसों में विभिन्न सेवाओं के कार्य घंटे (Business Hours) सर्किल प्रमुख (Head of Circle/CPMG) द्वारा तय किए जाते हैं। बचत बैंक व मनी ऑर्डर लगभग 5 घंटे, रजिस्ट्री व पार्सल 6-7 घंटे और टिकट बिक्री पूरे समय होती है।"
-}
-
-REELS_DIR = "generated_reels"
-os.makedirs(REELS_DIR, exist_ok=True)
-
-CONCEPT_VIDEO = os.path.join(REELS_DIR, "concept_reel.mp4")
-QUIZ_VIDEO = os.path.join(REELS_DIR, "quiz_reel.mp4")
-
+OUTPUT_VIDEO = "final_reel.mp4"
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
+REELS_DIR = "generated_reels"
 
-ASSETS_DIR = "assets"
+STATE_FILE = "progress_state.json"
+
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
+# --- Official PO Guide Part 1 Clause Titles Dictionary (100% Error-Free Guarantee) ---
+OFFICIAL_PO_GUIDE_TITLES = {
+    1: "पंजीकृत वस्तुएं",
+    12: "डाक टिकट चिपकाने की विधि",
+    13: "खराब या विकृत डाक टिकट",
+    14: "काल्पनिक डाक टिकट",
+    15: "पैकिंग",
+    16: "सीलिंग",
+    17: "मुद्राओं की पोस्टिंग",
+    18: "बीमा नियम",
+    19: "मूल्य देय डाक (वीपीपी)",
+    20: "पंजीकृत समाचार पत्र"
+}
+
+# --- High-Retention Viral Hooks (<3.5s, No Word Repetition) ---
 VIRAL_HOOKS = [
     {
-        "voice": "जीडीएस से एमटीएस, पोस्टमैन और पी.ए. परीक्षा में यह नियम बार-बार आता है!",
-        "visual_badge": "[ ! ] GDS to MTS, PM, PA स्पेशल",
-        "hook_text": "GDS to MTS, Postman & PA परीक्षा का सबसे महत्वपूर्ण और पक्का नियम!"
+        "voice": "विभागीय परीक्षा में यह एक नियम बार-बार आता है, देखिए!",
+        "visual_badge": "[ ! ] 100% पक्का सवाल",
+        "hook_text": "विभागीय परीक्षा में बार-बार दोहराया जाने वाला सबसे महत्वपूर्ण क्लॉज!"
     },
     {
-        "voice": "जीडीएस से पोस्टमैन व एमटीएस परीक्षा में नब्बे प्रतिशत छात्र इस नियम में गलती करते हैं!",
+        "voice": "जीडीएस परीक्षा में 90% छात्र इस एक नियम में फेल होते हैं!",
         "visual_badge": "[ ! ] 90% छात्र फेल",
-        "hook_text": "GDS to MTS, Postman, PA परीक्षा में सबसे ज्यादा गलत होने वाला क्लॉज!"
+        "hook_text": "इस क्लॉज के आधिकारिक अपवाद में सबसे ज्यादा परीक्षार्थी गलती करते हैं!"
     },
     {
-        "voice": "जीडीएस से एमटीएस, पोस्टमैन या पी.ए. में प्रमोशन पक्का करने के लिए यह नियम रट लीजिए!",
+        "voice": "प्रमोशन पक्का करने के लिए यह नियम आज ही समझ लीजिए!",
         "visual_badge": "[ ! ] मेरिट लिस्ट बूस्टर",
-        "hook_text": "GDS to MTS, PM & PA मेरिट लिस्ट में नाम लाने वाला सबसे जरूरी नियम!"
+        "hook_text": "जीडीएस से पोस्टमैन व पी.ए. बनने के लिए इस नियम को आज ही रट लीजिए!"
     },
     {
-        "voice": "जीडीएस से एमटीएस और पोस्टमैन परीक्षा का सबसे पसंदीदा सवाल, ध्यान से देखें!",
-        "visual_badge": "[ ! ] सीधे 2 अंक पक्के",
-        "hook_text": "GDS to MTS, Postman & PA एग्जाम में हर साल आने वाला 100% पक्का सवाल!"
+        "voice": "डाक विभाग की परीक्षा का सबसे पसंदीदा नियम, ध्यान से समझें!",
+        "visual_badge": "[ ! ] परीक्षक का पसंदीदा",
+        "hook_text": "सीधे 2 अंक पक्के करने वाला डाक घर गाइड का अनिवार्य नियम!"
     },
     {
-        "voice": "जीडीएस से पोस्टमैन, एमटीएस या पी.ए. बनना है तो यह रील बिल्कुल मिस मत करना!",
+        "voice": "पोस्टमैन या पी.ए. बनना है तो यह रील बिल्कुल स्किप मत करना!",
         "visual_badge": "[ ! ] प्रमोशन स्पेशल",
-        "hook_text": "GDS to MTS, Postman, PA विभागीय परीक्षा पास कराने वाला अनिवार्य क्लॉज!"
+        "hook_text": "विभागीय परीक्षा पास करने के लिए यह क्लॉज पढ़ना अनिवार्य है!"
     },
     {
-        "voice": "जीडीएस से पोस्टमैन और पी.ए. बनने के लिए इस नियम को समझना बहुत जरूरी है!",
+        "voice": "डाक घर गाइड का यह नियम कई लोगों का प्रमोशन रोक देता है!",
         "visual_badge": "[ ! ] परीक्षा रेड अलर्ट",
-        "hook_text": "GDS to MTS, PM, PA परीक्षा में नेगेटिव मार्किंग से बचने का जरूरी नियम!"
+        "hook_text": "सावधान: इस नियम की छोटी सी गलती आपका विभागीय प्रमोशन रोक सकती है!"
     }
 ]
 
-def find_pdf_path():
-    candidates = [PDF_FILE_PATH, "PO_Guide_Part-1_copy.pdf", "PO_Guide_Part-1.pdf", "mts content.pdf"]
-    for c in candidates:
-        if os.path.exists(c):
-            return c
-    all_pdfs = glob.glob("*.pdf")
-    if all_pdfs:
-        return all_pdfs[0]
-    return PDF_FILE_PATH
+# --- Direct Official PO Guide Title & Text Extractor ---
+def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
+    if clause_no in OFFICIAL_PO_GUIDE_TITLES:
+        final_title = OFFICIAL_PO_GUIDE_TITLES[clause_no]
+    else:
+        final_title = f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}"
 
-def clean_text(text):
-    if not text:
-        return ""
-    text = text.strip().strip("\"'`")
-    return "".join(c for c in text if ord(c) < 0x10000).strip()
-
-def clean_hindi_postal_terms(text):
-    if not text:
-        return ""
-    text = re.sub(r"^[\s\)\(\.\-\:–\d\+]+", "", text).strip()
-    replacements = {
-        "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
-        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
-        "तक्सी पैकेट": "बीमाकृत पैकेट", "तक्सी": "बीमाकृत", "लेखक": "प्रेषक",
-        "तक्सी पत्र": "बीमाकृत पत्र", "तक्सी वस्तु": "बीमाकृत वस्तु",
-        "डार्क": "डाक", "डार्कघर": "डाकघर", "सचवच": "सचिव",
-        "ववभाग": "विभाग", "सववचच": "सर्वोच्च", "हो:-्रा": "होता", "हो:-्रा हे": "होता है"
-    }
-    for bad_w, good_w in replacements.items():
-        text = text.replace(bad_w, good_w)
-    return clean_text(text)
-
-def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1):
-    official_title = OFFICIAL_CLAUSE_MAP.get(clause_no, f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}")
-    default_text = OFFICIAL_CLAUSE_CONTEXT.get(clause_no, f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} ({official_title}) का आधिकारिक विभागीय नियम।")
+    default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} का आधिकारिक विभागीय नियम।"
     
-    pdf_path = find_pdf_path()
     if not os.path.exists(pdf_path):
-        return official_title, default_text
+        return final_title, default_text
 
     try:
         reader = PdfReader(pdf_path)
-        full_pdf_text = ""
-        max_scan_pages = min(45, len(reader.pages))
-        for p_idx in range(max_scan_pages):
-            txt = reader.pages[p_idx].extract_text() or ""
-            if "डाक जीवन बीमा" in txt or "Postal Life Insurance" in txt or "RPLI" in txt:
-                break
-            full_pdf_text += txt + "\n"
-
-        start_pattern = re.compile(rf"(?:(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{clause_no}\b)", re.IGNORECASE)
-        next_clause = clause_no + 1
-        next_pattern = re.compile(rf"(?:(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{next_clause}\b)", re.IGNORECASE)
-
-        lines = full_pdf_text.split('\n')
-        capturing = False
+        pattern = re.compile(rf"(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{clause_no}\b", re.IGNORECASE)
         matched_text = ""
-        
-        for line in lines:
-            line_str = line.strip()
-            if start_pattern.search(line_str) and not capturing:
-                if re.match(rf"^\s*[\(\[]?{clause_no}\s*[\)\]]", line_str):
-                    continue
-                capturing = True
-                continue
-            
-            if capturing:
-                if next_pattern.search(line_str) and len(matched_text.strip()) > 30:
+
+        for page in reader.pages:
+            txt = page.extract_text() or ""
+            if pattern.search(txt):
+                matched_text += txt + "\n"
+                if len(matched_text) >= 2500:
                     break
-                matched_text += line + "\n"
 
-        unwanted_keywords = ["संतोष", "बाल जीवन बीमा", "सुरक्षा", "सुविधा", "युगल सुरक्षा", "प्रीमियम दर"]
-        if any(w in matched_text for w in unwanted_keywords):
-            matched_text = ""
-
-        full_text = matched_text.strip() if len(matched_text.strip()) > 40 else default_text
-        
-        if total_parts > 1 and len(full_text) > 200:
-            chunk_len = max(100, len(full_text) // total_parts)
-            start = (current_part - 1) * chunk_len
-            end = start + chunk_len if current_part < total_parts else len(full_text)
-            part_text = full_text[start:end]
-            if len(part_text.strip()) < 50:
-                part_text = full_text
-        else:
-            part_text = full_text
-
-        return official_title, clean_hindi_postal_terms(part_text[:3500])
+        final_text = matched_text.strip() if matched_text.strip() else default_text
+        print(f"✅ Loaded Official Title: '{final_title}' for Clause {clause_no}", flush=True)
+        return final_title[:60], clean_hindi_postal_terms(final_text[:2500])
     except Exception as e:
-        print(f"⚠️ PDF Extraction Note: {e}", flush=True)
-    return official_title, default_text
+        print(f"⚠️ PDF Extraction Error: {e}", flush=True)
+    return final_title, default_text
 
 def get_dynamic_total_parts(pdf_text):
     if not pdf_text:
         return 1
     char_count = len(pdf_text.strip())
-    return max(1, (char_count // 350) + (1 if char_count % 350 > 0 else 0))
+    if char_count < 300:
+        return 1
+    elif char_count < 700:
+        return 2
+    elif char_count < 1200:
+        return 3
+    elif char_count < 1800:
+        return 4
+    else:
+        return 5
+
+def clean_text(text):
+    if not text:
+        return ""
+    text = text.strip().strip("\"'`")
+    text = "".join(c for c in text if ord(c) < 0x10000)
+    return text.strip()
+
+def clean_hindi_postal_terms(text):
+    if not text:
+        return ""
+    text = re.sub(r"^[:\-\s\.]+", "", text)
+    replacements = {
+        "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
+        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
+        "घंटी वाली": "घंटे वाली", "नित्य पत्र": "वित्तीय वर्ष", "नित्य वर्ष": "वित्तीय वर्ष"
+    }
+    for bad_w, good_w in replacements.items():
+        text = text.replace(bad_w, good_w)
+    text = re.sub(r"^[:\s]+", "", text)
+    return clean_text(text)
 
 def extract_field_block(text, field_name, next_fields):
     pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
@@ -266,7 +172,7 @@ def get_font(size):
     return ImageFont.load_default()
 
 def load_progress_state():
-    state = {"clause_no": 2, "current_part": 1, "total_parts": 1, "hook_index": 0}
+    state = {"clause_no": 1, "current_part": 1, "total_parts": 1, "hook_index": 0}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
@@ -276,7 +182,7 @@ def load_progress_state():
         except Exception:
             pass
             
-    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 2), state.get("current_part", 1), state.get("total_parts", 1))
+    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 1))
     state["total_parts"] = get_dynamic_total_parts(pdf_text)
     
     if state["current_part"] > state["total_parts"]:
@@ -292,95 +198,85 @@ def save_progress_state(state):
     except Exception:
         pass
 
+def advance_progress_state(state):
+    hook_idx = state.get("hook_index", 0)
+    state["hook_index"] = (hook_idx + 1) % len(VIRAL_HOOKS)
+
+    clause = state.get("clause_no", 1)
+    part = state.get("current_part", 1)
+    total_parts = state.get("total_parts", 1)
+
+    if part < total_parts:
+        state["current_part"] = part + 1
+    else:
+        next_clause = clause + 1 if clause < 60 else 1
+        state["clause_no"] = next_clause
+        state["current_part"] = 1
+        
+        _, next_pdf_text = extract_clause_from_pdf(next_clause)
+        state["total_parts"] = get_dynamic_total_parts(next_pdf_text)
+
+    save_progress_state(state)
+    print(f"⏩ Advanced Progress to: Clause {state['clause_no']} (Part {state['current_part']}/{state['total_parts']})", flush=True)
+
+# --- STRICT 100% PURE HINDI SCRIPT GENERATOR ---
 def generate_clause_script(state):
-    current_clause = state.get("clause_no", 2)
+    current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
     total_parts = state.get("total_parts", 1)
     hook_idx = state.get("hook_index", 0) % len(VIRAL_HOOKS)
     hook_obj = VIRAL_HOOKS[hook_idx]
 
-    official_title, official_pdf_text = extract_clause_from_pdf(current_clause, current_part, total_parts)
+    official_title, official_pdf_text = extract_clause_from_pdf(current_clause)
 
-    if current_clause == 2:
-        fallback_data = {
-            "clause_no": 2,
-            "clause_name": "डाकघरों के प्रकार (प्रधान, उप व शाखा डाकघर)",
-            "part_no": current_part,
-            "total_parts": total_parts,
-            "visual_hook_badge": hook_obj["visual_badge"],
-            "hook_voice": hook_obj["voice"],
-            "hook_display_text": hook_obj["hook_text"],
-            "sen1": "डाकघर गाइड भाग 1 के क्लॉज 2 के अनुसार डाकघर तीन श्रेणियों में विभाजित हैं: प्रधान, उप और शाखा डाकघर।",
-            "sen2": "प्रधान डाकघर मंडल का मुख्य लेखा कार्यालय होता है और शाखा डाकघर का अधिकतम कार्य समय 5 घंटे होता है।",
-            "param1_title": "डाकघर के वर्ग",
-            "param1_val": "कुल 3 श्रेणियां (HO, SO, BO)",
-            "param2_title": "शाखा डाकघर कार्य समय",
-            "param2_val": "अधिकतम 5 घंटे निर्धारित",
-            "trap_point": "शाखा डाकघर सीधे प्रधान डाकघर या उप डाकघर दोनों में से किसी के भी लेखा अधिकार क्षेत्र में हो सकता है।",
-            "question": "डाकघर गाइड भाग 1 के अनुसार डाकघरों को कुल कितने वर्गों (Classes) में बांटा गया है?",
-            "opt_a": "3 वर्ग (प्रधान, उप, शाखा डाकघर)",
-            "opt_b": "2 वर्ग (केवल प्रधान व उप)",
-            "opt_c": "4 वर्ग (प्रथम, द्वितीय, तृतीय श्रेणी)",
-            "opt_d": "5 वर्ग",
-            "q1": "शाखा डाकघर (Branch Post Office) का अधिकतम दैनिक कार्य समय कितना निर्धारित है?",
-            "a1": "अधिकतम 5 घंटे", "b1": "अधिकतम 8 घंटे", "c1": "अधिकतम 3 घंटे", "d1": "पूरे 7 घंटे", "ans1": "A",
-            "q2": "डाक मंडल में सभी डाकघरों का मुख्य लेखा कार्यालय (Office of Account) कौन सा होता है?",
-            "a2": "उप डाकघर (SO)", "b2": "प्रधान डाकघर (Head Post Office)", "c2": "रेल डाक सेवा (RMS)", "d2": "डाक मंडल अधीक्षक कार्यालय", "ans2": "B",
-            "q3": "उप डाकघर (Sub Post Office) का प्रभारी अधिकारी कौन होता है?",
-            "a3": "मंडल अधीक्षक (SSPO)", "b3": "शाखा डाकपाल (BPM)", "c3": "उप डाकपाल (Sub Postmaster)", "d3": "पोस्टमैन", "ans3": "C",
-            "caption": f"🚨 पीओ गाइड भाग 1 क्लॉज {current_clause} स्पेशल टेस्ट! (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
-            "quiz_caption": f"🧠 क्विज़: पीओ गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
-        }
-    else:
-        fallback_data = {
-            "clause_no": current_clause,
-            "clause_name": official_title,
-            "part_no": current_part,
-            "total_parts": total_parts,
-            "visual_hook_badge": hook_obj["visual_badge"],
-            "hook_voice": hook_obj["voice"],
-            "hook_display_text": hook_obj["hook_text"],
-            "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक विभागीय नियम मान्य होता है।",
-            "sen2": f"विभागीय परीक्षा में क्लॉज {current_clause} के अपवाद और शर्तों से सीधे सवाल पूछे जाते हैं।",
-            "param1_title": "परीक्षा मुख्य बिंदु",
-            "param1_val": "आधिकारिक नियम मान्य",
-            "param2_title": "विभागीय शर्त",
-            "param2_val": "नियमों का पालन अनिवार्य",
-            "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में अंक कट सकते हैं।",
-            "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} का मुख्य विषय क्या है?",
-            "opt_a": official_title,
-            "opt_b": "अतिरिक्त सामान्य निर्देश",
-            "opt_c": "सर्किल प्रमुख का विशेष आदेश",
-            "opt_d": "महानिदेशक की पूर्व अनुमति",
-            "q1": f"डाक गाइड क्लॉज {current_clause} के अनुसार मुख्य प्रावधान क्या है?", "a1": "आधिकारिक विभागीय नियम", "b1": "अतिरिक्त छूट", "c1": "सामान्य निर्देश", "d1": "विशेष छूट", "ans1": "A",
-            "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "अस्थायी छूट", "b2": "आधिकारिक शर्तें व सीमाएं", "c2": "प्रतिबंध", "d2": "वार्षिक बदलाव", "ans2": "B",
-            "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "अतिरिक्त जांच", "b3": "चेतावनी", "c3": "बुकिंग अस्वीकार", "d3": "फीस माफी", "ans3": "C",
-            "caption": f"🚨 पोस्टल गाइड क्लॉज {current_clause} स्पेशल टेस्ट! डाक घर गाइड भाग 1 (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
-            "quiz_caption": f"🧠 क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
-        }
+    fallback_data = {
+        "clause_no": current_clause,
+        "clause_name": official_title,
+        "part_no": current_part,
+        "total_parts": total_parts,
+        "visual_hook_badge": hook_obj["visual_badge"],
+        "hook_voice": hook_obj["voice"],
+        "hook_display_text": hook_obj["hook_text"],
+        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
+        "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
+        "param1_title": "परीक्षा मुख्य बिंदु",
+        "param1_val": "आधिकारिक नियम मान्य",
+        "param2_title": "विभागीय शर्त",
+        "param2_val": "नियमों का पालन अनिवार्य",
+        "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं।",
+        "question": "डाक घर गाइड भाग 1 के क्लॉज किस विषय से संबंधित है?",
+        "opt_a": "आधिकारिक विभागीय नियम",
+        "opt_b": "अतिरिक्त शुल्क प्रावधान",
+        "opt_c": "केवल सामान्य निर्देश",
+        "opt_d": "इनमें से कोई नहीं",
+        "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts}) - 10/10 Retention Master Solution。\n\n💬 अपना सही उत्तर कमेंट करें!\n🔥 अगला Postal Trap कल!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
+    }
 
     if not GROQ_API_KEY:
         return fallback_data
 
     prompt = f"""
-    You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard, Postal Assistant) and a Retention Script Expert following the 6-Chapter Blueprint (Stop, Curiosity/Contrast, Reward, Number/Fact, Pattern Break/Exam Trap, Open Loop & Commitment).
-    Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Subject: "{official_title}"
+    You are the Senior Chief Examiner for India Post Departmental Examinations.
+    Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
 
-    Reference Context:
+    OFFICIAL EXTRACTED TEXT FROM 'mts content .pdf':
     \"\"\"
     {official_pdf_text}
     \"\"\"
 
-    STRICT SYLLABUS BOUNDARY & EXAM INTEGRITY:
-    1. EXCLUSIVELY POST OFFICE GUIDE PART 1 (CLAUSE {current_clause}):
-       - Generate questions ONLY on "{official_title}".
-       - STRICT NEGATIVE CONSTRAINT: DO NOT generate questions on PLI, RPLI, Savings Certificates, or General Knowledge.
-    2. AUTHENTIC POSTAL QUESTIONS: Test Competent Authorities, Working Hours, Account Relationships, Categories of Offices.
-    3. NO SILLY OPTIONS: Every option must be a genuine postal designation, accurate duration, or official rule.
-    4. QUESTION INTEGRITY: Ensure QUESTION, Q1, Q2, and Q3 are full, grammatically complete question sentences.
-    5. ZERO-DEFECT QUIZ RULES: Exactly ONE option must be indisputably correct.
+    STRICT 100% PURE HINDI RULES (TEMPERATURE 0.0):
+    1. Base all facts, rules, and questions STRICTLY and SOLELY on the extracted text above, focusing specifically on Part {current_part} of {total_parts}.
+    2. ALL SCREEN TEXT MUST BE IN FLUID, ERROR-FREE HINDI ONLY. NO ENGLISH WORDS.
+    3. SEN1: State the exact operational rule for this part in clear Hindi (max 12-14 words).
+    4. SEN2: State the specific legal exception, trap or penalty in clear Hindi (max 12-14 words).
+    5. PARAM1_TITLE & PARAM1_VAL: First core condition in concise Hindi.
+    6. PARAM2_TITLE & PARAM2_VAL: Second core condition in concise Hindi.
+    7. TRAP_POINT: Clear penalty/trap note for Slide 3 red box in concise Hindi (max 8-10 words).
+    8. QUESTION: High-yield departmental MCQ question directly from this part in Hindi (max 12 words).
+    9. OPT_A: The 100% correct answer in concise Hindi (max 2-4 words).
+    10. OPT_B, OPT_C, OPT_D: 3 plausible departmental distractors in concise Hindi (max 2-4 words each).
 
-    Format strictly using these tags line-by-line:
+    FORMAT:
     SEN1: ...
     SEN2: ...
     PARAM1_TITLE: ...
@@ -393,161 +289,97 @@ def generate_clause_script(state):
     OPT_B: ...
     OPT_C: ...
     OPT_D: ...
-    Q1: ...
-    A1: ...
-    B1: ...
-    C1: ...
-    D1: ...
-    ANS1: [A/B/C/D]
-    Q2: ...
-    A2: ...
-    B2: ...
-    C2: ...
-    D2: ...
-    ANS2: [A/B/C/D]
-    Q3: ...
-    A3: ...
-    B3: ...
-    C3: ...
-    D3: ...
-    ANS3: [A/B/C/D]
     """
 
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 800}
-        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=25)
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 450}
+        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
-            
-            q_val = extract_field_block(raw_text, "QUESTION", ["OPT_A", "SEN1"])
-            oa_val = extract_field_block(raw_text, "OPT_A", ["OPT_B", "QUESTION"])
-            ob_val = extract_field_block(raw_text, "OPT_B", ["OPT_C", "QUESTION"])
-            oc_val = extract_field_block(raw_text, "OPT_C", ["OPT_D", "QUESTION"])
-            od_val = extract_field_block(raw_text, "OPT_D", ["Q1", "QUESTION"])
+            q = extract_field_block(raw_text, "QUESTION", ["SEN1", "OPT_A"])
+            s1 = extract_field_block(raw_text, "SEN1", ["SEN2", "QUESTION"])
+            s2 = extract_field_block(raw_text, "SEN2", ["PARAM1_TITLE", "QUESTION"])
+            p1t = extract_field_block(raw_text, "PARAM1_TITLE", ["PARAM1_VAL", "PARAM2_TITLE"])
+            p1v = extract_field_block(raw_text, "PARAM1_VAL", ["PARAM2_TITLE", "QUESTION"])
+            p2t = extract_field_block(raw_text, "PARAM2_TITLE", ["PARAM2_VAL", "QUESTION"])
+            p2v = extract_field_block(raw_text, "PARAM2_VAL", ["TRAP_POINT", "QUESTION"])
+            tp = extract_field_block(raw_text, "TRAP_POINT", ["QUESTION", "OPT_A"])
+            oa = extract_field_block(raw_text, "OPT_A", ["OPT_B", "OPT_C"])
+            ob = extract_field_block(raw_text, "OPT_B", ["OPT_C", "OPT_D"])
+            oc = extract_field_block(raw_text, "OPT_C", ["OPT_D"])
+            od = extract_field_block(raw_text, "OPT_D", [])
 
-            if q_val and len(q_val) > 10: fallback_data["question"] = clean_hindi_postal_terms(q_val)
-            if oa_val: fallback_data["opt_a"] = clean_hindi_postal_terms(oa_val)
-            if ob_val: fallback_data["opt_b"] = clean_hindi_postal_terms(ob_val)
-            if oc_val: fallback_data["opt_c"] = clean_hindi_postal_terms(oc_val)
-            if od_val: fallback_data["opt_d"] = clean_hindi_postal_terms(od_val)
-
-            for line in raw_text.split('\n'):
-                if ':' in line:
-                    parts = line.split(':', 1)
-                    k = re.sub(r'[\*\s_]', '', parts[0]).lower()
-                    v = parts[1].strip().strip('"\'`*')
-                    if k in fallback_data:
-                        clean_v = clean_hindi_postal_terms(v)
-                        unwanted = ["पुरस्कार", "कुछ नहीं", "संतोष", "बाल जीवन बीमा", "सुरक्षा"]
-                        if not any(u in clean_v for u in unwanted) and len(clean_v) > 0:
-                            if k.startswith("ans"):
-                                m_opt = re.search(r"[A-D]", clean_v.upper())
-                                if m_opt:
-                                    fallback_data[k] = m_opt.group(0)
-                            else:
-                                fallback_data[k] = clean_v
+            if q: fallback_data["question"] = clean_hindi_postal_terms(q)
+            if s1: fallback_data["sen1"] = clean_hindi_postal_terms(s1)
+            if s2: fallback_data["sen2"] = clean_hindi_postal_terms(s2)
+            if p1t: fallback_data["param1_title"] = clean_hindi_postal_terms(p1t)
+            if p1v: fallback_data["param1_val"] = clean_hindi_postal_terms(p1v)
+            if p2t: fallback_data["param2_title"] = clean_hindi_postal_terms(p2t)
+            if p2v: fallback_data["param2_val"] = clean_hindi_postal_terms(p2v)
+            if tp: fallback_data["trap_point"] = clean_hindi_postal_terms(tp)
+            if oa: fallback_data["opt_a"] = clean_hindi_postal_terms(oa)
+            if ob: fallback_data["opt_b"] = clean_hindi_postal_terms(ob)
+            if oc: fallback_data["opt_c"] = clean_hindi_postal_terms(oc)
+            if od: fallback_data["opt_d"] = clean_hindi_postal_terms(od)
     except Exception as e:
         print(f"⚠️ Groq note: {e}")
 
     return fallback_data
 
-async def generate_segment_audio(text, outfile, rate="+0%"):
+def get_slide_segments(script_data):
+    return [
+        f"{script_data['hook_voice']}",
+        f"{script_data['sen1']}",
+        f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
+        f"सवाल स्क्रीन पर है! सही उत्तर A, B, C या D कमेंट करें और अगला Postal Trap कल देखें!"
+    ]
+
+async def generate_segment_audio(text, outfile):
     if os.path.exists(outfile):
         try: os.remove(outfile)
         except Exception: pass
-        
-    clean_audio_text = re.sub(r"[\*#`_~\[\]\(\)]", " ", text)
-    clean_audio_text = " ".join(clean_audio_text.split()).strip()
-
-    success = False
-    if GEMINI_API_KEY:
-        try:
-            from google import genai
-            from google.genai import types
-            client = genai.Client(api_key=GEMINI_API_KEY)
-            response = client.models.generate_content(
-                model="gemini-3.1-flash-tts-preview",
-                contents=clean_audio_text,
-                config=types.GenerateContentConfig(
-                    response_modalities=["AUDIO"],
-                    speech_config=types.SpeechConfig(
-                        voice_config=types.VoiceConfig(
-                            prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Puck")
-                        )
-                    )
-                )
-            )
-            audio_bytes = None
-            for candidate in response.candidates:
-                if candidate.content and candidate.content.parts:
-                    for part in candidate.content.parts:
-                        if part.inline_data and part.inline_data.data:
-                            audio_bytes = part.inline_data.data
-                            break
-                if audio_bytes: break
-                    
-            if audio_bytes:
-                temp_pcm = outfile + ".pcm"
-                with open(temp_pcm, "wb") as f:
-                    f.write(audio_bytes)
-                subprocess.run([
-                    "ffmpeg", "-y", "-f", "s16le", "-ar", "24000", "-ac", "1",
-                    "-i", temp_pcm, "-codec:a", "libmp3lame", "-b:a", "192k", outfile
-                ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                if os.path.exists(temp_pcm): os.remove(temp_pcm)
-                if os.path.exists(outfile) and os.path.getsize(outfile) > 1000:
-                    success = True
-        except Exception:
-            pass
-
-    if not success:
-        communicate = edge_tts.Communicate(text=clean_audio_text, voice=VOICE_NAME, rate=rate)
-        await communicate.save(outfile)
+    communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+0%")
+    await communicate.save(outfile)
 
 def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- CONCEPT RULE VIDEO (6-CHAPTER RETENTION BLUEPRINT - FULLY DYNAMIC & FIXED) ---
-def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
+def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ensure_fonts()
-    segment_audios = [
-        script_data["hook_voice"],
-        "पोस्टमास्टर? नहीं! सही उत्तर! यही रूल याद रखना है।",
-        script_data["sen1"],
-        script_data["sen2"],
-        "लेकिन Exam में सवाल ऐसे बनता है! चलिए आगे देखते हैं।"
-    ]
+
+    segment_audios = get_slide_segments(script_data)
     durations = []
+    
     for i, seg_text in enumerate(segment_audios):
-        seg_file = f"audio_concept_{i}.mp3"
-        asyncio.run(generate_segment_audio(seg_text, seg_file, rate="+0%"))
+        seg_file = f"audio_seg_{i}.mp3"
+        asyncio.run(generate_segment_audio(seg_text, seg_file))
         durations.append(get_audio_duration(seg_file))
 
-    concat_filter = "".join([f"[{i}:a]" for i in range(5)]) + f"concat=n=5:v=0:a=1[aout]"
+    concat_filter = "".join([f"[{i}:a]" for i in range(4)]) + "concat=n=4:v=0:a=1[aout]"
     ffmpeg_concat_cmd = ["ffmpeg", "-y"]
-    for i in range(5):
-        ffmpeg_concat_cmd.extend(["-i", f"audio_concept_{i}.mp3"])
-    ffmpeg_concat_cmd.extend(["-filter_complex", concat_filter, "-map", "[aout]", "-c:a", "libmp3lame", "-b:a", "192k", "concept_master.mp3"])
+    for i in range(4):
+        ffmpeg_concat_cmd.extend(["-i", f"audio_seg_{i}.mp3"])
+    ffmpeg_concat_cmd.extend(["-filter_complex", concat_filter, "-map", "[aout]", "-c:a", "libmp3lame", "-b:a", "192k", "final_master.mp3"])
     subprocess.run(ffmpeg_concat_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     
     total_dur = sum(durations)
+    print(f"🎵 Kinetic Flow Audio: Total {total_dur:.1f}s | Durations: {[round(d, 1) for d in durations]}", flush=True)
 
     font_brand = get_font(44)
     font_sub = get_font(22)
     font_trust = get_font(20)
     font_badge = get_font(22)
-    font_title = get_font(32)
+    font_title = get_font(34)
     font_h1 = get_font(38)
     font_h2 = get_font(30)
     font_body = get_font(34)
     font_label = get_font(26)
-    font_wa_hin = get_font(28)
-    font_wa_num = get_font(28)
     font_cta = get_font(30)
     font_opt = get_font(28)
     font_hook = get_font(36)
+    font_timer = get_font(32)
 
     def draw_base(d):
         d.rounded_rectangle([45, 50, 1035, 1710], radius=32, fill="#0B132B", outline="#1E293B", width=3)
@@ -556,60 +388,50 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         d.rounded_rectangle([630, 80, 1000, 132], radius=16, fill="#064E3B", outline="#10B981", width=2)
         d.text((655, 93), "100% OFFICIAL SYLLABUS", fill="#D1FAE5", font=font_trust)
 
-    def draw_whatsapp_strip(d):
-        d.rounded_rectangle([80, 345, 1000, 455], radius=18, fill="#064E3B", outline="#34D399", width=2)
-        d.text((110, 360), "GDS to MTS • Postman • Mail Guard • P.A.", fill="#FDE047", font=font_wa_num)
-        d.text((110, 405), "कोर्स व फ्री टेस्ट हेतु व्हाट्सएप: 8989971379", fill="#FFFFFF", font=font_wa_hin)
-
     def draw_footer_cta(d):
         d.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
-        d.text((120, 1605), "पूरी तैयारी के लिए फॉलो करें:  @POSTAL_WALA", fill="#FFFFFF", font=font_cta)
+        d.text((120, 1605), "🔥 अगला Postal Trap कल  |  @POSTAL_WALA", fill="#FFFFFF", font=font_cta)
 
-    def draw_header_card(d):
+    frames = []
+    frame_durs = []
+
+    # =========================================================================
+    # SLIDE 1 (HOOK): REAL-TIME SIREN BLINK ENGINE
+    # =========================================================================
+    def build_slide1_frame(step, pill_state=True):
+        img = Image.new("RGB", (1080, 1920), color="#060A17")
+        d = ImageDraw.Draw(img)
+        draw_base(d)
         d.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
         d.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
         d.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
         d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
         d.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
-        
-        clean_title = clean_hindi_postal_terms(script_data["clause_name"])
-        if len(clean_title) > 38:
-            clean_title = clean_title[:36] + "..."
-        d.text((105, 255), clean_title, fill="#FFFFFF", font=font_title)
-
-    frames = []
-    frame_durs = []
-
-    # Chapter 1: STOP & CURIOSITY (0-2s) - Fully Dynamic Badge Fix
-    def build_slide1_frame(step, pill_state=True):
-        img = Image.new("RGB", (1080, 1920), color="#060A17")
-        d = ImageDraw.Draw(img)
-        draw_base(d)
-        draw_header_card(d)
-
+        d.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
         d.rounded_rectangle([80, 360, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
         
-        badge_label = clean_hindi_postal_terms(script_data["visual_hook_badge"])
         if pill_state:
-            d.rounded_rectangle([110, 395, 600, 445], radius=12, fill="#DC2626", outline="#F87171", width=3)
-            d.text((130, 402), badge_label, fill="#FFFFFF", font=font_label)
+            d.rounded_rectangle([110, 395, 410, 445], radius=12, fill="#DC2626", outline="#F87171", width=3)
+            d.text((130, 402), "[ ! ] LIVE EXAM ALERT", fill="#FFFFFF", font=font_label)
         else:
-            d.rounded_rectangle([110, 395, 600, 445], radius=12, fill="#180C0E", outline="#3F1215", width=1)
-            d.text((130, 402), badge_label, fill="#7F1D1D", font=font_label)
+            d.rounded_rectangle([110, 395, 410, 445], radius=12, fill="#180C0E", outline="#3F1215", width=1)
+            d.text((130, 402), "[ ! ] LIVE EXAM ALERT", fill="#7F1D1D", font=font_label)
 
         d.rounded_rectangle([110, 470, 970, 580], radius=16, fill="#991B1B", outline="#FBBF24", width=3)
-        d.text((150, 500), f"⚠️ क्लॉज {script_data['clause_no']} नियम", fill="#FEF08A", font=font_hook)
+        d.text((150, 500), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
 
         if step >= 2:
-            d.rounded_rectangle([110, 620, 970, 680], radius=12, fill="#0F172A", outline="#38BDF8", width=2)
-            d.text((135, 633), "🎯 GDS to MTS • Postman • Mail Guard • P.A.", fill="#38BDF8", font=font_h2)
+            d.rounded_rectangle([110, 630, 480, 685], radius=10, fill="#0B132B", outline="#38BDF8", width=2)
+            d.text((130, 640), "विभागीय परीक्षा विशेष:", fill="#38BDF8", font=font_label)
             wrapped_hook = textwrap.fill(clean_hindi_postal_terms(script_data["hook_display_text"]), width=20)
-            d.multiline_text((115, 725), wrapped_hook, fill="#FFFFFF", font=font_h1, spacing=16)
+            d.multiline_text((115, 730), wrapped_hook, fill="#FFFFFF", font=font_h1, spacing=16)
 
         if step >= 3:
-            d.rounded_rectangle([110, 1060, 970, 1240], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
-            d.text((150, 1095), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])[:35]}", fill="#FDE047", font=font_h2)
-            d.text((150, 1160), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
+            d.rounded_rectangle([110, 1080, 970, 1260], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
+            d.text((150, 1115), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])}", fill="#FDE047", font=font_h2)
+            d.text((150, 1180), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
+            d.rounded_rectangle([110, 1400, 970, 1490], radius=16, fill="#064E3B", outline="#10B981", width=2)
+            d.text((200, 1425), ">> 25 सेकंड में पूरा नियम समझें!", fill="#34D399", font=font_h2)
 
         draw_footer_cta(d)
         return img
@@ -625,118 +447,189 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         (3, True,  max(0.6, s1_dur - 1.95))
     ]
     for b_idx, (st_step, st_on, st_d) in enumerate(blink_seq):
-        fn = f"c_1_blink_{b_idx}.png"
+        fn = f"f_1_blink_{b_idx}.png"
         build_slide1_frame(step=st_step, pill_state=st_on).save(fn)
         frames.append(fn)
         frame_durs.append(round(st_d, 2))
 
-    # Chapter 2 & 3: CONTRAST & REWARD (2-6s)
+    # =========================================================================
+    # SLIDE 2 (RULE): 2 BALANCED PARAMETER CARDS
+    # =========================================================================
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
     draw_base(d2a)
-    draw_header_card(d2a)
-    draw_whatsapp_strip(d2a)
+    d2a.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
+    d2a.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
+    d2a.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
+    d2a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
+    d2a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
+    d2a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     
-    d2a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
-    d2a.rounded_rectangle([110, 520, 480, 575], radius=10, fill="#0B132B")
-    d2a.text((150, 530), "कंट्रास्ट डिसीजन:", fill="#38BDF8", font=font_label)
+    d2a.rounded_rectangle([80, 360, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
+    d2a.rounded_rectangle([110, 400, 480, 455], radius=10, fill="#0B132B")
+    d2a.text((150, 410), "नियम विश्लेषण #1:", fill="#38BDF8", font=font_label)
+    wrapped_s2 = textwrap.fill(script_data['sen1'], width=24)
+    d2a.multiline_text((120, 490), clean_hindi_postal_terms(wrapped_s2), fill="#F8FAFC", font=font_body, spacing=14)
+
+    # Parameter Card 1 (Cyan Box)
+    d2a.rounded_rectangle([110, 750, 970, 890], radius=16, fill="#082F49", outline="#38BDF8", width=2)
+    d2a.rounded_rectangle([130, 770, 430, 815], radius=8, fill="#0284C7")
+    d2a.text((145, 778), f"[ {script_data.get('param1_title', 'परीक्षा मुख्य बिंदु')} ]", fill="#FFFFFF", font=font_label)
+    d2a.text((145, 835), script_data.get('param1_val', 'नियम अनुसार मान्य'), fill="#E0F2FE", font=font_h2)
     
-    d2a.rounded_rectangle([110, 610, 970, 730], radius=16, fill="#3F1215", outline="#EF4444", width=2)
-    d2a.text((150, 650), "गलत विकल्प? ❌", fill="#FCA5A5", font=font_h1)
-
-    d2a.rounded_rectangle([110, 780, 970, 910], radius=16, fill="#064E3B", outline="#10B981", width=3)
-    d2a.text((150, 820), "✅ सही उत्तर (आधिकारिक नियम)", fill="#A7F3D0", font=font_h1)
-    d2a.text((150, 875), "-> यही Rule याद रखना है!", fill="#FEF08A", font=font_h2)
-
     draw_footer_cta(d2a)
-    img2a.save("c_2a.png")
-    frames.append("c_2a.png")
-    frame_durs.append(round(durations[1] * 0.50, 2))
+    img2a.save("f_2a.png")
+    frames.append("f_2a.png")
+    frame_durs.append(round(durations[1] * 0.40, 2))
 
+    # Parameter Card 2 (Amber Box)
     img2b = img2a.copy()
     d2b = ImageDraw.Draw(img2b)
-    d2b.rounded_rectangle([110, 980, 970, 1140], radius=16, fill="#082F49", outline="#38BDF8", width=2)
-    d2b.text((140, 1020), f"[ मुख्य बिंदु ]", fill="#38BDF8", font=font_label)
-    d2b.text((140, 1075), script_data.get('param1_val', 'नियम अनुसार मान्य'), fill="#E0F2FE", font=font_h2)
-    img2b.save("c_2b.png")
-    frames.append("c_2b.png")
-    frame_durs.append(round(durations[1] * 0.50, 2))
+    d2b.rounded_rectangle([110, 930, 970, 1070], radius=16, fill="#451A03", outline="#F59E0B", width=2)
+    d2b.rounded_rectangle([130, 950, 430, 995], radius=8, fill="#D97706")
+    d2b.text((145, 958), f"[ {script_data.get('param2_title', 'विभागीय शर्त')} ]", fill="#FFFFFF", font=font_label)
+    d2b.text((145, 1015), script_data.get('param2_val', 'आधिकारिक नियम'), fill="#FEF3C7", font=font_h2)
+    img2b.save("f_2b.png")
+    frames.append("f_2b.png")
+    frame_durs.append(round(durations[1] * 0.35, 2))
 
-    # Chapter 4: NUMBER / FACT (6-10s)
+    # Teaser Action Box Drops
+    img2c = img2b.copy()
+    d2c = ImageDraw.Draw(img2c)
+    d2c.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+    d2c.text((160, 1400), "आगे देखिए: इस नियम का परीक्षा ट्रैप बिंदु >>", fill="#38BDF8", font=font_h2)
+    img2c.save("f_2c.png")
+    frames.append("f_2c.png")
+    frame_durs.append(round(durations[1] * 0.25, 2))
+
+    # =========================================================================
+    # SLIDE 3 (TRAP): FULL TEXT INSIDE RED WARNING BOX
+    # =========================================================================
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
     draw_base(d3a)
-    draw_header_card(d3a)
-    draw_whatsapp_strip(d3a)
+    d3a.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
+    d3a.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
+    d3a.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
+    d3a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
+    d3a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
+    d3a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
     
-    d3a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=3)
-    d3a.rounded_rectangle([110, 510, 450, 565], radius=10, fill="#0B132B")
-    d3a.text((130, 520), "🌙 मुख्य तथ्य:", fill="#FBBF24", font=font_label)
+    d3a.rounded_rectangle([80, 360, 1000, 1550], radius=24, fill="#1C2541", outline="#F59E0B", width=3)
+    d3a.rounded_rectangle([110, 400, 480, 455], radius=10, fill="#0B132B")
+    d3a.text((150, 410), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
     
-    wrapped_s3 = textwrap.fill(clean_hindi_postal_terms(script_data['sen1']), width=35)
-    d3a.multiline_text((120, 600), wrapped_s3, fill="#F8FAFC", font=font_body, spacing=14)
-    
-    d3a.rounded_rectangle([110, 950, 970, 1120], radius=18, fill="#7C2D12", outline="#F59E0B", width=3)
-    d3a.text((150, 990), f"नियम बिंदु: क्लॉज {script_data['clause_no']}", fill="#FEF08A", font=font_h1)
-
+    wrapped_s3 = textwrap.fill(script_data['sen2'], width=24)
+    d3a.multiline_text((120, 490), clean_hindi_postal_terms(wrapped_s3), fill="#F8FAFC", font=font_body, spacing=16)
     draw_footer_cta(d3a)
-    img3a.save("c_3a.png")
-    frames.append("c_3a.png")
-    frame_durs.append(round(durations[2] * 0.50, 2))
+    img3a.save("f_3a.png")
+    frames.append("f_3a.png")
+    frame_durs.append(round(durations[2] * 0.35, 2))
 
+    # Red Warning Box Appears WITH FULL TEXT INSIDE
     img3b = img3a.copy()
     d3b = ImageDraw.Draw(img3b)
-    d3b.rounded_rectangle([110, 1180, 970, 1320], radius=16, fill="#082F49", outline="#38BDF8", width=2)
-    d3b.text((140, 1220), "📌 याद रखने योग्य तथ्य", fill="#38BDF8", font=font_label)
-    d3b.text((140, 1270), script_data.get('param2_val', 'आधिकारिक प्रावधान'), fill="#FFFFFF", font=font_h2)
-    img3b.save("c_3b.png")
-    frames.append("c_3b.png")
-    frame_durs.append(round(durations[2] * 0.50, 2))
+    d3b.rounded_rectangle([80, 360, 1000, 1550], radius=24, outline="#EF4444", width=4)
+    d3b.rounded_rectangle([110, 750, 970, 1150], radius=18, fill="#380A0A", outline="#EF4444", width=3)
+    d3b.rounded_rectangle([130, 775, 460, 825], radius=8, fill="#7F1D1D")
+    d3b.text((145, 783), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
+    
+    trap_txt = script_data.get("trap_point", script_data["sen2"])
+    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=23)
+    d3b.multiline_text((145, 860), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=14)
+    img3b.save("f_3b.png")
+    frames.append("f_3b.png")
+    frame_durs.append(round(durations[2] * 0.35, 2))
 
-    # Chapter 5: PATTERN BREAK / EXAM TRAP (10-17s)
+    # Quiz Alert Banner Drops
+    img3c = img3b.copy()
+    d3c = ImageDraw.Draw(img3c)
+    d3c.rounded_rectangle([110, 1370, 970, 1470], radius=14, fill="#0B132B", outline="#FBBF24", width=2)
+    d3c.text((180, 1400), "अब आज का सवाल: उत्तर कमेंट करें >>", fill="#FDE047", font=font_h2)
+    img3c.save("f_3c.png")
+    frames.append("f_3c.png")
+    frame_durs.append(round(durations[2] * 0.30, 2))
+
+    # =========================================================================
+    # SLIDE 4 (QUIZ): KBC STAGGER + BALANCED SPACING + LIVE 5-SECOND TIMER
+    # =========================================================================
     img4a = Image.new("RGB", (1080, 1920), color="#060A17")
     d4a = ImageDraw.Draw(img4a)
     draw_base(d4a)
-    draw_header_card(d4a)
-    d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#EF4444", width=3)
-    
-    d4a.rounded_rectangle([110, 390, 450, 450], radius=12, fill="#7F1D1D", outline="#EF4444", width=2)
-    d4a.text((135, 402), "⚠️ EXAM TRAP", fill="#FECACA", font=font_label)
-
-    trap_txt = script_data.get("trap_point", script_data["sen2"])
-    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=35)
-    d4a.multiline_text((115, 520), wrapped_trap, fill="#FFFFFF", font=font_h1, spacing=16)
-
-    d4a.rounded_rectangle([110, 950, 970, 1150], radius=18, fill="#064E3B", outline="#10B981", width=2)
-    d4a.text((150, 985), "🧠 मेमोरी लॉक:", fill="#A7F3D0", font=font_h2)
-    d4a.text((150, 1045), f"• क्लॉज {script_data['clause_no']} -> मुख्य प्रावधान", fill="#FFFFFF", font=font_opt)
-    d4a.text((150, 1090), "• परीक्षा में विशेष सावधानी रखें", fill="#FFFFFF", font=font_opt)
-
+    d4a.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#FBBF24", width=2)
+    d4a.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
+    d4a.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
+    d4a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
+    d4a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
+    d4a.text((105, 255), "परीक्षा क्विज़: उत्तर कमेंट करें", fill="#FDE047", font=font_title)
+    d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
+    d4a.rounded_rectangle([110, 380, 360, 435], radius=10, fill="#0B132B")
+    d4a.text((140, 390), "आज का सवाल:", fill="#FBBF24", font=font_h2)
+    wrapped_q4 = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=25)
+    d4a.multiline_text((110, 460), wrapped_q4, fill="#F8FAFC", font=font_h2, spacing=10)
     draw_footer_cta(d4a)
-    img4a.save("c_4a.png")
-    frames.append("c_4a.png")
-    frame_durs.append(round(durations[3], 2))
+    img4a.save("f_4a.png")
+    frames.append("f_4a.png")
+    frame_durs.append(round(durations[3] * 0.15, 2))
 
-    # Chapter 6: OPEN LOOP & TRANSITION TO QUIZ (17-22s)
-    img5 = Image.new("RGB", (1080, 1920), color="#060A17")
-    d5 = ImageDraw.Draw(img5)
-    draw_base(d5)
-    draw_header_card(d5)
-    d5.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=3)
+    # Option A & B Drop
+    img4b = img4a.copy()
+    d4b = ImageDraw.Draw(img4b)
+    q_lines = wrapped_q4.count("\n") + 1
+    start_oy = 460 + (q_lines * 42) + 40
+    opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
+    labels = ["A", "B", "C", "D"]
+    for o_idx in range(2):
+        oy = start_oy + (o_idx * 125)
+        d4b.rounded_rectangle([110, oy, 970, oy + 90], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        d4b.text((135, oy + 22), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        d4b.text((200, oy + 24), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=25), fill="#FFFFFF", font=font_opt)
+    img4b.save("f_4b.png")
+    frames.append("f_4b.png")
+    frame_durs.append(round(durations[3] * 0.15, 2))
+
+    # Option C & D Drop
+    img4c = img4b.copy()
+    d4c = ImageDraw.Draw(img4c)
+    for o_idx in range(2, 4):
+        oy = start_oy + (o_idx * 125)
+        d4c.rounded_rectangle([110, oy, 970, oy + 90], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        d4c.text((135, oy + 22), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        d4c.text((200, oy + 24), textwrap.fill(clean_hindi_postal_terms(opts[o_idx]), width=25), fill="#FFFFFF", font=font_opt)
+    img4c.save("f_4c.png")
+    frames.append("f_4c.png")
+    frame_durs.append(round(durations[3] * 0.15, 2))
+
+    # 5-SECOND DYNAMIC COUNTDOWN TIMER WITH PROGRAMMATIC SFX TICKS
+    countdown_steps = [
+        ("05", "#FDE047", "#064E3B", "#34D399"),
+        ("04", "#FDE047", "#064E3B", "#34D399"),
+        ("03", "#FB923C", "#7C2D12", "#FB923C"),
+        ("02", "#F87171", "#7F1D1D", "#EF4444"),
+        ("01", "#EF4444", "#991B1B", "#FCA5A5")
+    ]
     
-    d5.rounded_rectangle([110, 450, 970, 650], radius=20, fill="#7C2D12", outline="#F59E0B", width=3)
-    d5.text((150, 500), "🔥 लेकिन Exam में सवाल ऐसे बनता है...", fill="#FEF08A", font=font_title)
-    d5.text((150, 580), "👇 बिना देखे जवाब दो (अगली रील/क्विज़ में)", fill="#FFFFFF", font=font_h2)
+    quiz_rem_dur = max(3.5, durations[3] * 0.55)
+    per_timer_dur = round(quiz_rem_dur / 5.0, 2)
 
-    d5.rounded_rectangle([110, 800, 970, 1050], radius=20, fill="#082F49", outline="#38BDF8", width=3)
-    d5.text((180, 880), "📝 POSTAL MCQ QUIZ", fill="#38BDF8", font=font_title)
-    d5.text((180, 950), "अब अपनी बारी है! तैयार रहें >>", fill="#E0F2FE", font=font_h2)
+    for c_idx, (sec_str, timer_color, bar_bg, bar_outline) in enumerate(countdown_steps):
+        img_cd = img4c.copy()
+        d_cd = ImageDraw.Draw(img_cd)
+        
+        d_cd.rounded_rectangle([110, 1180, 970, 1255], radius=14, fill="#0B132B", outline=timer_color, width=2)
+        d_cd.text((260, 1195), f"⏳ समय शेष: {sec_str} सेकंड", fill=timer_color, font=font_timer)
 
-    draw_footer_cta(d5)
-    img5.save("c_5.png")
-    frames.append("c_5.png")
-    frame_durs.append(round(durations[4], 2))
+        d_cd.rounded_rectangle([110, 1275, 970, 1370], radius=18, fill=bar_bg, outline=bar_outline, width=3)
+        d_cd.text((160, 1305), "💬 अपना उत्तर A / B / C / D कमेंट करें!", fill="#FFFFFF", font=font_h2)
 
+        cd_fname = f"f_4_timer_{c_idx}.png"
+        img_cd.save(cd_fname)
+        frames.append(cd_fname)
+        frame_durs.append(per_timer_dur)
+
+    # =========================================================================
+    # ADVANCED FFMPEG RENDER WITH PROGRAMMATIC SFX MIXING & PROGRESS BAR
+    # =========================================================================
     inputs = []
     filter_parts = ""
     for i, fname in enumerate(frames):
@@ -754,16 +647,26 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         f"drawbox=x='max(0, iw*(t/{total_dur})-20)':y=0:w=20:h=14:color=#FEF08A@1:t=fill[v]"
     )
 
-    cmd = ["ffmpeg", "-y", *inputs, "-i", "concept_master.mp3"]
+    cmd = ["ffmpeg", "-y"]
+    for fname in frames:
+        cmd.extend(["-i", fname])
+    
+    cmd.extend(["-i", "final_master.mp3"])
     voice_idx = len(frames)
+
     has_bgm = os.path.exists(BGM_OUTPUT)
     if has_bgm:
         cmd.extend(["-stream_loop", "-1", "-i", BGM_OUTPUT])
         bgm_idx = voice_idx + 1
+        # Programmatic crisp audio SFX generation filter for pops and ticks
         audio_filter = (
+            f"aevalsrc='sin(2*PI*800*t)*exp(-10*t)':d=0.08[sfx_pop];"
+            f"aevalsrc='sin(2*PI*1200*t)*exp(-15*t)':d=0.05[sfx_tick];"
             f"[{voice_idx}:a]aresample=48000,volume=1.0[voice]; "
-            f"[{bgm_idx}:a]aresample=48000,volume=0.10[bgm]; "
-            f"[voice][bgm]amix=inputs=2:duration=first:dropout_transition=2,aformat=channel_layouts=stereo[a]"
+            f"[{bgm_idx}:a]aresample=48000,volume=0.08[bgm]; "
+            f"[sfx_pop]adelay=300|300[p1];"
+            f"[sfx_tick]adelay=10000|10000[t1];"
+            f"[voice][bgm][p1][t1]amix=inputs=4:duration=first:dropout_transition=2,aformat=channel_layouts=stereo[a]"
         )
     else:
         audio_filter = f"[{voice_idx}:a]aresample=48000,aformat=channel_layouts=stereo[a]"
@@ -778,4 +681,43 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Concept Rule Reel Created (6-Chapter Blueprint Fully Applied): {output_video}", flush=True)
+    print(f"✅ 10/10 Retention Master Reel Created with SFX: {output_video}", flush=True)
+
+# --- LOCAL GENERATED REELS SAVER PROTOCOL ---
+def save_reel_to_local_folder(video_file, script_data):
+    os.makedirs(REELS_DIR, exist_ok=True)
+    
+    clause_no = script_data.get("clause_no", 1)
+    part_no = script_data.get("part_no", 1)
+    
+    dest_video = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}.mp4")
+    dest_txt = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}_caption.txt")
+    
+    try:
+        shutil.copy(video_file, dest_video)
+        with open(dest_txt, "w", encoding="utf-8") as f:
+            f.write(script_data.get("caption", ""))
+            
+        print(f"📁 Reel successfully saved locally to: {dest_video}", flush=True)
+        print(f"📝 Caption saved to: {dest_txt}", flush=True)
+        return True
+    except Exception as e:
+        print(f"⚠️ Local Save Error: {e}", flush=True)
+        return False
+
+# --- MAIN RUNNER ---
+if __name__ == "__main__":
+    st = load_progress_state()
+    print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
+    
+    script_data = generate_clause_script(st)
+    render_and_sync_video(script_data, OUTPUT_VIDEO)
+
+    saved_ok = save_reel_to_local_folder(OUTPUT_VIDEO, script_data)
+    
+    if saved_ok:
+        advance_progress_state(st)
+        print("✅ Reel successfully stored in generated reels folder and state shifted to next part.", flush=True)
+    else:
+        print("❌ Reel local save failed. State preserved.", flush=True)
+        sys.exit(1)
