@@ -107,37 +107,37 @@ VOICE_NAME = "hi-IN-SwaraNeural"
 ASSETS_DIR = "assets"
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- High-Retention Viral Hooks (<3.5s) ---
+# --- Crisp, Unique & Exam-Targeted Hooks (GDS to MTS, Postman, PA) (<3.5s) ---
 VIRAL_HOOKS = [
     {
-        "voice": "विभागीय परीक्षा में यह एक नियम बार-बार आता है, देखिए!",
-        "visual_badge": "[ ! ] 100% पक्का सवाल",
-        "hook_text": "विभागीय परीक्षा में बार-बार दोहराया जाने वाला सबसे महत्वपूर्ण क्लॉज!"
+        "voice": "जीडीएस से एमटीएस, पोस्टमैन और पी.ए. परीक्षा में यह नियम बार-बार आता है!",
+        "visual_badge": "[ ! ] GDS to MTS, PM, PA स्पेशल",
+        "hook_text": "GDS to MTS, Postman & PA परीक्षा का सबसे महत्वपूर्ण और पक्का नियम!"
     },
     {
-        "voice": "जीडीएस परीक्षा में 90% छात्र इस एक नियम में फेल होते हैं!",
+        "voice": "जीडीएस से पोस्टमैन व एमटीएस परीक्षा में नब्बे प्रतिशत छात्र इस नियम में गलती करते हैं!",
         "visual_badge": "[ ! ] 90% छात्र फेल",
-        "hook_text": "इस क्लॉज के आधिकारिक अपवाद में सबसे ज्यादा परीक्षार्थी गलती करते हैं!"
+        "hook_text": "GDS to MTS, Postman, PA परीक्षा में सबसे ज्यादा गलत होने वाला क्लॉज!"
     },
     {
-        "voice": "प्रमोशन पक्का करने के लिए यह नियम आज ही समझ लीजिए!",
+        "voice": "जीडीएस से एमटीएस, पोस्टमैन या पी.ए. में प्रमोशन पक्का करने के लिए यह नियम रट लीजिए!",
         "visual_badge": "[ ! ] मेरिट लिस्ट बूस्टर",
-        "hook_text": "जीडीएस से पोस्टमैन व पी.ए. बनने के लिए इस नियम को आज ही रट लीजिए!"
+        "hook_text": "GDS to MTS, PM & PA मेरिट लिस्ट में नाम लाने वाला सबसे जरूरी नियम!"
     },
     {
-        "voice": "डाक विभाग की परीक्षा का सबसे पसंदीदा नियम, ध्यान से समझें!",
-        "visual_badge": "[ ! ] परीक्षक का पसंदीदा",
-        "hook_text": "सीधे 2 अंक पक्के करने वाला डाक घर गाइड का अनिवार्य नियम!"
+        "voice": "जीडीएस से एमटीएस और पोस्टमैन परीक्षा का सबसे पसंदीदा सवाल, ध्यान से देखें!",
+        "visual_badge": "[ ! ] सीधे 2 अंक पक्के",
+        "hook_text": "GDS to MTS, Postman & PA एग्जाम में हर साल आने वाला 100% पक्का सवाल!"
     },
     {
-        "voice": "पोस्टमैन या पी.ए. बनना है तो यह रील बिल्कुल स्किप मत करना!",
+        "voice": "जीडीएस से पोस्टमैन, एमटीएस या पी.ए. बनना है तो यह रील बिल्कुल मिस मत करना!",
         "visual_badge": "[ ! ] प्रमोशन स्पेशल",
-        "hook_text": "विभागीय परीक्षा पास करने के लिए यह क्लॉज पढ़ना अनिवार्य है!"
+        "hook_text": "GDS to MTS, Postman & PA विभागीय परीक्षा पास कराने वाला अनिवार्य क्लॉज!"
     },
     {
-        "voice": "डाक घर गाइड का यह नियम कई लोगों का प्रमोशन रोक देता है!",
+        "voice": "जीडीएस से पोस्टमैन और पी.ए. बनने के लिए इस नियम को समझना बहुत जरूरी है!",
         "visual_badge": "[ ! ] परीक्षा रेड अलर्ट",
-        "hook_text": "सावधान: इस नियम की छोटी सी गलती आपका विभागीय प्रमोशन रोक सकती है!"
+        "hook_text": "GDS to MTS, PM, PA परीक्षा में नेगेटिव मार्किंग से बचने का जरूरी नियम!"
     }
 ]
 
@@ -645,15 +645,19 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         d.text((150, 500), clean_hindi_postal_terms(script_data["visual_hook_badge"]), fill="#FEF08A", font=font_hook)
 
         if step >= 2:
-            d.rounded_rectangle([110, 630, 480, 685], radius=10, fill="#0B132B", outline="#38BDF8", width=2)
-            d.text((130, 640), "विभागीय परीक्षा विशेष:", fill="#38BDF8", font=font_label)
+            d.rounded_rectangle([110, 620, 970, 680], radius=12, fill="#0F172A", outline="#38BDF8", width=2)
+            d.text((135, 633), "🎯 टारगेट: GDS to MTS • Postman • Mail Guard • P.A.", fill="#38BDF8", font=font_h2)
             wrapped_hook = textwrap.fill(clean_hindi_postal_terms(script_data["hook_display_text"]), width=20)
-            d.multiline_text((115, 730), wrapped_hook, fill="#FFFFFF", font=font_h1, spacing=16)
+            d.multiline_text((115, 725), wrapped_hook, fill="#FFFFFF", font=font_h1, spacing=16)
 
         if step >= 3:
-            d.rounded_rectangle([110, 1080, 970, 1260], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
-            d.text((150, 1115), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])[:35]}", fill="#FDE047", font=font_h2)
-            d.text((150, 1180), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
+            d.rounded_rectangle([110, 1060, 970, 1240], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
+            d.text((150, 1095), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])[:35]}", fill="#FDE047", font=font_h2)
+            d.text((150, 1160), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
+            
+            d.rounded_rectangle([110, 1275, 970, 1365], radius=14, fill="#082F49", outline="#38BDF8", width=2)
+            d.text((145, 1300), "🎯 100% सटीक तैयारी: GDS to MTS • Postman • P.A.", fill="#7DD3FC", font=font_h2)
+
             d.rounded_rectangle([110, 1400, 970, 1490], radius=16, fill="#064E3B", outline="#10B981", width=2)
             d.text((200, 1425), ">> 25 सेकंड में पूरा नियम समझें!", fill="#34D399", font=font_h2)
 
@@ -775,6 +779,10 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     d4a.rounded_rectangle([110, 380, 360, 435], radius=10, fill="#0B132B")
     d4a.text((140, 390), "आज का सवाल:", fill="#FBBF24", font=font_h2)
+
+    d4a.rounded_rectangle([390, 380, 970, 435], radius=10, fill="#064E3B", outline="#10B981", width=2)
+    d4a.text((415, 393), "🎯 GDS to MTS • Postman • P.A. परीक्षा", fill="#A7F3D0", font=font_badge)
+
     wrapped_q4 = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=25)
     d4a.multiline_text((110, 460), wrapped_q4, fill="#F8FAFC", font=font_h2, spacing=10)
     draw_footer_cta(d4a)
@@ -887,7 +895,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         {"q_num": "सवाल 3/3", "q": clean_hindi_postal_terms(script_data["q3"]), "opts": [clean_hindi_postal_terms(script_data["a3"]), clean_hindi_postal_terms(script_data["b3"]), clean_hindi_postal_terms(script_data["c3"]), clean_hindi_postal_terms(script_data["d3"])], "ans": script_data["ans3"]},
     ]
 
-    intro_text = f"पोस्टल गाइड क्लॉज {script_data['clause_no']}! इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!"
+    # Crisp, exam-targeted quiz intro hook
+    intro_text = f"जीडीएस से एमटीएस, पोस्टमैन और पी.ए. परीक्षा! क्लॉज {script_data['clause_no']} से पेपर में ये प्रश्न बन सकते हैं!"
     intro_audio_file = "audio_q_intro.mp3"
     asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+10%"))
 
@@ -961,9 +970,13 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
 
     intro_img = base_img.copy()
     d_intro = ImageDraw.Draw(intro_img)
-    d_intro.rounded_rectangle([110, 520, 970, 880], radius=20, fill="#182848", outline="#FBBF24", width=3)
-    d_intro.text((150, 600), f"📌 पोस्टल गाइड क्लॉज {script_data['clause_no']} स्पेशल!", fill="#FDE047", font=font_title)
-    d_intro.text((150, 690), "पेपर में इससे ये प्रश्न बन सकते हैं!", fill="#FFFFFF", font=font_q_text)
+    d_intro.rounded_rectangle([110, 500, 970, 910], radius=20, fill="#182848", outline="#FBBF24", width=3)
+    
+    d_intro.rounded_rectangle([140, 530, 940, 585], radius=10, fill="#064E3B", outline="#10B981", width=2)
+    d_intro.text((160, 542), "🎯 GDS to MTS • Postman • Mail Guard • P.A. परीक्षा", fill="#34D399", font=font_h2)
+
+    d_intro.text((150, 630), f"📌 पोस्टल गाइड क्लॉज {script_data['clause_no']} स्पेशल!", fill="#FDE047", font=font_title)
+    d_intro.text((150, 720), "पेपर में इससे ये प्रश्न बन सकते हैं!", fill="#FFFFFF", font=font_q_text)
     intro_frame_name = "quiz_intro_frame.png"
     intro_img.save(intro_frame_name)
     frames.append(intro_frame_name)
@@ -997,6 +1010,10 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
+
+        d1.rounded_rectangle([510, 380, 970, 435], radius=10, fill="#064E3B", outline="#10B981", width=2)
+        d1.text((540, 395), "🎯 GDS to MTS • Postman • P.A.", fill="#A7F3D0", font=font_badge)
+
         d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=6)
         
         oy = start_oy
