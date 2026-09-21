@@ -8,22 +8,19 @@ import requests
 import textwrap
 import re
 import sys
+import shutil
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
 # --- Environment Variables ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
-IG_USER_ID = os.getenv("IG_USER_ID")
-
-GRAPH_API_BASE = "https://graph.facebook.com/v19.0/"
-RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
 OUTPUT_VIDEO = "final_reel.mp4"
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
+REELS_DIR = "generated_reels"
 
 # Assets Directory
 ASSETS_DIR = "assets"
@@ -610,13 +607,6 @@ def get_correct_option_text(script_data):
     return letter, script_data.get(key, script_data.get("opt_b", ""))
 
 def get_slide_segments(script_data):
-    """
-    6 short, single-idea segments instead of 4 dense ones.
-    Each segment maps 1:1 to a slide, and each slide's on-screen hold
-    time is driven by how long THIS segment naturally takes to say -
-    so no slide ever sits frozen for several extra seconds waiting on
-    a much longer neighboring sentence.
-    """
     q_txt = script_data["question"]
     hook_v = script_data["hook_voice"]
     letter, correct_text = get_correct_option_text(script_data)
@@ -663,11 +653,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     total_dur = get_audio_duration("raw_master.mp3")
     print(f"🎵 Raw Master Duration: {total_dur:.2f}s", flush=True)
 
-    # Reels retention drops sharply past ~35-40s, and a fixed hard lock
-    # (e.g. always 59s) forces atempo to badly stretch/rush short or long
-    # scripts, making the voice sound unnatural. Instead we only nudge the
-    # pace gently, and only if we're outside a healthy target window, so
-    # the voice always stays close to its natural, comfortable speed.
     MIN_TARGET_DUR = 24.0
     MAX_TARGET_DUR = 38.0
     if total_dur < MIN_TARGET_DUR:
@@ -726,9 +711,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
                 pass
 
     def draw_progress_dots(d, current_idx, total):
-        # Small "X of N" progress dots so the viewer can see how much is
-        # left - this reduces mid-video drop-off because people are more
-        # likely to finish something that visibly shows an end in sight.
         dot_r = 9
         gap = 28
         total_w = (total - 1) * gap
@@ -761,7 +743,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
 
     letter, correct_text = get_correct_option_text(script_data)
 
-    # Slide 1 - HOOK (no dense facts, no promo strip - pure curiosity, big bold badge)
+    # Slide 1 - HOOK
     img1 = Image.new("RGB", (1080, 1920), color="#060A17")
     d1 = ImageDraw.Draw(img1)
     draw_base(d1)
@@ -778,7 +760,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img1.save("slide_1.png")
     slide_filenames.append("slide_1.png")
 
-    # Slide 2 - THE QUESTION ONLY (no options yet - keeps curiosity open)
+    # Slide 2 - QUESTION
     img2 = Image.new("RGB", (1080, 1920), color="#060A17")
     d2 = ImageDraw.Draw(img2)
     draw_base(d2)
@@ -794,7 +776,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img2.save("slide_2.png")
     slide_filenames.append("slide_2.png")
 
-    # Slide 3 - RULE (sen1 only - one idea, big readable text)
+    # Slide 3 - RULE
     img3 = Image.new("RGB", (1080, 1920), color="#060A17")
     d3 = ImageDraw.Draw(img3)
     draw_base(d3)
@@ -810,7 +792,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img3.save("slide_3.png")
     slide_filenames.append("slide_3.png")
 
-    # Slide 4 - CONDITION / LIMIT (sen2 only - one idea)
+    # Slide 4 - CONDITION
     img4 = Image.new("RGB", (1080, 1920), color="#060A17")
     d4 = ImageDraw.Draw(img4)
     draw_base(d4)
@@ -826,7 +808,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img4.save("slide_4.png")
     slide_filenames.append("slide_4.png")
 
-    # Slide 5 - EXAM TRAP + OPTIONS + comment CTA (all 4 options fully visible, nothing overlapping)
+    # Slide 5 - EXAM TRAP + OPTIONS
     img5 = Image.new("RGB", (1080, 1920), color="#060A17")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
@@ -854,7 +836,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img5.save("slide_5.png")
     slide_filenames.append("slide_5.png")
 
-    # Slide 6 - ANSWER REVEAL (the payoff - correct option highlighted green + follow CTA)
+    # Slide 6 - ANSWER REVEAL
     img6 = Image.new("RGB", (1080, 1920), color="#060A17")
     d6 = ImageDraw.Draw(img6)
     draw_base(d6)
@@ -875,11 +857,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img6.save("slide_6.png")
     slide_filenames.append("slide_6.png")
 
-    # Every slide gets a slow continuous Ken-Burns zoom + a quick fade in/out
-    # instead of being held as one frozen, dead frame for its whole duration.
-    # A frozen frame reads as "the video stopped" and is the single biggest
-    # scroll-away trigger on Reels - constant subtle motion fixes that even
-    # though the content itself is still just text cards.
     FPS = 30
     inputs = []
     filter_parts = ""
@@ -916,117 +893,25 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Reel Created: {output_video}", flush=True)
 
-# --- 100% RELIABLE RESUMABLE PROTOCOL UPLOADER ---
-def _create_reel_container(video_file, caption, user_id, access_token):
-    print("📤 Initializing Meta Resumable Upload Session for Instagram Reel...", flush=True)
+# --- LOCAL FOLDER SAVER FOR GITHUB WORKFLOW ---
+def save_reel_to_local_folder(video_file, script_data):
+    os.makedirs(REELS_DIR, exist_ok=True)
+    clause_no = script_data.get("clause_no", 6)
+    part_no = script_data.get("part_no", 1)
+    dest_video = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}.mp4")
+    dest_txt = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}_caption.txt")
     
-    init_url = f"{GRAPH_API_BASE}{str(user_id).strip()}/media"
-    init_payload = {
-        "media_type": "REELS",
-        "upload_type": "resumable",
-        "caption": caption,
-        "access_token": access_token
-    }
-    
-    r = requests.post(init_url, data=init_payload, timeout=60)
-    if r.status_code != 200:
-        raise RuntimeError(f"Container Init Failed ({r.status_code}): {r.text}")
-
-    res_json = r.json()
-    video_id = res_json.get("id")
-    upload_url = res_json.get("uri") or f"{RUPLOAD_BASE}{str(video_id).strip()}"
-    print(f"📦 Container initialized. ID: {video_id}", flush=True)
-    
-    time.sleep(5)
-
-    file_size = os.path.getsize(video_file)
-    upload_headers = {
-        "Authorization": f"OAuth {access_token}",
-        "Offset": "0",
-        "X-Entity-Length": str(file_size),
-        "X-Entity-Name": os.path.basename(video_file),
-        "X-Entity-Type": "video/mp4",
-        "Content-Type": "application/octet-stream"
-    }
-
-    print(f"🚀 Uploading binary stream directly to Meta (Size: {file_size} bytes)...", flush=True)
-    with open(video_file, "rb") as vf:
-        up_r = requests.post(upload_url, headers=upload_headers, data=vf, timeout=600)
-
-    if up_r.status_code not in [200, 201]:
-        raise RuntimeError(f"Binary Upload Failed ({up_r.status_code}): {up_r.text}")
-
-    print(f"✅ Binary upload completed successfully for ID: {video_id}", flush=True)
-    return video_id
-
-def _poll_container_status(video_id, access_token, max_checks=45, wait_seconds=15):
-    status_url = f"{GRAPH_API_BASE}{str(video_id).strip()}"
-    for check_idx in range(1, max_checks + 1):
-        time.sleep(wait_seconds)
-        try:
-            res = requests.get(
-                status_url,
-                params={"fields": "status_code,status", "access_token": access_token},
-                timeout=30
-            ).json()
-            status = res.get("status_code")
-            print(f"   ⏳ Polling Instagram status ({check_idx}/{max_checks}): {status}", flush=True)
-            if status == "FINISHED":
-                return "FINISHED"
-            elif status in ["ERROR", "EXPIRED"]:
-                print(f"   ⚠️ FULL Meta payload: {json.dumps(res, ensure_ascii=False)}", flush=True)
-                return status
-        except Exception as e:
-            print(f"   ⚠️ Poll error: {e}", flush=True)
-            continue
-    return "TIMEOUT"
-
-def _publish_reel(video_id, user_id, access_token):
-    publish_url = f"{GRAPH_API_BASE}{str(user_id).strip()}/media_publish"
-    pub_res = requests.post(
-        publish_url,
-        data={"creation_id": video_id, "access_token": access_token},
-        timeout=30
-    )
-    pub_res_data = pub_res.json()
-    if "id" in pub_res_data:
-        print(f"🎉 Post published! Instagram Media ID: {pub_res_data['id']}", flush=True)
-    else:
-        raise RuntimeError(f"Publish fail: {pub_res.text}")
-
-def post_reel_to_instagram_multipart(video_file, caption, max_container_attempts=3):
-    access_token = os.getenv("IG_ACCESS_TOKEN")
-    user_id = os.getenv("IG_USER_ID")
-
-    if not access_token or not user_id:
-        print("⚠️ IG credentials missing!")
+    try:
+        shutil.copy(video_file, dest_video)
+        with open(dest_txt, "w", encoding="utf-8") as f:
+            f.write(script_data.get("caption", ""))
+        print(f"📁 Reel saved locally to: {dest_video}", flush=True)
+        return True
+    except Exception as e:
+        print(f"⚠️ Local Save Error: {e}", flush=True)
         return False
 
-    last_error = None
-    for container_attempt in range(1, max_container_attempts + 1):
-        print(f"\n🚀 [UPLOAD] Starting Attempt {container_attempt} of {max_container_attempts}...", flush=True)
-        try:
-            video_id = _create_reel_container(video_file, caption, user_id, access_token)
-            status = _poll_container_status(video_id, access_token)
-
-            if status == "FINISHED":
-                _publish_reel(video_id, user_id, access_token)
-                print(f"🎉 Reel published on Attempt {container_attempt}!", flush=True)
-                return True
-            else:
-                last_error = f"Status: {status}"
-        except Exception as e:
-            last_error = str(e)
-            print(f"⚠️ Attempt {container_attempt} error: {last_error}", flush=True)
-
-        if container_attempt < max_container_attempts:
-            print(f"⏳ Waiting 25s before retry Attempt {container_attempt + 1}...", flush=True)
-            time.sleep(25)
-
-    print(f"\n❌ Upload failed after 3 attempts: {last_error}", flush=True)
-    return False
-
-# --- MAIN RUNNER ---
+# --- MAIN RUNNER (INSTAGRAM UPLOAD REMOVED, SAVES LOCALLY) ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
@@ -1034,10 +919,10 @@ if __name__ == "__main__":
     script_data = generate_clause_script(st)
     render_and_sync_video(script_data, OUTPUT_VIDEO)
 
-    upload_ok = post_reel_to_instagram_multipart(OUTPUT_VIDEO, script_data.get("caption", ""))
-    if upload_ok:
+    saved_ok = save_reel_to_local_folder(OUTPUT_VIDEO, script_data)
+    if saved_ok:
         advance_progress_state(st)
-        print("✅ Reel posted and state successfully shifted to next part.", flush=True)
+        print("✅ Reel generated, stored locally in generated_reels, and state updated.", flush=True)
     else:
-        print("❌ Reel upload failed after 3 attempts. State preserved.", flush=True)
+        print("❌ Local save failed.", flush=True)
         sys.exit(1)
