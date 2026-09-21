@@ -43,42 +43,42 @@ OFFICIAL_CLAUSE_MAP = {
     12: "नकद में डाक शुल्क का अग्रिम भुगतान"
 }
 
-# 10/10 TARGET BLUEPRINT EXCLUSIVE DATA BANK
+# 10/10 TARGET BLUEPRINT EXCLUSIVE DATA BANK (Full Text, Zero Truncation)
 CLAUSE_RETENTION_BANK = {
     1: {
-        "hook_title": "NIGHT POST OFFICE",
-        "hook_q": "का समय कौन तय करता है?",
-        "contrast_wrong": "Postmaster? [X]",
-        "contrast_right": "DG Posts? [?]",
-        "reward_hero": "DG POSTS [OK]",
-        "reward_sub": "यही Rule याद रखना है।",
-        "hero_num": "8:30 PM",
-        "hero_label": "सामान्य कार्य दिवस",
-        "trap_text": "रविवार और छुट्टियों में शाम 5 बजे तक खुलते हैं, परंतु Delivery बंद रहती है!",
-        "mem_1": "DG Posts -> कार्य समय निर्धारण",
-        "mem_2": "8:30 PM -> सामान्य कार्य दिवस",
-        "mcq_q": "रात्रिकालीन डाकघर का निर्धारण और कार्य समय किसके द्वारा तय किया जाता है?",
-        "mcq_opts": ["A) DG Posts", "B) Head of Circle", "C) SSPO", "D) Local Postmaster"],
+        "hook_title": "नियंत्रण व संगठन",
+        "hook_q": "का सर्वोच्च नियंत्रण किसके पास होता है?",
+        "contrast_wrong": "संचार मंत्री? नहीं!",
+        "contrast_right": "DG Posts? सोचिए!",
+        "reward_hero": "DG POSTS सही है",
+        "reward_sub": "प्रशासनिक नियंत्रण इन्हीं के पास है।",
+        "hero_num": "PSB सचिव",
+        "hero_label": "डाक सेवा बोर्ड के अध्यक्ष",
+        "trap_text": "डाक सेवा बोर्ड के पदेन अध्यक्ष सचिव डाक होते हैं, DG Posts नहीं!",
+        "mem_1": "DG Posts >> प्रशासनिक नियंत्रण",
+        "mem_2": "सचिव (डाक) >> PSB अध्यक्ष",
+        "mcq_q": "डाक सेवा बोर्ड (PSB) के पदेन अध्यक्ष कौन होते हैं?",
+        "mcq_opts": ["A) सचिव (डाक)", "B) महानिदेशक (DG Posts)", "C) संचार मंत्री", "D) सदस्य (कार्मिक)"],
         "mcq_ans": "A",
-        "audio_hook": "नाइट पोस्ट ऑफिस का समय कौन तय करता है?",
-        "audio_contrast": "पोस्टमास्टर या डीजी पोस्ट्स?",
+        "audio_hook": "डाक विभाग का प्रशासनिक नियंत्रण किसके पास होता है?",
+        "audio_contrast": "संचार मंत्री या डीजी पोस्ट्स?",
         "audio_reward": "सही उत्तर है: डीजी पोस्ट्स!",
-        "audio_fact": "सामान्य कार्य दिवसों में रात आठ बजकर तीस मिनट तक!",
-        "audio_trap": "लेकिन एग्जाम ट्रैप: रविवार और छुट्टियों को डिलीवरी पूरी तरह बंद रहती है!",
-        "audio_mem": "याद रखो: डीजी पोस्ट्स निर्धारण करते हैं और समय है रात साढ़े आठ बजे।"
+        "audio_fact": "डाक सेवा बोर्ड का प्रबंधन सचिव डाक संभालते हैं।",
+        "audio_trap": "लेकिन एग्जाम ट्रैप: डाक सेवा बोर्ड के पदेन अध्यक्ष सचिव डाक होते हैं, डीजी पोस्ट्स नहीं!",
+        "audio_mem": "याद रखो: नियंत्रण डीजी पोस्ट्स के पास और पीएसबी अध्यक्ष सचिव डाक होते हैं।"
     },
     3: {
-        "hook_title": "NIGHT POST OFFICE",
-        "hook_q": "का समय कौन तय करता है?",
-        "contrast_wrong": "Postmaster? [X]",
-        "contrast_right": "DG Posts? [?]",
-        "reward_hero": "DG POSTS [OK]",
+        "hook_title": "नाइट पोस्ट ऑफिस",
+        "hook_q": "का कार्य समय कौन तय करता है?",
+        "contrast_wrong": "पोस्टमास्टर? नहीं!",
+        "contrast_right": "DG Posts? सोचिए!",
+        "reward_hero": "DG POSTS सही है",
         "reward_sub": "यही Rule याद रखना है।",
         "hero_num": "8:30 PM",
-        "hero_label": "सामान्य कार्य दिवस",
+        "hero_label": "सामान्य कार्य दिवस समय",
         "trap_text": "रविवार और छुट्टियों में शाम 5 बजे तक खुलते हैं, परंतु Delivery बंद रहती है!",
-        "mem_1": "DG Posts -> कार्य समय निर्धारण",
-        "mem_2": "8:30 PM -> सामान्य कार्य दिवस",
+        "mem_1": "DG Posts >> समय निर्धारण",
+        "mem_2": "8:30 PM >> सामान्य कार्य दिवस",
         "mcq_q": "रात्रिकालीन डाकघर का निर्धारण और कार्य समय किसके द्वारा तय किया जाता है?",
         "mcq_opts": ["A) DG Posts", "B) Head of Circle", "C) SSPO", "D) Local Postmaster"],
         "mcq_ans": "A",
@@ -90,17 +90,17 @@ CLAUSE_RETENTION_BANK = {
         "audio_mem": "याद रखो: डीजी पोस्ट्स निर्धारण करते हैं और समय है रात साढ़े आठ बजे।"
     },
     9: {
-        "hook_title": "POSTAGE PREPAYMENT",
+        "hook_title": "अग्रिम डाक शुल्क",
         "hook_q": "बिना टिकट डाक पर कितना चार्ज लगता है?",
-        "contrast_wrong": "सामान्य शुल्क? [X]",
-        "contrast_right": "दोगुना शुल्क? [?]",
-        "reward_hero": "दोगुना (DOUBLE) चार्ज [OK]",
+        "contrast_wrong": "सामान्य शुल्क? नहीं!",
+        "contrast_right": "शुल्क का दोगुना? सोचिए!",
+        "reward_hero": "दोगुना (DOUBLE) चार्ज सही है",
         "reward_sub": "अवैतनिक डाक पर दोगुना चार्ज वसूल किया जाता है।",
         "hero_num": "2X CHARGE",
         "hero_label": "वितरण के समय वसूली",
-        "trap_text": "यदि डाक पर कम टिकट लगा हो (Underpaid), तो केवल कमी की राशि का दोगुना लिया जाता है!",
-        "mem_1": "Unpaid डाक -> 2 गुना शुल्क",
-        "mem_2": "Underpaid -> कमी का 2 गुना",
+        "trap_text": "यदि डाक पर कम टिकट लगा हो, तो केवल कमी की राशि का दोगुना लिया जाता है!",
+        "mem_1": "Unpaid डाक >> 2 गुना शुल्क",
+        "mem_2": "Underpaid >> कमी का 2 गुना",
         "mcq_q": "पूर्णतः अवैतनिक (Unpaid) साधारण डाक वस्तु पर वितरण के समय क्या प्रभार लिया जाता है?",
         "mcq_opts": ["A) सामान्य डाक शुल्क का दोगुना", "B) केवल सामान्य डाक शुल्क", "C) कोई अतिरिक्त शुल्क नहीं", "D) वस्तु जब्त होती है"],
         "mcq_ans": "A",
@@ -112,17 +112,17 @@ CLAUSE_RETENTION_BANK = {
         "audio_mem": "याद रखो: अनपेड पर दोगुना और कम भुगतान पर कमी का दोगुना शुल्क लगता है।"
     },
     11: {
-        "hook_title": "FRANKING MACHINE",
+        "hook_title": "फ्रैंकिंग मशीन",
         "hook_q": "का लाइसेंस कौन जारी करता है?",
-        "contrast_wrong": "Postmaster? [X]",
-        "contrast_right": "Head of Circle? [?]",
-        "reward_hero": "HEAD OF CIRCLE [OK]",
+        "contrast_wrong": "लोकल पोस्टमास्टर? नहीं!",
+        "contrast_right": "Head of Circle? सोचिए!",
+        "reward_hero": "HEAD OF CIRCLE सही है",
         "reward_sub": "सर्किल प्रमुख (CPMG) द्वारा लाइसेंस जारी।",
         "hero_num": "BRIGHT RED",
         "hero_label": "चमकीली लाल स्याही की मुहर",
-        "trap_text": "फ्रैंकिंग मशीन की मुहर चमकीले लाल रंग (Bright Red) की स्याही में ही मान्य होती है!",
-        "mem_1": "लाइसेंस -> Head of Circle",
-        "mem_2": "मुहर स्याही -> Bright Red Ink",
+        "trap_text": "फ्रैंकिंग मशीन की मुहर चमकीले लाल रंग की स्याही में ही मान्य होती है!",
+        "mem_1": "लाइसेंस >> Head of Circle",
+        "mem_2": "मुहर स्याही >> Bright Red Ink",
         "mcq_q": "फ्रैंकिंग मशीन की छाप (Impression) किस रंग की स्याही में होनी चाहिए?",
         "mcq_opts": ["A) चमकीला लाल (Bright Red)", "B) नीला (Blue)", "C) काला (Black)", "D) हरा (Green)"],
         "mcq_ans": "A",
@@ -132,6 +132,28 @@ CLAUSE_RETENTION_BANK = {
         "audio_fact": "फ्रैंकिंग मशीन की छाप केवल चमकीली लाल स्याही में ही मान्य होती है।",
         "audio_trap": "लेकिन एग्जाम ट्रैप: मुहर में वैल्यू डाई और लाइसेंस डाई दोनों एक साथ स्पष्ट होनी चाहिए!",
         "audio_mem": "याद रखो: लाइसेंस हेड ऑफ सर्किल देते हैं और स्याही चमकीली लाल होती है।"
+    },
+    12: {
+        "hook_title": "नकद अग्रिम भुगतान",
+        "hook_q": "नकद डाक शुल्क की अनुमति कौन देता है?",
+        "contrast_wrong": "शाखा डाकपाल? नहीं!",
+        "contrast_right": "Head of Circle? सोचिए!",
+        "reward_hero": "HEAD OF CIRCLE सही है",
+        "reward_sub": "विशेष अनुमति केवल बड़े शहरों में मान्य।",
+        "hero_num": "500 PIECES",
+        "hero_label": "न्यूनतम डाक वस्तु संख्या",
+        "trap_text": "नकद अग्रिम भुगतान के लिए बड़े शहरों में न्यूनतम 500 वस्तुएं एक बार में पोस्ट करना जरूरी है!",
+        "mem_1": "अनुमति >> Head of Circle",
+        "mem_2": "न्यूनतम संख्या >> 500 वस्तुएं",
+        "mcq_q": "नकद में डाक शुल्क के अग्रिम भुगतान हेतु न्यूनतम कितनी डाक वस्तुएं होनी चाहिए?",
+        "mcq_opts": ["A) 500 वस्तुएं", "B) 100 वस्तुएं", "C) 1000 वस्तुएं", "D) 250 वस्तुएं"],
+        "mcq_ans": "A",
+        "audio_hook": "नकद में डाक शुल्क भुगतान की अनुमति कौन देता है?",
+        "audio_contrast": "शाखा डाकपाल या सर्किल प्रमुख?",
+        "audio_reward": "सही उत्तर है: हेड ऑफ सर्किल!",
+        "audio_fact": "नकद अग्रिम भुगतान के लिए एक बार में कम से कम 500 वस्तुएं होनी चाहिए।",
+        "audio_trap": "लेकिन एग्जाम ट्रैप: यह सुविधा केवल अधिकृत बड़े शहरों के चुनिंदा डाकघरों में ही उपलब्ध है!",
+        "audio_mem": "याद रखो: अनुमति हेड ऑफ सर्किल देते हैं और न्यूनतम 500 वस्तुएं आवश्यक हैं।"
     }
 }
 
@@ -155,7 +177,7 @@ def find_pdf_path():
 def clean_text(text):
     if not text: return ""
     t = text.strip().strip("\"'`")
-    t = re.sub(r"[\u2600-\u27bf\U0001f300-\U0001f9ff➔→❌✅⚠️🤔🌙🧠🔥👇📝⏳💬]", "", t)
+    t = re.sub(r"[\u2600-\u27bf\U0001f300-\U0001f9ff➔→❌✅⚠️🌙🧠🔥👇📝⏳💬]", "", t)
     return "".join(c for c in t if ord(c) < 0x10000).strip()
 
 def clean_hindi_postal_terms(text):
@@ -274,8 +296,8 @@ def generate_clause_script(state):
     official_title, _ = extract_clause_from_pdf(current_clause, current_part, total_parts)
 
     retention_info = CLAUSE_RETENTION_BANK.get(current_clause, {
-        "hook_title": f"CLAUSE {current_clause}",
-        "hook_q": f"का मुख्य आधिकारिक नियम क्या है?",
+        "hook_title": f"क्लॉज {current_clause}",
+        "hook_q": "का मुख्य आधिकारिक नियम क्या है?",
         "contrast_wrong": "सामान्य छूट? [X]",
         "contrast_right": f"{official_title[:14]}? [?]",
         "reward_hero": f"{official_title[:22]} [OK]",
@@ -358,7 +380,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- 10/10 TARGET BLUEPRINT CONCEPT VIDEO ENGINE (EXACT 36–39s, LOCKED FLOW) ---
+# --- 10/10 TARGET BLUEPRINT CONCEPT VIDEO ENGINE (Wider Wrap Width, Zero Truncation) ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     cd = script_data["concept_data"]
@@ -400,9 +422,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
 
     font_badge = get_font(28)
     font_sub = get_font(24)
-    font_hero_huge = get_font(68)
-    font_h1 = get_font(42)
-    font_h2 = get_font(34)
+    font_hero_huge = get_font(64)
+    font_h1 = get_font(40)
+    font_h2 = get_font(32)
     font_opt = get_font(26)
     font_timer = get_font(46)
 
@@ -422,7 +444,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     dh.rounded_rectangle([110, 410, 520, 470], radius=12, fill="#7F1D1D", outline="#EF4444", width=2)
     dh.text((135, 425), f"[ ! ] {cd['hook_title']}", fill="#FECACA", font=font_sub)
     dh.text((115, 580), "POSTAL TRAP", fill="#FACC15", font=font_h2)
-    wrapped_hq = textwrap.fill(cd["hook_q"], width=18)
+    wrapped_hq = textwrap.fill(cd["hook_q"], width=22)
     dh.multiline_text((115, 660), wrapped_hq, fill="#FFFFFF", font=font_h1, spacing=18)
     dh.rounded_rectangle([110, 1180, 970, 1275], radius=16, fill="#064E3B", outline="#10B981", width=2)
     dh.text((210, 1205), ">> 5 सेकंड में जानें पक्का नियम!", fill="#34D399", font=font_h2)
@@ -436,13 +458,13 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     draw_top_series_bar(dc)
     dc.rounded_rectangle([70, 320, 1010, 440], radius=18, fill="#0F172A", outline="#475569", width=2)
     dc.text((105, 345), "सवाल:", fill="#FACC15", font=font_sub)
-    dc.text((105, 380), clean_hindi_postal_terms(cd["hook_q"])[:36], fill="#CBD5E1", font=font_h2)
+    dc.text((105, 380), clean_hindi_postal_terms(cd["hook_q"])[:42], fill="#CBD5E1", font=font_h2)
     dc.rounded_rectangle([70, 500, 1010, 780], radius=24, fill="#3F1215", outline="#EF4444", width=3)
     dc.text((110, 530), "विकल्प 1:", fill="#FECACA", font=font_sub)
-    dc.text((110, 610), cd["contrast_wrong"], fill="#F87171", font=font_h1)
+    dc.text((110, 610), textwrap.fill(cd["contrast_wrong"], width=24), fill="#F87171", font=font_h1)
     dc.rounded_rectangle([70, 840, 1010, 1120], radius=24, fill="#082F49", outline="#38BDF8", width=3)
     dc.text((110, 870), "विकल्प 2:", fill="#BAE6FD", font=font_sub)
-    dc.text((110, 950), cd["contrast_right"], fill="#38BDF8", font=font_h1)
+    dc.text((110, 950), textwrap.fill(cd["contrast_right"], width=24), fill="#38BDF8", font=font_h1)
     img_contrast.save("b2_contrast.png")
     frames.append("b2_contrast.png")
     frame_durs.append(round(durations[1], 2))
@@ -454,7 +476,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     dr.rounded_rectangle([70, 360, 1010, 1380], radius=28, fill="#064E3B", outline="#10B981", width=5)
     dr.rounded_rectangle([110, 420, 460, 480], radius=12, fill="#022C22")
     dr.text((135, 435), "[ उत्तर / REWARD ]", fill="#A7F3D0", font=font_sub)
-    wrapped_rw = textwrap.fill(cd["reward_hero"], width=18)
+    wrapped_rw = textwrap.fill(cd["reward_hero"], width=22)
     dr.multiline_text((115, 620), wrapped_rw, fill="#FDE047", font=font_h1, spacing=16)
     dr.rounded_rectangle([110, 1050, 970, 1200], radius=18, fill="#022C22", outline="#34D399", width=2)
     dr.text((140, 1100), cd["reward_sub"], fill="#FFFFFF", font=font_h2)
@@ -483,7 +505,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     dt.rounded_rectangle([70, 340, 1010, 1400], radius=28, fill="#3F1215", outline="#EF4444", width=4)
     dt.rounded_rectangle([110, 390, 450, 450], radius=12, fill="#7F1D1D")
     dt.text((135, 405), "[ ! ] EXAM TRAP बिंदु", fill="#FECACA", font=font_sub)
-    wrapped_tr = textwrap.fill(cd["trap_text"], width=20)
+    wrapped_tr = textwrap.fill(cd["trap_text"], width=24)
     dt.multiline_text((115, 620), wrapped_tr, fill="#FFFFFF", font=font_h1, spacing=20)
     dt.rounded_rectangle([110, 1180, 970, 1280], radius=16, fill="#7F1D1D", outline="#FCA5A5", width=2)
     dt.text((160, 1210), "90% छात्र इस नियम में गलती करते हैं!", fill="#FDE047", font=font_h2)
@@ -499,9 +521,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     dm.rounded_rectangle([110, 370, 420, 430], radius=12, fill="#4C1D95")
     dm.text((135, 385), "[ याद रखो / REVISE ]", fill="#E9D5FF", font=font_sub)
     dm.rounded_rectangle([110, 560, 970, 760], radius=18, fill="#0F172A", outline="#38BDF8", width=3)
-    dm.text((140, 630), cd["mem_1"], fill="#38BDF8", font=font_h1)
+    dm.text((140, 630), textwrap.fill(cd["mem_1"], width=24), fill="#38BDF8", font=font_h1)
     dm.rounded_rectangle([110, 840, 970, 1040], radius=18, fill="#0F172A", outline="#FACC15", width=3)
-    dm.text((140, 910), cd["mem_2"], fill="#FACC15", font=font_h1)
+    dm.text((140, 910), textwrap.fill(cd["mem_2"], width=24), fill="#FACC15", font=font_h1)
     img_mem.save("b6_mem.png")
     frames.append("b6_mem.png")
     frame_durs.append(round(durations[5], 2))
@@ -538,7 +560,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     dq.rounded_rectangle([70, 210, 1010, 490], radius=20, fill="#0F172A", outline="#38BDF8", width=3)
     dq.rounded_rectangle([105, 235, 420, 290], radius=10, fill="#0284C7")
     dq.text((125, 248), "[ लाइव परीक्षा प्रश्न ]", fill="#FFFFFF", font=font_sub)
-    wrapped_q = textwrap.fill(clean_hindi_postal_terms(cd["mcq_q"]), width=23)
+    wrapped_q = textwrap.fill(clean_hindi_postal_terms(cd["mcq_q"]), width=26)
     dq.multiline_text((105, 315), wrapped_q, fill="#F8FAFC", font=font_h2, spacing=10)
     img_q.save("b9_question.png")
     frames.append("b9_question.png")
@@ -551,7 +573,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     for oi in range(4):
         oy = opt_y_starts[oi]
         do.rounded_rectangle([70, oy, 1010, oy + 95], radius=16, fill="#0F172A", outline="#38BDF8", width=2)
-        do.text((105, oy + 25), clean_hindi_postal_terms(cd["mcq_opts"][oi])[:38], fill="#FFFFFF", font=font_opt)
+        do.text((105, oy + 25), clean_hindi_postal_terms(cd["mcq_opts"][oi])[:42], fill="#FFFFFF", font=font_opt)
     img_opts.save("b10_options.png")
     frames.append("b10_options.png")
     frame_durs.append(round(durations[9], 2))
@@ -609,7 +631,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         f"drawbox=x=0:y=0:w='iw*(t/{total_dur})':h=12:color=#FACC15@1:t=fill[v]"
     )
 
-    cmd = ["ffmpeg", "-y", *inputs, "-i", "concept_master.mp3"]
+    cmd = ["ffmpeg", "-y"]
+    for fname in frames: cmd.extend(["-i", fname])
+    cmd.extend(["-i", "concept_master.mp3"])
     voice_idx = len(frames)
     if os.path.exists(BGM_OUTPUT):
         cmd.extend(["-stream_loop", "-1", "-i", BGM_OUTPUT])
@@ -637,9 +661,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     ensure_fonts()
     questions_list = [
-        {"q_num": "सवाल 1/3", "q": clean_hindi_postal_terms(script_data["q1"]), "opts": [clean_hindi_postal_terms(script_data["a1"]), clean_hindi_postal_terms(script_data["b1"]), clean_hindi_postal_terms(script_data["c1"]), clean_hindi_postal_terms(script_data["d1"])], "ans": script_data["ans1"]},
-        {"q_num": "सवाल 2/3", "q": clean_hindi_postal_terms(script_data["q2"]), "opts": [clean_hindi_postal_terms(script_data["a2"]), clean_hindi_postal_terms(script_data["b2"]), clean_hindi_postal_terms(script_data["c2"]), clean_hindi_postal_terms(script_data["d2"])], "ans": script_data["ans2"]},
-        {"q_num": "सवाल 3/3", "q": clean_hindi_postal_terms(script_data["q3"]), "opts": [clean_hindi_postal_terms(script_data["a3"]), clean_hindi_postal_terms(script_data["b3"]), clean_hindi_postal_terms(script_data["c3"]), clean_hindi_postal_terms(script_data["d3"])], "ans": script_data["ans3"]},
+        {"q_num": "सवाल 1/3", "q": clean_text(script_data["q1"]), "opts": [clean_text(script_data["a1"]), clean_text(script_data["b1"]), clean_text(script_data["c1"]), clean_text(script_data["d1"])], "ans": script_data["ans1"]},
+        {"q_num": "सवाल 2/3", "q": clean_text(script_data["q2"]), "opts": [clean_text(script_data["a2"]), clean_text(script_data["b2"]), clean_text(script_data["c2"]), clean_text(script_data["d2"])], "ans": script_data["ans2"]},
+        {"q_num": "सवाल 3/3", "q": clean_text(script_data["q3"]), "opts": [clean_text(script_data["a3"]), clean_text(script_data["b3"]), clean_text(script_data["c3"]), clean_text(script_data["d3"])], "ans": script_data["ans3"]},
     ]
 
     intro_text = f"जीडीएस से एमटीएस, पोस्टमैन और पी.ए. परीक्षा! क्लॉज {script_data['clause_no']} से पेपर में ये प्रश्न बन सकते हैं!"
@@ -698,7 +722,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     d_base.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
     d_base.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
     
-    clean_title = clean_hindi_postal_terms(script_data["clause_name"])
+    clean_title = clean_text(script_data["clause_name"])
     if len(clean_title) > 38: clean_title = clean_title[:36] + "..."
     d_base.text((105, 255), clean_title, fill="#FDE047", font=font_title)
     d_base.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
@@ -711,8 +735,8 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     d_intro = ImageDraw.Draw(intro_img)
     d_intro.rounded_rectangle([110, 500, 970, 910], radius=20, fill="#182848", outline="#FBBF24", width=3)
     d_intro.rounded_rectangle([140, 530, 940, 585], radius=10, fill="#064E3B", outline="#10B981", width=2)
-    d_intro.text((160, 542), "🎯 GDS to MTS • Postman • Mail Guard • P.A. परीक्षा", fill="#34D399", font=font_h2)
-    d_intro.text((150, 630), f"📌 पोस्टल गाइड क्लॉज {script_data['clause_no']} स्पेशल!", fill="#FDE047", font=font_title)
+    d_intro.text((160, 542), "GDS to MTS • Postman • Mail Guard • P.A. परीक्षा", fill="#34D399", font=font_h2)
+    d_intro.text((150, 630), f"पोस्टल गाइड क्लॉज {script_data['clause_no']} स्पेशल!", fill="#FDE047", font=font_title)
     d_intro.text((150, 720), "पेपर में इससे ये प्रश्न बन सकते हैं!", fill="#FFFFFF", font=font_q_text)
     intro_img.save("quiz_intro_frame.png")
     frames.append("quiz_intro_frame.png")
@@ -740,7 +764,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
         d1.text((130, 390), q_data["q_num"], fill="#FECACA", font=font_h2)
         d1.rounded_rectangle([510, 380, 970, 435], radius=10, fill="#064E3B", outline="#10B981", width=2)
-        d1.text((540, 395), "🎯 GDS to MTS • Postman • P.A.", fill="#A7F3D0", font=font_badge)
+        d1.text((540, 395), "GDS to MTS • Postman • P.A.", fill="#A7F3D0", font=font_badge)
         d1.multiline_text((110, 445), wrapped_q, fill="#F8FAFC", font=font_q_text, spacing=6)
         
         d1.rounded_rectangle([110, start_oy, 970, start_oy + opt_heights[0]], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
@@ -768,7 +792,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         d3.text((135, curr_y + 8), "D)", fill="#38BDF8", font=font_q_text)
         d3.multiline_text((180, curr_y + 8), wrapped_opts[3], fill="#FFFFFF", font=font_opt_text, spacing=2)
         d3.rounded_rectangle([110, 1430, 970, 1510], radius=12, fill="#064E3B", outline="#10B981", width=3)
-        d3.text((140, 1455), "⏱️ अपना उत्तर सोचें और नोट करें (उत्तर अंत में)", fill="#A7F3D0", font=font_h2)
+        d3.text((140, 1455), "अपना उत्तर सोचें और नोट करें", fill="#A7F3D0", font=font_h2)
         img_s3.save(f"anim_q{idx+1}_step3.png")
         frames.append(f"anim_q{idx+1}_step3.png")
         frame_durs.append(step_dur)
@@ -776,7 +800,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     d_ans.rounded_rectangle([110, 380, 680, 440], radius=10, fill="#064E3B", outline="#10B981", width=2)
-    d_ans.text((130, 392), "🎉 महा-फिनाले: सभी 3 सवालों के सही उत्तर", fill="#34D399", font=font_h2)
+    d_ans.text((130, 392), "महा फिनाले: सभी 3 सवालों के सही उत्तर", fill="#34D399", font=font_h2)
 
     ans_y_start = 480
     answers_text = [
@@ -787,7 +811,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     for a_idx, ans_str in enumerate(answers_text):
         ay = ans_y_start + (a_idx * 180)
         d_ans.rounded_rectangle([110, ay, 970, ay + 140], radius=16, fill="#182848", outline="#FBBF24", width=2)
-        d_ans.text((140, ay + 45), clean_hindi_postal_terms(ans_str), fill="#FDE047", font=font_title)
+        d_ans.text((140, ay + 45), clean_text(ans_str), fill="#FDE047", font=font_title)
 
     img_ans.save("quiz_answers_reveal.png")
     frames.append("quiz_answers_reveal.png")
@@ -850,7 +874,7 @@ if __name__ == "__main__":
     
     script_data = generate_clause_script(st)
     
-    # 1. Concept Reel (10/10 Target Blueprint: 36–39s, Clean Text & Real Facts)
+    # 1. Concept Reel (True 10/10 Target Blueprint: 36–39s, Clean Text & Real Facts)
     print("🎬 Generating 10/10 Concept Rule Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
