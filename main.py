@@ -658,7 +658,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     if has_bgm:
         cmd.extend(["-stream_loop", "-1", "-i", BGM_OUTPUT])
         bgm_idx = voice_idx + 1
-        # Programmatic crisp audio SFX generation filter for pops and ticks
         audio_filter = (
             f"aevalsrc='sin(2*PI*800*t)*exp(-10*t)':d=0.08[sfx_pop];"
             f"aevalsrc='sin(2*PI*1200*t)*exp(-15*t)':d=0.05[sfx_tick];"
