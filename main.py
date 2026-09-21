@@ -562,7 +562,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         script_data["hook_voice"],
         script_data["sen1"],
         f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
-        "इस क्लॉज से जुड़े 100% एग्जाम में आने वाले क्वेश्चन अगली रील में हैं! तो फॉलो करो और जाकर देखो"
+        "सवाल स्क्रीन पर है! सही उत्तर A, B, C या D कमेंट करें! इस क्लॉज से जुड़े 100% एग्जाम में आने वाले क्वेश्चन अगली रील में हैं! तो फॉलो करो और जाकर देखो"
     ]
     durations = []
     for i, seg_text in enumerate(segment_audios):
