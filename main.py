@@ -162,7 +162,7 @@ def advance_progress_state(state):
 
     save_progress_state(state)
 
-# --- STRICT 7-STEP RETENTION SCRIPT GENERATOR ---
+# --- STRICT 100% PURE HINDI SCRIPT GENERATOR ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
@@ -174,18 +174,18 @@ def generate_clause_script(state):
         "clause_name": official_title,
         "part_no": current_part,
         "total_parts": total_parts,
-        "hook_text": f"पैकिंग पर कितने डाकघरों की मोहर हर पैकेट पर अनिवार्य है?",
-        "guess_wrong": "केवल एक ही डाकघर की मोहर पर्याप्त है।",
-        "reward_right": "बुकिंग और गंतव्य दोनों डाकघरों की मोहर चाहिए।",
-        "fact_num": "2",
-        "fact_desc": "बुकिंग व गंतव्य मोहर",
-        "exam_trap": "एक ही डाकघर की मोहर वाले पैकेट को स्वीकार नहीं किया जाएगा।",
-        "question": f"प्रत्येक पैकेट पर किन दो डाकघरों की मोहर लगनी चाहिए?",
-        "opt_a": "बुकिंग और गंतव्य डाकघर",
-        "opt_b": "मूल और अंतर्गत डाकघर",
-        "opt_c": "स्थानीय और क्षेत्रीय डाकघर",
-        "opt_d": "प्रेषक और प्राप्तकर्ता डाकघर",
-        "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts}) - 10/10 High-Retention Master Solution。\n\n💬 अपना सही उत्तर कमेंट करें (A/B/C/D)!\n🔥 अगला Postal Trap कल!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
+        "hook_text": f"सील लगाने से पहले मोम को कागज से क्यों ढंका जाता है?",
+        "guess_wrong": "क्या यह नमी और धूल से बचाता है?",
+        "reward_right": "नहीं! ताकि मोम सामग्री पर चिपके नहीं।",
+        "fact_num": "1",
+        "fact_desc": "पतली कागज की परत आवश्यक",
+        "exam_trap": "सावधान: मोम के चिपकने से पार्सल का सामान मार्ग में खराब हो सकता है।",
+        "question": f"सील लगाने से पहले सीलिंग वैक्स को किससे ढंका जाना चाहिए?",
+        "opt_a": "पारदर्शी मुलायम कागज की पतली परत",
+        "opt_b": "मोटे गत्ते की एक परत",
+        "opt_c": "चिपकने वाला टेप",
+        "opt_d": "मोमी कपड़े का टुकड़ा",
+        "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts}) - 10/10 Pure Hindi Retention Solution。\n\n💬 अपना सही उत्तर कमेंट करें (A/B/C/D)!\n🔥 अगला Postal Trap कल!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
     if not GROQ_API_KEY:
@@ -199,16 +199,17 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    STRICT RETENTION BLUEPRINT RULES:
-    1. HOOK_TEXT: A compelling opening question maximizing curiosity (max 14 words).
-    2. GUESS_WRONG: A common misconception statement (max 10 words).
-    3. REWARD_RIGHT: The precise correct rule revelation (max 10 words).
-    4. FACT_NUM: Strictly the core metric, count, or number from text (e.g. "2").
-    5. FACT_DESC: Short precise label for the rule (max 6 words).
-    6. EXAM_TRAP: Strictly a negative prohibition, violation consequence, or strict legal exception (max 16 words).
-    7. QUESTION: A professional departmental MCQ question (max 14 words).
-    8. OPT_A: Correct option matching the rule.
-    9. OPT_B, OPT_C, OPT_D: 3 plausible logical distractors.
+    CRITICAL LANGUAGE & RETENTION RULES (STRICTLY DEVANAGARI HINDI ONLY):
+    1. ABSOLUTELY NO ENGLISH WORDS ALLOWED IN ANY TEXT FIELD. Translate all technical rules into fluent, high-impact official Hindi script (Devanagari).
+    2. HOOK_TEXT: A compelling opening curiosity question in pure Hindi (max 14 words).
+    3. GUESS_WRONG: A common misconception statement in pure Hindi (max 10 words).
+    4. REWARD_RIGHT: The precise correct rule revelation in pure Hindi (max 10 words).
+    5. FACT_NUM: Strictly core metric, number, or rule layer from text (e.g. "1").
+    6. FACT_DESC: Short precise label in pure Hindi (max 6 words).
+    7. EXAM_TRAP: Strictly a negative prohibition, violation consequence, or strict legal exception in pure Hindi (max 16 words).
+    8. QUESTION: A professional departmental MCQ question in pure Hindi (max 14 words).
+    9. OPT_A: Correct option matching the rule in pure Hindi.
+    10. OPT_B, OPT_C, OPT_D: 3 plausible logical distractors in pure Hindi.
 
     FORMAT:
     HOOK_TEXT: ...
@@ -258,12 +259,12 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- FULLY SYNCHRONIZED AUDIO SEGMENTS ---
+# --- NATURAL & CLEAN AUDIO SEGMENTS (NO AWKWARD TEMPLATES) ---
 def get_slide_segments(script_data):
     return [
         f"ध्यान दें! {script_data['hook_text']}",
-        f"क्या आपको लगता है कि {script_data['guess_wrong']}? नहीं! {script_data['reward_right']}",
-        f"अधिकारिक नियम याद रखें: मुख्य संख्या है {script_data['fact_num']}, जो संबंधित है {script_data['fact_desc']}",
+        f"क्या आपको लगता है कि {script_data['guess_wrong']}? नहीं! सही जवाब है: {script_data['reward_right']}",
+        f"अधिकारिक नियम याद रखें: {script_data['fact_desc']}!",
         f"सावधान! परीक्षा ट्रैप: {script_data['exam_trap']}",
         f"अब विभागीय परीक्षा का यह मुख्य सवाल आपके सामने है। सही विकल्प सोचकर पाँच सेकंड में कमेंट करें!"
     ]
@@ -288,7 +289,8 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     for i, seg_text in enumerate(segment_audios):
         seg_file = f"audio_seg_{i}.mp3"
         asyncio.run(generate_segment_audio(seg_text, seg_file))
-        durations.append(get_audio_duration(seg_file))
+        d = get_audio_duration(seg_file)
+        durations.append(max(3.0, d))
 
     concat_filter = "".join([f"[{i}:a]" for i in range(5)]) + "concat=n=5:v=0:a=1[aout]"
     ffmpeg_concat_cmd = ["ffmpeg", "-y"]
@@ -320,7 +322,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames = []
     frame_durs = []
 
-    # 1. HOOK FRAME (Perfect Padding & Wrap)
+    # 1. HOOK FRAME
     img_hook = Image.new("RGB", (1080, 1920), color="#060A17")
     dh = ImageDraw.Draw(img_hook)
     draw_base(dh)
@@ -332,9 +334,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_footer_cta(dh)
     img_hook.save("f_hook.png")
     frames.append("f_hook.png")
-    frame_durs.append(round(max(2.5, durations[0]), 2))
+    frame_durs.append(durations[0])
 
-    # 2. GUESS & REWARD FRAME (Clean Margin Alignment)
+    # 2. GUESS & REWARD FRAME
     img_rew = Image.new("RGB", (1080, 1920), color="#060A17")
     dr = ImageDraw.Draw(img_rew)
     draw_base(dr)
@@ -352,7 +354,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_footer_cta(dr)
     img_rew.save("f_reward.png")
     frames.append("f_reward.png")
-    frame_durs.append(round(max(3.0, durations[1]), 2))
+    frame_durs.append(durations[1])
 
     # 3. FACT FRAME
     img_fact = Image.new("RGB", (1080, 1920), color="#060A17")
@@ -368,7 +370,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_footer_cta(df)
     img_fact.save("f_fact.png")
     frames.append("f_fact.png")
-    frame_durs.append(round(max(3.0, durations[2]), 2))
+    frame_durs.append(durations[2])
 
     # 4. EXAM TRAP FRAME
     img_trap = Image.new("RGB", (1080, 1920), color="#060A17")
@@ -382,9 +384,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_footer_cta(dt)
     img_trap.save("f_trap.png")
     frames.append("f_trap.png")
-    frame_durs.append(round(max(3.0, durations[3]), 2))
+    frame_durs.append(durations[3])
 
-    # 5. MCQ FRAME (Optimized Options Box & Line Margins)
+    # 5. MCQ FRAME
     img_mcq = Image.new("RGB", (1080, 1920), color="#060A17")
     dm = ImageDraw.Draw(img_mcq)
     draw_base(dm)
@@ -404,7 +406,10 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_footer_cta(dm)
     img_mcq.save("f_mcq.png")
     frames.append("f_mcq.png")
-    frame_durs.append(round(max(3.0, durations[4] * 0.4), 2))
+    mcq_speech_dur = durations[4]
+    countdown_total_dur = 3.5
+    mcq_frame_dur = max(2.5, mcq_speech_dur - countdown_total_dur)
+    frame_durs.append(mcq_frame_dur)
 
     # Countdown Frames
     countdown_steps = [
@@ -414,9 +419,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         ("02", "#F87171", "#7F1D1D", "#EF4444"),
         ("01", "#EF4444", "#991B1B", "#FCA5A5")
     ]
-    
-    cd_rem_dur = max(3.5, durations[4] * 0.6)
-    per_timer_dur = round(cd_rem_dur / 5.0, 2)
+    per_timer_dur = round(countdown_total_dur / 5.0, 2)
 
     for c_idx, (sec_str, timer_color, bar_bg, bar_outline) in enumerate(countdown_steps):
         img_cd = img_mcq.copy()
@@ -482,7 +485,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ High-Retention Master Reel Created: {output_video}", flush=True)
+    print(f"✅ Clean Fluent Reel Created: {output_video}", flush=True)
 
 # --- LOCAL FOLDER SAVER ---
 def save_reel_to_local_folder(video_file, script_data):
