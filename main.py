@@ -162,7 +162,7 @@ def advance_progress_state(state):
 
     save_progress_state(state)
 
-# --- STRICT CATEGORIZATION SCRIPT GENERATOR ---
+# --- STRICT 7-STEP RETENTION SCRIPT GENERATOR ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
@@ -174,18 +174,18 @@ def generate_clause_script(state):
         "clause_name": official_title,
         "part_no": current_part,
         "total_parts": total_parts,
-        "hook_text": f"पैकिंग पर कम से कम कितनी डाकघर मोहरें लगेंगी?",
-        "guess_wrong": "क्या हर पैकेट पर केवल 1 मोहर लगती है?",
-        "reward_right": "नहीं! नियम के अनुसार कुल 2 मोहरें अनिवार्य हैं।",
+        "hook_text": f"पैकिंग पर कितने डाकघरों की मोहर हर पैकेट पर अनिवार्य है?",
+        "guess_wrong": "केवल एक ही डाकघर की मोहर पर्याप्त है।",
+        "reward_right": "बुकिंग और गंतव्य दोनों डाकघरों की मोहर चाहिए।",
         "fact_num": "2",
-        "fact_desc": "बुकिंग तथा गंतव्य डाकघर की मोहर",
-        "exam_trap": "सावधान: कमजोर या फटे हुए कवर में पैकिंग करना नियम के तहत पूरी तरह वर्जित है।",
-        "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के तहत पैकिंग पर किन दो डाकघरों की मोहर लगनी चाहिए?",
+        "fact_desc": "बुकिंग व गंतव्य मोहर",
+        "exam_trap": "एक ही डाकघर की मोहर वाले पैकेट को स्वीकार नहीं किया जाएगा।",
+        "question": f"प्रत्येक पैकेट पर किन दो डाकघरों की मोहर लगनी चाहिए?",
         "opt_a": "बुकिंग और गंतव्य डाकघर",
-        "opt_b": "मूल और अंतः डाकघर",
+        "opt_b": "मूल और अंतर्गत डाकघर",
         "opt_c": "स्थानीय और क्षेत्रीय डाकघर",
         "opt_d": "प्रेषक और प्राप्तकर्ता डाकघर",
-        "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts}) - 10/10 Strict Blueprint Solution。\n\n💬 अपना सही उत्तर कमेंट करें (A/B/C/D)!\n🔥 अगला Postal Trap कल!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
+        "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts}) - 10/10 High-Retention Master Solution。\n\n💬 अपना सही उत्तर कमेंट करें (A/B/C/D)!\n🔥 अगला Postal Trap कल!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
     if not GROQ_API_KEY:
@@ -199,14 +199,14 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    STRICT CATEGORIZATION RULES (DO NOT SWAP OR MIX):
-    1. HOOK_TEXT: A complete engaging opening question addressing the core rule (max 15 words).
-    2. GUESS_WRONG: A common misconception sentence (max 10 words).
-    3. REWARD_RIGHT: The correct factual revelation sentence (max 10 words).
-    4. FACT_NUM: STRICTLY the core numerical value, count, or limit from text (e.g. "2" or "8:30 PM"). DO NOT put sentences here.
-    5. FACT_DESC: Strict short label for the fact (max 6 words, e.g. "बुकिंग व गंतव्य मोहर").
-    6. EXAM_TRAP: STRICTLY a negative restriction, prohibition (वर्जित), violation penalty, or strict legal exception mentioned in the text (max 18 words). DO NOT put general facts here.
-    7. QUESTION: A complete professional MCQ question (max 15 words).
+    STRICT RETENTION BLUEPRINT RULES:
+    1. HOOK_TEXT: A compelling opening question maximizing curiosity (max 14 words).
+    2. GUESS_WRONG: A common misconception statement (max 10 words).
+    3. REWARD_RIGHT: The precise correct rule revelation (max 10 words).
+    4. FACT_NUM: Strictly the core metric, count, or number from text (e.g. "2").
+    5. FACT_DESC: Short precise label for the rule (max 6 words).
+    6. EXAM_TRAP: Strictly a negative prohibition, violation consequence, or strict legal exception (max 16 words).
+    7. QUESTION: A professional departmental MCQ question (max 14 words).
     8. OPT_A: Correct option matching the rule.
     9. OPT_B, OPT_C, OPT_D: 3 plausible logical distractors.
 
@@ -300,12 +300,12 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     total_dur = sum(durations)
 
     font_brand = get_font(40)
-    font_h1 = get_font(38)
-    font_h2 = get_font(30)
-    font_body = get_font(28)
+    font_h1 = get_font(36)
+    font_h2 = get_font(28)
+    font_body = get_font(26)
     font_label = get_font(26)
     font_cta = get_font(28)
-    font_opt = get_font(26)
+    font_opt = get_font(25)
     font_timer = get_font(32)
 
     def draw_base(d):
@@ -320,41 +320,41 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames = []
     frame_durs = []
 
-    # 1. HOOK FRAME
+    # 1. HOOK FRAME (Perfect Padding & Wrap)
     img_hook = Image.new("RGB", (1080, 1920), color="#060A17")
     dh = ImageDraw.Draw(img_hook)
     draw_base(dh)
     dh.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     dh.rounded_rectangle([110, 230, 480, 290], radius=12, fill="#DC2626", outline="#F87171", width=2)
     dh.text((130, 242), "⚠️ STOP & THINK", fill="#FFFFFF", font=font_label)
-    wrapped_hk = textwrap.fill(script_data["hook_text"], width=22)
+    wrapped_hk = textwrap.fill(script_data["hook_text"], width=20)
     dh.multiline_text((115, 420), wrapped_hk, fill="#FFFFFF", font=font_h1, spacing=16)
     draw_footer_cta(dh)
     img_hook.save("f_hook.png")
     frames.append("f_hook.png")
     frame_durs.append(round(max(2.5, durations[0]), 2))
 
-    # 2. GUESS & REWARD FRAME
+    # 2. GUESS & REWARD FRAME (Clean Margin Alignment)
     img_rew = Image.new("RGB", (1080, 1920), color="#060A17")
     dr = ImageDraw.Draw(img_rew)
     draw_base(dr)
     dr.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     
-    dr.rounded_rectangle([110, 250, 970, 480], radius=18, fill="#3F1215", outline="#EF4444", width=3)
-    wrapped_gw = textwrap.fill(script_data["guess_wrong"], width=24)
-    dr.multiline_text((135, 330), f"❌ {wrapped_gw}", fill="#FCA5A5", font=font_h2, spacing=10)
+    dr.rounded_rectangle([110, 235, 970, 495], radius=18, fill="#3F1215", outline="#EF4444", width=3)
+    wrapped_gw = textwrap.fill(script_data["guess_wrong"], width=20)
+    dr.multiline_text((135, 310), f"❌ {wrapped_gw}", fill="#FCA5A5", font=font_h2, spacing=12)
 
-    dr.rounded_rectangle([110, 550, 970, 850], radius=18, fill="#064E3B", outline="#10B981", width=3)
-    wrapped_rr = textwrap.fill(script_data["reward_right"], width=24)
-    dr.multiline_text((135, 630), f"✅ {wrapped_rr}", fill="#A7F3D0", font=font_h1, spacing=10)
-    dr.text((135, 770), "📌 यही विभागीय नियम याद रखना है।", fill="#D1FAE5", font=font_body)
+    dr.rounded_rectangle([110, 535, 970, 865], radius=18, fill="#064E3B", outline="#10B981", width=3)
+    wrapped_rr = textwrap.fill(script_data["reward_right"], width=20)
+    dr.multiline_text((135, 605), f"✅ {wrapped_rr}", fill="#A7F3D0", font=font_h1, spacing=12)
+    dr.text((135, 785), "📌 यही विभागीय नियम याद रखना है।", fill="#D1FAE5", font=font_body)
     
     draw_footer_cta(dr)
     img_rew.save("f_reward.png")
     frames.append("f_reward.png")
     frame_durs.append(round(max(3.0, durations[1]), 2))
 
-    # 3. FACT FRAME (Strict Numeric/Parameter)
+    # 3. FACT FRAME
     img_fact = Image.new("RGB", (1080, 1920), color="#060A17")
     df = ImageDraw.Draw(img_fact)
     draw_base(df)
@@ -363,43 +363,43 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     df.rounded_rectangle([110, 360, 970, 580], radius=20, fill="#1D4ED8", outline="#60A5FA", width=3)
     df.text((180, 420), script_data["fact_num"], fill="#FFFFFF", font=ImageFont.truetype(FONT_PATH, 75))
     df.rounded_rectangle([110, 680, 970, 920], radius=18, fill="#082F49", outline="#38BDF8", width=2)
-    wrapped_fd = textwrap.fill(script_data["fact_desc"], width=24)
+    wrapped_fd = textwrap.fill(script_data["fact_desc"], width=22)
     df.multiline_text((135, 755), f"📌 {wrapped_fd}", fill="#E0F2FE", font=font_h2, spacing=10)
     draw_footer_cta(df)
     img_fact.save("f_fact.png")
     frames.append("f_fact.png")
     frame_durs.append(round(max(3.0, durations[2]), 2))
 
-    # 4. EXAM TRAP FRAME (Strict Prohibition/Exception)
+    # 4. EXAM TRAP FRAME
     img_trap = Image.new("RGB", (1080, 1920), color="#060A17")
     dt = ImageDraw.Draw(img_trap)
     draw_base(dt)
     dt.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#EF4444", width=3)
     dt.rounded_rectangle([110, 230, 480, 290], radius=12, fill="#7F1D1D", outline="#EF4444", width=2)
     dt.text((130, 242), "⚠️ EXAM TRAP", fill="#FECACA", font=font_label)
-    wrapped_trap = textwrap.fill(script_data["exam_trap"], width=23)
+    wrapped_trap = textwrap.fill(script_data["exam_trap"], width=21)
     dt.multiline_text((115, 450), wrapped_trap, fill="#FFFFFF", font=font_h1, spacing=16)
     draw_footer_cta(dt)
     img_trap.save("f_trap.png")
     frames.append("f_trap.png")
     frame_durs.append(round(max(3.0, durations[3]), 2))
 
-    # 5. MCQ FRAME
+    # 5. MCQ FRAME (Optimized Options Box & Line Margins)
     img_mcq = Image.new("RGB", (1080, 1920), color="#060A17")
     dm = ImageDraw.Draw(img_mcq)
     draw_base(dm)
     dm.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=3)
-    dm.text((110, 220), "📝 POSTAL MCQ QUIZ", fill="#FDE047", font=font_h2)
-    wrapped_q = textwrap.fill(script_data["question"], width=24)
-    dm.multiline_text((110, 290), wrapped_q, fill="#FFFFFF", font=font_body, spacing=10)
+    dm.text((110, 205), "📝 POSTAL MCQ QUIZ", fill="#FDE047", font=font_h2)
+    wrapped_q = textwrap.fill(script_data["question"], width=22)
+    dm.multiline_text((110, 260), wrapped_q, fill="#FFFFFF", font=font_body, spacing=6)
     
     opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
     labels = ["A", "B", "C", "D"]
     for o_idx in range(4):
-        oy = 560 + (o_idx * 135)
-        dm.rounded_rectangle([110, oy, 970, oy + 115], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
-        dm.text((135, oy + 36), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
-        dm.text((200, oy + 36), textwrap.fill(opts[o_idx], width=22), fill="#FFFFFF", font=font_opt)
+        oy = 510 + (o_idx * 135)
+        dm.rounded_rectangle([110, oy, 970, oy + 120], radius=16, fill="#0B132B", outline="#38BDF8", width=2)
+        dm.text((135, oy + 38), f"{labels[o_idx]})", fill="#38BDF8", font=font_h2)
+        dm.text((195, oy + 38), textwrap.fill(opts[o_idx], width=20), fill="#FFFFFF", font=font_opt)
     
     draw_footer_cta(dm)
     img_mcq.save("f_mcq.png")
@@ -482,7 +482,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Strictly Corrected Reel Created: {output_video}", flush=True)
+    print(f"✅ High-Retention Master Reel Created: {output_video}", flush=True)
 
 # --- LOCAL FOLDER SAVER ---
 def save_reel_to_local_folder(video_file, script_data):
@@ -511,7 +511,7 @@ if __name__ == "__main__":
     saved_ok = save_reel_to_local_folder(OUTPUT_VIDEO, script_data)
     
     if saved_ok:
-        advance_progress_state(st)
+        advance_progress_state(state=st)
         print("✅ Reel stored successfully & state updated.", flush=True)
     else:
         print("❌ Save failed.", flush=True)
