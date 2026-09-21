@@ -132,7 +132,6 @@ def clean_text(text):
 def clean_hindi_postal_terms(text):
     if not text:
         return ""
-    # Strip leading brackets, dots, colons, or stray numbers
     text = re.sub(r"^[\s\)\(\.\-\:–\d\+]+", "", text).strip()
     
     replacements = {
@@ -278,40 +277,124 @@ def generate_clause_script(state):
 
     official_title, official_pdf_text = extract_clause_from_pdf(current_clause, current_part, total_parts)
 
-    fallback_data = {
-        "clause_no": current_clause,
-        "clause_name": official_title,
-        "part_no": current_part,
-        "total_parts": total_parts,
-        "visual_hook_badge": hook_obj["visual_badge"],
-        "hook_voice": hook_obj["voice"],
-        "hook_display_text": hook_obj["hook_text"],
-        "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
-        "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
-        "param1_title": "परीक्षा मुख्य बिंदु",
-        "param1_val": "आधिकारिक नियम मान्य",
-        "param2_title": "विभागीय शर्त",
-        "param2_val": "नियमों का पालन अनिवार्य",
-        "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं।",
-        "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार मुख्य प्रावधान क्या है?",
-        "opt_a": "आधिकारिक विभागीय नियम",
-        "opt_b": "अतिरिक्त शुल्क प्रावधान",
-        "opt_c": "केवल सामान्य निर्देश",
-        "opt_d": "इनमें से कोई नहीं",
-        
-        "q1": f"डाक गाइड क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक नियम", "b1": "अन्य प्रावधान", "c1": "सामान्य निर्देश", "d1": "इनमें से कोई नहीं", "ans1": "A",
-        "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "सीमाएं व शर्तें", "b2": "अस्थायी छूट", "c2": "प्रतिबंध", "d2": "इनमें से कोई नहीं", "ans2": "B",
-        "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "बुकिंग अस्वीकार", "b3": "छूट", "c3": "पुरस्कार", "d3": "कुछ नहीं", "ans3": "C",
-
-        "caption": f"🚨 पोस्टल गाइड क्लॉज {current_clause} स्पेशल टेस्ट! डाक घर गाइड भाग 1 (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
-        "quiz_caption": f"🧠 क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
-    }
+    # 100% Departmental Official Fallback Questions (Exam Source of Truth)
+    if current_clause == 2:
+        fallback_data = {
+            "clause_no": 2,
+            "clause_name": "डाकघरों के प्रकार (प्रधान, उप व शाखा डाकघर)",
+            "part_no": current_part,
+            "total_parts": total_parts,
+            "visual_hook_badge": hook_obj["visual_badge"],
+            "hook_voice": hook_obj["voice"],
+            "hook_display_text": hook_obj["hook_text"],
+            "sen1": "डाकघर गाइड भाग 1 के क्लॉज 2 के अनुसार डाकघर तीन श्रेणियों में विभाजित हैं: प्रधान, उप और शाखा डाकघर।",
+            "sen2": "प्रधान डाकघर मंडल का मुख्य लेखा कार्यालय होता है और शाखा डाकघर का अधिकतम कार्य समय 5 घंटे होता है।",
+            "param1_title": "डाकघर के वर्ग",
+            "param1_val": "कुल 3 श्रेणियां (HO, SO, BO)",
+            "param2_title": "शाखा डाकघर कार्य समय",
+            "param2_val": "अधिकतम 5 घंटे निर्धारित",
+            "trap_point": "शाखा डाकघर सीधे प्रधान डाकघर या उप डाकघर दोनों में से किसी के भी लेखा अधिकार क्षेत्र में हो सकता है।",
+            "question": "डाकघर गाइड भाग 1 के अनुसार डाकघरों को कुल कितने वर्गों (Classes) में बांटा गया है?",
+            "opt_a": "3 वर्ग (प्रधान, उप, शाखा)",
+            "opt_b": "2 वर्ग (केवल प्रधान व उप)",
+            "opt_c": "4 वर्ग (प्रथम, द्वितीय, तृतीय श्रेणी)",
+            "opt_d": "5 वर्ग",
+            "q1": "शाखा डाकघर (Branch Post Office) का अधिकतम दैनिक कार्य समय कितना निर्धारित है?",
+            "a1": "अधिकतम 5 घंटे",
+            "b1": "अधिकतम 8 घंटे",
+            "c1": "अधिकतम 3 घंटे",
+            "d1": "पूरे 7 घंटे",
+            "ans1": "A",
+            "q2": "डाक मंडल में लेखा और वित्तीय हिसाब-किताब का मुख्य कार्यालय कौन सा होता है?",
+            "a2": "उप डाकघर",
+            "b2": "प्रधान डाकघर (Head Post Office)",
+            "c2": "रेल डाक सेवा (RMS)",
+            "d2": "सर्किल कार्यालय",
+            "ans2": "B",
+            "q3": "उप डाकघर (Sub Post Office) का प्रभारी अधिकारी कौन होता है?",
+            "a3": "मंडल अधीक्षक (SSPO)",
+            "b3": "शाखा डाकपाल (BPM)",
+            "c3": "उप डाकपाल (Sub Postmaster)",
+            "d3": "पोस्टमैन",
+            "ans3": "C",
+            "caption": f"🚨 पीओ गाइड भाग 1 क्लॉज {current_clause} स्पेशल टेस्ट! (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
+            "quiz_caption": f"🧠 क्विज़: पीओ गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
+        }
+    elif current_clause == 5:
+        fallback_data = {
+            "clause_no": 5,
+            "clause_name": "सामान्य कार्य दिवस और कारोबार के घंटे",
+            "part_no": current_part,
+            "total_parts": total_parts,
+            "visual_hook_badge": hook_obj["visual_badge"],
+            "hook_voice": hook_obj["voice"],
+            "hook_display_text": hook_obj["hook_text"],
+            "sen1": "डाकघर में सामान्य कार्यदिवसों पर विभिन्न सेवाओं के व्यावसायिक घंटे निर्धारित नियमों के तहत संचालित होते हैं।",
+            "sen2": "बचत बैंक और मनी ऑर्डर का लेन-देन लगभग 5 घंटे, जबकि रजिस्ट्री और पार्सल बुकिंग 6 से 7 घंटे तक होती है।",
+            "param1_title": "एस.बी. व मनी ऑर्डर",
+            "param1_val": "लगभग 5 घंटे कार्य",
+            "param2_title": "रजिस्ट्री व पार्सल",
+            "param2_val": "लगभग 6 से 7 घंटे",
+            "trap_point": "डाक टिकटों की बिक्री और पूछताछ का काम डाकघर के पूरे कार्य समय के दौरान लगातार खुला रहता है।",
+            "question": "डाकघर में सामान्य कार्यदिवसों में विभिन्न सेवाओं के कार्य घंटे (Business Hours) कौन निर्धारित करता है?",
+            "opt_a": "सर्किल के प्रमुख (Head of Circle)",
+            "opt_b": "स्थानीय पोस्टमास्टर",
+            "opt_c": "मंडल अधीक्षक (SSPO)",
+            "opt_d": "डाक सहायक",
+            "q1": "डाक टिकटों की बिक्री और पूछताछ का कार्य कब तक किया जाता है?",
+            "a1": "डाकघर के पूरे कार्य समय के दौरान",
+            "b1": "केवल 2 घंटे",
+            "c1": "केवल 4 घंटे",
+            "d1": "केवल दोपहर 1 बजे तक",
+            "ans1": "A",
+            "q2": "बचत बैंक (SB) और मनी ऑर्डर जारी करने के लिए काउंटर सामान्यतः कितने घंटे खुला रहता है?",
+            "a2": "लगभग 3 घंटे",
+            "b2": "लगभग 5 घंटे",
+            "c2": "लगभग 8 घंटे",
+            "d2": "केवल 1 घंटा",
+            "ans2": "B",
+            "q3": "रजिस्टर्ड और पार्सल वस्तुओं की बुकिंग के लिए सामान्य कार्य दिवसों में कितने घंटे निर्धारित हैं?",
+            "a3": "लगभग 4 घंटे",
+            "b3": "लगभग 5 घंटे",
+            "c3": "लगभग 6 से 7 घंटे",
+            "d3": "पूरे 12 घंटे",
+            "ans3": "C",
+            "caption": f"🚨 पीओ गाइड भाग 1 क्लॉज {current_clause} स्पेशल टेस्ट! (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
+            "quiz_caption": f"🧠 क्विज़: पीओ गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
+        }
+    else:
+        fallback_data = {
+            "clause_no": current_clause,
+            "clause_name": official_title,
+            "part_no": current_part,
+            "total_parts": total_parts,
+            "visual_hook_badge": hook_obj["visual_badge"],
+            "hook_voice": hook_obj["voice"],
+            "hook_display_text": hook_obj["hook_text"],
+            "sen1": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} के अनुसार आधिकारिक नियम अनिवार्य रूप से लागू होता है।",
+            "sen2": "विभागीय परीक्षा में इस नियम के अपवाद और विशेष प्रावधान से सबसे ज्यादा सवाल पूछे जाते हैं।",
+            "param1_title": "परीक्षा मुख्य बिंदु",
+            "param1_val": "आधिकारिक नियम मान्य",
+            "param2_title": "विभागीय शर्त",
+            "param2_val": "नियमों का पालन अनिवार्य",
+            "trap_point": "इस नियम की अनदेखी करने पर विभागीय परीक्षा में नकारात्मक अंक मिल सकते हैं।",
+            "question": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार मुख्य प्रावधान क्या है?",
+            "opt_a": "आधिकारिक विभागीय नियम",
+            "opt_b": "अतिरिक्त शुल्क प्रावधान",
+            "opt_c": "सर्किल प्रमुख का विशेष आदेश",
+            "opt_d": "महानिदेशक की पूर्व अनुमति",
+            "q1": f"डाक गाइड क्लॉज {current_clause} के अनुसार मुख्य नियम क्या है?", "a1": "आधिकारिक विभागीय नियम", "b1": "अतिरिक्त छूट", "c1": "सामान्य निर्देश", "d1": "विशेष छूट", "ans1": "A",
+            "q2": "इस नियम के तहत परीक्षा में क्या विशेष ध्यान रखना चाहिए?", "a2": "अस्थायी छूट", "b2": "आधिकारिक शर्तें व सीमाएं", "c2": "प्रतिबंध", "d2": "वार्षिक बदलाव", "ans2": "B",
+            "q3": "नियम का उल्लंघन होने पर विभाग द्वारा क्या कार्रवाई होती है?", "a3": "अतिरिक्त जांच", "b3": "चेतावनी", "c3": "बुकिंग अस्वीकार", "d3": "फीस माफी", "ans3": "C",
+            "caption": f"🚨 पोस्टल गाइड क्लॉज {current_clause} स्पेशल टेस्ट! डाक घर गाइड भाग 1 (भाग {current_part}/{total_parts})。\n\n💬 फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करें!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam",
+            "quiz_caption": f"🧠 क्विज़: डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})。\n\n🎯 3 महत्वपूर्ण सवाल! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और फॉलो करें!\n\n#PostalQuiz #GDStoMTS #PostmanExam #DepartmentalQuiz"
+        }
 
     if not GROQ_API_KEY:
         return fallback_data
 
     prompt = f"""
-    You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard, PA).
+    You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard, Postal Assistant).
     Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Subject: "{official_title}"
 
     Reference Context:
@@ -319,12 +402,17 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    STRICT AUTHENTICITY & HINDI ACCURACY RULES:
-    1. STRICT TOPIC COMPLIANCE: Adhere 100% to Clause {current_clause} ({official_title}) of official Post Office Guide Part 1. Do not divert or mix up sub-points.
-    2. PURE DEPARTMENTAL HINDI: Use natural, grammatically pure Hindi without translation errors or awkward phrasing.
-    3. NO CORRUPT OCR OR BRACKETS: Output clean text. Never output broken OCR words like 'ववभाग' or 'सववचच'.
-    4. MCQ QUALITY: Generate exam-oriented questions strictly based on this clause.
-    5. ANSWERS (ANS1, ANS2, ANS3): Must not all have the same option letter.
+    CRITICAL EXAM RULES (100% DEPARTMENTAL ACCURACY):
+    1. EXCLUSIVELY ASK AUTHENTIC QUESTIONS: Test REAL departmental syllabus (GDS to MTS/Postman/PA). Questions must test:
+       - Competent Authority (e.g., Head of Circle, DG Posts, Postmaster, SSPO, BPM)
+       - Prescribed Hours/Limits/Powers according to Clause {current_clause} (e.g., Classes of POs, maximum working hours of Branch Post Office, Account jurisdiction).
+    2. STRICT PROHIBITION ON SILLY QUESTIONS & OPTIONS:
+       - NEVER ask made-up vague questions.
+       - NEVER use silly options like 'पुरस्कार', 'कुछ नहीं', 'कोई नहीं', 'उपरोक्त सभी'.
+       - All 4 options must be REAL postal terms, realistic hours, or official designations.
+    3. PURE HINDI TERMINOLOGY: Use authentic postal terms: प्रधान डाकघर (Head Post Office), उप डाकघर (Sub Post Office), शाखा डाकघर (Branch Post Office), डाकपाल (Postmaster).
+    4. DIVERSE ANSWERS: ANS1, ANS2, ANS3 must NOT all be the same option letter.
+    5. COMPLETE TEXT: Never truncate numbers or text.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -361,8 +449,8 @@ def generate_clause_script(state):
 
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 700}
-        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 800}
+        res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=25)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
             
@@ -384,7 +472,9 @@ def generate_clause_script(state):
                     k = parts[0].strip().lower()
                     v = parts[1].strip().strip('"\'`*')
                     if k in fallback_data:
-                        fallback_data[k] = clean_hindi_postal_terms(v)
+                        clean_v = clean_hindi_postal_terms(v)
+                        if clean_v not in ["पुरस्कार", "कुछ नहीं", "उपरोक्त सभी"]:
+                            fallback_data[k] = clean_v
                         if k.startswith("ans"):
                             fallback_data[k] = fallback_data[k].upper()[:1]
     except Exception as e:
@@ -639,11 +729,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d3a.rounded_rectangle([110, 510, 450, 565], radius=10, fill="#0B132B")
     d3a.text((130, 520), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
     
-    # Bagal ki khali jagah bharne ke liye width ko 40 kiya
     wrapped_s3 = textwrap.fill(clean_hindi_postal_terms(script_data['sen2']), width=40)
     d3a.multiline_text((120, 590), wrapped_s3, fill="#F8FAFC", font=font_body, spacing=14)
     
-    # Exact pixel boundary
     s3_bbox = d3a.multiline_textbbox((120, 590), wrapped_s3, font=font_body, spacing=14)
     sen2_bottom = s3_bbox[3]
     
@@ -657,17 +745,12 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d3b.rounded_rectangle([80, 480, 1000, 1550], radius=24, outline="#EF4444", width=4)
     
     trap_txt = script_data.get("trap_point", script_data["sen2"])
-    # Laal card ke text ko bhi full-width spread kiya (width = 42)
     wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=42)
     
-    # Upar ke text ke theek baad safe vertical gap
     trap_top = max(sen2_bottom + 40, 750)
-    
-    # Dynamic box measurement
     dummy_trap_bbox = d3b.multiline_textbbox((140, trap_top + 80), wrapped_trap, font=font_h2, spacing=12)
     trap_bottom = min(1360, dummy_trap_bbox[3] + 35)
 
-    # Full-width balanced red card
     d3b.rounded_rectangle([110, trap_top, 970, trap_bottom], radius=18, fill="#380A0A", outline="#EF4444", width=3)
     d3b.rounded_rectangle([130, trap_top + 15, 460, trap_top + 65], radius=8, fill="#7F1D1D")
     d3b.text((145, trap_top + 23), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
