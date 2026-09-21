@@ -348,11 +348,11 @@ def generate_clause_script(state):
             "c1": "अधिकतम 3 घंटे",
             "d1": "पूरे 7 घंटे",
             "ans1": "A",
-            "q2": "डाक मंडल में लेखा और वित्तीय हिसाब-किताब का मुख्य कार्यालय कौन सा होता है?",
-            "a2": "उप डाकघर",
+            "q2": "डाक मंडल में सभी डाकघरों का मुख्य लेखा कार्यालय (Office of Account) कौन सा होता है?",
+            "a2": "उप डाकघर (SO)",
             "b2": "प्रधान डाकघर (Head Post Office)",
             "c2": "रेल डाक सेवा (RMS)",
-            "d2": "सर्किल कार्यालय",
+            "d2": "डाक मंडल अधीक्षक कार्यालय",
             "ans2": "B",
             "q3": "उप डाकघर (Sub Post Office) का प्रभारी अधिकारी कौन होता है?",
             "a3": "मंडल अधीक्षक (SSPO)",
@@ -410,7 +410,11 @@ def generate_clause_script(state):
     2. AUTHENTIC POSTAL QUESTIONS: Test Competent Authorities (DG Posts, Head of Circle, SSPO, Postmaster), Working Hours, Account Relationships, Categories of Offices (HO, SO, BO).
     3. NO SILLY OPTIONS: Every option must be a genuine postal designation, accurate duration, or official rule. Never use 'पुरस्कार', 'कुछ नहीं', 'कोई नहीं', or truncated words.
     4. QUESTION INTEGRITY: Ensure QUESTION, Q1, Q2, and Q3 are full, grammatically complete question sentences.
-    5. DIVERSE ANSWERS: ANS1, ANS2, ANS3 must NOT all be the same option letter.
+    5. STRICT ZERO-DEFECT QUIZ RULES (Q1, Q2, Q3):
+       - Questions must be direct, authentic departmental exam PYQ pattern. Do NOT invert or frame ambiguous reverse questions.
+       - WATER-TIGHT OPTIONS: Exactly ONE option must be indisputably correct according to PO Guide Part 1. The other 3 options must be 100% incorrect.
+       - NEVER split mutually related entities (like SO and BO) across options without a combined 'Both' option.
+       - 100% ACCURATE ANSWER KEYS: ANS1, ANS2, ANS3 must strictly match the exact letter (A, B, C, or D) of the single correct option.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -430,19 +434,19 @@ def generate_clause_script(state):
     B1: ...
     C1: ...
     D1: ...
-    ANS1: A
+    ANS1: [A/B/C/D]
     Q2: ...
     A2: ...
     B2: ...
     C2: ...
     D2: ...
-    ANS2: B
+    ANS2: [A/B/C/D]
     Q3: ...
     A3: ...
     B3: ...
     C3: ...
     D3: ...
-    ANS3: C
+    ANS3: [A/B/C/D]
     """
 
     try:
@@ -467,22 +471,96 @@ def generate_clause_script(state):
             for line in raw_text.split('\n'):
                 if ':' in line:
                     parts = line.split(':', 1)
-                    k = parts[0].strip().lower()
+                    k = re.sub(r'[\*\s_]', '', parts[0]).lower()
                     v = parts[1].strip().strip('"\'`*')
                     if k in fallback_data:
                         clean_v = clean_hindi_postal_terms(v)
                         unwanted = ["पुरस्कार", "कुछ नहीं", "संतोष", "बाल जीवन बीमा", "सुरक्षा"]
-                        if not any(u in clean_v for u in unwanted) and len(clean_v) > 1:
-                            fallback_data[k] = clean_v
-                        if k.startswith("ans"):
-                            fallback_data[k] = fallback_data[k].upper()[:1]
+                        if not any(u in clean_v for u in unwanted) and len(clean_v) > 0:
+                            if k.startswith("ans"):
+                                m_opt = re.search(r"[A-D]", clean_v.upper())
+                                if m_opt:
+                                    fallback_data[k] = m_opt.group(0)
+                            else:
+                                fallback_data[k] = clean_v
+
+            # --- Strict Verification Audit Pass for Quiz Reel ---
+            audit_prompt = f"""
+You are the Chief Quality Controller for India Post Departmental Exam Papers.
+Audit the following 3 quiz questions for Post Office Guide Part 1 Clause {current_clause} ("{official_title}"):
+
+Official Context:
+\"\"\"
+{official_pdf_text}
+\"\"\"
+
+Draft Questions to Audit:
+Q1: {fallback_data.get('q1')}
+A1: {fallback_data.get('a1')}
+B1: {fallback_data.get('b1')}
+C1: {fallback_data.get('c1')}
+D1: {fallback_data.get('d1')}
+ANS1: {fallback_data.get('ans1')}
+
+Q2: {fallback_data.get('q2')}
+A2: {fallback_data.get('a2')}
+B2: {fallback_data.get('b2')}
+C2: {fallback_data.get('c2')}
+D2: {fallback_data.get('d2')}
+ANS2: {fallback_data.get('ans2')}
+
+Q3: {fallback_data.get('q3')}
+A3: {fallback_data.get('a3')}
+B3: {fallback_data.get('b3')}
+C3: {fallback_data.get('c3')}
+D3: {fallback_data.get('d3')}
+ANS3: {fallback_data.get('ans3')}
+
+AUDIT TASKS:
+1. Ensure each question is a direct, authentic departmental exam PYQ question. If any question is inverted, ambiguous, or splits SO and BO without a 'Both' option, replace/fix it immediately.
+2. Confirm exactly ONE option is correct and the other 3 are completely incorrect.
+3. Verify that ANS1, ANS2, ANS3 precisely match the single correct option letter (A, B, C, or D).
+
+Output strictly in this format:
+Q1: ...
+A1: ...
+B1: ...
+C1: ...
+D1: ...
+ANS1: [A/B/C/D]
+Q2: ...
+A2: ...
+B2: ...
+C2: ...
+D2: ...
+ANS2: [A/B/C/D]
+Q3: ...
+A3: ...
+B3: ...
+C3: ...
+D3: ...
+ANS3: [A/B/C/D]
+"""
+            audit_payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": audit_prompt}], "temperature": 0.0, "max_tokens": 600}
+            audit_res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=audit_payload, timeout=20)
+            if audit_res.status_code == 200:
+                audit_text = audit_res.json()["choices"][0]["message"]["content"].strip()
+                for line in audit_text.split('\n'):
+                    if ':' in line:
+                        parts = line.split(':', 1)
+                        k = re.sub(r'[\*\s_]', '', parts[0]).lower()
+                        v = parts[1].strip().strip('"\'`*')
+                        if k in fallback_data:
+                            clean_v = clean_hindi_postal_terms(v)
+                            if len(clean_v) > 0:
+                                if k.startswith("ans"):
+                                    m_opt = re.search(r"[A-D]", clean_v.upper())
+                                    if m_opt:
+                                        fallback_data[k] = m_opt.group(0)
+                                else:
+                                    fallback_data[k] = clean_v
     except Exception as e:
         print(f"⚠️ Groq note: {e}")
-
-    if fallback_data.get("ans1") == fallback_data.get("ans2") == fallback_data.get("ans3"):
-        fallback_data["ans1"] = "A"
-        fallback_data["ans2"] = "B"
-        fallback_data["ans3"] = "C"
 
     return fallback_data
 
