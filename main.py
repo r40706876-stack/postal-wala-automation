@@ -132,7 +132,7 @@ def clean_text(text):
 def clean_hindi_postal_terms(text):
     if not text:
         return ""
-    # Strip any leading brackets, dots, colons, or stray numbers
+    # Strip leading brackets, dots, colons, or stray numbers
     text = re.sub(r"^[\s\)\(\.\-\:–\d\+]+", "", text).strip()
     
     replacements = {
@@ -147,7 +147,7 @@ def clean_hindi_postal_terms(text):
         text = text.replace(bad_w, good_w)
     return clean_text(text)
 
-# --- Strict PDF Extractor (Ignores '3)' sub-bullets, enforces clean titles) ---
+# --- Strict PDF Extractor ---
 def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1):
     official_title = OFFICIAL_CLAUSE_MAP.get(clause_no, f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}")
     default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} ({official_title}) का आधिकारिक विभागीय नियम।"
@@ -162,7 +162,6 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1):
         for page in reader.pages:
             full_pdf_text += (page.extract_text() or "") + "\n"
 
-        # Match strict clause headings, reject bullet lines like '3)' or '(3)'
         start_pattern = re.compile(
             rf"(?:(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{clause_no}\b|(?:\n|^)\s*{clause_no}\s*[\.\-–]\s*[A-Za-z\u0900-\u097F])",
             re.IGNORECASE
@@ -202,7 +201,6 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1):
         else:
             part_text = full_text
 
-        # Always return the pure official title so OCR bugs never reach Slide 1
         return official_title, clean_hindi_postal_terms(part_text[:3500])
     except Exception as e:
         print(f"⚠️ PDF Extraction Error: {e}", flush=True)
@@ -212,7 +210,6 @@ def get_dynamic_total_parts(pdf_text):
     if not pdf_text:
         return 1
     char_count = len(pdf_text.strip())
-    # Scalable logic: ~350 chars per part handles extensive clauses completely
     calculated_parts = max(1, (char_count // 350) + (1 if char_count % 350 > 0 else 0))
     return calculated_parts
 
@@ -532,7 +529,6 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
         d.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
         
-        # Clean title from master map without corrupt OCR or brackets
         clean_title = clean_hindi_postal_terms(script_data["clause_name"])
         if len(clean_title) > 38:
             clean_title = clean_title[:36] + "..."
@@ -632,7 +628,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     frames.append("c_2c.png")
     frame_durs.append(round(durations[1] * 0.25, 2))
 
-    # Slide 3: Trap Point (Dynamic Layout Fitting - Never Overlaps)
+    # Slide 3: Trap Point (Full Width Utilization - Zero Overlap & Balanced Screen)
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
     draw_base(d3a)
@@ -643,8 +639,14 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d3a.rounded_rectangle([110, 510, 450, 565], radius=10, fill="#0B132B")
     d3a.text((130, 520), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
     
-    wrapped_s3 = textwrap.fill(script_data['sen2'], width=27)
-    d3a.multiline_text((110, 585), clean_hindi_postal_terms(wrapped_s3), fill="#F8FAFC", font=font_body, spacing=12)
+    # Bagal ki khali jagah bharne ke liye width ko 40 kiya
+    wrapped_s3 = textwrap.fill(clean_hindi_postal_terms(script_data['sen2']), width=40)
+    d3a.multiline_text((120, 590), wrapped_s3, fill="#F8FAFC", font=font_body, spacing=14)
+    
+    # Exact pixel boundary
+    s3_bbox = d3a.multiline_textbbox((120, 590), wrapped_s3, font=font_body, spacing=14)
+    sen2_bottom = s3_bbox[3]
+    
     draw_footer_cta(d3a)
     img3a.save("c_3a.png")
     frames.append("c_3a.png")
@@ -655,21 +657,22 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d3b.rounded_rectangle([80, 480, 1000, 1550], radius=24, outline="#EF4444", width=4)
     
     trap_txt = script_data.get("trap_point", script_data["sen2"])
-    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=27)
-    trap_lines = wrapped_trap.count("\n") + 1
+    # Laal card ke text ko bhi full-width spread kiya (width = 42)
+    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(trap_txt), width=42)
     
-    s3_lines = wrapped_s3.count("\n") + 1
-    sen2_bottom = 585 + (s3_lines * 42)
+    # Upar ke text ke theek baad safe vertical gap
+    trap_top = max(sen2_bottom + 40, 750)
     
-    trap_top = max(780, sen2_bottom + 15)
-    trap_box_height = max(240, (trap_lines * 36) + 85)
-    trap_bottom = min(1360, trap_top + trap_box_height)
+    # Dynamic box measurement
+    dummy_trap_bbox = d3b.multiline_textbbox((140, trap_top + 80), wrapped_trap, font=font_h2, spacing=12)
+    trap_bottom = min(1360, dummy_trap_bbox[3] + 35)
 
+    # Full-width balanced red card
     d3b.rounded_rectangle([110, trap_top, 970, trap_bottom], radius=18, fill="#380A0A", outline="#EF4444", width=3)
     d3b.rounded_rectangle([130, trap_top + 15, 460, trap_top + 65], radius=8, fill="#7F1D1D")
     d3b.text((145, trap_top + 23), "[ ! ] परीक्षा में फंसने वाला बिंदु", fill="#FECACA", font=font_label)
     
-    d3b.multiline_text((130, trap_top + 80), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=10)
+    d3b.multiline_text((140, trap_top + 80), wrapped_trap, fill="#FFFFFF", font=font_h2, spacing=12)
     img3b.save("c_3b.png")
     frames.append("c_3b.png")
     frame_durs.append(round(durations[2] * 0.35, 2))
