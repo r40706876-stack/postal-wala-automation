@@ -29,26 +29,20 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation
-
       - name: Install Python Packages
         run: |
           pip install requests pypdf pillow groq edge-tts google-genai
-
       - name: Run Automation Script
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: python main.py
 
-      - name: Save and Commit Progress State
+      - name: Save and Commit Generated Reels & Progress
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add progress_state.json
-          git diff --staged --quiet || git commit -m "Auto-update progress state [skip ci]"
-          git reset --hard HEAD
-          git clean -fd
+          git add progress_state.json generated_reels/
+          git diff --staged --quiet || git commit -m "Add generated reels and update progress state [skip ci]"
           git pull --rebase origin main || echo "Rebase not needed"
           git push origin main || git push
