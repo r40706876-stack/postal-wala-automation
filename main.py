@@ -194,11 +194,9 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1):
     try:
         reader = PdfReader(pdf_path)
         full_pdf_text = ""
-        # Read the first 45 pages strictly where PO Guide Part 1 is located (avoids PLI/Maths/GK)
         max_scan_pages = min(45, len(reader.pages))
         for p_idx in range(max_scan_pages):
             txt = reader.pages[p_idx].extract_text() or ""
-            # Stop if PLI / RPLI chapter starts
             if "डाक जीवन बीमा" in txt or "Postal Life Insurance" in txt or "RPLI" in txt:
                 break
             full_pdf_text += txt + "\n"
@@ -230,7 +228,6 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1):
                     break
                 matched_text += line + "\n"
 
-        # Discard if corrupt insurance terms bled in
         unwanted_keywords = ["संतोष", "बाल जीवन बीमा", "सुरक्षा", "सुविधा", "युगल सुरक्षा", "प्रीमियम दर"]
         if any(w in matched_text for w in unwanted_keywords):
             matched_text = ""
@@ -324,7 +321,6 @@ def generate_clause_script(state):
 
     official_title, official_pdf_text = extract_clause_from_pdf(current_clause, current_part, total_parts)
 
-    # 100% Guaranteed Departmental Authenticated Fallback
     if current_clause == 2:
         fallback_data = {
             "clause_no": 2,
@@ -475,7 +471,6 @@ def generate_clause_script(state):
                     v = parts[1].strip().strip('"\'`*')
                     if k in fallback_data:
                         clean_v = clean_hindi_postal_terms(v)
-                        # Blacklist silly words or insurance leakage
                         unwanted = ["पुरस्कार", "कुछ नहीं", "संतोष", "बाल जीवन बीमा", "सुरक्षा"]
                         if not any(u in clean_v for u in unwanted) and len(clean_v) > 1:
                             fallback_data[k] = clean_v
@@ -567,7 +562,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         script_data["hook_voice"],
         script_data["sen1"],
         f"परीक्षा विशेष बिंदु: {script_data['sen2']}",
-        "सवाल स्क्रीन पर है! सही उत्तर A, B, C या D कमेंट करें और पोस्टल वाला को फॉलो करें!"
+        "इस क्लॉज से जुड़े 100% एग्जाम में आने वाले क्वेश्चन अगली रील में हैं! तो फॉलो करो और जाकर देखो"
     ]
     durations = []
     for i, seg_text in enumerate(segment_audios):
@@ -733,7 +728,6 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d3a.rounded_rectangle([110, 510, 450, 565], radius=10, fill="#0B132B")
     d3a.text((130, 520), "परीक्षा अपवाद #2:", fill="#FBBF24", font=font_label)
     
-    # Text stretched wide to cover empty space
     wrapped_s3 = textwrap.fill(clean_hindi_postal_terms(script_data['sen2']), width=40)
     d3a.multiline_text((120, 590), wrapped_s3, fill="#F8FAFC", font=font_body, spacing=14)
     
