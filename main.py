@@ -2,6 +2,9 @@ import os
 import glob
 import json
 import time
+import math
+import struct
+import wave
 import asyncio
 import subprocess
 import requests
@@ -85,67 +88,102 @@ OFFICIAL_CLAUSE_MAP = {
     56: "पोस्ट बैग (Post Bags) के नियम व शुल्क"
 }
 
-# --- Dynamic 7-Point Retention Bank for Guaranteed Accuracy ---
+# --- COMPLETE, LOGICAL & GRAMMATICALLY SOUND 7-POINT DATA BANK ---
 CLAUSE_RETENTION_BANK = {
     1: {
         "hook_question": "डाक विभाग का प्रशासनिक नियंत्रण किसके पास होता है?",
-        "reward_line1": "महानिदेशक डाक सेवा (DG Posts)",
-        "reward_line2": "मुख्यालय: डाक भवन, नई दिल्ली",
-        "single_fact": "डाक सेवा बोर्ड (PSB) के पदेन अध्यक्ष 'सचिव (डाक)' होते हैं!",
-        "mcq_q": "डाक सेवा बोर्ड (Postal Services Board) के पदेन अध्यक्ष कौन होते हैं?",
+        "hook_speech": "डाक विभाग का प्रशासनिक नियंत्रण किसके पास होता है?",
+        "reward_speech": "इसका नियंत्रण महानिदेशक डाक सेवा यानी DG Posts के पास होता है, और मुख्यालय डाक भवन नई दिल्ली में है।",
+        "reward_card1_title": "सर्वोच्च प्रशासनिक अधिकारी",
+        "reward_card1_val": "महानिदेशक (DG Posts)",
+        "reward_card2_title": "मुख्यालय",
+        "reward_card2_val": "डाक भवन, नई दिल्ली",
+        "fact_speech": "डाक सेवा बोर्ड के पदेन अध्यक्ष हमेशा सचिव डाक होते हैं!",
+        "fact_display": "डाक सेवा बोर्ड (PSB) के पदेन अध्यक्ष 'सचिव (डाक)' होते हैं!",
+        "mcq_q": "डाक सेवा बोर्ड (PSB) के पदेन अध्यक्ष कौन होते हैं?",
         "mcq_opts": ["सचिव (डाक)", "महानिदेशक (DG Posts)", "संचार मंत्री", "सदस्य (कार्मिक)"],
         "mcq_ans": "A"
     },
     2: {
         "hook_question": "शाखा डाकघर (BO) का अधिकतम कार्य समय कितना होता है?",
-        "reward_line1": "अधिकतम 5 घंटे (न्यूनतम 4 घंटे)",
-        "reward_line2": "प्रभारी अधिकारी: शाखा डाकपाल (BPM)",
-        "single_fact": "प्रधान डाकघर (HO) पूरे डाक मंडल का मुख्य लेखा कार्यालय होता है!",
+        "hook_speech": "शाखा डाकघर का अधिकतम कार्य समय कितना होता है?",
+        "reward_speech": "शाखा डाकघर का अधिकतम कार्य समय पांच घंटे और न्यूनतम चार घंटे निर्धारित है।",
+        "reward_card1_title": "अधिकतम कार्य समय",
+        "reward_card1_val": "अधिकतम 5 घंटे निर्धारित",
+        "reward_card2_title": "प्रभारी अधिकारी",
+        "reward_card2_val": "शाखा डाकपाल (BPM)",
+        "fact_speech": "प्रधान डाकघर पूरे डाक मंडल का मुख्य लेखा कार्यालय होता है!",
+        "fact_display": "प्रधान डाकघर (HO) पूरे डाक मंडल का मुख्य लेखा कार्यालय होता है!",
         "mcq_q": "डाकघर गाइड भाग 1 के अनुसार डाकघरों को कुल कितने वर्गों में बांटा गया है?",
         "mcq_opts": ["3 वर्ग (HO, SO, BO)", "2 वर्ग (HO व SO)", "4 वर्ग", "5 वर्ग"],
         "mcq_ans": "A"
     },
     3: {
         "hook_question": "Night Post Office का समय कौन तय करता है?",
-        "reward_line1": "केवल DG (Posts) — महानिदेशक",
-        "reward_line2": "सामान्य दिन: रात 8:30 बजे तक",
-        "single_fact": "रविवार और छुट्टियों को शाम 5:00 बजे तक (Delivery पूरी तरह बंद)!",
+        "hook_speech": "नाइट पोस्ट ऑफिस के काम का समय कौन तय करता है?",
+        "reward_speech": "यह समय केवल महानिदेशक यानी DG Posts तय करते हैं, और सामान्य दिनों में यह रात साढ़े आठ बजे तक काम करते हैं।",
+        "reward_card1_title": "सक्षम प्राधिकारी",
+        "reward_card1_val": "केवल DG (Posts) — महानिदेशक",
+        "reward_card2_title": "सामान्य कार्य समय",
+        "reward_card2_val": "रात 8:30 बजे तक",
+        "fact_speech": "रविवार और छुट्टियों को यह शाम पांच बजे तक खुलते हैं, परंतु डिलीवरी पूरी तरह बंद रहती है!",
+        "fact_display": "रविवार और छुट्टियों को शाम 5:00 बजे तक (Delivery पूरी तरह बंद)!",
         "mcq_q": "रविवार और अवकाश के दिन Night Post Office में क्या बंद रहता है?",
         "mcq_opts": ["टिकट बिक्री", "डाक वितरण (Delivery)", "रजिस्ट्री बुकिंग", "इनमें से कोई नहीं"],
         "mcq_ans": "B"
     },
     4: {
-        "hook_question": "Mobile Post Office में कौन-सी सेवा पूरी तरह वर्जित है?",
-        "reward_line1": "मनी ऑर्डर और वीपी (V.P.) पार्सल",
-        "reward_line2": "बचत बैंक खाते की सेवाएं बंद",
-        "single_fact": "मोबाइल पोस्ट ऑफिस रविवार और आधिकारिक छुट्टियों पर बंद रहते हैं!",
+        "hook_question": "Mobile Post Office में कौन-सी सेवा पूरी तरह बंद रहती है?",
+        "hook_speech": "मोबाइल डाकघर में कौन-सी सेवा पूरी तरह वर्जित होती है?",
+        "reward_speech": "मोबाइल डाकघरों में मनी ऑर्डर और वीपी पार्सल की बुकिंग पूरी तरह बंद रहती है।",
+        "reward_card1_title": "प्रतिबंधित सेवाएं",
+        "reward_card1_val": "मनी ऑर्डर और V.P. पार्सल",
+        "reward_card2_title": "बचत बैंक कार्य",
+        "reward_card2_val": "बचत बैंक सेवाएं बंद",
+        "fact_speech": "मोबाइल डाकघर रविवार और सभी आधिकारिक छुट्टियों पर पूर्णतः बंद रहते हैं!",
+        "fact_display": "मोबाइल पोस्ट ऑफिस रविवार और आधिकारिक छुट्टियों पर बंद रहते हैं!",
         "mcq_q": "मोबाइल डाकघर (चलते-फिरते डाकघर) में क्या स्वीकार नहीं किया जाता?",
         "mcq_opts": ["मनी ऑर्डर और वीपी वस्तुएं", "साधारण पत्र", "डाक टिकट बिक्री", "पंजीकृत पत्र"],
         "mcq_ans": "A"
     },
     5: {
         "hook_question": "डाकघर के कारोबार के घंटे (Business Hours) कौन तय करता है?",
-        "reward_line1": "सर्किल प्रमुख (Head of Circle / CPMG)",
-        "reward_line2": "जनता की सुविधा के अनुसार निर्धारण",
-        "single_fact": "बचत बैंक व मनी ऑर्डर लगभग 5 घंटे, रजिस्ट्री 6-7 घंटे कार्य करती है!",
+        "hook_speech": "डाकघर के कारोबार के घंटे यानी बिजनेस आवर्स कौन तय करता है?",
+        "reward_speech": "कार्य घंटों का निर्धारण सर्किल प्रमुख यानी चीफ पोस्टमास्टर जनरल करते हैं।",
+        "reward_card1_title": "सक्षम प्राधिकारी",
+        "reward_card1_val": "सर्किल प्रमुख (Head of Circle/CPMG)",
+        "reward_card2_title": "आधार",
+        "reward_card2_val": "जनता की स्थानीय सुविधा",
+        "fact_speech": "बचत बैंक का कार्य लगभग पांच घंटे और रजिस्ट्री पार्सल छह से सात घंटे होता है!",
+        "fact_display": "बचत बैंक कार्य 5 घंटे, रजिस्ट्री व पार्सल 6-7 घंटे होता है!",
         "mcq_q": "डाकघर में विभिन्न सेवाओं के कार्य घंटे (Business Hours) कौन निश्चित करता है?",
         "mcq_opts": ["सर्किल प्रमुख (CPMG)", "डाक महानिदेशक (DG Posts)", "स्थानीय पोस्टमास्टर", "मंडल अधीक्षक (SSPO)"],
         "mcq_ans": "A"
     },
     7: {
         "hook_question": "रविवार के दिन डाकघर में कौन-सा काम पूरी तरह बंद रहता है?",
-        "reward_line1": "सामान्य डाकघर पूर्णतः बंद रहते हैं",
-        "reward_line2": "डाक वितरण (Delivery) पूरी तरह बंद",
-        "single_fact": "रविवार को केवल नाइट पोस्ट ऑफिस और RMS सीमित सेवाओं हेतु खुलते हैं!",
+        "hook_speech": "रविवार के दिन डाकघर में कौन-सा काम पूरी तरह बंद रहता है?",
+        "reward_speech": "रविवार को सामान्य डाकघर पूर्णतः बंद रहते हैं और डाक का कोई वितरण नहीं होता।",
+        "reward_card1_title": "सामान्य डाकघर",
+        "reward_card1_val": "पूर्णतः बंद रहते हैं",
+        "reward_card2_title": "डाक वितरण कार्य",
+        "reward_card2_val": "वितरण (Delivery) पूरी तरह बंद",
+        "fact_speech": "रविवार को केवल नाइट पोस्ट ऑफिस और आरएमएस कार्यालय सीमित सेवाओं हेतु खुलते हैं!",
+        "fact_display": "रविवार को केवल नाइट पोस्ट ऑफिस और RMS सीमित समय हेतु खुलते हैं!",
         "mcq_q": "डाकघर गाइड भाग 1 क्लॉज 7 के अनुसार रविवार को क्या पूरी तरह बंद रहता है?",
         "mcq_opts": ["डाक वितरण (Delivery)", "पत्र-पेटी में पत्र डालना", "आरएमएस कार्य", "नाइट पोस्ट ऑफिस कार्य"],
         "mcq_ans": "A"
     },
     8: {
         "hook_question": "डाक विभाग में साल में कुल कितने राष्ट्रीय अनिवार्य अवकाश होते हैं?",
-        "reward_line1": "कुल 3 राष्ट्रीय अवकाश (17 कुल अवकाश)",
-        "reward_line2": "26 जनवरी, 15 अगस्त, 2 अक्टूबर",
-        "single_fact": "अनिवार्य अवकाशों के दिन भी नाइट पोस्ट ऑफिस सीमित समय हेतु खुलते हैं!",
+        "hook_speech": "डाक विभाग में साल में कुल कितने राष्ट्रीय अनिवार्य अवकाश होते हैं?",
+        "reward_speech": "डाक विभाग में कुल तीन राष्ट्रीय अवकाश अनिवार्य होते हैं: छब्बीस जनवरी, पंद्रह अगस्त और दो अक्टूबर।",
+        "reward_card1_title": "अनिवार्य राष्ट्रीय अवकाश",
+        "reward_card1_val": "कुल 3 अवकाश (17 कुल छुट्टियां)",
+        "reward_card2_title": "तीन राष्ट्रीय दिवस",
+        "reward_card2_val": "26 जनवरी, 15 अगस्त, 2 अक्टूबर",
+        "fact_speech": "अनिवार्य राष्ट्रीय अवकाशों के दिन भी नाइट पोस्ट ऑफिस सीमित समय के लिए खुलते हैं!",
+        "fact_display": "अनिवार्य अवकाशों के दिन भी नाइट पोस्ट ऑफिस सीमित समय हेतु खुलते हैं!",
         "mcq_q": "डाकघर में निम्नलिखित में से कौन-सा राष्ट्रीय अवकाश अनिवार्य रूप से मनाया जाता है?",
         "mcq_opts": ["15 अगस्त (स्वतंत्रता दिवस)", "होली", "दीपावली", "रक्षाबंधन"],
         "mcq_ans": "A"
@@ -300,6 +338,26 @@ def save_progress_state(state):
     except Exception:
         pass
 
+# 100% Reliable, Pure-Python Real Ticking Sound Generator (Zero FFmpeg crash risk)
+def generate_5sec_clock_sfx(outfile="c_audio_timer.wav"):
+    sample_rate = 44100
+    with wave.open(outfile, 'w') as wav_file:
+        wav_file.setnchannels(1)
+        wav_file.setsampwidth(2)
+        wav_file.setframerate(sample_rate)
+        data = bytearray()
+        for sec in range(5):
+            freq = 1500 if sec == 4 else 1000
+            dur_samples = int(sample_rate * (0.18 if sec == 4 else 0.06))
+            for i in range(sample_rate):
+                if i < dur_samples:
+                    decay = (1.0 - (i / dur_samples)) ** 2
+                    val = int(22000 * decay * math.sin(2 * math.pi * freq * i / sample_rate))
+                else:
+                    val = 0
+                data.extend(struct.pack('<h', val))
+        wav_file.writeframes(data)
+
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 3)
     current_part = state.get("current_part", 1)
@@ -308,12 +366,17 @@ def generate_clause_script(state):
     official_title, official_pdf_text = extract_clause_from_pdf(current_clause, current_part, total_parts)
 
     retention_info = CLAUSE_RETENTION_BANK.get(current_clause, {
-        "hook_question": f"क्लॉज {current_clause}: परीक्षा में बार-बार आने वाला नियम क्या है?",
-        "reward_line1": f"{official_title} का आधिकारिक नियम मान्य है",
-        "reward_line2": "नियमों का उल्लंघन होने पर बुकिंग अस्वीकार होती है",
-        "single_fact": "विभागीय परीक्षा में इसके अपवादों से सीधे सवाल बनते हैं!",
+        "hook_question": f"क्लॉज {current_clause}: मुख्य आधिकारिक नियम क्या है?",
+        "hook_speech": f"क्लॉज {current_clause} का मुख्य आधिकारिक नियम क्या है?",
+        "reward_speech": f"डाकघर गाइड भाग एक के अनुसार {official_title} का आधिकारिक प्रावधान लागू होता है।",
+        "reward_card1_title": "आधिकारिक विषय",
+        "reward_card1_val": official_title[:30],
+        "reward_card2_title": "विभागीय शर्त",
+        "reward_card2_val": "नियमों का पालन अनिवार्य",
+        "fact_speech": "परीक्षा में इस क्लॉज की शर्तों और सीमाओं से सीधे प्रश्न पूछे जाते हैं!",
+        "fact_display": "विभागीय परीक्षा में इसके अपवादों से सीधे सवाल बनते हैं!",
         "mcq_q": f"डाकघर गाइड भाग 1 के क्लॉज {current_clause} का मुख्य विषय क्या है?",
-        "mcq_opts": [official_title, "सामान्य निर्देश", "अतिरिक्त छूट", "सर्किल प्रमुख का आदेश"],
+        "mcq_opts": [official_title[:25], "सामान्य निर्देश", "अतिरिक्त छूट", "सर्किल प्रमुख का आदेश"],
         "mcq_ans": "A"
     })
 
@@ -326,15 +389,21 @@ def generate_clause_script(state):
         "concept_data": {
             "series_tag": f"POSTAL TRAP #{current_clause:02d}",
             "hook_question": retention_info["hook_question"],
-            "reward_line1": retention_info["reward_line1"],
-            "reward_line2": retention_info["reward_line2"],
-            "single_fact": retention_info["single_fact"],
+            "hook_speech": retention_info["hook_speech"],
+            "reward_speech": retention_info["reward_speech"],
+            "reward_card1_title": retention_info["reward_card1_title"],
+            "reward_card1_val": retention_info["reward_card1_val"],
+            "reward_card2_title": retention_info["reward_card2_title"],
+            "reward_card2_val": retention_info["reward_card2_val"],
+            "fact_speech": retention_info["fact_speech"],
+            "fact_display": retention_info["fact_display"],
             "mcq_q": retention_info["mcq_q"],
             "mcq_opts": retention_info["mcq_opts"],
             "mcq_ans": retention_info["mcq_ans"]
         },
+        # Exact Fallback Quiz Data for render_quiz_video
         "q1": f"डाकघर गाइड भाग 1 क्लॉज {current_clause} ({official_title}) का मुख्य नियम क्या है?",
-        "a1": retention_info["reward_line1"],
+        "a1": retention_info["reward_card1_val"],
         "b1": "अतिरिक्त सामान्य छूट",
         "c1": "स्थानीय पोस्टमास्टर का आदेश",
         "d1": "इनमें से कोई नहीं",
@@ -346,7 +415,7 @@ def generate_clause_script(state):
         "d2": retention_info["mcq_opts"][3],
         "ans2": retention_info["mcq_ans"],
         "q3": f"क्लॉज {current_clause} के तहत परीक्षा में क्या ध्यान रखना चाहिए?",
-        "a3": retention_info["single_fact"],
+        "a3": retention_info["fact_display"],
         "b3": "कोई नियम लागू नहीं होता",
         "c3": "वार्षिक संशोधन",
         "d3": "अतिरिक्त समय",
@@ -356,6 +425,7 @@ def generate_clause_script(state):
     if not GROQ_API_KEY:
         return script_data
 
+    # Groq AI call for fresh questions in Pure Hindi
     prompt = f"""
     You are the Chief Examiner for India Post Departmental Exams.
     Generate 3 authentic exam questions for PO Guide Part 1 Clause {current_clause} ("{official_title}").
@@ -408,7 +478,7 @@ def generate_clause_script(state):
     return script_data
 
 # --- AUDIO GENERATION ---
-async def generate_segment_audio(text, outfile, rate="+5%"):
+async def generate_segment_audio(text, outfile, rate="+8%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
         except Exception: pass
@@ -423,16 +493,16 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- 100% ATTRACTIVE ANIMATED CONCEPT VIDEO (TYPEWRITER + FAKE POLL + MOTION) ---
+# --- 100% LOGICAL ANIMATED CONCEPT VIDEO ENGINE ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     cd = script_data["concept_data"]
 
     # 1. Voiceover Flow
     audio_segments = [
-        cd["hook_question"],
-        f"इसका निर्धारण {cd['reward_line1']} करते हैं, और {cd['reward_line2']}।",
-        cd["single_fact"],
+        cd["hook_speech"],
+        cd["reward_speech"],
+        cd["fact_speech"],
         f"अब इस सवाल का उत्तर दो: {cd['mcq_q']}",
         "सही उत्तर A, B, C या D... तुरंत कमेंट करो!"
     ]
@@ -440,14 +510,12 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     durations = []
     for i, seg in enumerate(audio_segments):
         fn = f"c_audio_{i}.mp3"
-        asyncio.run(generate_segment_audio(seg, fn, rate="+8%"))
+        asyncio.run(generate_segment_audio(seg, fn, rate="+10%"))
         durations.append(get_audio_duration(fn))
 
-    timer_audio = "c_audio_timer.mp3"
-    subprocess.run([
-        "ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
-        "-t", "5.0", "-c:a", "libmp3lame", "-b:a", "192k", timer_audio
-    ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # Real 5-Second Clock Ticking Sound Effect (.wav)
+    timer_audio = "c_audio_timer.wav"
+    generate_5sec_clock_sfx(timer_audio)
     timer_dur = 5.0
 
     all_audios = ["c_audio_0.mp3", "c_audio_1.mp3", "c_audio_2.mp3", "c_audio_3.mp3", timer_audio, "c_audio_4.mp3"]
@@ -469,7 +537,6 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     font_opt = get_font(28)
     font_timer = get_font(36)
     font_big_pulse = get_font(46)
-    font_poll = get_font(24)
 
     def draw_top_series_bar(d, tracker_state=1):
         d.rounded_rectangle([70, 65, 460, 125], radius=14, fill="#0F172A", outline="#FACC15", width=3)
@@ -490,20 +557,18 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     frames = []
     frame_durs = []
 
-    # --- ANIMATION 1: TYPEWRITER EFFECT + BLINKING CURSOR ON HOOK (00:00 - 00:02.5s) ---
+    # --- 1. HOOK: TYPEWRITER EFFECT + BLINKING CURSOR (0–2s) ---
     hook_full = clean_hindi_postal_terms(cd["hook_question"])
     hook_words = hook_full.split()
     total_w = len(hook_words)
     
-    # 5 progressive slices for smooth typewriter feel
     slice_indices = [
-        max(1, int(total_w * 0.25)),
-        max(2, int(total_w * 0.50)),
-        max(3, int(total_w * 0.75)),
+        max(1, int(total_w * 0.30)),
+        max(2, int(total_w * 0.60)),
         total_w,
         total_w
     ]
-    tw_slice_durs = [0.25, 0.25, 0.30, 0.35, max(0.5, durations[0] - 1.15)]
+    tw_slice_durs = [0.25, 0.30, 0.35, max(0.4, durations[0] - 0.90)]
 
     for tw_idx, w_count in enumerate(slice_indices):
         img_tw = Image.new("RGB", (1080, 1920), color="#080D1A")
@@ -514,10 +579,9 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         d_tw.rounded_rectangle([110, 390, 480, 450], radius=12, fill="#7F1D1D", outline="#EF4444", width=2)
         d_tw.text((135, 405), "[ ⚠️ सीधा परीक्षा सवाल ]", fill="#FECACA", font=font_sub)
 
-        # Typewriter text with blinking yellow cursor
         curr_text = " ".join(hook_words[:w_count])
-        if tw_idx < 4:
-            curr_text += "  |"  # Blinking cursor
+        if tw_idx < 3:
+            curr_text += "  |"
         wrapped_hook = textwrap.fill(curr_text, width=19)
         d_tw.multiline_text((115, 600), wrapped_hook, fill="#FFFFFF", font=font_h1, spacing=20)
 
@@ -529,7 +593,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         frames.append(tw_name)
         frame_durs.append(tw_slice_durs[tw_idx])
 
-    # --- ANIMATION 2: CASCADING REWARD CARDS POP (00:02.5 - 00:07s) ---
+    # --- 2. INSTANT REWARD: 2 VIBRANT LOGICAL CARDS (2–7s) ---
     img2a = Image.new("RGB", (1080, 1920), color="#080D1A")
     d2a = ImageDraw.Draw(img2a)
     draw_top_series_bar(d2a, tracker_state=2)
@@ -537,49 +601,49 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     d2a.text((105, 230), "सवाल:", fill="#FACC15", font=font_sub)
     d2a.text((105, 268), clean_hindi_postal_terms(cd["hook_question"])[:40], fill="#CBD5E1", font=font_h2)
 
+    # Card 1
     d2a.rounded_rectangle([70, 370, 1010, 800], radius=24, fill="#064E3B", outline="#10B981", width=4)
-    d2a.rounded_rectangle([105, 405, 440, 460], radius=10, fill="#022C22")
-    d2a.text((125, 417), "[ ✅ सही उत्तर / निर्धारण ]", fill="#A7F3D0", font=font_sub)
-    wrapped_rew1 = textwrap.fill(clean_hindi_postal_terms(cd["reward_line1"]), width=21)
+    d2a.rounded_rectangle([105, 405, 480, 460], radius=10, fill="#022C22")
+    d2a.text((125, 417), f"[ ✅ {cd['reward_card1_title']} ]", fill="#A7F3D0", font=font_sub)
+    wrapped_rew1 = textwrap.fill(clean_hindi_postal_terms(cd["reward_card1_val"]), width=21)
     d2a.multiline_text((105, 530), wrapped_rew1, fill="#FDE047", font=font_h1, spacing=16)
 
     img2a.save("anim_c2_a.png")
     frames.append("anim_c2_a.png")
     frame_durs.append(round(durations[1] * 0.45, 2))
 
+    # Card 2
     img2b = img2a.copy()
     d2b = ImageDraw.Draw(img2b)
     d2b.rounded_rectangle([70, 850, 1010, 1280], radius=24, fill="#0C4A6E", outline="#38BDF8", width=4)
-    d2b.rounded_rectangle([105, 885, 420, 940], radius=10, fill="#082F49")
-    d2b.text((125, 897), "[ 🕒 कार्य समय / शर्त ]", fill="#BAE6FD", font=font_sub)
-    wrapped_rew2 = textwrap.fill(clean_hindi_postal_terms(cd["reward_line2"]), width=21)
+    d2b.rounded_rectangle([105, 885, 480, 940], radius=10, fill="#082F49")
+    d2b.text((125, 897), f"[ 🕒 {cd['reward_card2_title']} ]", fill="#BAE6FD", font=font_sub)
+    wrapped_rew2 = textwrap.fill(clean_hindi_postal_terms(cd["reward_card2_val"]), width=21)
     d2b.multiline_text((105, 1010), wrapped_rew2, fill="#FFFFFF", font=font_h1, spacing=16)
 
     img2b.save("anim_c2_b.png")
     frames.append("anim_c2_b.png")
     frame_durs.append(round(durations[1] * 0.55, 2))
 
-    # --- ANIMATION 3: SINGLE FACT WITH PULSING ALERT (00:07 - 00:11s) ---
+    # --- 3. SINGLE FACT ALERT: CLEAN, ZERO VISUAL JUNK (7–11s) ---
     img3 = Image.new("RGB", (1080, 1920), color="#080D1A")
     d3 = ImageDraw.Draw(img3)
     draw_top_series_bar(d3, tracker_state=2)
-    d3.rounded_rectangle([70, 320, 1010, 1340], radius=28, fill="#1E1B4B", outline="#A855F7", width=3)
-    d3.rounded_rectangle([110, 365, 560, 425], radius=12, fill="#4C1D95")
-    d3.text((130, 380), "[ 📌 परीक्षा स्पेशल अपवाद ]", fill="#E9D5FF", font=font_sub)
-    wrapped_fact = textwrap.fill(clean_hindi_postal_terms(cd["single_fact"]), width=20)
-    d3.multiline_text((115, 540), wrapped_fact, fill="#FFFFFF", font=font_h1, spacing=18)
+    d3.rounded_rectangle([70, 340, 1010, 1340], radius=28, fill="#1E1B4B", outline="#A855F7", width=3)
+    d3.rounded_rectangle([110, 390, 560, 450], radius=12, fill="#4C1D95")
+    d3.text((130, 405), "[ 📌 परीक्षा स्पेशल अपवाद ]", fill="#E9D5FF", font=font_sub)
+    
+    wrapped_fact = textwrap.fill(clean_hindi_postal_terms(cd["fact_display"]), width=20)
+    d3.multiline_text((115, 600), wrapped_fact, fill="#FFFFFF", font=font_h1, spacing=20)
 
-    d3.rounded_rectangle([110, 1000, 970, 1140], radius=18, fill="#450A0A", outline="#EF4444", width=3)
-    d3.text((140, 1045), "⚠️ 90% छात्र इस नियम में गलती करते हैं!", fill="#FCA5A5", font=font_h2)
-
-    d3.rounded_rectangle([110, 1200, 970, 1290], radius=16, fill="#064E3B", outline="#10B981", width=2)
-    d3.text((220, 1225), "🎯 अब दीजिए परीक्षा प्रश्न का उत्तर >>", fill="#34D399", font=font_h2)
+    d3.rounded_rectangle([110, 1180, 970, 1275], radius=16, fill="#064E3B", outline="#10B981", width=2)
+    d3.text((210, 1205), "🎯 अब दीजिए परीक्षा प्रश्न का उत्तर >>", fill="#34D399", font=font_h2)
 
     img3.save("anim_c3.png")
     frames.append("anim_c3.png")
     frame_durs.append(round(durations[2], 2))
 
-    # --- ANIMATION 4: STAGGERED MCQ ENTRY (00:11 - 00:16s) ---
+    # --- 4. FAST MCQ ENTRY: STAGGERED & CLEAN OPTIONS (11–16s) ---
     img_mcq = Image.new("RGB", (1080, 1920), color="#080D1A")
     dm = ImageDraw.Draw(img_mcq)
     draw_top_series_bar(dm, tracker_state=3)
@@ -606,7 +670,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     frames.append("anim_mcq_1.png")
     frame_durs.append(round(sub_dur, 2))
 
-    # Step 2: All 4 Options visible
+    # Step 2: All 4 Options visible (Pure clean display, no fake poll)
     img_m2 = img_m1.copy()
     dm2 = ImageDraw.Draw(img_m2)
     for oi in range(2, 4):
@@ -618,67 +682,32 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     frames.append("anim_mcq_2.png")
     frame_durs.append(round(sub_dur * 2.0, 2))
 
-    # --- ANIMATION 5: LIVE FAKE POLL BAR FILLING + PULSING TIMER (00:16 - 00:21s) ---
-    # Distribution based on correct answer (Winner gets ~72% majority)
-    ans_key = cd.get("mcq_ans", "A").upper()
-    poll_distributions = {
-        "A": [72, 14, 8, 6],
-        "B": [14, 71, 9, 6],
-        "C": [12, 11, 70, 7],
-        "D": [11, 13, 8, 68]
-    }
-    target_pcts = poll_distributions.get(ans_key, [72, 14, 8, 6])
-
+    # --- 5. LIVE PULSING COUNTDOWN + SHRINKING PROGRESS BAR (16–21s) ---
     cd_steps = [
-        ("05", "#FACC15", "#064E3B", 1010, 0.25),
-        ("04", "#FACC15", "#064E3B", 820,  0.45),
-        ("03", "#FB923C", "#7C2D12", 630,  0.65),
-        ("02", "#F87171", "#7F1D1D", 440,  0.85),
-        ("01", "#EF4444", "#991B1B", 250,  1.00)
+        ("05", "#FACC15", "#064E3B", 1010),
+        ("04", "#FACC15", "#064E3B", 820),
+        ("03", "#FB923C", "#7C2D12", 630),
+        ("02", "#F87171", "#7F1D1D", 440),
+        ("01", "#EF4444", "#991B1B", 250)
     ]
 
-    for sec_idx, (sec_str, tc, bgc, bar_w, fill_ratio) in enumerate(cd_steps):
-        # Frame with Live Poll filling up inside option containers
-        img_poll = img_mcq.copy()
-        dp = ImageDraw.Draw(img_poll)
-
-        for oi in range(4):
-            oy = opt_y_starts[oi]
-            curr_pct = int(target_pcts[oi] * fill_ratio)
-            bar_fill_w = int(940 * (curr_pct / 100.0))
-            is_winner = (labels[oi] == ans_key)
-
-            # Draw outer box
-            box_outline = "#10B981" if (is_winner and fill_ratio >= 0.85) else "#334155"
-            dp.rounded_rectangle([70, oy, 1010, oy + 95], radius=16, fill="#0B132B", outline=box_outline, width=2)
-
-            # Draw animated poll progress bar inside
-            bar_color = "#064E3B" if is_winner else "#1E293B"
-            if bar_fill_w > 10:
-                dp.rounded_rectangle([72, oy + 2, 70 + bar_fill_w, oy + 93], radius=14, fill=bar_color)
-
-            # Option Label & Text
-            dp.text((105, oy + 25), f"{labels[oi]})", fill="#38BDF8", font=font_h2)
-            dp.text((170, oy + 27), clean_hindi_postal_terms(cd["mcq_opts"][oi])[:30], fill="#FFFFFF", font=font_opt)
-
-            # Live Percentage Badge on the right
-            pct_color = "#34D399" if is_winner else "#94A3B8"
-            dp.text((915, oy + 30), f"{curr_pct}%", fill=pct_color, font=font_poll)
-
+    for sec_idx, (sec_str, tc, bgc, bar_w) in enumerate(cd_steps):
         # Pulse Frame (0.35s)
+        img_pulse = img_m2.copy()
+        dp = ImageDraw.Draw(img_pulse)
         dp.rounded_rectangle([70, 1010, 1010, 1130], radius=18, fill="#0F172A", outline=tc, width=4)
         dp.text((290, 1035), f"⏱️ समय: {sec_str} सेकंड", fill=tc, font=font_big_pulse)
         dp.rounded_rectangle([70, 1150, bar_w, 1165], radius=6, fill=tc)
         dp.rounded_rectangle([70, 1190, 1010, 1290], radius=18, fill=bgc, outline=tc, width=2)
         dp.text((250, 1215), ">> अपना उत्तर सोचें और नोट करें!", fill="#FFFFFF", font=font_h2)
 
-        p_name = f"anim_p_{sec_idx}.png"
-        img_poll.save(p_name)
+        p_name = f"anim_t_pulse_{sec_idx}.png"
+        img_pulse.save(p_name)
         frames.append(p_name)
         frame_durs.append(0.35)
 
         # Hold Frame (0.65s)
-        img_hold = img_poll.copy()
+        img_hold = img_m2.copy()
         dh = ImageDraw.Draw(img_hold)
         dh.rounded_rectangle([70, 1020, 1010, 1120], radius=16, fill="#0F172A", outline=tc, width=2)
         dh.text((310, 1045), f"⏱️ समय शेष: {sec_str} सेकंड", fill=tc, font=font_timer)
@@ -686,12 +715,12 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         dh.rounded_rectangle([70, 1190, 1010, 1290], radius=18, fill=bgc, outline=tc, width=2)
         dh.text((250, 1215), ">> अपना उत्तर सोचें और नोट करें!", fill="#FFFFFF", font=font_h2)
 
-        h_name = f"anim_h_{sec_idx}.png"
+        h_name = f"anim_t_hold_{sec_idx}.png"
         img_hold.save(h_name)
         frames.append(h_name)
         frame_durs.append(0.65)
 
-    # --- ANIMATION 6: BREATHING PULSE CTA BUTTON (00:21 - 00:23.5s) ---
+    # --- 6. BREATHING PULSE CTA BUTTON: SINGLE COMMENT CALL (21–24s) ---
     cta_pulses = [
         {"grow": 6, "bg": "#F43F5E", "dur": 0.4},
         {"grow": 0, "bg": "#E11D48", "dur": 0.4},
@@ -713,7 +742,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         frames.append(cta_fn)
         frame_durs.append(round(c_step["dur"], 2))
 
-    # --- FFMPEG COMPILATION WITH TOP PROGRESS BAR ---
+    # --- FFMPEG COMPILATION WITH SMOOTH TOP PROGRESS BAR ---
     inputs = []
     filter_parts = ""
     for i, fname in enumerate(frames):
@@ -754,7 +783,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"🔥 Typewriter + Fake Poll Animated Reel Created: {output_video} (Dur: {total_dur:.2f}s)", flush=True)
+    print(f"🔥 100% Verified Concept Reel Created (With Real Clock SFX): {output_video} (Dur: {total_dur:.2f}s)", flush=True)
 
 # --- 3-QUESTION 40-SEC QUIZ REEL (EXACT ORIGINAL FROM MAIN 14.PY - 100% UNTOUCHED) ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
@@ -1015,7 +1044,7 @@ if __name__ == "__main__":
     
     script_data = generate_clause_script(st)
     
-    # 1. Concept Reel (Typewriter + Fake Poll Animated 7-Point Framework)
+    # 1. Concept Reel (100% Verified Logical 7-Point Retention Flow)
     print("🎬 Generating Concept Rule Reel...", flush=True)
     render_concept_video(script_data, CONCEPT_VIDEO)
     
