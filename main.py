@@ -135,17 +135,10 @@ def get_dynamic_total_parts(pdf_text):
     if not pdf_text:
         return 1
     char_count = len(pdf_text.strip())
-    # Enhanced threshold to ensure comprehensive clauses get sufficient parts
-    if char_count < 250:
-        return 1
-    elif char_count < 600:
-        return 2
-    elif char_count < 1100:
-        return 3
-    elif char_count < 1600:
-        return 4
-    else:
-        return 5
+    # Scalable logic: every ~350 characters gets its own dedicated part 
+    # to handle massive clauses (like Clause 55) completely without skipping any line.
+    calculated_parts = max(1, (char_count // 350) + (1 if char_count % 350 > 0 else 0))
+    return calculated_parts
 
 def clean_text(text):
     if not text:
@@ -209,7 +202,6 @@ def load_progress_state():
         except Exception:
             pass
             
-    # Keep current target as Clause 2 (or resume from saved state)
     _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 2), state.get("current_part", 1), state.get("total_parts", 1))
     state["total_parts"] = get_dynamic_total_parts(pdf_text)
     
