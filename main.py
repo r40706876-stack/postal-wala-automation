@@ -163,7 +163,7 @@ def advance_progress_state(state):
 
     save_progress_state(state)
 
-# --- 7-STEP BLUEPRINT SCRIPT GENERATOR (GROQ / FALLBACK) ---
+# --- 7-STEP BLUEPRINT SCRIPT GENERATOR (LOGICALLY ALIGNED) ---
 def generate_clause_script(state):
     current_clause = state.get("clause_no", 1)
     current_part = state.get("current_part", 1)
@@ -175,17 +175,17 @@ def generate_clause_script(state):
         "clause_name": official_title,
         "part_no": current_part,
         "total_parts": total_parts,
-        "hook_text": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} का समय कौन तय करता है?",
-        "guess_wrong": "Postmaster?",
-        "reward_right": "DG Posts",
-        "fact_num": "8:30 PM",
-        "fact_desc": "सामान्य कार्य दिवस",
-        "exam_trap": "रविवार और छुट्टियों में भी सीमित सेवाएँ हो सकती हैं।",
-        "question": f"क्लॉज {current_clause} के अनुसार नियम किसके द्वारा तय होता है?",
-        "opt_a": "DG Posts",
-        "opt_b": "Head of Circle",
-        "opt_c": "SSPO",
-        "opt_d": "Local Postmaster",
+        "hook_text": f"पैकिंग पर कितने डाकघरों की मोहरें लगेंगी?",
+        "guess_wrong": "सिर्फ 1 डाकघर?",
+        "reward_right": "2 डाकघर",
+        "fact_num": "2",
+        "fact_desc": "बुकिंग व गंतव्य डाकघर",
+        "exam_trap": "कमजोर कवर में पैकिंग करना नियम विरुद्ध है।",
+        "question": f"पैकिंग पर किन दो डाकघरों की मोहर लगती है?",
+        "opt_a": "बुकिंग व गंतव्य",
+        "opt_b": "मूल व अंत",
+        "opt_c": "स्थानीय व केंद्रीय",
+        "opt_d": "प्रेषक व प्रापक",
         "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts}) - 10/10 Target Blueprint Solution。\n\n💬 अपना सही उत्तर कमेंट करें (A/B/C/D)!\n🔥 अगला Postal Trap कल!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
     }
 
@@ -200,16 +200,16 @@ def generate_clause_script(state):
     {official_pdf_text}
     \"\"\"
 
-    Strictly provide the 7-step blueprint components in clear Hindi:
-    HOOK_TEXT: A compelling opening question (max 10 words).
-    GUESS_WRONG: A common wrong guess option (max 3 words).
-    REWARD_RIGHT: The exact correct authority/answer (max 3 words).
-    FACT_NUM: Key time/limit/number from text (e.g., 8:30 PM or specific limit).
-    FACT_DESC: Short rule description (max 4 words).
-    EXAM_TRAP: Important exception or trap note (max 12 words).
-    QUESTION: MCQ question based on this text (max 12 words).
+    Strictly provide the 7-step blueprint components in clear Hindi with absolute logical alignment:
+    HOOK_TEXT: A sharp question about this specific rule (max 10 words).
+    GUESS_WRONG: A common incorrect guess matching the question type (max 4 words).
+    REWARD_RIGHT: The exact correct answer matching the question type (max 4 words).
+    FACT_NUM: Key number or core metric from text (e.g., "2" or specific limit).
+    FACT_DESC: Clear rule label (max 4 words).
+    EXAM_TRAP: A specific examination exception, condition, or strict trap note from text (max 12 words).
+    QUESTION: Logical MCQ question matching the hook (max 12 words).
     OPT_A: Correct option matching REWARD_RIGHT.
-    OPT_B, OPT_C, OPT_D: 3 plausible distractors.
+    OPT_B, OPT_C, OPT_D: 3 plausible logical distractors.
 
     FORMAT:
     HOOK_TEXT: ...
@@ -334,7 +334,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_hook.png")
     frame_durs.append(round(max(2.0, durations[0]), 2))
 
-    # 2. GUESS & REWARD (2-6s)
+    # 2. GUESS & REWARD (2-6s) - Logically Aligned Contrast
     img_rew = Image.new("RGB", (1080, 1920), color="#060A17")
     dr = ImageDraw.Draw(img_rew)
     draw_base(dr)
@@ -349,7 +349,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_reward.png")
     frame_durs.append(round(max(2.5, durations[1]), 2))
 
-    # 3. FACT & NUMBER (6-13s)
+    # 3. FACT & NUMBER (6-13s) - Clear Memory Lock
     img_fact = Image.new("RGB", (1080, 1920), color="#060A17")
     df = ImageDraw.Draw(img_fact)
     draw_base(df)
@@ -364,7 +364,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_fact.png")
     frame_durs.append(round(max(3.0, durations[2]), 2))
 
-    # 4. EXAM TRAP (13-16s)
+    # 4. EXAM TRAP (13-16s) - Specific Provision Warning
     img_trap = Image.new("RGB", (1080, 1920), color="#060A17")
     dt = ImageDraw.Draw(img_trap)
     draw_base(dt)
@@ -378,7 +378,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     frames.append("f_trap.png")
     frame_durs.append(round(max(3.0, durations[3]), 2))
 
-    # 5. MCQ & COUNTDOWN (17-40s)
+    # 5. MCQ & COUNTDOWN (17-40s) - Consistent Options & Timer
     img_mcq = Image.new("RGB", (1080, 1920), color="#060A17")
     dm = ImageDraw.Draw(img_mcq)
     draw_base(dm)
@@ -476,7 +476,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ 7-Step Blueprint Reel Created: {output_video}", flush=True)
+    print(f"✅ Logically Corrected 7-Step Reel Created: {output_video}", flush=True)
 
 # --- LOCAL FOLDER SAVER ---
 def save_reel_to_local_folder(video_file, script_data):
