@@ -31,8 +31,6 @@ QUIZ_3D_PATH = os.path.join(ASSETS_DIR, "3d_quiz.png")
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
 # --- HIGH-RETENTION HOOKS ---
-# Short hooks only. Avoid unsupported claims such as "90% people fail" or
-# guaranteed marks/promotions. The hook creates a real challenge instead.
 VIRAL_HOOKS = [
     {
         "voice": "5 सेकंड में बताइए — इस सवाल का सही जवाब क्या है?",
@@ -416,6 +414,14 @@ def extract_field_block(text, field_name, next_fields):
         return " ".join(val.split())
     return None
 
+def paste_safe_asset(base_img, path, pos, size=(280, 360)):
+    if os.path.exists(path):
+        try:
+            ic = Image.open(path).convert("RGBA").resize(size, RESAMPLE_MODE)
+            base_img.paste(ic, pos, ic)
+        except Exception:
+            pass
+
 def ensure_auto_icons():
     os.makedirs(ASSETS_DIR, exist_ok=True)
     if not os.path.exists(BOOK_3D_PATH):
@@ -633,18 +639,12 @@ def get_slide_segments(script_data):
     q_txt = script_data["question"]
     letter, correct_text = get_correct_option_text(script_data)
     return [
-        # 0: Hook + challenge
         f"{script_data['hook_voice']} अपना जवाब दिमाग में चुनिए.",
-        # 1: Question + options
         f"सवाल: {q_txt} विकल्प हैं — A: {script_data['opt_a']}; B: {script_data['opt_b']}; C: {script_data['opt_c']}; D: {script_data['opt_d']}.",
-        # 2: Short suspense / participation
         "तीन सेकंड… अपना जवाब लॉक कीजिए. तीन… दो… एक…",
-        # 3: Answer + real explanation
         f"सही उत्तर है विकल्प {letter}: {correct_text}. {script_data['sen1']}",
-        # 4: Trap + compact CTA
         f"याद रखने की बात: {script_data['sen2']} {script_data['sen3']} ऐसे MCQ के लिए फॉलो करें."
     ]
-
 
 async def generate_segment_audio(text, outfile):
     if os.path.exists(outfile):
@@ -658,16 +658,6 @@ def get_audio_duration(path):
     return float(subprocess.check_output(cmd).decode().strip())
 
 def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
-    """
-    Retention-first renderer:
-    - 5 scenes instead of 6 long slides
-    - question/options appear immediately
-    - no fake waiting/loading screen
-    - countdown creates genuine participation
-    - answer is delivered quickly
-    - CTA is short and comes after value
-    - each scene has a subtle push/zoom rather than a long static hold
-    """
     ensure_fonts()
     ensure_auto_icons()
 
@@ -679,7 +669,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         asyncio.run(generate_segment_audio(seg_text, seg_file))
         raw_durations.append(get_audio_duration(seg_file))
 
-    # Keep narration natural. Do not stretch a short script into a long Reel.
     concat_filter = "".join([f"[{i}:a]" for i in range(len(segment_audios))])
     concat_filter += f"concat=n={len(segment_audios)}:v=0:a=1[aout]"
 
@@ -698,8 +687,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     total_dur = get_audio_duration("raw_master.mp3")
     print(f"🎵 Raw narration: {total_dur:.2f}s", flush=True)
 
-    # Target is intentionally tight. If narration is too long, speed it up mildly;
-    # never slow a short Reel just to hit an arbitrary minimum.
     MAX_TARGET_DUR = 24.0
     MIN_TARGET_DUR = 15.0
 
@@ -724,7 +711,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     final_duration = sum(durations)
     print(f"🎬 Final duration: {final_duration:.1f}s", flush=True)
 
-    # Fonts
     font_brand = get_eng_font(38)
     font_sub = get_eng_font(20)
     font_badge = get_dev_font(22)
@@ -740,7 +726,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     W, H = 1080, 1920
 
     def draw_base(d):
-        # Cleaner hierarchy: content dominates, branding is secondary.
         d.rectangle([0, 0, W, H], fill="#07111F")
         d.rounded_rectangle([38, 38, 1042, 1882], radius=34,
                             fill="#0B1730", outline="#243B5A", width=3)
@@ -748,13 +733,11 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         d.text((72, 72), "POSTAL WALA", fill="#FFFFFF", font=font_brand)
         d.text((72, 122), "@POSTAL_WALA", fill="#8FA6C0", font=font_sub)
 
-        # Tiny trust label; no giant promo strip.
         d.rounded_rectangle([735, 70, 1000, 126], radius=16,
                             fill="#123D35", outline="#2ED6A1", width=2)
         d.text((765, 87), "EXAM MCQ", fill="#B9FFE9", font=font_badge)
 
     def draw_top_progress(d, idx, total):
-        # Thin progress bar gives the viewer a visible sense of progress.
         left, right = 72, 1008
         y = 205
         d.rounded_rectangle([left, y, right, y + 10], radius=5, fill="#1C2A42")
@@ -804,7 +787,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         fill="#FFFFFF", font=font_title, spacing=18
     )
 
-    # Strong visual focal point, but no 8-second loading screen.
     paste_safe_asset(img1, QUIZ_3D_PATH, pos=(390, 920), size=(300, 400))
     d1.rounded_rectangle([180, 1370, 900, 1490], radius=28,
                          fill="#7C2D12", outline="#F59E0B", width=3)
@@ -918,7 +900,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
 
     slide_filenames = [f"slide_{i}.png" for i in range(1, 6)]
 
-    # Give each slide its narration duration, with a small safety floor.
     FPS = 30
     inputs = []
     filter_parts = ""
@@ -927,7 +908,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         inputs.extend(["-loop", "1", "-i", fname])
         safe_dur = max(1.0, durations[i])
 
-        # Tiny per-scene motion. The image itself is not static in playback.
         frames = max(1, round(safe_dur * FPS))
         zoom_step = ["0.0018", "0.0012", "0.0020", "0.0010", "0.0016"][i]
         fade_d = min(0.12, safe_dur / 5)
@@ -1000,7 +980,7 @@ def save_reel_to_local_folder(video_file, script_data):
         print(f"⚠️ Local Save Error: {e}", flush=True)
         return False
 
-# --- MAIN RUNNER (INSTAGRAM UPLOAD REMOVED, SAVES LOCALLY) ---
+# --- MAIN RUNNER ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Retention-first Reel: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
