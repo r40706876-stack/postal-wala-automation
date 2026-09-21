@@ -25,6 +25,42 @@ STATE_FILE = "progress_state.json"
 PDF_FILE_PATH = "mts content .pdf"
 FONT_PATH = "Mukta-Bold.ttf"
 
+# --- Master Official Clause Titles (PO Guide Part 1 Shuddh Hindi Source of Truth) ---
+OFFICIAL_CLAUSE_MAP = {
+    1: "डाक विभाग का नियंत्रण एवं संगठन",
+    2: "डाकघरों के प्रकार (प्रधान, उप व शाखा डाकघर)",
+    3: "नाइट पोस्ट ऑफिस (रात्रि कालीन डाकघर)",
+    4: "मोबाइल पोस्ट ऑफिस (चलते-फिरते डाकघर)",
+    5: "सामान्य कार्य दिवस और कारोबार के घंटे",
+    6: "हटाया गया नियम (Deleted)",
+    7: "रविवार के दिन डाकघर का कार्य",
+    8: "डाकघर के आधिकारिक अवकाश",
+    9: "डाक शुल्क का अग्रिम भुगतान",
+    10: "डाक टिकट और स्टेशनरी",
+    11: "फ्रैंकिंग मशीन के नियम व शर्तें",
+    12: "नकद में डाक शुल्क का अग्रिम भुगतान",
+    13: "विरूपित अथवा खराब डाक टिकट",
+    14: "जाली अथवा प्रयुक्त डाक टिकटों का निषेध",
+    15: "डाक वस्तुओं की पैकिंग के नियम",
+    16: "मुहरबंदी (Sealing) के नियम",
+    17: "सिक्के और मूल्यवान वस्तुओं का प्रेषण",
+    18: "पत्र-पेटियां (Letter Boxes) के नियम",
+    19: "विशेष पत्र-पेटियों का प्रयोग",
+    23: "डाक टिकट चिपकाने का सही स्थान",
+    26: "पत्र पर पता लिखने की विधि",
+    35: "डाक वस्तुओं के वितरण की परिभाषा",
+    36: "पंजीकृत वस्तुओं का वितरण",
+    37: "पंजीकृत वस्तु लेने से इंकार",
+    38: "फर्मों को पंजीकृत डाक वितरण की विशेष प्रक्रिया",
+    39: "पर्दानशीं महिलाओं को डाक वितरण",
+    40: "क्षतिग्रस्त पंजीकृत वस्तुओं का वितरण",
+    41: "10 किलोग्राम से अधिक वजन के पार्सल का वितरण",
+    43: "बीमाकृत वस्तुओं का वितरण",
+    44: "मूल्य-देय (V.P.) वस्तुओं का वितरण",
+    55: "पोस्ट बॉक्स (Post Boxes) की शर्तें व किराया",
+    56: "पोस्ट बैग (Post Bags) के नियम व शुल्क"
+}
+
 # --- Folders and Video Outputs ---
 REELS_DIR = "generated_reels"
 os.makedirs(REELS_DIR, exist_ok=True)
@@ -38,7 +74,7 @@ VOICE_NAME = "hi-IN-SwaraNeural"
 ASSETS_DIR = "assets"
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- High-Retention Viral Hooks (<3.5s, No Word Repetition) ---
+# --- High-Retention Viral Hooks (<3.5s) ---
 VIRAL_HOOKS = [
     {
         "voice": "विभागीय परीक्षा में यह एक नियम बार-बार आता है, देखिए!",
@@ -72,13 +108,53 @@ VIRAL_HOOKS = [
     }
 ]
 
-# --- Advanced PDF Extractor (Captures Full Clause Text) ---
-def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=PDF_FILE_PATH):
-    default_title = f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}"
-    default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} का आधिकारिक विभागीय नियम।"
+def find_pdf_path():
+    candidates = [
+        PDF_FILE_PATH,
+        "PO_Guide_Part-1_copy.pdf",
+        "PO_Guide_Part-1.pdf",
+        "mts content.pdf"
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    all_pdfs = glob.glob("*.pdf")
+    if all_pdfs:
+        return all_pdfs[0]
+    return PDF_FILE_PATH
+
+def clean_text(text):
+    if not text:
+        return ""
+    text = text.strip().strip("\"'`")
+    return "".join(c for c in text if ord(c) < 0x10000).strip()
+
+def clean_hindi_postal_terms(text):
+    if not text:
+        return ""
+    # Strip any leading brackets, dots, colons, or stray numbers
+    text = re.sub(r"^[\s\)\(\.\-\:–\d\+]+", "", text).strip()
     
+    replacements = {
+        "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
+        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
+        "तक्सी पैकेट": "बीमाकृत पैकेट", "तक्सी": "बीमाकृत", "लेखक": "प्रेषक",
+        "तक्सी पत्र": "बीमाकृत पत्र", "तक्सी वस्तु": "बीमाकृत वस्तु",
+        "डार्क": "डाक", "डार्कघर": "डाकघर", "सचवच": "सचिव",
+        "ववभाग": "विभाग", "सववचच": "सर्वोच्च", "हो:-्रा": "होता", "हो:-्रा हे": "होता है"
+    }
+    for bad_w, good_w in replacements.items():
+        text = text.replace(bad_w, good_w)
+    return clean_text(text)
+
+# --- Strict PDF Extractor (Ignores '3)' sub-bullets, enforces clean titles) ---
+def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1):
+    official_title = OFFICIAL_CLAUSE_MAP.get(clause_no, f"पोस्टल गाइड भाग 1 क्लॉज {clause_no}")
+    default_text = f"डाक घर गाइड भाग 1 के क्लॉज {clause_no} ({official_title}) का आधिकारिक विभागीय नियम।"
+    
+    pdf_path = find_pdf_path()
     if not os.path.exists(pdf_path):
-        return default_title, default_text
+        return official_title, default_text
 
     try:
         reader = PdfReader(pdf_path)
@@ -86,34 +162,34 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=P
         for page in reader.pages:
             full_pdf_text += (page.extract_text() or "") + "\n"
 
-        start_pattern = re.compile(rf"(?:क्लॉज|Clause|नियम|\b)\s*[-:]?\s*{clause_no}\b", re.IGNORECASE)
-        next_pattern = re.compile(rf"(?:क्लॉज|Clause|नियम|\b)\s*[-:]?\s*{clause_no + 1}\b", re.IGNORECASE)
+        # Match strict clause headings, reject bullet lines like '3)' or '(3)'
+        start_pattern = re.compile(
+            rf"(?:(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{clause_no}\b|(?:\n|^)\s*{clause_no}\s*[\.\-–]\s*[A-Za-z\u0900-\u097F])",
+            re.IGNORECASE
+        )
+        next_clause = clause_no + 1
+        next_pattern = re.compile(
+            rf"(?:(?:क्लॉज|Clause|नियम)\s*[-:]?\s*{next_clause}\b|(?:\n|^)\s*{next_clause}\s*[\.\-–]\s*[A-Za-z\u0900-\u097F])",
+            re.IGNORECASE
+        )
 
         lines = full_pdf_text.split('\n')
         capturing = False
         matched_text = ""
-        extracted_title = None
         
         for line in lines:
-            if start_pattern.search(line) and not capturing:
+            line_str = line.strip()
+            if start_pattern.search(line_str) and not capturing:
+                if re.match(rf"^\s*[\(\[]?{clause_no}\s*[\)\]]", line_str):
+                    continue
                 capturing = True
-                clean_line = re.sub(r"(?:क्लॉज|Clause|नियम|\b)\s*[-:]?\s*\d+\b", "", line).strip(" :-–_")
-                if clean_line and len(clean_line) > 2 and not extracted_title:
-                    extracted_title = clean_line[:60]
                 continue
             
             if capturing:
-                if next_pattern.search(line) and len(matched_text.strip()) > 50:
+                if next_pattern.search(line_str) and len(matched_text.strip()) > 40:
                     break
                 matched_text += line + "\n"
 
-        if len(matched_text.strip()) < 50:
-            for page in reader.pages:
-                txt = page.extract_text() or ""
-                if start_pattern.search(txt):
-                    matched_text += txt + "\n"
-
-        final_title = extracted_title if extracted_title else default_title
         full_text = matched_text.strip() if matched_text.strip() else default_text
         
         if total_parts > 1 and len(full_text) > 200:
@@ -126,41 +202,19 @@ def extract_clause_from_pdf(clause_no, current_part=1, total_parts=1, pdf_path=P
         else:
             part_text = full_text
 
-        return final_title, clean_hindi_postal_terms(part_text[:3500])
+        # Always return the pure official title so OCR bugs never reach Slide 1
+        return official_title, clean_hindi_postal_terms(part_text[:3500])
     except Exception as e:
         print(f"⚠️ PDF Extraction Error: {e}", flush=True)
-    return default_title, default_text
+    return official_title, default_text
 
 def get_dynamic_total_parts(pdf_text):
     if not pdf_text:
         return 1
     char_count = len(pdf_text.strip())
-    # Scalable logic: every ~350 characters gets its own dedicated part 
-    # to handle massive clauses (like Clause 55) completely without skipping any line.
+    # Scalable logic: ~350 chars per part handles extensive clauses completely
     calculated_parts = max(1, (char_count // 350) + (1 if char_count % 350 > 0 else 0))
     return calculated_parts
-
-def clean_text(text):
-    if not text:
-        return ""
-    text = text.strip().strip("\"'`")
-    return "".join(c for c in text if ord(c) < 0x10000).strip()
-
-def clean_hindi_postal_terms(text):
-    if not text:
-        return ""
-    text = re.sub(r"^[:\-\s\.]+", "", text)
-    
-    replacements = {
-        "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
-        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट",
-        "तक्सी पैकेट": "बीमाकृत पैकेट", "तक्सी": "बीमाकृत", "लेखक": "प्रेषक",
-        "तक्सी पत्र": "बीमाकृत पत्र", "तक्सी वस्तु": "बीमाकृत वस्तु",
-        "डार्क": "डाक", "डार्कघर": "डाकघर"
-    }
-    for bad_w, good_w in replacements.items():
-        text = text.replace(bad_w, good_w)
-    return clean_text(text)
 
 def extract_field_block(text, field_name, next_fields):
     pattern = r"(?:^|\n)\s*(?:\*\*)?" + re.escape(field_name) + r"(?:\*\*)?\s*:\s*(.*?)(?=(?:\n\s*(?:\*\*)?(?:" + "|".join(next_fields) + r")(?:\*\*)?\s*:)|$)"
@@ -260,19 +314,20 @@ def generate_clause_script(state):
         return fallback_data
 
     prompt = f"""
-    You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard).
-    Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
+    You are the Senior Chief Examiner for India Post Departmental Examinations (GDS to MTS, Postman, Mail Guard, PA).
+    Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Subject: "{official_title}"
 
-    Reference Text (Context/Topic Tracker):
+    Reference Context:
     \"\"\"
     {official_pdf_text}
     \"\"\"
 
-    STRICT RULES FOR EXAM GENERATION (PO GUIDE PART 1 AUTHENTICATION):
-    1. Cross-verify and generate 100% exam-oriented questions strictly based on the official, authoritative rules of **Post Office Guide Part 1 (PO Guide Part 1)** for GDS to MTS, Postman (PM), and Postal Assistant (PA) examinations.
-    2. HINDI PHRASING & TERMINOLOGY: Use 100% standard, professional, and natural departmental Hindi phrasing (e.g., प्रेषक, बीमाकृत, पंजीकृत, पत्र-पेटी). Avoid awkward machine-translated phrasing.
-    3. QUESTION & OPTIONS: Provide high-yield MCQ questions (QUESTION, Q1, Q2, Q3), correct options, and distractor options in brief professional Hindi.
-    4. ANSWERS (ANS1, ANS2, ANS3): MUST HAVE DIFFERENT CORRECT OPTION LETTERS (e.g., A, B, C, or D). Never make all three answers 'A'.
+    STRICT AUTHENTICITY & HINDI ACCURACY RULES:
+    1. STRICT TOPIC COMPLIANCE: Adhere 100% to Clause {current_clause} ({official_title}) of official Post Office Guide Part 1. Do not divert or mix up sub-points.
+    2. PURE DEPARTMENTAL HINDI: Use natural, grammatically pure Hindi without translation errors or awkward phrasing.
+    3. NO CORRUPT OCR OR BRACKETS: Output clean text. Never output broken OCR words like 'ववभाग' or 'सववचच'.
+    4. MCQ QUALITY: Generate exam-oriented questions strictly based on this clause.
+    5. ANSWERS (ANS1, ANS2, ANS3): Must not all have the same option letter.
 
     Format strictly using these tags line-by-line:
     SEN1: ...
@@ -345,14 +400,16 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- AUDIO GENERATION: GOOGLE AI STUDIO (GEMINI TTS API) PRIMARY PREFERENCE WITH EDGE-TTS FALLBACK ---
-async def generate_segment_audio(text, outfile, rate="+12%"):
+# --- AUDIO GENERATION (TTS Sanitized & Fluent) ---
+async def generate_segment_audio(text, outfile, rate="+0%"):
     if os.path.exists(outfile):
         try: os.remove(outfile)
         except Exception: pass
         
+    clean_audio_text = re.sub(r"[\*#`_~\[\]\(\)]", " ", text)
+    clean_audio_text = " ".join(clean_audio_text.split()).strip()
+
     success = False
-    
     if GEMINI_API_KEY:
         try:
             from google import genai
@@ -361,7 +418,7 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
             client = genai.Client(api_key=GEMINI_API_KEY)
             response = client.models.generate_content(
                 model="gemini-3.1-flash-tts-preview",
-                contents=text,
+                contents=clean_audio_text,
                 config=types.GenerateContentConfig(
                     response_modalities=["AUDIO"],
                     speech_config=types.SpeechConfig(
@@ -399,20 +456,20 @@ async def generate_segment_audio(text, outfile, rate="+12%"):
                     
                 if os.path.exists(outfile) and os.path.getsize(outfile) > 1000:
                     success = True
-                    print(f"🎙️ Audio generated using Google AI Studio (Gemini TTS)", flush=True)
+                    print(f"🎙️ Audio generated via Gemini TTS", flush=True)
         except Exception as e:
-            print(f"⚠️ Google AI Studio TTS note (switching to Edge-TTS fallback): {e}", flush=True)
+            print(f"⚠️ Gemini TTS fallback to Edge-TTS: {e}", flush=True)
 
     if not success:
-        communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=rate)
+        communicate = edge_tts.Communicate(text=clean_audio_text, voice=VOICE_NAME, rate=rate)
         await communicate.save(outfile)
-        print(f"🎙️ Audio generated using Edge-TTS fallback", flush=True)
+        print(f"🎙️ Audio generated via Edge-TTS (SwaraNeural)", flush=True)
 
 def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# --- CONCEPT RULE VIDEO (4 SLIDES INCLUDING QUESTION & TIMER SLIDE) ---
+# --- CONCEPT RULE VIDEO ---
 def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ensure_fonts()
     segment_audios = [
@@ -440,7 +497,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     font_sub = get_font(22)
     font_trust = get_font(20)
     font_badge = get_font(22)
-    font_title = get_font(34)
+    font_title = get_font(32)
     font_h1 = get_font(38)
     font_h2 = get_font(30)
     font_body = get_font(34)
@@ -468,6 +525,19 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         d.rounded_rectangle([80, 1580, 1000, 1680], radius=22, fill="#E11D48")
         d.text((120, 1605), "पूरी तैयारी के लिए फॉलो करें:  @POSTAL_WALA", fill="#FFFFFF", font=font_cta)
 
+    def draw_header_card(d):
+        d.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
+        d.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
+        d.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
+        d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
+        d.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
+        
+        # Clean title from master map without corrupt OCR or brackets
+        clean_title = clean_hindi_postal_terms(script_data["clause_name"])
+        if len(clean_title) > 38:
+            clean_title = clean_title[:36] + "..."
+        d.text((105, 255), clean_title, fill="#FFFFFF", font=font_title)
+
     frames = []
     frame_durs = []
 
@@ -475,12 +545,8 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
         img = Image.new("RGB", (1080, 1920), color="#060A17")
         d = ImageDraw.Draw(img)
         draw_base(d)
-        d.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
-        d.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
-        d.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
-        d.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
-        d.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
-        d.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
+        draw_header_card(d)
+
         d.rounded_rectangle([80, 360, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
         
         if pill_state:
@@ -501,7 +567,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
 
         if step >= 3:
             d.rounded_rectangle([110, 1080, 970, 1260], radius=18, fill="#0B132B", outline="#FBBF24", width=2)
-            d.text((150, 1115), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])}", fill="#FDE047", font=font_h2)
+            d.text((150, 1115), f"विषय: {clean_hindi_postal_terms(script_data['clause_name'])[:35]}", fill="#FDE047", font=font_h2)
             d.text((150, 1180), f"डाक घर गाइड भाग 1 | क्लॉज संख्या: {script_data['clause_no']}", fill="#94A3B8", font=font_opt)
             d.rounded_rectangle([110, 1400, 970, 1490], radius=16, fill="#064E3B", outline="#10B981", width=2)
             d.text((200, 1425), ">> 25 सेकंड में पूरा नियम समझें!", fill="#34D399", font=font_h2)
@@ -529,12 +595,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     img2a = Image.new("RGB", (1080, 1920), color="#060A17")
     d2a = ImageDraw.Draw(img2a)
     draw_base(d2a)
-    d2a.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
-    d2a.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
-    d2a.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
-    d2a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
-    d2a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
-    d2a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
+    draw_header_card(d2a)
     draw_whatsapp_strip(d2a)
     
     d2a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
@@ -571,16 +632,11 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     frames.append("c_2c.png")
     frame_durs.append(round(durations[1] * 0.25, 2))
 
-    # Slide 3: Trap Point (Foolproof Dynamic Layout & Text Fitting)
+    # Slide 3: Trap Point (Dynamic Layout Fitting - Never Overlaps)
     img3a = Image.new("RGB", (1080, 1920), color="#060A17")
     d3a = ImageDraw.Draw(img3a)
     draw_base(d3a)
-    d3a.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#38BDF8", width=2)
-    d3a.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
-    d3a.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
-    d3a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
-    d3a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
-    d3a.text((105, 255), clean_hindi_postal_terms(script_data["clause_name"]), fill="#FFFFFF", font=font_title)
+    draw_header_card(d3a)
     draw_whatsapp_strip(d3a)
     
     d3a.rounded_rectangle([80, 480, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=3)
@@ -626,16 +682,11 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     frames.append("c_3c.png")
     frame_durs.append(round(durations[2] * 0.30, 2))
 
-    # Slide 4: Question & Live Countdown Timer (Included in Concept Video!)
+    # Slide 4: Question & Live Countdown Timer
     img4a = Image.new("RGB", (1080, 1920), color="#060A17")
     d4a = ImageDraw.Draw(img4a)
     draw_base(d4a)
-    d4a.rounded_rectangle([80, 175, 1000, 320], radius=18, fill="#1C2541", outline="#FBBF24", width=2)
-    d4a.rounded_rectangle([105, 190, 560, 235], radius=10, fill="#F59E0B")
-    d4a.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
-    d4a.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
-    d4a.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
-    d4a.text((105, 255), "परीक्षा क्विज़: उत्तर कमेंट करें", fill="#FDE047", font=font_title)
+    draw_header_card(d4a)
     d4a.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     d4a.rounded_rectangle([110, 380, 360, 435], radius=10, fill="#0B132B")
     d4a.text((140, 390), "आज का सवाल:", fill="#FBBF24", font=font_h2)
@@ -739,7 +790,7 @@ def render_concept_video(script_data, output_video=CONCEPT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Concept Rule Reel Created (Complete with Question Slide): {output_video}", flush=True)
+    print(f"✅ Concept Rule Reel Created (Clean & Accurate): {output_video}", flush=True)
 
 # --- 3-QUESTION 40-SEC LOCKED QUIZ VIDEO ---
 def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
@@ -753,7 +804,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
 
     intro_text = f"पोस्टल गाइड क्लॉज {script_data['clause_no']}! इस क्लॉज से पेपर में ये प्रश्न बन सकते हैं!"
     intro_audio_file = "audio_q_intro.mp3"
-    asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+12%"))
+    asyncio.run(generate_segment_audio(intro_text, intro_audio_file, rate="+10%"))
 
     audio_files = [intro_audio_file]
     segment_durations = [get_audio_duration(intro_audio_file)]
@@ -761,13 +812,13 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     for idx, q_data in enumerate(questions_list):
         q_speech = f"{q_data['q']}"
         q_audio_file = f"audio_q_{idx+1}.mp3"
-        asyncio.run(generate_segment_audio(q_speech, q_audio_file, rate="+12%"))
+        asyncio.run(generate_segment_audio(q_speech, q_audio_file, rate="+10%"))
         audio_files.append(q_audio_file)
         segment_durations.append(get_audio_duration(q_audio_file))
 
     finale_speech = f"सारे प्रश्नों के सही उत्तर स्क्रीन पर चेक कर लो दोस्तों! फ्री मॉक टेस्ट के लिए MOCK कमेंट करें और Postal Wala को फॉलो करना न भूलें!"
     finale_audio_file = "audio_q_finale.mp3"
-    asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+12%"))
+    asyncio.run(generate_segment_audio(finale_speech, finale_audio_file, rate="+10%"))
     audio_files.append(finale_audio_file)
     segment_durations.append(get_audio_duration(finale_audio_file))
 
@@ -787,7 +838,6 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     font_trust = get_font(18)
     font_badge = get_font(20)
     font_title = get_font(32)
-    
     font_q_text = get_font(28)
     font_opt_text = get_font(24)
     font_h2 = get_font(24)
@@ -812,7 +862,12 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     d_base.text((120, 195), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#000000", font=font_badge)
     d_base.rounded_rectangle([820, 190, 975, 235], radius=10, fill="#1D4ED8")
     d_base.text((845, 195), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
-    d_base.text((105, 255), "विभागीय परीक्षा स्पेशल टेस्ट", fill="#FDE047", font=font_title)
+    
+    clean_title = clean_hindi_postal_terms(script_data["clause_name"])
+    if len(clean_title) > 38:
+        clean_title = clean_title[:36] + "..."
+    d_base.text((105, 255), clean_title, fill="#FDE047", font=font_title)
+    
     d_base.rounded_rectangle([80, 350, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     draw_footer_cta(d_base)
 
@@ -852,7 +907,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         q_audio_dur = segment_durations[idx + 1]
         step_dur = q_audio_dur / 3.0
 
-        # --- STEP 1: Question + Option A ---
+        # Step 1: Question + Option A
         img_s1 = base_img.copy()
         d1 = ImageDraw.Draw(img_s1)
         d1.rounded_rectangle([110, 380, 480, 435], radius=10, fill="#7F1D1D", outline="#F87171", width=2)
@@ -869,7 +924,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f1_name)
         frame_durs.append(step_dur)
 
-        # --- STEP 2: Options B & C ---
+        # Step 2: Options B & C
         img_s2 = img_s1.copy()
         d2 = ImageDraw.Draw(img_s2)
         
@@ -885,7 +940,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f2_name)
         frame_durs.append(step_dur)
 
-        # --- STEP 3: Option D + Timer box ---
+        # Step 3: Option D + Timer box
         img_s3 = img_s2.copy()
         d3 = ImageDraw.Draw(img_s3)
         
@@ -901,7 +956,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
         frames.append(f3_name)
         frame_durs.append(step_dur)
 
-    # --- GRAND FINALE SCREEN ---
+    # Grand Finale Screen
     img_ans = base_img.copy()
     d_ans = ImageDraw.Draw(img_ans)
     
@@ -926,7 +981,7 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
     frame_durs.append(segment_durations[-1])
 
     total_dur = sum(frame_durs)
-    print(f"⏱️ Total 3-Question Synced Quiz Reel Duration: {total_dur:.2f} seconds", flush=True)
+    print(f"⏱️ Total Quiz Reel Duration: {total_dur:.2f}s", flush=True)
 
     filter_parts = ""
     for i, fname in enumerate(frames):
@@ -975,13 +1030,13 @@ def render_quiz_video(script_data, output_video=QUIZ_VIDEO):
 # --- AUTO-COMMIT & PUSH ---
 def auto_commit_and_push_reels():
     try:
-        print("📤 Committing and pushing reels to GitHub repository...", flush=True)
+        print("📤 Committing and pushing reels to GitHub...", flush=True)
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", REELS_DIR + "/"], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-upload Rule and Quiz reels [skip ci]"], check=True)
         subprocess.run(["git", "push"], check=True)
-        print("🎉 Successfully pushed rule and quiz reels to GitHub folder!", flush=True)
+        print("🎉 Successfully pushed reels to GitHub!", flush=True)
     except Exception as e:
         print(f"⚠️ Git push note: {e}", flush=True)
 
