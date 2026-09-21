@@ -26,7 +26,6 @@ STATE_FILE = "progress_state.json"
 
 RESAMPLE_MODE = getattr(Image, "Resampling", Image).LANCZOS
 
-# --- Official PO Guide Part 1 Clause Titles Dictionary ---
 OFFICIAL_PO_GUIDE_TITLES = {
     1: "पंजीकृत वस्तुएं",
     12: "डाक टिकट चिपकाने की विधि",
@@ -70,8 +69,7 @@ def extract_clause_from_pdf(clause_no, pdf_path=PDF_FILE_PATH):
     return final_title, default_text
 
 def get_dynamic_total_parts(pdf_text):
-    if not pdf_text:
-        return 1
+    if not pdf_text: return 1
     char_count = len(pdf_text.strip())
     if char_count < 300: return 1
     elif char_count < 700: return 2
@@ -87,12 +85,6 @@ def clean_text(text):
 def clean_hindi_postal_terms(text):
     if not text: return ""
     text = re.sub(r"^[:\-\s\.]+", "", text)
-    replacements = {
-        "पेन्टियों": "पत्र-पेटियों", "पेन्टी": "पत्र-पेटी",
-        "घंटी वाली प्लेटें": "घंटे वाली प्लेटें", "घंटी वाली प्लेट": "घंटे वाली प्लेट"
-    }
-    for bad_w, good_w in replacements.items():
-        text = text.replace(bad_w, good_w)
     return clean_text(text)
 
 def extract_field_block(text, field_name, next_fields):
@@ -110,10 +102,8 @@ def ensure_fonts():
         try:
             r = requests.get(url, timeout=30)
             if r.status_code == 200:
-                with open(FONT_PATH, "wb") as f:
-                    f.write(r.content)
-        except Exception:
-            pass
+                with open(FONT_PATH, "wb") as f: f.write(r.content)
+        except Exception: pass
 
 def get_font(size):
     ensure_fonts()
@@ -123,48 +113,38 @@ def get_font(size):
     return ImageFont.load_default()
 
 def load_progress_state():
-    state = {"clause_no": 1, "current_part": 1, "total_parts": 1}
+    state = {"clause_no": 16, "current_part": 1, "total_parts": 1}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f:
                 saved = json.load(f)
                 if isinstance(saved, dict) and "clause_no" in saved:
                     state.update(saved)
-        except Exception:
-            pass
-    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 1))
+        except Exception: pass
+    _, pdf_text = extract_clause_from_pdf(state.get("clause_no", 16))
     state["total_parts"] = get_dynamic_total_parts(pdf_text)
-    if state["current_part"] > state["total_parts"]:
-        state["current_part"] = 1
     save_progress_state(state)
     return state
 
 def save_progress_state(state):
     try:
-        with open(STATE_FILE, "w") as f:
-            json.dump(state, f, indent=2)
-    except Exception:
-        pass
+        with open(STATE_FILE, "w") as f: json.dump(state, f, indent=2)
+    except Exception: pass
 
 def advance_progress_state(state):
-    clause = state.get("clause_no", 1)
+    clause = state.get("clause_no", 16)
     part = state.get("current_part", 1)
     total_parts = state.get("total_parts", 1)
-
     if part < total_parts:
         state["current_part"] = part + 1
     else:
-        next_clause = clause + 1 if clause < 60 else 1
-        state["clause_no"] = next_clause
+        state["clause_no"] = clause + 1 if clause < 60 else 1
         state["current_part"] = 1
-        _, next_pdf_text = extract_clause_from_pdf(next_clause)
-        state["total_parts"] = get_dynamic_total_parts(next_pdf_text)
-
     save_progress_state(state)
 
-# --- STRICT 100% PURE HINDI SCRIPT GENERATOR ---
+# --- CLEAN & NATURAL HINDI SCRIPT GENERATOR ---
 def generate_clause_script(state):
-    current_clause = state.get("clause_no", 1)
+    current_clause = state.get("clause_no", 16)
     current_part = state.get("current_part", 1)
     total_parts = state.get("total_parts", 1)
     official_title, official_pdf_text = extract_clause_from_pdf(current_clause)
@@ -174,48 +154,40 @@ def generate_clause_script(state):
         "clause_name": official_title,
         "part_no": current_part,
         "total_parts": total_parts,
-        "hook_text": f"सील लगाने से पहले मोम को कागज से क्यों ढंका जाता है?",
-        "guess_wrong": "क्या यह नमी और धूल से बचाता है?",
-        "reward_right": "नहीं! ताकि मोम सामग्री पर चिपके नहीं।",
-        "fact_num": "1",
-        "fact_desc": "पतली कागज की परत आवश्यक",
-        "exam_trap": "सावधान: मोम के चिपकने से पार्सल का सामान मार्ग में खराब हो सकता है।",
-        "question": f"सील लगाने से पहले सीलिंग वैक्स को किससे ढंका जाना चाहिए?",
-        "opt_a": "पारदर्शी मुलायम कागज की पतली परत",
-        "opt_b": "मोटे गत्ते की एक परत",
+        "hook_text": "सीलिंग वैक्स से पत्र की सुरक्षा कैसे करें?",
+        "guess_wrong": "सीधे वैक्स लगाने से कोई नुकसान नहीं होता।",
+        "reward_right": "गलत! पहले पारदर्शी कागज की पतली परत लगानी जरूरी है।",
+        "fact_desc": "पारदर्शी कागज की पतली परत",
+        "exam_trap": "सीधे वैक्स लगाने पर पत्र चिपककर नुकसान होगा।",
+        "question": "सीलिंग वैक्स लगाने से पहले क्या रखना चाहिए?",
+        "opt_a": "पारदर्शी कागज की पतली परत",
+        "opt_b": "मोटे गत्ते की परत",
         "opt_c": "चिपकने वाला टेप",
-        "opt_d": "मोमी कपड़े का टुकड़ा",
-        "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts}) - 10/10 Pure Hindi Retention Solution。\n\n💬 अपना सही उत्तर कमेंट करें (A/B/C/D)!\n🔥 अगला Postal Trap कल!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost #DepartmentalExam"
+        "opt_d": "सादा कपड़ा",
+        "caption": f"🚨 डाक घर गाइड भाग 1 | क्लॉज {current_clause} - विभागीय परीक्षा महत्वपूर्ण नियम।\n\n💬 अपना सही उत्तर कमेंट करें (A/B/C/D)!\n\n#PostalWala #GDStoMTS #PostmanExam #IndiaPost"
     }
 
     if not GROQ_API_KEY:
         return fallback_data
 
     prompt = f"""
-    You are the Senior Chief Examiner for India Post Departmental Examinations.
-    Topic: Post Office Guide Part 1, Clause: {current_clause}, Part: {current_part}/{total_parts}, Official Title: "{official_title}"
-    OFFICIAL TEXT:
-    \"\"\"
-    {official_pdf_text}
-    \"\"\"
+    You are an expert postal exam creator. Read the official text and create a natural, high-engagement script in pure Devanagari Hindi. NO English words. NO random numbers.
+    Text: {official_pdf_text}
 
-    CRITICAL LANGUAGE & RETENTION RULES (STRICTLY DEVANAGARI HINDI ONLY):
-    1. ABSOLUTELY NO ENGLISH WORDS ALLOWED IN ANY TEXT FIELD. Translate all technical rules into fluent, high-impact official Hindi script (Devanagari).
-    2. HOOK_TEXT: A compelling opening curiosity question in pure Hindi (max 14 words).
-    3. GUESS_WRONG: A common misconception statement in pure Hindi (max 10 words).
-    4. REWARD_RIGHT: The precise correct rule revelation in pure Hindi (max 10 words).
-    5. FACT_NUM: Strictly core metric, number, or rule layer from text (e.g. "1").
-    6. FACT_DESC: Short precise label in pure Hindi (max 6 words).
-    7. EXAM_TRAP: Strictly a negative prohibition, violation consequence, or strict legal exception in pure Hindi (max 16 words).
-    8. QUESTION: A professional departmental MCQ question in pure Hindi (max 14 words).
-    9. OPT_A: Correct option matching the rule in pure Hindi.
-    10. OPT_B, OPT_C, OPT_D: 3 plausible logical distractors in pure Hindi.
+    Provide fields:
+    HOOK_TEXT: A powerful scroll-stopping hook question in Hindi (max 12 words).
+    GUESS_WRONG: A common wrong assumption in Hindi (max 10 words).
+    REWARD_RIGHT: The exact correct correction in Hindi (max 10 words).
+    FACT_DESC: Short precise label for screen text (max 5 words).
+    EXAM_TRAP: A strict exam warning or consequence in Hindi (max 12 words).
+    QUESTION: A crisp MCQ question in Hindi (max 12 words).
+    OPT_A: Correct option.
+    OPT_B, OPT_C, OPT_D: Distractors.
 
     FORMAT:
     HOOK_TEXT: ...
     GUESS_WRONG: ...
     REWARD_RIGHT: ...
-    FACT_NUM: ...
     FACT_DESC: ...
     EXAM_TRAP: ...
     QUESTION: ...
@@ -227,14 +199,13 @@ def generate_clause_script(state):
 
     try:
         headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
-        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 500}
+        payload = {"model": "qwen/qwen3.8-27b", "messages": [{"role": "user", "content": prompt}], "temperature": 0.2, "max_tokens": 500}
         res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
             raw_text = res.json()["choices"][0]["message"]["content"].strip()
             ht = extract_field_block(raw_text, "HOOK_TEXT", ["GUESS_WRONG"])
             gw = extract_field_block(raw_text, "GUESS_WRONG", ["REWARD_RIGHT"])
-            rr = extract_field_block(raw_text, "REWARD_RIGHT", ["FACT_NUM"])
-            fn = extract_field_block(raw_text, "FACT_NUM", ["FACT_DESC"])
+            rr = extract_field_block(raw_text, "REWARD_RIGHT", ["FACT_DESC"])
             fd = extract_field_block(raw_text, "FACT_DESC", ["EXAM_TRAP"])
             et = extract_field_block(raw_text, "EXAM_TRAP", ["QUESTION"])
             q = extract_field_block(raw_text, "QUESTION", ["OPT_A"])
@@ -246,7 +217,6 @@ def generate_clause_script(state):
             if ht: fallback_data["hook_text"] = clean_hindi_postal_terms(ht)
             if gw: fallback_data["guess_wrong"] = clean_hindi_postal_terms(gw)
             if rr: fallback_data["reward_right"] = clean_hindi_postal_terms(rr)
-            if fn: fallback_data["fact_num"] = clean_text(fn)
             if fd: fallback_data["fact_desc"] = clean_hindi_postal_terms(fd)
             if et: fallback_data["exam_trap"] = clean_hindi_postal_terms(et)
             if q: fallback_data["question"] = clean_hindi_postal_terms(q)
@@ -259,12 +229,12 @@ def generate_clause_script(state):
 
     return fallback_data
 
-# --- NATURAL & CLEAN AUDIO SEGMENTS (NO AWKWARD TEMPLATES) ---
+# --- AUDIO SEGMENTS WITH DETAILED VOICEOVER & CLEAN SCREEN TEXT ---
 def get_slide_segments(script_data):
     return [
         f"ध्यान दें! {script_data['hook_text']}",
-        f"क्या आपको लगता है कि {script_data['guess_wrong']}? नहीं! सही जवाब है: {script_data['reward_right']}",
-        f"अधिकारिक नियम याद रखें: {script_data['fact_desc']}!",
+        f"क्या आपको लगता है कि {script_data['guess_wrong']}? {script_data['reward_right']}",
+        f"अधिकारिक नियम को विस्तार से समझें: {script_data['fact_desc']}। पार्सल की सुरक्षा और गोपनीयता बनाए रखने के लिए यह प्रक्रिया बेहद जरूरी है।",
         f"सावधान! परीक्षा ट्रैप: {script_data['exam_trap']}",
         f"अब विभागीय परीक्षा का यह मुख्य सवाल आपके सामने है। सही विकल्प सोचकर पाँच सेकंड में कमेंट करें!"
     ]
@@ -302,13 +272,13 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     total_dur = sum(durations)
 
     font_brand = get_font(40)
-    font_h1 = get_font(36)
-    font_h2 = get_font(28)
-    font_body = get_font(26)
-    font_label = get_font(26)
-    font_cta = get_font(28)
-    font_opt = get_font(25)
-    font_timer = get_font(32)
+    font_h1 = get_font(34)
+    font_h2 = get_font(26)
+    font_body = get_font(25)
+    font_label = get_font(24)
+    font_cta = get_font(26)
+    font_opt = get_font(24)
+    font_timer = get_font(30)
 
     def draw_base(d):
         d.rounded_rectangle([45, 50, 1035, 1710], radius=32, fill="#0B132B", outline="#1E293B", width=3)
@@ -327,9 +297,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     dh = ImageDraw.Draw(img_hook)
     draw_base(dh)
     dh.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
-    dh.rounded_rectangle([110, 230, 480, 290], radius=12, fill="#DC2626", outline="#F87171", width=2)
-    dh.text((130, 242), "⚠️ STOP & THINK", fill="#FFFFFF", font=font_label)
-    wrapped_hk = textwrap.fill(script_data["hook_text"], width=20)
+    dh.rounded_rectangle([110, 230, 420, 290], radius=12, fill="#DC2626", outline="#F87171", width=2)
+    dh.text((130, 242), "⚠️ ध्यान दें", fill="#FFFFFF", font=font_label)
+    wrapped_hk = textwrap.fill(script_data["hook_text"], width=21)
     dh.multiline_text((115, 420), wrapped_hk, fill="#FFFFFF", font=font_h1, spacing=16)
     draw_footer_cta(dh)
     img_hook.save("f_hook.png")
@@ -343,30 +313,28 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     dr.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
     
     dr.rounded_rectangle([110, 235, 970, 495], radius=18, fill="#3F1215", outline="#EF4444", width=3)
-    wrapped_gw = textwrap.fill(script_data["guess_wrong"], width=20)
-    dr.multiline_text((135, 310), f"❌ {wrapped_gw}", fill="#FCA5A5", font=font_h2, spacing=12)
+    wrapped_gw = textwrap.fill(script_data["guess_wrong"], width=22)
+    dr.multiline_text((135, 310), f"❌ {wrapped_gw}", fill="#FCA5A5", font=font_h2, spacing=10)
 
     dr.rounded_rectangle([110, 535, 970, 865], radius=18, fill="#064E3B", outline="#10B981", width=3)
-    wrapped_rr = textwrap.fill(script_data["reward_right"], width=20)
-    dr.multiline_text((135, 605), f"✅ {wrapped_rr}", fill="#A7F3D0", font=font_h1, spacing=12)
-    dr.text((135, 785), "📌 यही विभागीय नियम याद रखना है।", fill="#D1FAE5", font=font_body)
+    wrapped_rr = textwrap.fill(script_data["reward_right"], width=22)
+    dr.multiline_text((135, 605), f"✅ {wrapped_rr}", fill="#A7F3D0", font=font_h1, spacing=10)
+    dr.text((135, 785), "📌 आधिकारिक विभागीय नियम", fill="#D1FAE5", font=font_body)
     
     draw_footer_cta(dr)
     img_rew.save("f_reward.png")
     frames.append("f_reward.png")
     frame_durs.append(durations[1])
 
-    # 3. FACT FRAME
+    # 3. FACT FRAME (Clean Screen Text, Detailed Audio)
     img_fact = Image.new("RGB", (1080, 1920), color="#060A17")
     df = ImageDraw.Draw(img_fact)
     draw_base(df)
     df.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#38BDF8", width=3)
-    df.text((120, 260), "🧠 आधिकारिक मेमोरी लॉक:", fill="#94A3B8", font=font_h2)
-    df.rounded_rectangle([110, 360, 970, 580], radius=20, fill="#1D4ED8", outline="#60A5FA", width=3)
-    df.text((180, 420), script_data["fact_num"], fill="#FFFFFF", font=ImageFont.truetype(FONT_PATH, 75))
-    df.rounded_rectangle([110, 680, 970, 920], radius=18, fill="#082F49", outline="#38BDF8", width=2)
-    wrapped_fd = textwrap.fill(script_data["fact_desc"], width=22)
-    df.multiline_text((135, 755), f"📌 {wrapped_fd}", fill="#E0F2FE", font=font_h2, spacing=10)
+    df.text((120, 260), "🧠 आधिकारिक नियम", fill="#94A3B8", font=font_h2)
+    df.rounded_rectangle([110, 360, 970, 750], radius=20, fill="#1D4ED8", outline="#60A5FA", width=3)
+    wrapped_fd = textwrap.fill(script_data["fact_desc"], width=20)
+    df.multiline_text((135, 520), f"📌\n\n{wrapped_fd}", fill="#FFFFFF", font=font_h1, spacing=14)
     draw_footer_cta(df)
     img_fact.save("f_fact.png")
     frames.append("f_fact.png")
@@ -378,7 +346,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_base(dt)
     dt.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#EF4444", width=3)
     dt.rounded_rectangle([110, 230, 480, 290], radius=12, fill="#7F1D1D", outline="#EF4444", width=2)
-    dt.text((130, 242), "⚠️ EXAM TRAP", fill="#FECACA", font=font_label)
+    dt.text((130, 242), "⚠️ परीक्षा ट्रैप", fill="#FECACA", font=font_label)
     wrapped_trap = textwrap.fill(script_data["exam_trap"], width=21)
     dt.multiline_text((115, 450), wrapped_trap, fill="#FFFFFF", font=font_h1, spacing=16)
     draw_footer_cta(dt)
@@ -391,7 +359,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     dm = ImageDraw.Draw(img_mcq)
     draw_base(dm)
     dm.rounded_rectangle([80, 180, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=3)
-    dm.text((110, 205), "📝 POSTAL MCQ QUIZ", fill="#FDE047", font=font_h2)
+    dm.text((110, 205), "📝 विभागीय प्रश्न (MCQ)", fill="#FDE047", font=font_h2)
     wrapped_q = textwrap.fill(script_data["question"], width=22)
     dm.multiline_text((110, 260), wrapped_q, fill="#FFFFFF", font=font_body, spacing=6)
     
@@ -485,12 +453,11 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Clean Fluent Reel Created: {output_video}", flush=True)
+    print(f"✅ Clean Professional Reel Created: {output_video}", flush=True)
 
-# --- LOCAL FOLDER SAVER ---
 def save_reel_to_local_folder(video_file, script_data):
     os.makedirs(REELS_DIR, exist_ok=True)
-    clause_no = script_data.get("clause_no", 1)
+    clause_no = script_data.get("clause_no", 16)
     part_no = script_data.get("part_no", 1)
     dest_video = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}.mp4")
     dest_txt = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}_caption.txt")
@@ -505,7 +472,6 @@ def save_reel_to_local_folder(video_file, script_data):
         print(f"⚠️ Local Save Error: {e}", flush=True)
         return False
 
-# --- MAIN RUNNER ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
