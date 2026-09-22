@@ -8,19 +8,22 @@ import requests
 import textwrap
 import re
 import sys
-import shutil
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
 # --- Environment Variables ---
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+IG_ACCESS_TOKEN = os.getenv("IG_ACCESS_TOKEN")
+IG_USER_ID = os.getenv("IG_USER_ID")
+
+GRAPH_API_BASE = "https://graph.facebook.com/v19.0/"
+RUPLOAD_BASE = "https://rupload.facebook.com/ig-api-upload/v19.0/"
 
 STATE_FILE = "progress_state.json"
 DEV_FONT_PATH = "NotoSansDevanagari-Bold.ttf"
 OUTPUT_VIDEO = "final_reel.mp4"
 BGM_OUTPUT = "bgm.mp3"
 VOICE_NAME = "hi-IN-SwaraNeural"
-REELS_DIR = "generated_reels"
 
 # Assets Directory
 ASSETS_DIR = "assets"
@@ -448,35 +451,48 @@ def extract_field_block(text, field_name, next_fields):
 
 def ensure_auto_icons():
     os.makedirs(ASSETS_DIR, exist_ok=True)
-    if not os.path.exists(BOOK_3D_PATH):
-        try:
-            bk = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
-            db = ImageDraw.Draw(bk)
-            db.rounded_rectangle([55, 60, 245, 360], radius=14, fill="#1E3A8A")
-            db.rounded_rectangle([75, 65, 240, 350], radius=8, fill="#F8FAFC")
-            db.rounded_rectangle([55, 55, 230, 350], radius=12, fill="#1D4ED8")
-            bk.save(BOOK_3D_PATH, "PNG")
-        except Exception:
-            pass
+    try:
+        bk = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
+        db = ImageDraw.Draw(bk)
+        db.rounded_rectangle([60, 55, 240, 365], radius=14, fill="#1E3A8A")
+        db.rounded_rectangle([78, 62, 232, 358], radius=10, fill="#2563EB")
+        db.rounded_rectangle([90, 62, 100, 358], fill="#1D4ED8")
+        for ly in range(90, 340, 34):
+            db.rounded_rectangle([112, ly, 214, ly + 10], radius=4, fill="#DBEAFE")
+        bk.save(BOOK_3D_PATH, "PNG")
+    except Exception:
+        pass
 
-    if not os.path.exists(POSTBOX_3D_PATH):
-        try:
-            box = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
-            d = ImageDraw.Draw(box)
-            d.rounded_rectangle([75, 120, 225, 350], radius=12, fill="#991B1B")
-            d.rounded_rectangle([95, 120, 205, 350], radius=8, fill="#DC2626")
-            box.save(POSTBOX_3D_PATH, "PNG")
-        except Exception:
-            pass
+    try:
+        box = Image.new("RGBA", (300, 420), (0, 0, 0, 0))
+        d = ImageDraw.Draw(box)
+        d.rounded_rectangle([70, 160, 230, 350], radius=18, fill="#7F1D1D")
+        d.pieslice([70, 90, 230, 250], start=180, end=360, fill="#7F1D1D")
+        d.rounded_rectangle([85, 175, 215, 335], radius=14, fill="#DC2626")
+        d.pieslice([85, 105, 215, 245], start=180, end=360, fill="#DC2626")
+        d.rounded_rectangle([100, 195, 200, 212], radius=6, fill="#7F1D1D")
+        d.polygon([(200, 130), (255, 110), (255, 160)], fill="#FBBF24")
+        d.rounded_rectangle([195, 125, 208, 200], radius=4, fill="#4B5563")
+        d.rounded_rectangle([40, 350, 260, 375], radius=10, fill="#374151")
+        box.save(POSTBOX_3D_PATH, "PNG")
+    except Exception:
+        pass
 
-    if not os.path.exists(QUIZ_3D_PATH):
+    try:
+        q = Image.new("RGBA", (300, 400), (0, 0, 0, 0))
+        dq = ImageDraw.Draw(q)
+        dq.rounded_rectangle([40, 40, 260, 260], radius=40, fill="#D97706")
+        dq.polygon([(110, 250), (150, 250), (110, 310)], fill="#D97706")
         try:
-            q = Image.new("RGBA", (300, 400), (0, 0, 0, 0))
-            dq = ImageDraw.Draw(q)
-            dq.chord([60, 70, 240, 250], start=0, end=180, fill="#D97706")
-            q.save(QUIZ_3D_PATH, "PNG")
+            qfont = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 150)
         except Exception:
-            pass
+            qfont = ImageFont.load_default()
+        bbox = dq.textbbox((0, 0), "?", font=qfont)
+        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        dq.text((150 - tw / 2 - bbox[0], 150 - th / 2 - bbox[1]), "?", fill="#FFFBEB", font=qfont)
+        q.save(QUIZ_3D_PATH, "PNG")
+    except Exception:
+        pass
 
 def ensure_fonts():
     if not os.path.exists(DEV_FONT_PATH):
@@ -561,6 +577,26 @@ def generate_clause_script(state):
     part_key = f"part_{current_part}_focus"
     part_focus = clause_info.get(part_key, clause_info.get("part_1_focus", ""))
 
+    variety_idx = (current_clause * 7 + current_part) % 4
+    question_bank = [
+        f"डाक घर गाइड भाग 1, क्लॉज {current_clause} (भाग {current_part}) के अनुसार निम्नलिखित में से कौन सा कथन सही है?",
+        f"क्लॉज {current_clause} भाग {current_part} में बताए गए नियम पर आधारित यह सवाल परीक्षा में बार-बार आता है - सही विकल्प चुनिए:",
+        f"डाक घर गाइड भाग 1, क्लॉज {current_clause} (भाग {current_part}) से जुड़ा यह प्रश्न विभागीय परीक्षा में पूछा गया था:",
+        f"क्लॉज {current_clause} भाग {current_part} पढ़कर बताइए, इनमें से कौन सा नियम के अनुसार सही है?",
+    ]
+    sen2_bank = [
+        "विभागीय परीक्षा में इसके तकनीकी नियमों और शर्तों से जुड़े सीधे प्रश्न पूछे जाते हैं।",
+        "इसकी समय-सीमा और अधिकार-क्षेत्र से जुड़े प्रश्न परीक्षा में सबसे ज्यादा पूछे जाते हैं।",
+        "इससे जुड़ी शर्तों को याद न रखने पर परीक्षा में सीधे नंबर कट जाते हैं।",
+        "इसके तहत आने वाली सीमाएं और अपवाद हर वर्ष की परीक्षा में दोहराए जाते हैं।",
+    ]
+    sen3_bank = [
+        "परीक्षार्थी ध्यान रखें कि इसके आधिकारिक अपवादों में ही 90 प्रतिशत लोग गलती करते हैं।",
+        "ज्यादातर उम्मीदवार इसके अपवाद वाले हिस्से को पढ़े बिना ही जवाब दे देते हैं, और गलत हो जाते हैं।",
+        "इस नियम का उल्टा मतलब निकालकर बनाया गया विकल्प परीक्षा में सबसे ज्यादा फंसाता है।",
+        "यहां शब्दों का हल्का सा फेरबदल करके परीक्षा में गलत विकल्प सही जैसा दिखाया जाता है।",
+    ]
+
     fallback_data = {
         "clause_no": current_clause,
         "clause_name": clause_name,
@@ -568,10 +604,10 @@ def generate_clause_script(state):
         "total_parts": total_parts,
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
-        "question": f"डाक घर गाइड भाग 1 क्लॉज {current_clause} भाग {current_part} के अनुसार क्या नियम है?",
+        "question": question_bank[variety_idx],
         "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": "विभागीय परीक्षा में इसके तकनीकी नियमों और शर्तों से जुड़े सीधे प्रश्न पूछे जाते हैं।",
-        "sen3": "परीक्षार्थी ध्यान रखें कि इसके आधिकारिक अपवादों में ही 90 प्रतिशत लोग गलती करते हैं।",
+        "sen2": sen2_bank[variety_idx],
+        "sen3": sen3_bank[variety_idx],
         "opt_a": "नियम का पूर्ण पालन अनिवार्य",
         "opt_b": "विशेष परिस्थिति में छूट मान्य",
         "opt_c": "केवल प्रधान डाकघर में लागू",
@@ -581,6 +617,7 @@ def generate_clause_script(state):
     }
 
     if not GROQ_API_KEY:
+        print("🛑 GROQ_API_KEY is not set - using generic fallback script instead of AI-generated content.", flush=True)
         return fallback_data
 
     prompt = f"""
@@ -589,15 +626,15 @@ def generate_clause_script(state):
     Clause Number: क्लॉज {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
     Sub-Rule Specific Focus for this Part: "{part_focus}"
 
-    Generate strictly based on this part's sub-rule:
-    QUESTION: [1 crisp high-yield departmental exam MCQ question directly testing this specific part focus]
-    SEN1: [Core explanation of this part's rule in pure simple Hindi, ~22 words]
-    SEN2: [Crucial condition, timing, limit or penalty for this part, ~22 words]
-    SEN3: [Official departmental exception or exam trap point, ~22 words]
-    OPT_A: [Option A]
-    OPT_B: [Option B]
-    OPT_C: [Option C]
-    OPT_D: [Option D]
+    Generate strictly based on this part's sub-rule. Keep every sentence SHORT and punchy (max ~16 words) - this is a fast-paced Reel, not an essay:
+    QUESTION: [1 crisp high-yield departmental exam MCQ question directly testing this specific part focus, max 18 words]
+    SEN1: [Core explanation of this part's rule in pure simple Hindi, max 16 words]
+    SEN2: [Crucial condition, timing, limit or penalty for this part, max 16 words]
+    SEN3: [Official departmental exception or exam trap point, max 16 words]
+    OPT_A: [Option A - max 6 words]
+    OPT_B: [Option B - max 6 words]
+    OPT_C: [Option C - max 6 words]
+    OPT_D: [Option D - max 6 words]
     CORRECT: [Only the single correct letter: A, B, C or D]
     """
     try:
@@ -628,8 +665,9 @@ def generate_clause_script(state):
                 letter_match = re.search(r"[ABCDabcd]", correct)
                 if letter_match:
                     fallback_data["correct_letter"] = letter_match.group(0).upper()
+            print("✅ Groq: AI-generated clause-specific content used for this video.", flush=True)
     except Exception as e:
-        print(f"⚠️ Groq note: {e}")
+        print(f"🛑 Groq call failed ({e}) - falling back to generic template for this video.", flush=True)
 
     return fallback_data
 
@@ -644,11 +682,11 @@ def get_slide_segments(script_data):
     letter, correct_text = get_correct_option_text(script_data)
     return [
         f"{hook_v}",
-        f"आज का सवाल है: {q_txt}",
+        f"आज का सवाल: {q_txt}",
         f"{script_data['sen1']}",
         f"{script_data['sen2']}",
-        f"परीक्षा में फंसाने वाला बिंदु: {script_data['sen3']} अपना जवाब अभी कमेंट करें!",
-        f"सही जवाब है विकल्प {letter}: {correct_text}। अगर आपका उत्तर सही था तो कमेंट में जरूर लिखें, और अगला भाग देखने के लिए पोस्टल वाला को फॉलो करें!"
+        f"परीक्षा ट्रैप: {script_data['sen3']} अपना जवाब कमेंट करें!",
+        f"सही जवाब है विकल्प {letter}: {correct_text}। सही था तो कमेंट करें, और अगले भाग के लिए फॉलो करें!"
     ]
 
 async def generate_segment_audio(text, outfile):
@@ -657,6 +695,24 @@ async def generate_segment_audio(text, outfile):
         except Exception: pass
     communicate = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate="+5%")
     await communicate.save(outfile)
+    _tighten_audio_silence(outfile)
+
+def _tighten_audio_silence(path):
+    tmp_path = path + ".tight.mp3"
+    try:
+        subprocess.run([
+            "ffmpeg", "-y", "-i", path,
+            "-af", "silenceremove=start_periods=1:start_duration=0:start_threshold=-35dB:"
+                   "stop_periods=-1:stop_duration=0.15:stop_threshold=-35dB:window=0.05:detection=peak",
+            "-c:a", "libmp3lame", "-b:a", "192k", tmp_path
+        ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if os.path.exists(tmp_path) and os.path.getsize(tmp_path) > 500:
+            os.replace(tmp_path, path)
+    except Exception as e:
+        print(f"⚠️ Silence-trim skipped for {path}: {e}", flush=True)
+        if os.path.exists(tmp_path):
+            try: os.remove(tmp_path)
+            except Exception: pass
 
 def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
@@ -685,12 +741,12 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     total_dur = get_audio_duration("raw_master.mp3")
     print(f"🎵 Raw Master Duration: {total_dur:.2f}s", flush=True)
 
-    MIN_TARGET_DUR = 24.0
-    MAX_TARGET_DUR = 38.0
+    MIN_TARGET_DUR = 22.0
+    MAX_TARGET_DUR = 34.0
     if total_dur < MIN_TARGET_DUR:
         tempo_scale = max(0.88, round(total_dur / MIN_TARGET_DUR, 4))
     elif total_dur > MAX_TARGET_DUR:
-        tempo_scale = min(1.18, round(total_dur / MAX_TARGET_DUR, 4))
+        tempo_scale = min(1.22, round(total_dur / MAX_TARGET_DUR, 4))
     else:
         tempo_scale = 1.0
 
@@ -716,7 +772,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     font_cta_dev = get_dev_font(30)
     font_opt = get_dev_font(26)
     font_hook = get_dev_font(30)
-
     font_title_eng = get_eng_font(34)
     font_body_eng = get_eng_font(32)
     font_opt_eng = get_eng_font(26)
@@ -781,7 +836,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
 
     letter, correct_text = get_correct_option_text(script_data)
 
-    # Slide 1 - HOOK
     img1 = Image.new("RGB", (1080, 1920), color="#060A17")
     d1 = ImageDraw.Draw(img1)
     draw_base(d1)
@@ -793,12 +847,11 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_mixed_multiline(d1, 160, 480, wrapped_hook, font_hook, font_hook_eng, "#FEF08A", line_height=40)
     paste_safe_asset(img1, QUIZ_3D_PATH, pos=(390, 720), size=(300, 400))
     d1.rounded_rectangle([110, 1180, 970, 1290], radius=16, fill="#064E3B", outline="#34D399", width=2)
-    d1.text((150, 1218), "👉 अंत तक रुको, सही जवाब वहीं मिलेगा!", fill="#D1FAE5", font=font_label)
+    d1.text((150, 1218), ">> अंत तक रुको, सही जवाब वहीं मिलेगा!", fill="#D1FAE5", font=font_label)
     draw_footer_cta(d1)
     img1.save("slide_1.png")
     slide_filenames.append("slide_1.png")
 
-    # Slide 2 - QUESTION
     img2 = Image.new("RGB", (1080, 1920), color="#060A17")
     d2 = ImageDraw.Draw(img2)
     draw_base(d2)
@@ -814,7 +867,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img2.save("slide_2.png")
     slide_filenames.append("slide_2.png")
 
-    # Slide 3 - RULE
     img3 = Image.new("RGB", (1080, 1920), color="#060A17")
     d3 = ImageDraw.Draw(img3)
     draw_base(d3)
@@ -830,7 +882,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img3.save("slide_3.png")
     slide_filenames.append("slide_3.png")
 
-    # Slide 4 - CONDITION
     img4 = Image.new("RGB", (1080, 1920), color="#060A17")
     d4 = ImageDraw.Draw(img4)
     draw_base(d4)
@@ -846,7 +897,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img4.save("slide_4.png")
     slide_filenames.append("slide_4.png")
 
-    # Slide 5 - EXAM TRAP + OPTIONS
     img5 = Image.new("RGB", (1080, 1920), color="#060A17")
     d5 = ImageDraw.Draw(img5)
     draw_base(d5)
@@ -875,7 +925,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     img5.save("slide_5.png")
     slide_filenames.append("slide_5.png")
 
-    # Slide 6 - ANSWER REVEAL
     img6 = Image.new("RGB", (1080, 1920), color="#060A17")
     d6 = ImageDraw.Draw(img6)
     draw_base(d6)
@@ -903,19 +952,29 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         inputs.extend(["-i", fname])
         safe_dur = max(1.0, durations[i])
         frames = max(1, round(safe_dur * FPS))
-        fade_d = min(0.25, safe_dur / 4)
+        fade_d = min(0.2, safe_dur / 5)
         fade_out_start = max(0.0, safe_dur - fade_d)
+        settle_frames = max(1, min(10, frames // 3))
+        zoom_expr = (
+            f"if(lte(on,{settle_frames}),1.14-(0.14*on/{settle_frames}),"
+            f"min(1.0+0.0022*(on-{settle_frames}),1.12))"
+        )
         filter_parts += (
             f"[{i}:v]scale=1080:1920:force_original_aspect_ratio=decrease,"
             f"pad=1080:1920:(ow-iw)/2:(oh-ih)/2,"
-            f"zoompan=z='min(zoom+0.0015,1.09)':d={frames}:"
+            f"zoompan=z='{zoom_expr}':d={frames}:"
             f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1080x1920:fps={FPS},"
             f"fade=t=in:st=0:d={fade_d},fade=t=out:st={fade_out_start}:d={fade_d},"
             f"format=yuv420p[v{i}]; "
         )
 
     concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
-    video_filter = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,format=yuv420p[v]"
+    TOTAL_VIDEO_DUR = sum(max(1.0, d) for d in durations)
+    video_filter = (
+        f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,"
+        f"drawbox=x=0:y=0:w='iw*min(t/{TOTAL_VIDEO_DUR},1)':h=10:color=#F43F5E:t=fill,"
+        f"format=yuv420p[v]"
+    )
 
     cmd = ["ffmpeg", "-y", *inputs, "-i", "final_master.mp3"]
     voice_idx = len(slide_filenames)
@@ -932,25 +991,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     subprocess.run(cmd, check=True)
     print(f"✅ Reel Created: {output_video}", flush=True)
 
-# --- LOCAL FOLDER SAVER FOR GITHUB WORKFLOW ---
-def save_reel_to_local_folder(video_file, script_data):
-    os.makedirs(REELS_DIR, exist_ok=True)
-    clause_no = script_data.get("clause_no", 6)
-    part_no = script_data.get("part_no", 1)
-    dest_video = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}.mp4")
-    dest_txt = os.path.join(REELS_DIR, f"clause_{clause_no}_part_{part_no}_caption.txt")
-    
-    try:
-        shutil.copy(video_file, dest_video)
-        with open(dest_txt, "w", encoding="utf-8") as f:
-            f.write(script_data.get("caption", ""))
-        print(f"📁 Reel saved locally to: {dest_video}", flush=True)
-        return True
-    except Exception as e:
-        print(f"⚠️ Local Save Error: {e}", flush=True)
-        return False
-
-# --- MAIN RUNNER (INSTAGRAM UPLOAD REMOVED, SAVES LOCALLY) ---
+# --- MAIN RUNNER ---
 if __name__ == "__main__":
     st = load_progress_state()
     print(f"📌 Running Target: Clause {st['clause_no']} (Part {st['current_part']}/{st['total_parts']})", flush=True)
@@ -958,10 +999,12 @@ if __name__ == "__main__":
     script_data = generate_clause_script(st)
     render_and_sync_video(script_data, OUTPUT_VIDEO)
 
-    saved_ok = save_reel_to_local_folder(OUTPUT_VIDEO, script_data)
-    if saved_ok:
-        advance_progress_state(st)
-        print("✅ Reel generated, stored locally in generated_reels, and state updated.", flush=True)
-    else:
-        print("❌ Local save failed.", flush=True)
-        sys.exit(1)
+    # Save to generated_reels section folder for GitHub
+    os.makedirs("generated_reels", exist_ok=True)
+    target_reel_path = os.path.join("generated_reels", f"reel_clause_{st['clause_no']}_part_{st['current_part']}.mp4")
+    with open(OUTPUT_VIDEO, "rb") as src, open(target_reel_path, "wb") as dst:
+        dst.write(src.read())
+    print(f"✅ Reel saved to generated reels section: {target_reel_path}", flush=True)
+
+    advance_progress_state(st)
+    print("✅ State successfully shifted to next part.", flush=True)
