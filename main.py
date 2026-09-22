@@ -611,10 +611,10 @@ def generate_clause_script(state):
         sen2_fallback = f"{clause_name} से जुड़ी शर्तों को याद न रखने पर परीक्षा में सीधे नंबर कट जाते हैं।"
 
     sen3_bank = [
-        f"ध्यान दें: {clause_name} के इस हिस्से में परीक्षार्थी अक्सर जल्दबाज़ी में गलत विकल्प चुन लेते हैं।",
-        f"ज्यादातर उम्मीदवार {clause_name} के इस नियम को पूरा पढ़े बिना ही जवाब दे देते हैं।",
-        f"{clause_name} के इस बिंदु में शब्दों का हल्का फेरबदल करके गलत विकल्प सही जैसा दिखाया जाता है।",
-        f"{clause_name} से जुड़ा यह भाग हर वर्ष परीक्षा में दोहराया जाता है, ध्यान से पढ़ें।",
+        "ध्यान दें: यहीं पर ज्यादातर परीक्षार्थी जल्दबाज़ी में गलत विकल्प चुन लेते हैं।",
+        "ज्यादातर उम्मीदवार इस नियम को पूरा पढ़े बिना ही जवाब दे देते हैं, और गलत हो जाते हैं।",
+        "यहां शब्दों का हल्का फेरबदल करके गलत विकल्प सही जैसा दिखाया जाता है।",
+        "यह बिंदु हर वर्ष परीक्षा में दोहराया जाता है, ध्यान से पढ़ें।",
     ]
 
     # Build MCQ options from real clause content instead of static placeholders.
@@ -639,7 +639,11 @@ def generate_clause_script(state):
         "visual_hook_badge": hook_obj["visual_badge"],
         "hook_voice": hook_obj["voice"],
         "question": question_bank[variety_idx],
-        "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
+        # FIX: dropped the "डाक घर गाइड भाग 1 के क्लॉज X के अनुसार" prefix here —
+        # the clause/part number is already shown on-screen for the whole video
+        # and spoken once in the question; repeating it in every sentence felt
+        # robotic and irritating on replay.
+        "sen1": part_focus,
         "sen2": sen2_fallback,
         "sen3": sen3_bank[variety_idx],
         "opt_a": opts[0],
@@ -655,16 +659,34 @@ def generate_clause_script(state):
         return fallback_data
 
     prompt = f"""
-    You are the Senior Chief Instructor for India Post Departmental Examinations running 'Postal Wala'.
+    You are a viral Instagram Reels scriptwriter for 'Postal Wala', a page that preps GDS/Postman/MTS
+    candidates for India Post departmental exams. Your job is NOT to sound like a textbook — it is to
+    make a dry departmental rule feel like a story with a twist, so a scrolling viewer stops and watches
+    till the end.
+
     TOPIC: Book: 'Post Office Guide Part 1'
-    Clause Number: क्लॉज {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
+    Clause: क्लॉज {current_clause}, Title: {clause_name}, Part: {current_part}/{total_parts}
     Sub-Rule Specific Focus for this Part: "{part_focus}"
 
-    Generate strictly based on this part's sub-rule. Keep every sentence SHORT and punchy (max ~16 words) - this is a fast-paced Reel, not an essay:
-    QUESTION: [1 crisp high-yield departmental exam MCQ question directly testing this specific part focus, max 18 words]
-    SEN1: [Core explanation of this part's rule in pure simple Hindi, max 16 words]
-    SEN2: [Crucial condition, timing, limit or penalty for this part, max 16 words]
-    SEN3: [Official departmental exception or exam trap point, max 16 words]
+    WRITING STYLE — psychology first, facts second:
+    - Write like you're telling a colleague a surprising thing that just happened, not reading a manual.
+      Prefer a relatable scenario or consequence ("agar aap yeh bhool gaye toh...") over a flat definition.
+    - Every sentence should make the viewer want the NEXT sentence — build a small curiosity gap or
+      tension ("lekin yahan ek catch hai...") rather than just stating facts in sequence.
+    - Use natural spoken Hindi (the way a teacher talks to students in class), short punchy sentences,
+      max ~16 words each. Vary sentence rhythm — don't make every sentence the same shape.
+    - The clause/part number is ALREADY shown on-screen in the header for the whole video and is spoken
+      once in the QUESTION. Do NOT repeat "क्लॉज {current_clause}" or "भाग {current_part}" in SEN1, SEN2,
+      or SEN3 — jump straight into the content itself. Repeating it every line feels robotic and irritating
+      to a repeat viewer.
+    - SEN3 (the exam trap) should feel like a reveal/twist, not a bland warning — think "yahi par 90% log
+      dhoka kha jaate hain, kyunki..." framing, specific to what actually trips people up in this rule.
+
+    Generate strictly based on this part's sub-rule:
+    QUESTION: [1 crisp high-yield departmental exam MCQ question directly testing this specific part focus, max 18 words. May mention the clause number once.]
+    SEN1: [Core explanation of this part's rule, told with a relatable hook, no clause/part number, max 16 words]
+    SEN2: [Crucial condition, timing, limit or penalty for this part, framed with real stakes ("warna..."), no clause/part number, max 16 words]
+    SEN3: [The exact exam trap/exception as a twist reveal, no clause/part number, max 16 words]
     OPT_A: [Option A - max 6 words]
     OPT_B: [Option B - max 6 words]
     OPT_C: [Option C - max 6 words]
@@ -908,7 +930,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d2.text((140, 470), "आज का सवाल:", fill="#38BDF8", font=font_label)
     wrapped_q = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=23)
     draw_mixed_multiline(d2, 115, 555, wrapped_q, font_title, font_title_eng, "#F8FAFC", line_height=48)
-    paste_safe_asset(img2, QUIZ_3D_PATH, pos=(390, 1080), size=(300, 400))
+    paste_safe_asset(img2, QUIZ_3D_PATH, pos=(390, 940), size=(300, 400))
     draw_footer_cta(d2)
     img2.save("slide_2.png")
     slide_filenames.append("slide_2.png")
@@ -923,7 +945,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d3.text((150, 468), "नियम क्या कहता है:", fill="#38BDF8", font=font_label)
     wrapped_s1 = textwrap.fill(clean_hindi_postal_terms(script_data['sen1']), width=22)
     draw_mixed_multiline(d3, 115, 545, wrapped_s1, font_body, font_body_eng, "#F8FAFC", line_height=50)
-    paste_safe_asset(img3, POSTBOX_3D_PATH, pos=(400, 1150))
+    paste_safe_asset(img3, POSTBOX_3D_PATH, pos=(400, 980))
     draw_footer_cta(d3)
     img3.save("slide_3.png")
     slide_filenames.append("slide_3.png")
@@ -938,38 +960,75 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d4.text((150, 468), "जरूरी शर्त / सीमा:", fill="#FBBF24", font=font_label)
     wrapped_s2 = textwrap.fill(clean_hindi_postal_terms(script_data['sen2']), width=22)
     draw_mixed_multiline(d4, 115, 545, wrapped_s2, font_body, font_body_eng, "#F8FAFC", line_height=50)
-    paste_safe_asset(img4, BOOK_3D_PATH, pos=(400, 1150))
+    paste_safe_asset(img4, BOOK_3D_PATH, pos=(400, 980))
     draw_footer_cta(d4)
     img4.save("slide_4.png")
     slide_filenames.append("slide_4.png")
 
-    img5 = Image.new("RGB", (1080, 1920), color="#060A17")
-    d5 = ImageDraw.Draw(img5)
-    draw_base(d5)
-    draw_progress_dots(d5, 4, TOTAL_SLIDES)
-    draw_header(d5, script_data, title_override="परीक्षा ट्रैप: जवाब चुनो")
-    d5.rounded_rectangle([80, 420, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=2)
-    d5.rounded_rectangle([110, 448, 480, 498], radius=10, fill="#0B132B")
-    d5.text((150, 456), "परीक्षा में फंसाने वाला बिंदु:", fill="#F87171", font=font_label)
-    wrapped_trap = textwrap.fill(clean_hindi_postal_terms(script_data['sen3']), width=30)
-    trap_lines = wrapped_trap.count("\n") + 1
-    draw_mixed_multiline(d5, 115, 515, wrapped_trap, font_opt, font_opt_eng, "#F8FAFC", line_height=42)
+    # FIX (feedback: "sirf zoom in/out hota hai, boring laga, transition/animation
+    # ki kami hai"): the options slide used to be one static wall of text for its
+    # entire duration. It's now rendered as 3 progressive reveal frames — locked
+    # placeholders -> two options revealed -> all four + CTA — so watching it
+    # feels like a mini game-show reveal instead of reading a printed page.
+    def build_trap_slide(reveal_count, filename):
+        img = Image.new("RGB", (1080, 1920), color="#060A17")
+        d = ImageDraw.Draw(img)
+        draw_base(d)
+        draw_progress_dots(d, 4, TOTAL_SLIDES)
+        draw_header(d, script_data, title_override="परीक्षा ट्रैप: जवाब चुनो")
+        d.rounded_rectangle([80, 420, 1000, 1550], radius=24, fill="#1C2541", outline="#FBBF24", width=2)
+        d.rounded_rectangle([110, 448, 480, 498], radius=10, fill="#0B132B")
+        d.text((150, 456), "परीक्षा में फंसाने वाला बिंदु:", fill="#F87171", font=font_label)
+        wrapped_trap = textwrap.fill(clean_hindi_postal_terms(script_data['sen3']), width=30)
+        trap_lines = wrapped_trap.count("\n") + 1
+        draw_mixed_multiline(d, 115, 515, wrapped_trap, font_opt, font_opt_eng, "#F8FAFC", line_height=42)
 
-    opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
-    oy = 515 + (trap_lines * 42) + 25
-    for o_idx, opt in enumerate(opts):
-        d5.rounded_rectangle([110, oy, 970, oy + 68], radius=12, fill="#0B132B", outline="#38BDF8", width=2)
-        d5.text((135, oy + 16), f"{chr(65+o_idx)})", fill="#38BDF8", font=font_h2_eng)
-        wrapped_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=24)
-        draw_mixed_multiline(d5, 200, oy + 17, wrapped_opt, font_opt, font_opt_eng, "#FFFFFF", line_height=34)
-        oy += 80
+        opts = [script_data["opt_a"], script_data["opt_b"], script_data["opt_c"], script_data["opt_d"]]
+        oy = 515 + (trap_lines * 42) + 25
+        for o_idx, opt in enumerate(opts):
+            revealed = o_idx < reveal_count
+            outline = "#38BDF8" if revealed else "#334155"
+            d.rounded_rectangle([110, oy, 970, oy + 68], radius=12, fill="#0B132B", outline=outline, width=2)
+            d.text((135, oy + 16), f"{chr(65+o_idx)})", fill=("#38BDF8" if revealed else "#475569"), font=font_h2_eng)
+            if revealed:
+                wrapped_opt = textwrap.fill(clean_hindi_postal_terms(opt), width=24)
+                draw_mixed_multiline(d, 200, oy + 17, wrapped_opt, font_opt, font_opt_eng, "#FFFFFF", line_height=34)
+            else:
+                d.text((200, oy + 22), "• • •", fill="#475569", font=font_h2_eng)
+            oy += 80
 
-    cta_y = min(1460, oy + 15)
-    d5.rounded_rectangle([110, cta_y, 970, cta_y + 70], radius=18, fill="#0B132B", outline="#F59E0B", width=2)
-    d5.text((150, cta_y + 20), "अपना जवाब अभी कमेंट करें!", fill="#FDE047", font=font_h2)
-    draw_footer_cta(d5)
-    img5.save("slide_5.png")
-    slide_filenames.append("slide_5.png")
+        cta_y = min(1460, oy + 15)
+        if reveal_count >= 4:
+            d.rounded_rectangle([110, cta_y, 970, cta_y + 70], radius=18, fill="#0B132B", outline="#F59E0B", width=2)
+            d.text((150, cta_y + 20), "अपना जवाब अभी कमेंट करें!", fill="#FDE047", font=font_h2)
+        else:
+            d.rounded_rectangle([110, cta_y, 970, cta_y + 70], radius=18, fill="#0B132B", outline="#475569", width=2)
+            d.text((150, cta_y + 20), "बाकी विकल्प अभी आ रहे हैं...", fill="#94A3B8", font=font_h2)
+        draw_footer_cta(d)
+        img.save(filename)
+        return filename
+
+    trap_slide_files = [
+        build_trap_slide(0, "slide_5a.png"),
+        build_trap_slide(2, "slide_5b.png"),
+        build_trap_slide(4, "slide_5c.png"),
+    ]
+    slide_filenames.extend(trap_slide_files)
+
+    # FIX (animation variety): a very short "reveal beat" before the answer
+    # card cuts in — a brief anticipation frame, then the checkmark reveal —
+    # instead of the answer just appearing statically like every other slide.
+    img6_suspense = Image.new("RGB", (1080, 1920), color="#060A17")
+    d6s = ImageDraw.Draw(img6_suspense)
+    draw_base(d6s)
+    draw_progress_dots(d6s, 5, TOTAL_SLIDES)
+    draw_header(d6s, script_data, title_override="सही जवाब यहां देखो!")
+    d6s.rounded_rectangle([80, 420, 1000, 1550], radius=24, fill="#1C2541", outline="#334155", width=2)
+    d6s.rounded_rectangle([260, 850, 820, 970], radius=20, fill="#0B132B", outline="#FBBF24", width=2)
+    d6s.text((310, 890), "जवाब आ रहा है...", fill="#FDE047", font=font_h2)
+    draw_footer_cta(d6s)
+    img6_suspense.save("slide_6a.png")
+    slide_filenames.append("slide_6a.png")
 
     img6 = Image.new("RGB", (1080, 1920), color="#060A17")
     d6 = ImageDraw.Draw(img6)
@@ -988,42 +1047,102 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d6.rounded_rectangle([110, 1010, 970, 1110], radius=16, fill="#1E293B", outline="#38BDF8", width=2)
     d6.text((145, 1042), "अगला भाग जल्द आ रहा है — मिस मत करना!", fill="#93C5FD", font=font_label)
     draw_footer_cta(d6)
-    img6.save("slide_6.png")
-    slide_filenames.append("slide_6.png")
+    img6.save("slide_6b.png")
+    slide_filenames.append("slide_6b.png")
+
+    # FIX (feedback: "sirf zoom in/out hota hai, boring, transition/animation
+    # ki kami"): slide_filenames now has more visual cuts than audio segments
+    # (the options slide became 3 reveal-frames, the answer slide became a
+    # suspense+reveal pair). This maps each visual file to its own duration,
+    # carved out of the ONE audio segment it belongs to, so audio timing is
+    # untouched while the visuals cut/transition underneath it.
+    visual_durations = []
+    trap_total = max(1.0, durations[4])
+    trap_props = [0.22, 0.32, 0.46]  # locked -> 2 revealed -> all 4 + CTA
+    trap_durs = [trap_total * p for p in trap_props]
+
+    answer_total = max(1.0, durations[5])
+    suspense_dur = min(0.6, answer_total * 0.25)
+    answer_durs = [suspense_dur, answer_total - suspense_dur]
+
+    visual_durations = [
+        durations[0], durations[1], durations[2], durations[3],
+        *trap_durs, *answer_durs,
+    ]
+
+    # Cycle through a curated set of real ffmpeg transitions instead of the
+    # same fade+zoom every time, so consecutive cuts don't all feel identical.
+    TRANSITIONS = ["fade", "circleopen", "slideleft", "wipeup", "dissolve", "smoothleft", "slideright", "fadeblack"]
+    XFADE_DUR = 0.22
 
     FPS = 30
     inputs = []
     filter_parts = ""
+    n = len(slide_filenames)
+
+    # The xfade chain shortens the total timeline by XFADE_DUR per transition
+    # (n-1 transitions). Add that lost time back onto the very last clip so
+    # the final video length still matches the audio track exactly.
+    overlap_loss = XFADE_DUR * (n - 1)
+    adj_durations = list(visual_durations)
+    adj_durations[-1] += overlap_loss
+
     for i, fname in enumerate(slide_filenames):
         inputs.extend(["-i", fname])
-        safe_dur = max(1.0, durations[i])
+        safe_dur = max(0.4, adj_durations[i])
         frames = max(1, round(safe_dur * FPS))
-        fade_d = min(0.2, safe_dur / 5)
-        fade_out_start = max(0.0, safe_dur - fade_d)
         settle_frames = max(1, min(10, frames // 3))
         # FIX (retention bug): old formula zoomed up to 1.12x and cropped
         # centered, which pushed the "POSTAL WALA" header/badge off the top
         # of the frame for most of every slide's runtime. Capped at 1.05x
         # and anchored to the top (y='0') so the header stays fully visible
         # for the entire video; only the lower, less critical area trims.
-        zoom_expr = (
-            f"if(lte(on,{settle_frames}),1.05-(0.05*on/{settle_frames}),"
-            f"min(1.0+0.0007*(on-{settle_frames}),1.05))"
-        )
-        filter_parts += (
+        # Alternates zoom-in / zoom-out by index for a bit of visual variety
+        # instead of the exact same Ken Burns move on every single clip.
+        if i % 2 == 0:
+            zoom_expr = (
+                f"if(lte(on,{settle_frames}),1.05-(0.05*on/{settle_frames}),"
+                f"min(1.0+0.0007*(on-{settle_frames}),1.05))"
+            )
+        else:
+            zoom_expr = (
+                f"if(lte(on,{settle_frames}),1.0+(0.05*on/{settle_frames}),"
+                f"max(1.05-0.0007*(on-{settle_frames}),1.0))"
+            )
+        clip_filter = (
             f"[{i}:v]scale=1080:1920:force_original_aspect_ratio=decrease,"
             f"pad=1080:1920:(ow-iw)/2:(oh-ih)/2,"
             f"zoompan=z='{zoom_expr}':d={frames}:"
-            f"x='iw/2-(iw/zoom/2)':y='0':s=1080x1920:fps={FPS},"
-            f"fade=t=in:st=0:d={fade_d},fade=t=out:st={fade_out_start}:d={fade_d},"
-            f"format=yuv420p[v{i}]; "
+            f"x='iw/2-(iw/zoom/2)':y='0':s=1080x1920:fps={FPS}"
         )
+        if i == 0:
+            clip_filter += ",fade=t=in:st=0:d=0.2"
+        if i == n - 1:
+            fade_out_start = max(0.0, safe_dur - 0.25)
+            clip_filter += f",fade=t=out:st={fade_out_start}:d=0.25"
+        clip_filter += f",format=yuv420p[v{i}]; "
+        filter_parts += clip_filter
 
-    concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
-    TOTAL_VIDEO_DUR = sum(max(1.0, d) for d in durations)
+    # Chain consecutive clips with xfade (varied transition types) instead of
+    # a plain concat, tracking the running timeline length for each offset.
+    xfade_parts = ""
+    running_label = "v0"
+    running_len = adj_durations[0]
+    for i in range(1, n):
+        out_label = f"x{i}" if i < n - 1 else "vout"
+        t_type = TRANSITIONS[(i - 1) % len(TRANSITIONS)]
+        offset = max(0.0, running_len - XFADE_DUR)
+        xfade_parts += (
+            f"[{running_label}][v{i}]xfade=transition={t_type}:"
+            f"duration={XFADE_DUR}:offset={offset:.3f}[{out_label}]; "
+        )
+        running_len = running_len + adj_durations[i] - XFADE_DUR
+        running_label = out_label
+
+    TOTAL_VIDEO_DUR = running_len
     video_filter = (
-        f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,"
-        f"drawbox=x=0:y=0:w='iw*min(t/{TOTAL_VIDEO_DUR},1)':h=10:color=#F43F5E:t=fill,"
+        f"{filter_parts}{xfade_parts}"
+        f"[vout]drawbox=x=0:y=0:w='iw*min(t/{TOTAL_VIDEO_DUR},1)':h=10:color=#F43F5E:t=fill,"
         f"format=yuv420p[v]"
     )
 
