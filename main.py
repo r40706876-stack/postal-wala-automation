@@ -112,28 +112,37 @@ def clean_text(text):
     text = "".join(c for c in text if not any(lo <= ord(c) <= hi for lo, hi in strip_ranges))
     return text.strip()
 
-def is_latin_run_char(ch):
+# Full Devanagari detection - Any non-Devanagari (A-Z, 0-9, Symbols) goes to DejaVu/English font
+def is_devanagari_char(ch):
     o = ord(ch)
-    return (0x41 <= o <= 0x5A) or (0x61 <= o <= 0x7A)
+    return (0x0900 <= o <= 0x097F) or (0xA8E0 <= o <= 0xA8FF) or (0x1CD0 <= o <= 0x1CFF)
 
 def draw_mixed_line(draw, x, y, text, dev_font, eng_font, fill):
+    if not text:
+        return
     cx = x
-    run = ""
-    run_is_latin = None
+    runs = []
+    current_is_dev = None
+    current_str = ""
     for ch in text:
-        latin = is_latin_run_char(ch)
-        if run_is_latin is None:
-            run_is_latin = latin
-        if latin != run_is_latin:
-            f = eng_font if run_is_latin else dev_font
-            draw.text((cx, y), run, font=f, fill=fill)
-            cx += draw.textlength(run, font=f)
-            run = ""
-            run_is_latin = latin
-        run += ch
-    if run:
-        f = eng_font if run_is_latin else dev_font
-        draw.text((cx, y), run, font=f, fill=fill)
+        if ch == " ":
+            current_str += ch
+            continue
+        is_dev = is_devanagari_char(ch)
+        if current_is_dev is None:
+            current_is_dev = is_dev
+        if is_dev != current_is_dev:
+            runs.append((current_str, current_is_dev))
+            current_str = ""
+            current_is_dev = is_dev
+        current_str += ch
+    if current_str:
+        runs.append((current_str, current_is_dev if current_is_dev is not None else False))
+
+    for run_str, is_dev in runs:
+        f = dev_font if is_dev else eng_font
+        draw.text((cx, y), run_str, font=f, fill=fill)
+        cx += draw.textlength(run_str, font=f)
 
 def draw_mixed_multiline(draw, x, y, wrapped_text, dev_font, eng_font, fill, line_height):
     for i, line in enumerate(wrapped_text.split("\n")):
@@ -222,7 +231,8 @@ def get_dev_font(size):
 def get_eng_font(size):
     paths = [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
     ]
     for p in paths:
         if os.path.exists(p):
@@ -403,7 +413,7 @@ def get_audio_duration(path):
     cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path]
     return float(subprocess.check_output(cmd).decode().strip())
 
-# ----------------- CLEAN MODERN RENDERING ENGINE -----------------
+# ----------------- CLEAN RENDERING ENGINE WITHOUT TOFU GLYPHS -----------------
 def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     ensure_fonts()
     ensure_auto_icons()
@@ -441,7 +451,7 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
 
     durations = [d / tempo_scale for d in raw_durations]
 
-    # Typography
+    # Fonts
     font_brand = get_eng_font(44)
     font_sub = get_eng_font(22)
     font_trust = get_eng_font(20)
@@ -449,8 +459,8 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     font_badge_eng = get_eng_font(24)
     font_title = get_dev_font(38)
     font_title_eng = get_eng_font(38)
-    font_h2 = get_dev_font(32)
-    font_h2_eng = get_eng_font(32)
+    font_h2 = get_dev_font(30)
+    font_h2_eng = get_eng_font(30)
     font_body = get_dev_font(32)
     font_body_eng = get_eng_font(32)
     font_label = get_dev_font(26)
@@ -463,14 +473,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     font_hook_eng = get_eng_font(36)
 
     def draw_clean_background(d):
-        # Professional clean dark canvas without multi-layered border cages
         d.rectangle([0, 0, 1080, 1920], fill="#0A0F1D")
-        
-        # Sleek branding top bar
         d.text((70, 75), "POSTAL WALA", fill="#F43F5E", font=font_brand)
         d.text((70, 130), "@POSTAL_WALA", fill="#64748B", font=font_sub)
-        
-        # Official Badge
         d.rounded_rectangle([680, 78, 1010, 132], radius=14, fill="#064E3B")
         d.text((705, 93), "OFFICIAL SYLLABUS", fill="#34D399", font=font_trust)
 
@@ -488,27 +493,26 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
                 d.ellipse([cx - 5, y - 5, cx + 5, y + 5], fill="#1E293B")
 
     def draw_clean_header(d, script_data, title_override=None):
-        # Single, clean navigation card instead of 3 nested boxes
         d.rounded_rectangle([70, 205, 1010, 335], radius=20, fill="#131C31")
         
-        # Tags inside header
+        # Tags with dual font rendering so clause numbers never show as boxes
         d.rounded_rectangle([95, 225, 480, 268], radius=10, fill="#D97706")
-        d.text((115, 233), f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", fill="#FFFFFF", font=font_badge)
+        draw_mixed_line(d, 115, 233, f"पीओ गाइड भाग 1 : क्लॉज {script_data['clause_no']}", font_badge, font_badge_eng, "#FFFFFF")
 
         d.rounded_rectangle([840, 225, 985, 268], radius=10, fill="#1D4ED8")
-        d.text((865, 233), f"भाग {script_data['part_no']}/{script_data['total_parts']}", fill="#FFFFFF", font=font_badge)
+        draw_mixed_line(d, 865, 233, f"भाग {script_data['part_no']}/{script_data['total_parts']}", font_badge, font_badge_eng, "#FFFFFF")
 
         title_text = title_override if title_override else clean_hindi_postal_terms(script_data["clause_name"])
         draw_mixed_line(d, 95, 282, title_text, font_h2, font_h2_eng, "#E2E8F0")
 
     def draw_clean_whatsapp_card(d, y=1400):
         d.rounded_rectangle([70, y, 1010, y + 125], radius=20, fill="#064E3B")
-        d.text((105, y + 20), "GDS to MTS • Postman • Mail Guard • P.A.", fill="#FDE047", font=font_wa_num)
-        d.text((105, y + 68), "विभागीय नोट्स व क्लास हेतु WhatsApp: 8989971379", fill="#FFFFFF", font=font_wa_hin)
+        draw_mixed_line(d, 105, y + 20, "GDS to MTS • Postman • Mail Guard • P.A.", font_wa_hin, font_wa_num, "#FDE047")
+        draw_mixed_line(d, 105, y + 68, "विभागीय नोट्स व क्लास हेतु व्हाट्सएप: 8989971379", font_wa_hin, font_wa_num, "#FFFFFF")
 
     def draw_footer_cta(d):
         d.rounded_rectangle([70, 1720, 1010, 1825], radius=22, fill="#E11D48")
-        d.text((120, 1750), "पूरी तैयारी के लिए फॉलो करें:", fill="#FFFFFF", font=font_cta_dev)
+        draw_mixed_line(d, 120, 1750, "पूरी तैयारी के लिए फॉलो करें:", font_cta_dev, font_cta, "#FFFFFF")
         d.text((580, 1750), "@POSTAL_WALA", fill="#FFFFFF", font=font_cta)
 
     def paste_safe_asset(base_img, path, pos, size=(300, 380)):
@@ -529,28 +533,24 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     TOTAL_SLIDES = 6
     letter, correct_text = get_correct_option_text(script_data)
 
-    # ---------------- SLIDE 1: VIRAL HOOK (Clean, No Nested Boxes) ----------------
+    # ---------------- SLIDE 1: VIRAL HOOK ----------------
     img1 = Image.new("RGB", (1080, 1920), color="#0A0F1D")
     d1 = ImageDraw.Draw(img1)
     draw_clean_background(d1)
     draw_progress_dots(d1, 0, TOTAL_SLIDES)
     draw_clean_header(d1, script_data)
 
-    # Clean Prominent Hook Banner (Single layer)
     d1.rounded_rectangle([70, 380, 1010, 520], radius=20, fill="#7F1D1D")
     wrapped_hook = textwrap.fill(clean_hindi_postal_terms(script_data["visual_hook_badge"]), width=24)
     draw_mixed_multiline(d1, 110, 420, wrapped_hook, font_hook, font_hook_eng, "#FEF08A", line_height=48)
 
-    # Question Display (Open Layout, NO text-overflow box)
-    d1.text((75, 570), "परीक्षा चैलेंज सवाल:", fill="#38BDF8", font=font_label)
+    draw_mixed_line(d1, 75, 570, "परीक्षा चैलेंज सवाल:", font_label, font_label_eng, "#38BDF8")
     wrapped_q = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=24)
     draw_mixed_multiline(d1, 75, 620, wrapped_q, font_title, font_title_eng, "#FFFFFF", line_height=56)
 
-    # Visual Asset
     paste_safe_asset(img1, QUIZ_3D_PATH, pos=(390, 1020), size=(300, 380))
 
-    # Clean prompt at bottom
-    d1.text((160, 1530), "नियम व सही उत्तर देखने के लिए आगे बढ़ें >>", fill="#94A3B8", font=font_label)
+    draw_mixed_line(d1, 160, 1530, "नियम व सही उत्तर देखने के लिए आगे बढ़ें >>", font_label, font_label_eng, "#94A3B8")
     draw_footer_cta(d1)
     img1.save("slide_1.png")
     slide_filenames.append("slide_1.png")
@@ -562,18 +562,17 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_progress_dots(d2, 1, TOTAL_SLIDES)
     draw_clean_header(d2, script_data)
 
-    # Clean badge
-    d2.rounded_rectangle([70, 390, 430, 445], radius=12, fill="#1E293B")
-    d2.text((95, 402), "विभागीय परीक्षा प्रश्न:", fill="#FBBF24", font=font_label)
+    # Extra wide badge so "विभागीय परीक्षा प्रश्न:" never truncates
+    d2.rounded_rectangle([70, 390, 490, 445], radius=12, fill="#1E293B")
+    draw_mixed_line(d2, 95, 402, "विभागीय परीक्षा प्रश्न:", font_label, font_label_eng, "#FBBF24")
 
-    # Large Question Text
     wrapped_q2 = textwrap.fill(clean_hindi_postal_terms(script_data["question"]), width=23)
     draw_mixed_multiline(d2, 70, 480, wrapped_q2, font_title, font_title_eng, "#FFFFFF", line_height=58)
 
     paste_safe_asset(img2, BOOK_3D_PATH, pos=(390, 950), size=(300, 380))
 
     d2.rounded_rectangle([70, 1500, 1010, 1590], radius=16, fill="#131C31")
-    d2.text((120, 1530), "अगली स्लाइड में 4 विकल्प देखें और जवाब दें...", fill="#38BDF8", font=font_h2)
+    draw_mixed_line(d2, 120, 1530, "अगली स्लाइड में 4 विकल्प देखें और जवाब दें...", font_h2, font_h2_eng, "#38BDF8")
 
     draw_footer_cta(d2)
     img2.save("slide_2.png")
@@ -590,10 +589,8 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     opt_y = 380
     for idx, opt in enumerate(opts):
         letter_char = chr(65 + idx)
-        # Modern Card with soft highlight
         d3.rounded_rectangle([70, opt_y, 1010, opt_y + 115], radius=18, fill="#131C31")
         
-        # Letter pill
         d3.rounded_rectangle([95, opt_y + 20, 165, opt_y + 95], radius=12, fill="#1E3A8A")
         d3.text((115, opt_y + 32), letter_char, fill="#93C5FD", font=font_h2_eng)
         
@@ -601,9 +598,9 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         draw_mixed_multiline(d3, 195, opt_y + 32, wrapped_opt, font_body, font_body_eng, "#FFFFFF", line_height=40)
         opt_y += 140
 
-    # Countdown Callout
+    # Countdown callout with mixed rendering (Fixes (▯, ▯, ▯, ▯) bug completely)
     d3.rounded_rectangle([70, 1000, 1010, 1100], radius=18, fill="#7F1D1D")
-    d3.text((150, 1030), "3 सेकंड में अपना उत्तर कमेंट करें (A, B, C, D)!", fill="#FEF08A", font=font_h2)
+    draw_mixed_line(d3, 90, 1030, "3 सेकंड में अपना उत्तर कमेंट करें (A, B, C, D)!", font_h2, font_h2_eng, "#FEF08A")
 
     draw_clean_whatsapp_card(d3, y=1400)
     draw_footer_cta(d3)
@@ -617,15 +614,13 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_progress_dots(d4, 3, TOTAL_SLIDES)
     draw_clean_header(d4, script_data, title_override="सही उत्तर व आधिकारिक नियम")
 
-    # Correct Answer Card
     d4.rounded_rectangle([70, 380, 1010, 560], radius=22, fill="#064E3B")
     draw_checkmark(img4, 150, 470, r=40)
     draw_mixed_line(d4, 220, 415, f"सही उत्तर: विकल्प {letter}", font_h2, font_h2_eng, "#34D399")
     wrapped_ans = textwrap.fill(clean_hindi_postal_terms(correct_text), width=23)
     draw_mixed_multiline(d4, 220, 475, wrapped_ans, font_title, font_title_eng, "#FFFFFF", line_height=44)
 
-    # Core Rule Text (Direct, Clean, High Contrast)
-    d4.text((75, 620), "डाक घर गाइड का नियम:", fill="#38BDF8", font=font_label)
+    draw_mixed_line(d4, 75, 620, "डाक घर गाइड का नियम:", font_label, font_label_eng, "#38BDF8")
     wrapped_s1 = textwrap.fill(clean_hindi_postal_terms(script_data['sen1']), width=23)
     draw_mixed_multiline(d4, 75, 680, wrapped_s1, font_body, font_body_eng, "#F8FAFC", line_height=52)
 
@@ -641,18 +636,15 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     draw_progress_dots(d5, 4, TOTAL_SLIDES)
     draw_clean_header(d5, script_data, title_override="परीक्षा में फंसाने वाला बिंदु")
 
-    # Clean Warning Badge
     d5.rounded_rectangle([70, 380, 560, 440], radius=12, fill="#7F1D1D")
-    d5.text((95, 395), "सावधान: मुख्य अपवाद / शर्त", fill="#FEF08A", font=font_label)
+    draw_mixed_line(d5, 95, 395, "सावधान: मुख्य अपवाद / शर्त", font_label, font_label_eng, "#FEF08A")
 
-    # Trap Explanation
     wrapped_s2 = textwrap.fill(clean_hindi_postal_terms(script_data['sen2']), width=23)
     draw_mixed_multiline(d5, 75, 480, wrapped_s2, font_title, font_title_eng, "#FFFFFF", line_height=56)
 
-    # Note Banner
     d5.rounded_rectangle([70, 920, 1010, 1060], radius=18, fill="#131C31")
-    d5.text((105, 950), "परीक्षार्थी ध्यान रखें:", fill="#FBBF24", font=font_label)
-    d5.text((105, 995), "हल्के से शब्द बदलने पर विकल्प बदल जाता है!", fill="#93C5FD", font=font_h2)
+    draw_mixed_line(d5, 105, 950, "परीक्षार्थी ध्यान रखें:", font_label, font_label_eng, "#FBBF24")
+    draw_mixed_line(d5, 105, 995, "हल्के से शब्द बदलने पर विकल्प बदल जाता है!", font_h2, font_h2_eng, "#93C5FD")
 
     draw_clean_whatsapp_card(d5, y=1400)
     draw_footer_cta(d5)
@@ -664,20 +656,19 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d6 = ImageDraw.Draw(img6)
     draw_clean_background(d6)
     draw_progress_dots(d6, 5, TOTAL_SLIDES)
-    draw_clean_header(d6, script_data, title_override="रिजल्ट & अगली तैयारी")
+    # Using 'व' instead of '&' to prevent tofu box
+    draw_clean_header(d6, script_data, title_override="रिजल्ट व अगली तैयारी")
 
-    # Did you get it right?
     d6.rounded_rectangle([70, 380, 1010, 530], radius=22, fill="#131C31")
-    d6.text((110, 410), "क्या आपका जवाब सही निकला?", fill="#FFFFFF", font=font_title)
-    d6.text((110, 470), "कमेंट बॉक्स में 'YES' या 'NO' जरूर लिखें!", fill="#FDE047", font=font_h2)
+    draw_mixed_line(d6, 110, 410, "क्या आपका जवाब सही निकला?", font_title, font_title_eng, "#FFFFFF")
+    # Fixes 'YES' or 'NO' tofu boxes
+    draw_mixed_line(d6, 110, 470, "कमेंट बॉक्स में 'YES' या 'NO' जरूर लिखें!", font_h2, font_h2_eng, "#FDE047")
 
-    # WhatsApp Offer Card
     draw_clean_whatsapp_card(d6, y=580)
 
-    # Next part teaser
     d6.rounded_rectangle([70, 750, 1010, 880], radius=20, fill="#1E293B")
-    d6.text((105, 780), f"अगला भाग ({script_data['clause_name']}) जल्द आ रहा है!", fill="#38BDF8", font=font_h2)
-    d6.text((105, 830), "नोटिफिकेशन पाने के लिए अभी फॉलो करें।", fill="#94A3B8", font=font_label)
+    draw_mixed_line(d6, 105, 780, f"अगला भाग ({script_data['clause_name']}) जल्द आ रहा है!", font_h2, font_h2_eng, "#38BDF8")
+    draw_mixed_line(d6, 105, 830, "नोटिफिकेशन पाने के लिए अभी फॉलो करें।", font_label, font_label_eng, "#94A3B8")
 
     paste_safe_asset(img6, QUIZ_3D_PATH, pos=(390, 1020), size=(300, 380))
     draw_footer_cta(d6)
