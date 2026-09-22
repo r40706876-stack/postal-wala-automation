@@ -107,6 +107,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "संचार मंत्रालय के अधीन महानिदेशक (DG Posts) शीर्ष प्रशासनिक प्रमुख हैं।",
         "trap": "पोस्टमास्टर जनरल केवल सर्किल स्तर के प्रमुख होते हैं, विभाग के नहीं।",
+        "outro_q": "महानिदेशक (DG Posts) का मुख्यालय कहाँ स्थित है?"
     },
     (1, 2): {
         "hook": "डाक सेवा बोर्ड में कितने पूर्णकालिक सदस्य होते हैं?",
@@ -118,6 +119,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "डाक सेवा बोर्ड में एक चेयरमैन और 6 पूर्णकालिक सदस्य होते हैं।",
         "trap": "चेयरमैन को मिलाकर कुल 7 होते हैं, पूर्णकालिक सदस्य 6 ही हैं।",
+        "outro_q": "डाक सेवा बोर्ड के चेयरमैन की नियुक्ति कौन करता है?"
     },
     (2, 1): {
         "hook": "डाकघर को मुख्य रूप से कितनी श्रेणियों में बांटा गया है?",
@@ -129,6 +131,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "डाकघर की 3 श्रेणियां हैं: प्रधान डाकघर, उप डाकघर और शाखा डाकघर।",
         "trap": "मोबाइल डाकघर अलग श्रेणी नहीं बल्कि एक विशेष सेवा व्यवस्था है।",
+        "outro_q": "शाखा डाकघर (BO) का मुख्य लेखा कार्यालय कौन-सा होता है?"
     },
     (2, 2): {
         "hook": "उप डाकघर अपना दैनिक हिसाब किसे भेजता है?",
@@ -140,6 +143,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "उप डाकघर दैनिक लेखा अपने प्रधान डाकघर (HO) को भेजता है।",
         "trap": "SO सीधे मंडल अधीक्षक को दैनिक लेखा नहीं भेजता।",
+        "outro_q": "क्या उप डाकघर (SO) सीधे निदेशालय से पत्राचार कर सकता है?"
     },
     (2, 3): {
         "hook": "शाखा डाकघर के अधिकतम कार्य के घंटे कितने हैं?",
@@ -151,6 +155,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "शाखा डाकघर के कार्य घंटे न्यूनतम 4 और अधिकतम 5 घंटे होते हैं।",
         "trap": "न्यूनतम 4 घंटे और अधिकतम 5 घंटे में भ्रमित न हों।",
+        "outro_q": "शाखा डाकघर (BO) का अधिकतम कार्य समय कितने घंटे का होता है?"
     },
     (3, 1): {
         "hook": "रात्रि डाकघर का समय 8:30 बजे तक कौन बढ़ा सकता है?",
@@ -162,6 +167,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का विशेष अधिकार DG को है।",
         "trap": "यह अधिकार स्थानीय पोस्टमास्टर या SSPO के पास नहीं होता।",
+        "outro_q": "रात्रि डाकघर की समयावधि तय करने का अधिकार किसके पास होता है?"
     },
     (3, 2): {
         "hook": "रविवार को रात्रि डाकघर कितने बजे तक सेवा देता है?",
@@ -173,6 +179,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "रविवार और अवकाश के दिन सीमित सेवाएं सुबह 10 से शाम 5 बजे तक मिलती हैं।",
         "trap": "रविवार को रात 8:30 बजे वाला नियम लागू नहीं होता।",
+        "outro_q": "राष्ट्रीय अवकाश पर रात्रि डाकघर की सेवाएं कितने बजे तक चलती हैं?"
     },
     (3, 3): {
         "hook": "रविवार को रात्रि डाकघर में कौन-सा काम नहीं होता?",
@@ -184,6 +191,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "रविवार और अवकाश के दिन मनीऑर्डर भुगतान और बचत बैंक कार्य नहीं होता।",
         "trap": "सीमित बुकिंग चालू रहती है, लेकिन वित्तीय निकासी बंद होती है।",
+        "outro_q": "क्या रविवार को रात्रि डाकघर में मनीऑर्डर बुक किया जा सकता है?"
     },
     (4, 1): {
         "hook": "मोबाइल डाकघर मुख्य रूप से कौन-सी सुविधा देते हैं?",
@@ -195,6 +203,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "मोबाइल डाकघर शाम तक सामान्य डाक और पार्सल बुकिंग की सुविधा देते हैं।",
         "trap": "मोबाइल वैन में बैंकिंग और वित्तीय सुविधाएं उपलब्ध नहीं होती हैं।",
+        "outro_q": "मोबाइल डाकघर किन क्षेत्रों में कार्य करते हैं?"
     },
     (4, 2): {
         "hook": "मोबाइल डाकघर में कौन-सा कार्य पूरी तरह प्रतिबंधित है?",
@@ -206,6 +215,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "मोबाइल डाकघर में मनीऑर्डर, बचत बैंक और बीमा कार्य प्रतिबंधित होते हैं।",
         "trap": "केवल डाक और पार्सल बुकिंग की ही अनुमति होती है।",
+        "outro_q": "क्या मोबाइल डाकघर में बचत बैंक खाते खोले जा सकते हैं?"
     },
     (5, 1): {
         "hook": "डाकघर में डाक टिकटों की बिक्री कब तक होती है?",
@@ -217,6 +227,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "सामान्य टिकट बिक्री और डाक बुकिंग पूरे कार्य समय तक खुली रहती है।",
         "trap": "बचत बैंक काउंटर जल्दी बंद होता है, लेकिन टिकट पूरे समय मिलते हैं।",
+        "outro_q": "डाक टिकटों की बिक्री डाकघर में कितने समय तक होती है?"
     },
     (5, 2): {
         "hook": "काउंटर बंद होने के बाद डाक कैसे बुक कराई जा सकती है?",
@@ -228,6 +239,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "सार्वजनिक काउंटर बंद होने के बाद निर्धारित लेट फीस देकर डाक बुक होती है।",
         "trap": "बिना लेट फीस के काउंटर समय के बाद डाक स्वीकार नहीं होती।",
+        "outro_q": "लेट फीस (Late Fee) देकर डाक कहाँ बुक की जा सकती है?"
     },
     (5, 3): {
         "hook": "शनिवार को डाकघर के कामकाज का क्या नियम है?",
@@ -239,6 +251,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "शनिवार को सामान्य डाक लेन-देन के समय में निर्धारित कटौती लागू होती है।",
         "trap": "शनिवार को सामान्य कार्यदिवसों जितना पूरा समय नहीं मिलता।",
+        "outro_q": "क्या शनिवार को डाकघर के कार्य के घंटे कम होते हैं?"
     },
     (22, 1): {
         "hook": "क्या प्रथम श्रेणी डाक का पुनः प्रेषण पूरी तरह मुफ्त है?",
@@ -250,6 +263,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण पूरी तरह निःशुल्क होता है।",
         "trap": "पार्सल पर प्रभार लगता है, लेकिन प्रथम श्रेणी डाक निःशुल्क होती है।",
+        "outro_q": "प्रथम श्रेणी की डाक का पुनः प्रेषण शुल्क कितना होता है?"
     },
     (22, 2): {
         "hook": "पार्सल दूसरे वितरण क्षेत्र में भेजने पर कितना प्रभार लगता है?",
@@ -261,6 +275,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "वितरण क्षेत्र से बाहर भेजे जाने पर आधा डाक प्रभार देय होता है।",
         "trap": "उसी वितरण क्षेत्र में निःशुल्क होता है, बाहर भेजने पर आधा प्रभार लगता है।",
+        "outro_q": "वितरण क्षेत्र से बाहर पार्सल भेजने पर कितना प्रभार लगता है?"
     },
     (22, 3): {
         "hook": "खोला गया पार्सल दोबारा कैसे भेजा जा सकता है?",
@@ -272,6 +287,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "खोला गया पार्सल नए डाकभार के बिना पुनः प्रेषित नहीं किया जा सकता।",
         "trap": "बिना खुले पार्सल पर आधा प्रभार, लेकिन खुले पर पूरा नया चार्ज लगता है।",
+        "outro_q": "खुले हुए पार्सल को पुनः प्रेषित करने पर कितना डाकभार लगेगा?"
     },
     (23, 1): {
         "hook": "डाक पुनः प्रेषण के लिखित निर्देश कितने समय मान्य रहते हैं?",
@@ -283,6 +299,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "लिखित पुनः प्रेषण अनुदेश की वैधता अवधि अधिकतम 3 माह तक होती है।",
         "trap": "3 महीने पूरे होने के बाद नया लिखित निर्देश देना आवश्यक होता है।",
+        "outro_q": "लिखित पुनः प्रेषण अनुदेश कितने समय तक वैध रहता है?"
     },
     (23, 2): {
         "hook": "विदेश जाने वाले पतेदारों की डाक के क्या नियम हैं?",
@@ -294,6 +311,7 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "विदेश जाने वाले पतेदारों के लिए विशेष डाक नियम लागू होते हैं।",
         "trap": "अंतर्देशीय साधारण नियम विदेश जाने वाली डाक पर सीधे लागू नहीं होते।",
+        "outro_q": "विदेश जाने वाले पतेदारों पर कौन से डाक नियम लागू होते हैं?"
     },
 }
 
@@ -490,26 +508,6 @@ def extract_field(raw, name, next_names):
     return clean_text(match.group(1)) if match else ""
 
 
-def fallback_script(clause_no, part_no, focus, title):
-    if (clause_no, part_no) in FALLBACK_SCRIPTS:
-        data = FALLBACK_SCRIPTS[(clause_no, part_no)].copy()
-        data["title"] = title
-        return data
-
-    return {
-        "title": title,
-        "hook": f"{title} का यह नियम अवश्य जानें।",
-        "question": f"{title} के अनुसार कौन-सा कथन सत्य है?",
-        "a": focus[:30],
-        "b": "कोई विशेष छूट नहीं",
-        "c": "अधीक्षक का अनुमोदन",
-        "d": "इनमें से कोई नहीं",
-        "correct": "A",
-        "fact": focus,
-        "trap": "परीक्षा में शब्दों और नियमों को ध्यान से पढ़ें।",
-    }
-
-
 def generate_script(state):
     clause_no = state["clause_no"]
     part_no = state["current_part"]
@@ -519,7 +517,12 @@ def generate_script(state):
     focus = info.get(f"part_{part_no}_focus", info["part_1_focus"])
 
     if not GROQ_API_KEY:
-        return fallback_script(clause_no, part_no, focus, title)
+        if (clause_no, part_no) in FALLBACK_SCRIPTS:
+            data = FALLBACK_SCRIPTS[(clause_no, part_no)].copy()
+            data["title"] = title
+            data["clause_no"] = clause_no
+            return data
+        return None
 
     prompt = f"""
 You are creating an authentic India Post departmental exam Multiple Choice Question (MCQ) in Hindi.
@@ -537,7 +540,8 @@ Instructions:
 5. CORRECT: Single letter A, B, C, or D.
 6. FACT: Concise one-sentence summary of the rule (max 18 words).
 7. TRAP: One common misconception or exam confusion (max 16 words).
-8. Absolutely no meta text, no dummy options.
+8. OUTRO_Q: One highly relevant, exam-oriented one-liner question related to the topic (max 12 words) for the viewers to answer in comments.
+9. Absolutely no meta text, no dummy options.
 
 Format exactly:
 HOOK: ...
@@ -549,6 +553,7 @@ D: ...
 CORRECT: [A/B/C/D]
 FACT: ...
 TRAP: ...
+OUTRO_Q: ...
 """
 
     try:
@@ -580,13 +585,15 @@ TRAP: ...
             "d": extract_field(raw, "D", ["CORRECT"]),
             "correct": extract_field(raw, "CORRECT", ["FACT"]).upper(),
             "fact": extract_field(raw, "FACT", ["TRAP"]),
-            "trap": extract_field(raw, "TRAP", []),
+            "trap": extract_field(raw, "TRAP", ["OUTRO_Q"]),
+            "outro_q": extract_field(raw, "OUTRO_Q", []),
+            "clause_no": clause_no
         }
 
         if data["correct"] not in {"A", "B", "C", "D"}:
             raise ValueError("Invalid CORRECT field")
 
-        required = ["hook", "question", "a", "b", "c", "d", "fact", "trap"]
+        required = ["hook", "question", "a", "b", "c", "d", "fact", "trap", "outro_q"]
         if not all(data[k] for k in required):
             raise ValueError("Incomplete generated script")
 
@@ -594,7 +601,12 @@ TRAP: ...
 
     except Exception as exc:
         print("Using Curated Fallback Script:", exc)
-        return fallback_script(clause_no, part_no, focus, title)
+        if (clause_no, part_no) in FALLBACK_SCRIPTS:
+            data = FALLBACK_SCRIPTS[(clause_no, part_no)].copy()
+            data["title"] = title
+            data["clause_no"] = clause_no
+            return data
+        return None
 
 
 # -------------------- STATE --------------------
@@ -686,18 +698,18 @@ def tighten_audio(path):
 
 def make_scene_text(data):
     """
-    8 distinct and focused audio scenes.
-    Scene 0 delivers the 2-second hook directly.
+    Fixed flow to eliminate question repetition.
+    Generic viral hook audio for Scene 0, then Question audio for Scene 1.
     """
     return [
-        data["hook"],                                                        # 0: Hook (approx 2s)
-        data["question"],                                                    # 1: Question
-        "पहले सोचिए। आप क्या चुनेंगे?",                                        # 2: Options
-        "गलत विकल्प हटाइए। सही नियम कौन-सा है?",                             # 3: Elimination
-        f"सही उत्तर है विकल्प {data['correct']}!",                           # 4: Answer Reveal
-        f"डाक सेवा का महत्वपूर्ण नियम: {data['fact']}",                        # 5: Rule Explanation
-        f"परीक्षा का ट्रैप: {data['trap']}",                                 # 6: Exam Trap
-        "अगले पोस्टल MCQ के लिए अभी सेव और फॉलो करें।",                     # 7: Outro CTA
+        "पोस्टल एग्जाम का यह सवाल, 90% छात्र गलत करते हैं! क्या आपको उत्तर पता है?", # 0: Generic Hook
+        data["question"],                                                         # 1: Question
+        "पहले सोचिए। आप क्या चुनेंगे? 5 सेकंड में कमेंट करें!",                         # 2: Options & Timer
+        "गलत विकल्प हटाइए।",                                                        # 3: Elimination
+        f"सही उत्तर है विकल्प {data['correct']}!",                                # 4: Answer Reveal
+        f"डाक सेवा का महत्वपूर्ण नियम: {data['fact']}",                             # 5: Rule Explanation
+        f"परीक्षा का ट्रैप: {data['trap']}",                                      # 6: Exam Trap
+        "आज का सवाल स्क्रीन पर है, उत्तर कमेंट करें और रील को सेव करें।",              # 7: Outro CTA
     ]
 
 
@@ -739,11 +751,11 @@ def concat_audio(scene_paths, output):
     )
 
 
-# -------------------- SCENES --------------------
+# -------------------- SCENES (MATCHING VIDEO SEQUENCE) --------------------
 
 def scene_0_hook(data, t, duration):
     """
-    Dedicated 2-Second Full-Screen Hook Scene with the pulsating GDS TO MTS / PM / PA badge.
+    Slide 0: 2-Second Full-Screen Hook Scene
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -751,32 +763,21 @@ def scene_0_hook(data, t, duration):
     progress_bar(d, 0.05)
     draw_blinking_target_badge(d, t)
 
-    # Full Screen Giant Hero Card
     rounded(d, (70, 240, W - 70, 1420), 40, CARD, CYAN, 4)
-
-    # Topic Ribbon
     rounded(d, (130, 310, W - 130, 395), 20, CARD_2, YELLOW, 2)
     center_text(d, f"📌 {data['title']}", 352, 34, YELLOW)
 
-    # Animated Pulsing Question Icon
     q_rad = int(60 + 6 * math.sin(t * 12))
     d.ellipse(
         (W // 2 - q_rad, 520 - q_rad, W // 2 + q_rad, 520 + q_rad),
-        fill="#1E293B",
-        outline=CYAN,
-        width=4,
+        fill="#1E293B", outline=CYAN, width=4
     )
     center_text(d, "?", 520, 62, CYAN)
 
-    # Large Bold Hook Text
-    wrapped_h = wrap_text(d, data["hook"], 54, 820)
-    lines = wrapped_h.split("\n")
-    y_start = 760 - (len(lines) - 1) * 38
-    for line in lines:
-        center_text(d, line, y_start, 54, WHITE)
-        y_start += 78
+    center_text(d, "🚨 POSTAL EXAM 🚨", 730, 60, YELLOW)
+    center_text(d, "यह सवाल 90% छात्र", 830, 52, WHITE)
+    center_text(d, "गलत करते हैं!", 910, 52, WHITE)
 
-    # Bottom Flash Alert Box
     pulse = math.sin(t * 10) > 0
     box_border = YELLOW if pulse else RED
     rounded(d, (110, 1220, W - 110, 1340), 24, "#132338", box_border, 3)
@@ -788,7 +789,7 @@ def scene_0_hook(data, t, duration):
 
 def scene_1_question(data, t, duration):
     """
-    Slide 1: Question Hero Card (as in video reference 00:00 - 00:02)[span_0](start_span)[span_0](end_span)
+    Slide 1: Question Hero Card
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -796,11 +797,9 @@ def scene_1_question(data, t, duration):
     progress_bar(d, 0.16)
     draw_blinking_target_badge(d, t)
 
-    # Topic Pill (00:00 style)[span_1](start_span)[span_1](end_span)
     rounded(d, (120, 360, 960, 465), 24, CARD_2, CYAN, 3)
     center_text(d, data["title"], 412, 38, CYAN)
 
-    # Big Central Hero Card
     rounded(d, (80, 520, 1000, 1260), 40, CARD, "#334155", 4)
     center_text(d, "POSTAL EXAM RULE", 615, 40, MUTED)
 
@@ -817,7 +816,7 @@ def scene_1_question(data, t, duration):
 
 def scene_2_options(data, t, duration):
     """
-    Slide 2: Next Slide Option Selection (as in video reference 00:03)[span_2](start_span)[span_2](end_span)
+    Slide 2: Next Slide Option Selection ("आप क्या चुनेंगे?")
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -839,7 +838,6 @@ def scene_2_options(data, t, duration):
 
         draw_option_card(d, letter, txt, y0 + idx * 190, status=None, slide_offset=slide_offset)
 
-    # Dynamic Depleting Countdown Line
     progress = max(0.0, min(1.0, 1.0 - (t / max(duration, 0.1))))
     bx1, bx2 = 180, W - 180
     d.rounded_rectangle((bx1, 1340, bx2, 1350), radius=5, fill="#1E2A3A")
@@ -851,7 +849,7 @@ def scene_2_options(data, t, duration):
 
 def scene_3_elimination(data, t, duration):
     """
-    Slide 3: Elimination with Cross & Check Transition (as in video reference 00:04 - 00:05)[span_3](start_span)[span_3](end_span)
+    Slide 3: Elimination with Cross & Check Transition
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -898,7 +896,7 @@ def scene_3_elimination(data, t, duration):
 
 def scene_4_answer(data, t, duration):
     """
-    Slide 4: Hero Correct Answer Card (as in video reference 00:06)[span_4](start_span)[span_4](end_span)
+    Slide 4: Hero Correct Answer Card
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -907,7 +905,6 @@ def scene_4_answer(data, t, duration):
     draw_blinking_target_badge(d, t)
 
     center_text(d, "सही उत्तर", 320, 54, MUTED)
-
     rounded(d, (100, 460, 980, 1180), 45, CARD_2, GREEN, 6)
 
     chk_p = min(1.0, t / 0.25)
@@ -930,7 +927,7 @@ def scene_4_answer(data, t, duration):
 
 def scene_5_fact(data, t, duration):
     """
-    Slide 5: Verified Rule Card (as in video reference 00:07 - 00:09)[span_5](start_span)[span_5](end_span)
+    Slide 5: Verified Rule Card with Clause Number text
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -953,13 +950,17 @@ def scene_5_fact(data, t, duration):
         center_text(d, line, y, 46, WHITE)
         y += 68
 
-    center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1520, 36, MUTED)
+    # Clause Number Text properly placed below the box
+    f_clause = get_font(30)
+    d.text((W/2, 1420), f"PO Guide Part 1 • Clause: {data.get('clause_no', '')}", font=f_clause, fill=YELLOW, anchor="mm")
+
+    center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1540, 36, MUTED)
     return im
 
 
 def scene_6_trap(data, t, duration):
     """
-    Slide 6: Exam Trap (as in video reference 00:11 - 00:15)[span_6](start_span)[span_6](end_span)
+    Slide 6: Exam Trap (Both Red and Green boxes strictly populated)
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -971,23 +972,28 @@ def scene_6_trap(data, t, duration):
     center_text(d, "EXAM TRAP", 370, 62, YELLOW)
     center_text(d, "सावधानी: यहाँ गलती न करें!", 460, 36, MUTED)
 
-    # Red Misconception Box
-    rounded(d, (120, 550, 960, 880), 30, CARD_2, RED, 4)
-    center_text(d, "अक्सर होने वाला भ्रम", 620, 38, RED)
+    # Red Misconception Box with actual trap text
+    rounded(d, (120, 520, 960, 910), 30, CARD_2, RED, 4)
+    center_text(d, "अक्सर होने वाला भ्रम", 580, 38, RED)
     x_prog = min(1.0, max(0.0, (t - 0.1) / 0.25))
-    draw_animated_x(d, W // 2, 740, progress=x_prog, size=36)
+    draw_animated_x(d, 880, 580, progress=x_prog, size=24)
 
-    # Green Correct Insight Box
-    rounded(d, (120, 940, 960, 1470), 30, CARD_2, GREEN, 4)
-    center_text(d, "याद रखने योग्य बात", 1010, 38, GREEN)
-
-    chk_prog = min(1.0, max(0.0, (t - 0.45) / 0.25))
-    draw_animated_check(d, W - 180, 1010, progress=chk_prog, size=24)
-
-    trap = wrap_text(d, data["trap"], 42, 780)
-    y = 1130
-    for line in trap.split("\n"):
+    trap_t = wrap_text(d, data["trap"], 42, 780)
+    y = 670 - (len(trap_t.split("\n")) - 1) * 30
+    for line in trap_t.split("\n"):
         center_text(d, line, y, 42, WHITE)
+        y += 60
+
+    # Green Correct Insight Box with actual fact text
+    rounded(d, (120, 950, 960, 1470), 30, CARD_2, GREEN, 4)
+    center_text(d, "याद रखने योग्य बात", 1010, 38, GREEN)
+    chk_prog = min(1.0, max(0.0, (t - 0.45) / 0.25))
+    draw_animated_check(d, 880, 1010, progress=chk_prog, size=24)
+
+    fact_t = wrap_text(d, data["fact"], 40, 780)
+    y = 1110 - (len(fact_t.split("\n")) - 1) * 30
+    for line in fact_t.split("\n"):
+        center_text(d, line, y, 40, WHITE)
         y += 60
 
     return im
@@ -995,7 +1001,7 @@ def scene_6_trap(data, t, duration):
 
 def scene_7_outro(data, t, duration):
     """
-    Slide 7: Outro Save/Share CTA (as in video reference 00:31)[span_7](start_span)[span_7](end_span)
+    Slide 7: Outro Save/Share CTA + Dynamic Official Exam Question
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -1003,16 +1009,25 @@ def scene_7_outro(data, t, duration):
     progress_bar(d, 0.98)
     draw_blinking_target_badge(d, t)
 
-    rounded(d, (90, 420, W - 90, 1260), 42, CARD, CYAN, 5)
-    center_text(d, "POSTAL EXAM PREPARATION", 550, 44, MUTED)
-    center_text(d, "@POSTAL_WALA", 680, 72, CYAN)
+    # CTA Box
+    rounded(d, (90, 350, W - 90, 850), 42, CARD, CYAN, 5)
+    center_text(d, "POSTAL EXAM PREPARATION", 470, 44, MUTED)
+    center_text(d, "@POSTAL_WALA", 590, 72, CYAN)
+    center_text(d, "नियम याद रखने के लिए Reel को Save करें", 720, 40, WHITE)
 
-    center_text(d, "नियम याद रखने के लिए Reel को Save करें", 870, 40, WHITE)
-    center_text(d, "और अपने सहकर्मियों के साथ Share करें! 🚀", 950, 40, YELLOW)
+    # Interactive Question Box (Homework)
+    rounded(d, (90, 920, W - 90, 1340), 42, CARD_2, YELLOW, 4)
+    center_text(d, "🎯 आज का सवाल 🎯", 1010, 48, YELLOW)
+    
+    # Render Dynamic 100% Exam-Oriented Outro Question
+    outro_q_text = wrap_text(d, data.get("outro_q", "डाक विभाग का प्रशासनिक प्रमुख कौन होता है?"), 42, 800)
+    lines = outro_q_text.split("\n")
+    y = 1140 - (len(lines) - 1) * 30
+    for line in lines:
+        center_text(d, line, y, 42, WHITE)
+        y += 55
 
-    rounded(d, (200, 1070, W - 200, 1170), 25, CYAN)
-    f_btn = get_font(38)
-    d.text((W / 2, 1120), "DAILY POSTAL RULES", font=f_btn, fill=BG, anchor="mm")
+    center_text(d, "अपना उत्तर कमेंट में बताएं! 👇", 1270, 36, CYAN)
 
     return im
 
@@ -1093,9 +1108,9 @@ def build_reel(data, output_video=None):
         scene_2_options,      # 2: Next Slide Option Selection ("आप क्या चुनेंगे?")
         scene_3_elimination,  # 3: Elimination with Cross & Check Transition
         scene_4_answer,       # 4: "सही उत्तर" Card
-        scene_5_fact,         # 5: "महत्वपूर्ण नियम" Card
-        scene_6_trap,         # 6: "EXAM TRAP"
-        scene_7_outro,        # 7: Outro Save/Share CTA
+        scene_5_fact,         # 5: "महत्वपूर्ण नियम" Card (with Clause number)
+        scene_6_trap,         # 6: "EXAM TRAP" (with filled trap text boxes)
+        scene_7_outro,        # 7: Outro Save CTA + Official Exam Question
     ]
 
     frame_paths = []
