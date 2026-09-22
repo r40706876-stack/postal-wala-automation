@@ -584,18 +584,52 @@ def generate_clause_script(state):
         f"डाक घर गाइड भाग 1, क्लॉज {current_clause} (भाग {current_part}) से जुड़ा यह प्रश्न विभागीय परीक्षा में पूछा गया था:",
         f"क्लॉज {current_clause} भाग {current_part} पढ़कर बताइए, इनमें से कौन सा नियम के अनुसार सही है?",
     ]
-    sen2_bank = [
-        "विभागीय परीक्षा में इसके तकनीकी नियमों और शर्तों से जुड़े सीधे प्रश्न पूछे जाते हैं।",
-        "इसकी समय-सीमा और अधिकार-क्षेत्र से जुड़े प्रश्न परीक्षा में सबसे ज्यादा पूछे जाते हैं।",
-        "इससे जुड़ी शर्तों को याद न रखने पर परीक्षा में सीधे नंबर कट जाते हैं।",
-        "इसके तहत आने वाली सीमाएं और अपवाद हर वर्ष की परीक्षा में दोहराए जाते हैं।",
+
+    # FIX (retention bug — the big one): when the Groq call fails or the key
+    # is missing, EVERY educational beat after the hook (sen2, sen3, and all
+    # 4 MCQ options) used to come from these generic, clause-agnostic banks
+    # below, and the correct answer was always hardcoded to "B". That means
+    # on any video where Groq silently failed, the "quiz" was fake — no real
+    # postal rule was ever tested, which guts the entire value proposition
+    # ("100% official syllabus") the moment a repeat viewer notices the
+    # pattern. This block now builds sen2/sen3/options from OTHER real parts
+    # of the SAME clause (genuine distractor facts) whenever they exist, so
+    # even a Groq-less fallback video still teaches something true and the
+    # correct option/letter varies per video instead of always being B.
+    other_part_texts = [
+        clause_info[k] for k in clause_info
+        if k.startswith("part_") and k.endswith("_focus") and k != part_key
     ]
+
+    def _short(txt, max_chars=60):
+        txt = txt.strip()
+        return txt if len(txt) <= max_chars else txt[:max_chars - 1].rstrip() + "…"
+
+    if other_part_texts:
+        sen2_fallback = f"इसी नियम का एक और अहम पहलू: {_short(other_part_texts[0])}"
+    else:
+        sen2_fallback = f"{clause_name} से जुड़ी शर्तों को याद न रखने पर परीक्षा में सीधे नंबर कट जाते हैं।"
+
     sen3_bank = [
-        "परीक्षार्थी ध्यान रखें कि इसके आधिकारिक अपवादों में ही 90 प्रतिशत लोग गलती करते हैं।",
-        "ज्यादातर उम्मीदवार इसके अपवाद वाले हिस्से को पढ़े बिना ही जवाब दे देते हैं, और गलत हो जाते हैं।",
-        "इस नियम का उल्टा मतलब निकालकर बनाया गया विकल्प परीक्षा में सबसे ज्यादा फंसाता है।",
-        "यहां शब्दों का हल्का सा फेरबदल करके परीक्षा में गलत विकल्प सही जैसा दिखाया जाता है।",
+        f"ध्यान दें: {clause_name} के इस हिस्से में परीक्षार्थी अक्सर जल्दबाज़ी में गलत विकल्प चुन लेते हैं।",
+        f"ज्यादातर उम्मीदवार {clause_name} के इस नियम को पूरा पढ़े बिना ही जवाब दे देते हैं।",
+        f"{clause_name} के इस बिंदु में शब्दों का हल्का फेरबदल करके गलत विकल्प सही जैसा दिखाया जाता है।",
+        f"{clause_name} से जुड़ा यह भाग हर वर्ष परीक्षा में दोहराया जाता है, ध्यान से पढ़ें।",
     ]
+
+    # Build MCQ options from real clause content instead of static placeholders.
+    correct_opt = _short(part_focus, 40)
+    distractor_pool = [_short(t, 40) for t in other_part_texts] or [
+        f"{clause_name} पर यह नियम लागू नहीं होता"
+    ]
+    opts = [correct_opt] + distractor_pool[:2] + ["इनमें से कोई नहीं"]
+    while len(opts) < 4:
+        opts.append("इनमें से कोई नहीं")
+    opts = opts[:4]
+    correct_letter = "ABCD"[0]  # correct_opt is placed first, then rotated below
+    rotate = variety_idx % 4
+    opts = opts[rotate:] + opts[:rotate]
+    correct_letter = "ABCD"[opts.index(correct_opt)]
 
     fallback_data = {
         "clause_no": current_clause,
@@ -606,18 +640,18 @@ def generate_clause_script(state):
         "hook_voice": hook_obj["voice"],
         "question": question_bank[variety_idx],
         "sen1": f"डाक घर गाइड भाग 1 के क्लॉज {current_clause} के अनुसार {part_focus}",
-        "sen2": sen2_bank[variety_idx],
+        "sen2": sen2_fallback,
         "sen3": sen3_bank[variety_idx],
-        "opt_a": "नियम का पूर्ण पालन अनिवार्य",
-        "opt_b": "विशेष परिस्थिति में छूट मान्य",
-        "opt_c": "केवल प्रधान डाकघर में लागू",
-        "opt_d": "इनमें से कोई नहीं",
-        "correct_letter": "B",
+        "opt_a": opts[0],
+        "opt_b": opts[1],
+        "opt_c": opts[2],
+        "opt_d": opts[3],
+        "correct_letter": correct_letter,
         "caption": f"🚨 90% लोग इस नियम में गलती करते हैं! डाक घर गाइड भाग 1 | क्लॉज {current_clause} (भाग {current_part}/{total_parts})। सही उत्तर वीडियो में है, जवाब मिला तो 🔥 कमेंट करें! फ्री विभागीय नोट्स व टेस्ट हेतु WhatsApp करें: 8989971379 #PostalWala #GDStoMTS #PostmanExam #IndiaPost"
     }
 
     if not GROQ_API_KEY:
-        print("🛑 GROQ_API_KEY is not set - using generic fallback script instead of AI-generated content.", flush=True)
+        print("🛑 GROQ_API_KEY is not set - using clause-specific fallback script (Groq unavailable).", flush=True)
         return fallback_data
 
     prompt = f"""
@@ -667,7 +701,7 @@ def generate_clause_script(state):
                     fallback_data["correct_letter"] = letter_match.group(0).upper()
             print("✅ Groq: AI-generated clause-specific content used for this video.", flush=True)
     except Exception as e:
-        print(f"🛑 Groq call failed ({e}) - falling back to generic template for this video.", flush=True)
+        print(f"🛑 Groq call failed ({e}) - falling back to clause-specific template for this video.", flush=True)
 
     return fallback_data
 
@@ -845,7 +879,19 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     d1.rounded_rectangle([110, 460, 970, 560], radius=14, fill="#991B1B", outline="#FBBF24", width=3)
     wrapped_hook = textwrap.fill(clean_hindi_postal_terms(script_data["visual_hook_badge"]), width=22)
     draw_mixed_multiline(d1, 160, 480, wrapped_hook, font_hook, font_hook_eng, "#FEF08A", line_height=40)
-    paste_safe_asset(img1, QUIZ_3D_PATH, pos=(390, 720), size=(300, 400))
+    # FIX (retention bug): previously the first ~7s of the video showed ONLY
+    # a decorative "?" icon and a vague "wait till the end" line — zero real
+    # information within the critical 0-2s skip window. This adds a concrete,
+    # topic-specific teaser (drawn from the actual rule text) so a viewer
+    # gets real substance in the very first frame, not just clickbait.
+    d1.rounded_rectangle([110, 585, 970, 685], radius=14, fill="#0B132B", outline="#38BDF8", width=2)
+    teaser_source = script_data.get("sen1", "") or script_data.get("clause_name", "")
+    teaser_text = clean_hindi_postal_terms(teaser_source)
+    if len(teaser_text) > 70:
+        teaser_text = teaser_text[:68].rstrip() + "..."
+    wrapped_teaser = textwrap.fill(teaser_text, width=28)
+    draw_mixed_multiline(d1, 140, 605, wrapped_teaser, font_label, font_h2_eng, "#7DD3FC", line_height=32)
+    paste_safe_asset(img1, QUIZ_3D_PATH, pos=(390, 760), size=(280, 360))
     d1.rounded_rectangle([110, 1180, 970, 1290], radius=16, fill="#064E3B", outline="#34D399", width=2)
     d1.text((150, 1218), ">> अंत तक रुको, सही जवाब वहीं मिलेगा!", fill="#D1FAE5", font=font_label)
     draw_footer_cta(d1)
@@ -955,15 +1001,20 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
         fade_d = min(0.2, safe_dur / 5)
         fade_out_start = max(0.0, safe_dur - fade_d)
         settle_frames = max(1, min(10, frames // 3))
+        # FIX (retention bug): old formula zoomed up to 1.12x and cropped
+        # centered, which pushed the "POSTAL WALA" header/badge off the top
+        # of the frame for most of every slide's runtime. Capped at 1.05x
+        # and anchored to the top (y='0') so the header stays fully visible
+        # for the entire video; only the lower, less critical area trims.
         zoom_expr = (
-            f"if(lte(on,{settle_frames}),1.14-(0.14*on/{settle_frames}),"
-            f"min(1.0+0.0022*(on-{settle_frames}),1.12))"
+            f"if(lte(on,{settle_frames}),1.05-(0.05*on/{settle_frames}),"
+            f"min(1.0+0.0007*(on-{settle_frames}),1.05))"
         )
         filter_parts += (
             f"[{i}:v]scale=1080:1920:force_original_aspect_ratio=decrease,"
             f"pad=1080:1920:(ow-iw)/2:(oh-ih)/2,"
             f"zoompan=z='{zoom_expr}':d={frames}:"
-            f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1080x1920:fps={FPS},"
+            f"x='iw/2-(iw/zoom/2)':y='0':s=1080x1920:fps={FPS},"
             f"fade=t=in:st=0:d={fade_d},fade=t=out:st={fade_out_start}:d={fade_d},"
             f"format=yuv420p[v{i}]; "
         )
