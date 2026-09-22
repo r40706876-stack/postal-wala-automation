@@ -10,13 +10,6 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
-# --- EMOJI SUPPORT (pip install pilmoji) ---
-try:
-    from pilmoji import Pilmoji
-    HAS_PILMOJI = True
-except ImportError:
-    HAS_PILMOJI = False
-
 
 # -------------------- CONFIG --------------------
 
@@ -392,7 +385,7 @@ def clean_text(text):
     return " ".join(text.split()).strip()
 
 
-# -------------------- DRAWING HELPERS (WITH EMOJI SUPPORT) --------------------
+# -------------------- DRAWING HELPERS --------------------
 
 def new_canvas():
     return Image.new("RGB", (W, H), BG)
@@ -402,26 +395,14 @@ def rounded(draw, box, radius=35, fill=CARD, outline=None, width=2):
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
-def put_text(im, xy, text, size, fill, anchor="la"):
-    """
-    Safely renders text. If pilmoji is installed, it perfectly renders Emojis 🚨🔥.
-    If not, it falls back to standard text drawing.
-    """
+def center_text(draw, text, y, size, fill=WHITE):
     font = get_font(size)
-    if HAS_PILMOJI:
-        with Pilmoji(im) as pilmoji:
-            pilmoji.text(xy, text, font=font, fill=fill, anchor=anchor)
-    else:
-        d = ImageDraw.Draw(im)
-        d.text(xy, text, font=font, fill=fill, anchor=anchor)
+    draw.text((W / 2, y), text, font=font, fill=fill, anchor="mm")
 
 
-def center_text(im, text, y, size, fill=WHITE):
-    put_text(im, (W / 2, y), text, size, fill, anchor="mm")
-
-
-def brand(im):
-    put_text(im, (55, 45), "POSTAL WALA", 27, "#64748B", anchor="la")
+def brand(draw):
+    font = get_font(27)
+    draw.text((55, 45), "POSTAL WALA", font=font, fill="#64748B", anchor="la")
 
 
 def progress_bar(draw, ratio):
@@ -433,17 +414,42 @@ def progress_bar(draw, ratio):
     draw.rounded_rectangle((left, y, current, y + 8), radius=4, fill=CYAN)
 
 
-def draw_blinking_target_badge(im, draw, t):
+def draw_scrolling_target_badge(draw, t):
     """
-    Prominent GDS TO MTS / PM / PA badge with glowing ✨ emojis.
+    Marquee scrolling text effect from right to left, without any emojis/boxes.
     """
-    is_bright = (int(t * 3.5) % 2) == 0
-    bg_color = "#E11D48" if is_bright else "#881337"
-    border_color = "#FDE047" if is_bright else "#F43F5E"
-
+    text = "GDS TO MTS / PM / PA"
+    font_badge = get_font(38)
+    
+    # Calculate text width
+    bbox = draw.textbbox((0, 0), text, font=font_badge)
+    text_w = bbox[2] - bbox[0]
+    
+    # Speed of scroll (pixels per second)
+    speed = 150 
+    
+    # Total width to cover
+    total_width = W + text_w
+    
+    # Current x position based on time
+    x_pos = W - (t * speed) % total_width
+    
+    # Background Box
     box = (100, 115, W - 100, 185)
-    draw.rounded_rectangle(box, radius=18, fill=bg_color, outline=border_color, width=3)
-    put_text(im, (W / 2, 150), "✨ GDS TO MTS / PM / PA ✨", 34, WHITE, anchor="mm")
+    draw.rounded_rectangle(box, radius=18, fill="#881337", outline="#F43F5E", width=3)
+    
+    # Create clipping mask for the box
+    mask = Image.new('L', (W, H), 0)
+    mask_draw = ImageDraw.Draw(mask)
+    mask_draw.rounded_rectangle(box, radius=18, fill=255)
+    
+    # Create text image
+    text_img = Image.new('RGBA', (W, H), (0,0,0,0))
+    text_draw = ImageDraw.Draw(text_img)
+    text_draw.text((x_pos, 150), text, font=font_badge, fill=WHITE, anchor="lm")
+    
+    # Paste text with mask
+    draw._image.paste(text_img, (0,0), mask)
 
 
 def draw_animated_x(draw, cx, cy, progress, size=32):
@@ -470,7 +476,7 @@ def draw_animated_check(draw, cx, cy, progress, size=32):
         draw.line((x1, y1, curr_x2, curr_y2), fill=GREEN, width=13)
 
 
-def draw_option_card(im, draw, letter, text, y, status=None, anim_prog=1.0, slide_offset=0):
+def draw_option_card(draw, letter, text, y, status=None, anim_prog=1.0, slide_offset=0):
     x1, x2 = 100 + slide_offset, W - 100 + slide_offset
     h = 160
 
@@ -493,7 +499,7 @@ def draw_option_card(im, draw, letter, text, y, status=None, anim_prog=1.0, slid
     rounded(draw, (x1, y, x2, y + h), 26, fill, outline, border_w)
 
     card_label = f"{letter}. {text}"
-    center_text(im, card_label, y + 80, 42, text_color)
+    center_text(draw, card_label, y + 80, 42, text_color)
 
     cx = (x1 + x2) // 2
     if status == "wrong":
@@ -508,10 +514,7 @@ def extract_field(raw, name, next_names):
     next_part = "|".join(re.escape(x) for x in next_names)
 
     if next_part:
-        pattern = (
-            rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*?)"
-            rf"(?=(?:\n\s*(?:{next_part})\s*:)|$)"
-        )
+        pattern = rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*?)(?=(?:\n\s*(?:{next_part})\s*:)|$)"
     else:
         pattern = rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*)$"
 
@@ -636,7 +639,6 @@ def load_state():
         "clause_no": 23,
         "current_part": 1,
     }
-
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r", encoding="utf-8") as file:
@@ -645,11 +647,9 @@ def load_state():
                     default.update(saved)
         except Exception:
             pass
-
     if default["clause_no"] not in POSTAL_CLAUSE_CATALOG:
         default["clause_no"] = 23
         default["current_part"] = 1
-
     return default
 
 
@@ -663,51 +663,26 @@ def save_state(state):
 async def make_audio(text, output):
     if os.path.exists(output):
         os.remove(output)
-
-    tts = edge_tts.Communicate(
-        text=text,
-        voice=VOICE_NAME,
-        rate=VOICE_RATE,
-    )
+    tts = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=VOICE_RATE)
     await tts.save(output)
 
 
 def audio_duration(path):
     result = subprocess.check_output([
-        "ffprobe",
-        "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        path,
+        "ffprobe", "-v", "error", "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1", path,
     ])
     return float(result.decode().strip())
 
 
 def tighten_audio(path):
     temp = path + ".tmp.mp3"
-
     try:
-        subprocess.run(
-            [
-                "ffmpeg", "-y",
-                "-i", path,
-                "-af",
-                (
-                    "silenceremove="
-                    "start_periods=1:"
-                    "start_threshold=-38dB:"
-                    "stop_periods=-1:"
-                    "stop_duration=0.08:"
-                    "stop_threshold=-38dB"
-                ),
-                "-c:a", "libmp3lame",
-                "-b:a", "192k",
-                temp,
-            ],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+        subprocess.run([
+            "ffmpeg", "-y", "-i", path, "-af",
+            "silenceremove=start_periods=1:start_threshold=-38dB:stop_periods=-1:stop_duration=0.08:stop_threshold=-38dB",
+            "-c:a", "libmp3lame", "-b:a", "192k", temp,
+        ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         os.replace(temp, path)
     except Exception:
         if os.path.exists(temp):
@@ -717,125 +692,121 @@ def tighten_audio(path):
 # -------------------- SCENE AUDIO --------------------
 
 def make_scene_text(data):
+    """
+    Fixed flow to eliminate question repetition.
+    Generic viral hook audio for Scene 0, then actual Hook for Scene 1.
+    """
     return [
-        "पोस्टल एग्जाम का यह सवाल, 90% छात्र गलत करते हैं! क्या आपको उत्तर पता है?",
-        data["question"],
-        "पहले सोचिए। आप क्या चुनेंगे? 5 सेकंड में कमेंट करें!",
-        "गलत विकल्प हटाइए।",
-        f"सही उत्तर है विकल्प {data['correct']}!",
-        f"डाक सेवा का महत्वपूर्ण नियम: {data['fact']}",
-        f"परीक्षा का ट्रैप: {data['trap']}",
-        "आज का सवाल स्क्रीन पर है, सही विकल्प कमेंट करें और रील को सेव करें।",
+        "पोस्टल एग्जाम का यह सवाल, 90% छात्र गलत करते हैं! क्या आपको उत्तर पता है?", # 0: Generic Hook
+        data["hook"],                                                             # 1: Text Hook being spoken
+        "पहले सोचिए। आप क्या चुनेंगे? 5 सेकंड में कमेंट करें!",                         # 2: Options & Timer
+        "गलत विकल्प हटाइए।",                                                        # 3: Elimination
+        f"सही उत्तर है विकल्प {data['correct']}!",                                # 4: Answer Reveal
+        f"डाक सेवा का महत्वपूर्ण नियम: {data['fact']}",                             # 5: Rule Explanation
+        f"परीक्षा का ट्रैप: {data['trap']}",                                      # 6: Exam Trap
+        "आज का सवाल स्क्रीन पर है, सही विकल्प कमेंट करें और रील को सेव करें।",         # 7: Outro CTA
     ]
 
 
 async def generate_scene_audios(data):
     texts = make_scene_text(data)
     paths = []
-
     for index, text in enumerate(texts):
         path = f"scene_{index}.mp3"
         await make_audio(text, path)
         tighten_audio(path)
         paths.append(path)
-
     return paths
 
 
 def concat_audio(scene_paths, output):
     command = ["ffmpeg", "-y"]
-
     for path in scene_paths:
         command += ["-i", path]
-
     inputs = "".join(f"[{i}:a]" for i in range(len(scene_paths)))
     filter_complex = inputs + f"concat=n={len(scene_paths)}:v=0:a=1[outa]"
-
     command += [
-        "-filter_complex", filter_complex,
-        "-map", "[outa]",
-        "-c:a", "aac",
-        "-b:a", "192k",
-        output,
+        "-filter_complex", filter_complex, "-map", "[outa]",
+        "-c:a", "aac", "-b:a", "192k", output,
     ]
-
-    subprocess.run(
-        command,
-        check=True,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    subprocess.run(command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-# -------------------- SCENES --------------------
+# -------------------- SCENES (MATCHING VIDEO SEQUENCE) --------------------
 
 def scene_0_hook(data, t, duration):
     """
-    Slide 0: High-Energy Dark Red Hook Scene with Emojis rendered properly
+    Slide 0: Empty screen where Hook text appears word-by-word with voice.
+    Clean text, no emojis.
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.05)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
-    rounded(d, (70, 240, W - 70, 1420), 40, "#310A14", CYAN, 4)
-    rounded(d, (130, 310, W - 130, 395), 20, "#520A1E", YELLOW, 2)
-    center_text(im, f"📌 {data['title']}", 352, 34, YELLOW)
+    center_text(d, "POSTAL EXAM ALERT", 320, 60, YELLOW)
 
-    q_rad = int(60 + 10 * math.sin(t * 15))
-    d.ellipse(
-        (W // 2 - q_rad, 520 - q_rad, W // 2 + q_rad, 520 + q_rad),
-        fill="#1E293B", outline=CYAN, width=5
-    )
-    center_text(im, "?", 520, 62, CYAN)
-
-    pulse_fast = int(t * 10) % 2 == 0
-    center_text(im, "🚨 POSTAL EXAM ALERT 🚨", 730, 60, YELLOW if pulse_fast else WHITE)
+    # Word-by-word reveal of the hook
+    words = data["hook"].split()
+    total_words = len(words)
     
-    center_text(im, "यह सवाल 90% छात्र", 840, 56, WHITE)
-    center_text(im, "गलत करते हैं! 😱", 930, 56, RED)
+    # Calculate how many words should be visible based on time
+    # Full sentence should be visible 0.5s before scene ends
+    reveal_duration = max(0.1, duration - 0.5)
+    words_to_show = int((t / reveal_duration) * total_words)
+    words_to_show = min(total_words, max(1, words_to_show))
+    
+    visible_text = " ".join(words[:words_to_show])
+    
+    wrapped_h = wrap_text(d, visible_text, 64, 860)
+    lines = wrapped_h.split("\n")
+    y_start = 760 - (len(lines) - 1) * 45
+    for line in lines:
+        center_text(d, line, y_start, 64, WHITE)
+        y_start += 90
 
-    box_border = YELLOW if pulse_fast else RED
-    rounded(d, (110, 1220, W - 110, 1340), 24, "#132338", box_border, 3)
-    center_text(im, "🔥 क्या आपको सही उत्तर पता है? 🔥", 1280, 42, WHITE)
-
-    center_text(im, "पहले जवाब मत देखिए ⏳", 1520, 42, YELLOW)
     return im
 
 
 def scene_1_question(data, t, duration):
+    """
+    Slide 1: Question Hero Card
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.16)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
     rounded(d, (120, 360, 960, 465), 24, CARD_2, CYAN, 3)
-    center_text(im, data["title"], 412, 38, CYAN)
+    center_text(d, data["title"], 412, 38, CYAN)
 
     rounded(d, (80, 520, 1000, 1260), 40, CARD, "#334155", 4)
-    center_text(im, "POSTAL EXAM RULE", 615, 40, MUTED)
+    center_text(d, "POSTAL EXAM RULE", 615, 40, MUTED)
 
     wrapped_q = wrap_text(d, data["question"], 52, 840)
     lines = wrapped_q.split("\n")
     y_start = 850 - (len(lines) - 1) * 38
     for line in lines:
-        center_text(im, line, y_start, 52, WHITE)
+        center_text(d, line, y_start, 52, WHITE)
         y_start += 76
 
-    center_text(im, "पहले जवाब मत देखिए ⏳", 1460, 40, YELLOW)
+    center_text(d, "पहले जवाब मत देखिए", 1460, 40, YELLOW)
     return im
 
 
 def scene_2_options(data, t, duration):
+    """
+    Slide 2: Next Slide Option Selection ("आप क्या चुनेंगे?")
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.32)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
-    center_text(im, "आप क्या चुनेंगे?", 290, 58, WHITE)
+    center_text(d, "आप क्या चुनेंगे?", 290, 58, WHITE)
 
     options = [("A", data["a"]), ("B", data["b"]), ("C", data["c"]), ("D", data["d"])]
     y0 = 460
@@ -847,25 +818,28 @@ def scene_2_options(data, t, duration):
         ease_p = 1.0 - (1.0 - slide_p) * (1.0 - slide_p)
         slide_offset = int((1.0 - ease_p) * 200)
 
-        draw_option_card(im, d, letter, txt, y0 + idx * 190, status=None, slide_offset=slide_offset)
+        draw_option_card(d, letter, txt, y0 + idx * 190, status=None, slide_offset=slide_offset)
 
     progress = max(0.0, min(1.0, 1.0 - (t / max(duration, 0.1))))
     bx1, bx2 = 180, W - 180
     d.rounded_rectangle((bx1, 1340, bx2, 1350), radius=5, fill="#1E2A3A")
     d.rounded_rectangle((bx1, 1340, bx1 + (bx2 - bx1) * progress, 1350), radius=5, fill=YELLOW)
 
-    center_text(im, "सोचिए... ⏳", 1430, 48, YELLOW)
+    center_text(d, "सोचिए... ", 1430, 48, YELLOW)
     return im
 
 
 def scene_3_elimination(data, t, duration):
+    """
+    Slide 3: Elimination with Cross & Check Transition
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.48)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
-    center_text(im, "गलत विकल्प हटते हैं", 290, 56, WHITE)
+    center_text(d, "गलत विकल्प हटते हैं", 290, 56, WHITE)
 
     correct_letter = data.get("correct", "A").upper()
     options = [("A", data["a"]), ("B", data["b"]), ("C", data["c"]), ("D", data["d"])]
@@ -897,19 +871,22 @@ def scene_3_elimination(data, t, duration):
                 status = "correct"
                 anim_prog = min(1.0, (t - t_correct) / 0.22)
 
-        draw_option_card(im, d, letter, txt, y0 + idx * 190, status=status, anim_prog=anim_prog)
+        draw_option_card(d, letter, txt, y0 + idx * 190, status=status, anim_prog=anim_prog)
 
     return im
 
 
 def scene_4_answer(data, t, duration):
+    """
+    Slide 4: Hero Correct Answer Card
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.62)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
-    center_text(im, "सही उत्तर", 320, 54, MUTED)
+    center_text(d, "सही उत्तर", 320, 54, MUTED)
     rounded(d, (100, 460, 980, 1180), 45, CARD_2, GREEN, 6)
 
     chk_p = min(1.0, t / 0.25)
@@ -918,113 +895,124 @@ def scene_4_answer(data, t, duration):
     correct_key = data.get("correct", "A").upper()
     correct_text = data.get(correct_key.lower(), "")
 
-    center_text(im, f"विकल्प {correct_key}", 740, 74, GREEN)
+    center_text(d, f"विकल्प {correct_key}", 740, 74, GREEN)
 
     wrapped = wrap_text(d, correct_text, 48, 800)
     y = 870
     for line in wrapped.split("\n"):
-        center_text(im, line, y, 48, WHITE)
+        center_text(d, line, y, 48, WHITE)
         y += 64
 
-    center_text(im, "यही point परीक्षा में याद रखें", 1350, 42, CYAN)
+    center_text(d, "यही point परीक्षा में याद रखें", 1350, 42, CYAN)
     return im
 
 
 def scene_5_fact(data, t, duration):
+    """
+    Slide 5: Verified Rule Card with Clause Number text
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.76)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
-    center_text(im, "महत्वपूर्ण नियम", 270, 52, CYAN)
+    center_text(d, "महत्वपूर्ण नियम", 270, 52, CYAN)
 
     rounded(d, (120, 360, 960, 455), 22, CARD_2, "#334155", 3)
-    center_text(im, data["title"], 408, 36, YELLOW)
+    center_text(d, data["title"], 408, 36, YELLOW)
 
     rounded(d, (80, 510, 1000, 1370), 40, CARD, GREEN, 5)
-    center_text(im, "VERIFIED RULE", 610, 42, GREEN)
+    center_text(d, "VERIFIED RULE", 610, 42, GREEN)
 
     fact = wrap_text(d, data["fact"], 46, 820)
     lines = fact.split("\n")
     y = 840 - (len(lines) - 1) * 35
     for line in lines:
-        center_text(im, line, y, 46, WHITE)
+        center_text(d, line, y, 46, WHITE)
         y += 68
 
-    put_text(im, (W/2, 1420), f"PO Guide Part 1 • Clause: {data.get('clause_no', '')}", 30, YELLOW, anchor="mm")
-    center_text(im, "सीधे परीक्षा में पूछा जाने वाला नियम", 1540, 36, MUTED)
+    f_clause = get_font(30)
+    d.text((W/2, 1420), f"PO Guide Part 1 • Clause: {data.get('clause_no', '')}", font=f_clause, fill=YELLOW, anchor="mm")
+
+    center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1540, 36, MUTED)
     return im
 
 
 def scene_6_trap(data, t, duration):
+    """
+    Slide 6: Exam Trap (Both Red and Green boxes strictly populated)
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.88)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
     rounded(d, (70, 270, 1010, 1570), 45, CARD, YELLOW, 5)
-    center_text(im, "⚠️ EXAM TRAP ⚠️", 370, 62, YELLOW)
-    center_text(im, "सावधानी: यहाँ गलती न करें!", 460, 36, MUTED)
+    center_text(d, "EXAM TRAP", 370, 62, YELLOW)
+    center_text(d, "सावधानी: यहाँ गलती न करें!", 460, 36, MUTED)
 
     rounded(d, (120, 520, 960, 910), 30, CARD_2, RED, 4)
-    center_text(im, "अक्सर होने वाला भ्रम", 580, 38, RED)
+    center_text(d, "अक्सर होने वाला भ्रम", 580, 38, RED)
     x_prog = min(1.0, max(0.0, (t - 0.1) / 0.25))
     draw_animated_x(d, 880, 580, progress=x_prog, size=24)
 
     trap_t = wrap_text(d, data["trap"], 42, 780)
     y = 670 - (len(trap_t.split("\n")) - 1) * 30
     for line in trap_t.split("\n"):
-        center_text(im, line, y, 42, WHITE)
+        center_text(d, line, y, 42, WHITE)
         y += 60
 
     rounded(d, (120, 950, 960, 1470), 30, CARD_2, GREEN, 4)
-    center_text(im, "याद रखने योग्य बात", 1010, 38, GREEN)
+    center_text(d, "याद रखने योग्य बात", 1010, 38, GREEN)
     chk_prog = min(1.0, max(0.0, (t - 0.45) / 0.25))
     draw_animated_check(d, 880, 1010, progress=chk_prog, size=24)
 
     fact_t = wrap_text(d, data["fact"], 40, 780)
     y = 1110 - (len(fact_t.split("\n")) - 1) * 30
     for line in fact_t.split("\n"):
-        center_text(im, line, y, 40, WHITE)
+        center_text(d, line, y, 40, WHITE)
         y += 60
 
     return im
 
 
 def scene_7_outro(data, t, duration):
+    """
+    Slide 7: Outro Save/Share CTA + Dynamic Official Exam Question with Options
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(im)
+    brand(d)
     progress_bar(d, 0.98)
-    draw_blinking_target_badge(im, d, t)
+    draw_scrolling_target_badge(d, t)
 
     rounded(d, (90, 310, W - 90, 720), 42, CARD, CYAN, 5)
-    center_text(im, "POSTAL EXAM PREPARATION", 430, 40, MUTED)
-    center_text(im, "@POSTAL_WALA", 540, 68, CYAN)
-    center_text(im, "नियम याद रखने के लिए Reel को Save करें 📌", 640, 38, WHITE)
+    center_text(d, "POSTAL EXAM PREPARATION", 430, 40, MUTED)
+    center_text(d, "@POSTAL_WALA", 540, 68, CYAN)
+    center_text(d, "नियम याद रखने के लिए Reel को Save करें", 640, 38, WHITE)
 
     rounded(d, (90, 760, W - 90, 1420), 42, CARD_2, YELLOW, 4)
-    center_text(im, "🎯 आज का सवाल 🎯", 840, 46, YELLOW)
+    center_text(d, "आज का सवाल", 840, 46, YELLOW)
     
     outro_q_text = wrap_text(d, data.get("outro_q", "डाक विभाग का प्रशासनिक प्रमुख कौन होता है?"), 40, 800)
     lines = outro_q_text.split("\n")
     y_q = 940 - (len(lines) - 1) * 28
     for line in lines:
-        center_text(im, line, y_q, 40, WHITE)
+        center_text(d, line, y_q, 40, WHITE)
         y_q += 56
 
     f_opt = get_font(36)
     opt_y1 = 1100
     opt_y2 = 1180
     
-    put_text(im, (160, opt_y1), f"A. {data.get('outro_a', 'DG Posts')[:20]}", 36, WHITE, anchor="lm")
-    put_text(im, (160, opt_y2), f"C. {data.get('outro_c', 'Secretary')[:20]}", 36, WHITE, anchor="lm")
-    put_text(im, (W//2 + 20, opt_y1), f"B. {data.get('outro_b', 'Postmaster')[:20]}", 36, WHITE, anchor="lm")
-    put_text(im, (W//2 + 20, opt_y2), f"D. {data.get('outro_d', 'CPMG')[:20]}", 36, WHITE, anchor="lm")
+    d.text((160, opt_y1), f"A. {data.get('outro_a', 'DG Posts')[:20]}", font=f_opt, fill=WHITE, anchor="lm")
+    d.text((160, opt_y2), f"C. {data.get('outro_c', 'Secretary')[:20]}", font=f_opt, fill=WHITE, anchor="lm")
+    d.text((W//2 + 20, opt_y1), f"B. {data.get('outro_b', 'Postmaster')[:20]}", font=f_opt, fill=WHITE, anchor="lm")
+    d.text((W//2 + 20, opt_y2), f"D. {data.get('outro_d', 'CPMG')[:20]}", font=f_opt, fill=WHITE, anchor="lm")
 
-    center_text(im, "अपना उत्तर A, B, C या D कमेंट में बताएं! 👇", 1330, 36, CYAN)
+    center_text(d, "अपना उत्तर A, B, C या D कमेंट में बताएं!", 1330, 36, CYAN)
 
     return im
 
