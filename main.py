@@ -10,6 +10,13 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
+# --- EMOJI SUPPORT (pip install pilmoji) ---
+try:
+    from pilmoji import Pilmoji
+    HAS_PILMOJI = True
+except ImportError:
+    HAS_PILMOJI = False
+
 
 # -------------------- CONFIG --------------------
 
@@ -107,7 +114,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "संचार मंत्रालय के अधीन महानिदेशक (DG Posts) शीर्ष प्रशासनिक प्रमुख हैं।",
         "trap": "पोस्टमास्टर जनरल केवल सर्किल स्तर के प्रमुख होते हैं, विभाग के नहीं।",
-        "outro_q": "महानिदेशक (DG Posts) का मुख्यालय कहाँ स्थित है?"
+        "outro_q": "महानिदेशक (DG Posts) का मुख्यालय कहाँ स्थित है?",
+        "outro_a": "नई दिल्ली", "outro_b": "मुंबई", "outro_c": "कोलकाता", "outro_d": "चेन्नई"
     },
     (1, 2): {
         "hook": "डाक सेवा बोर्ड में कितने पूर्णकालिक सदस्य होते हैं?",
@@ -119,7 +127,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "डाक सेवा बोर्ड में एक चेयरमैन और 6 पूर्णकालिक सदस्य होते हैं।",
         "trap": "चेयरमैन को मिलाकर कुल 7 होते हैं, पूर्णकालिक सदस्य 6 ही हैं।",
-        "outro_q": "डाक सेवा बोर्ड के चेयरमैन की नियुक्ति कौन करता है?"
+        "outro_q": "डाक सेवा बोर्ड के चेयरमैन की नियुक्ति कौन करता है?",
+        "outro_a": "संचार मंत्री", "outro_b": "राष्ट्रपति", "outro_c": "DG Posts", "outro_d": "डाक सचिव"
     },
     (2, 1): {
         "hook": "डाकघर को मुख्य रूप से कितनी श्रेणियों में बांटा गया है?",
@@ -131,7 +140,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "डाकघर की 3 श्रेणियां हैं: प्रधान डाकघर, उप डाकघर और शाखा डाकघर।",
         "trap": "मोबाइल डाकघर अलग श्रेणी नहीं बल्कि एक विशेष सेवा व्यवस्था है।",
-        "outro_q": "शाखा डाकघर (BO) का मुख्य लेखा कार्यालय कौन-सा होता है?"
+        "outro_q": "शाखा डाकघर (BO) का मुख्य लेखा कार्यालय कौन-सा होता है?",
+        "outro_a": "HO या SO", "outro_b": "केवल HO", "outro_c": "सर्किल ऑफिस", "outro_d": "मंडल ऑफिस"
     },
     (2, 2): {
         "hook": "उप डाकघर अपना दैनिक हिसाब किसे भेजता है?",
@@ -143,7 +153,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "उप डाकघर दैनिक लेखा अपने प्रधान डाकघर (HO) को भेजता है।",
         "trap": "SO सीधे मंडल अधीक्षक को दैनिक लेखा नहीं भेजता।",
-        "outro_q": "क्या उप डाकघर (SO) सीधे निदेशालय से पत्राचार कर सकता है?"
+        "outro_q": "क्या उप डाकघर (SO) सीधे निदेशालय से पत्राचार कर सकता है?",
+        "outro_a": "नहीं", "outro_b": "हाँ", "outro_c": "विशेष स्थिति में", "outro_d": "केवल DG की अनुमति से"
     },
     (2, 3): {
         "hook": "शाखा डाकघर के अधिकतम कार्य के घंटे कितने हैं?",
@@ -155,7 +166,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "शाखा डाकघर के कार्य घंटे न्यूनतम 4 और अधिकतम 5 घंटे होते हैं।",
         "trap": "न्यूनतम 4 घंटे और अधिकतम 5 घंटे में भ्रमित न हों।",
-        "outro_q": "शाखा डाकघर (BO) का अधिकतम कार्य समय कितने घंटे का होता है?"
+        "outro_q": "शाखा डाकघर (BO) का अधिकतम कार्य समय कितने घंटे का होता है?",
+        "outro_a": "5 घंटे", "outro_b": "4 घंटे", "outro_c": "8 घंटे", "outro_d": "6 घंटे"
     },
     (3, 1): {
         "hook": "रात्रि डाकघर का समय 8:30 बजे तक कौन बढ़ा सकता है?",
@@ -167,7 +179,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का विशेष अधिकार DG को है।",
         "trap": "यह अधिकार स्थानीय पोस्टमास्टर या SSPO के पास नहीं होता।",
-        "outro_q": "रात्रि डाकघर की समयावधि तय करने का अधिकार किसके पास होता है?"
+        "outro_q": "रात्रि डाकघर की समयावधि तय करने का अधिकार किसके पास होता है?",
+        "outro_a": "महानिदेशक", "outro_b": "CPMG", "outro_c": "पोस्टमास्टर", "outro_d": "सचिव"
     },
     (3, 2): {
         "hook": "रविवार को रात्रि डाकघर कितने बजे तक सेवा देता है?",
@@ -179,7 +192,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "रविवार और अवकाश के दिन सीमित सेवाएं सुबह 10 से शाम 5 बजे तक मिलती हैं।",
         "trap": "रविवार को रात 8:30 बजे वाला नियम लागू नहीं होता।",
-        "outro_q": "राष्ट्रीय अवकाश पर रात्रि डाकघर की सेवाएं कितने बजे तक चलती हैं?"
+        "outro_q": "राष्ट्रीय अवकाश पर रात्रि डाकघर की सेवाएं कितने बजे तक चलती हैं?",
+        "outro_a": "10 से 5 बजे", "outro_b": "8 से 2 बजे", "outro_c": "10 से 2 बजे", "outro_d": "पूर्णतः बंद"
     },
     (3, 3): {
         "hook": "रविवार को रात्रि डाकघर में कौन-सा काम नहीं होता?",
@@ -191,7 +205,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "रविवार और अवकाश के दिन मनीऑर्डर भुगतान और बचत बैंक कार्य नहीं होता।",
         "trap": "सीमित बुकिंग चालू रहती है, लेकिन वित्तीय निकासी बंद होती है।",
-        "outro_q": "क्या रविवार को रात्रि डाकघर में मनीऑर्डर बुक किया जा सकता है?"
+        "outro_q": "क्या रविवार को रात्रि डाकघर में मनीऑर्डर बुक किया जा सकता है?",
+        "outro_a": "नहीं", "outro_b": "हाँ", "outro_c": "केवल 12 बजे तक", "outro_d": "केवल VIP के लिए"
     },
     (4, 1): {
         "hook": "मोबाइल डाकघर मुख्य रूप से कौन-सी सुविधा देते हैं?",
@@ -203,7 +218,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "मोबाइल डाकघर शाम तक सामान्य डाक और पार्सल बुकिंग की सुविधा देते हैं।",
         "trap": "मोबाइल वैन में बैंकिंग और वित्तीय सुविधाएं उपलब्ध नहीं होती हैं।",
-        "outro_q": "मोबाइल डाकघर किन क्षेत्रों में कार्य करते हैं?"
+        "outro_q": "मोबाइल डाकघर किन क्षेत्रों में कार्य करते हैं?",
+        "outro_a": "बड़े शहरों में", "outro_b": "ग्रामीण क्षेत्रों में", "outro_c": "केवल छावनी में", "outro_d": "सभी जगह"
     },
     (4, 2): {
         "hook": "मोबाइल डाकघर में कौन-सा कार्य पूरी तरह प्रतिबंधित है?",
@@ -215,7 +231,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "मोबाइल डाकघर में मनीऑर्डर, बचत बैंक और बीमा कार्य प्रतिबंधित होते हैं।",
         "trap": "केवल डाक और पार्सल बुकिंग की ही अनुमति होती है।",
-        "outro_q": "क्या मोबाइल डाकघर में बचत बैंक खाते खोले जा सकते हैं?"
+        "outro_q": "क्या मोबाइल डाकघर में बचत बैंक खाते खोले जा सकते हैं?",
+        "outro_a": "नहीं", "outro_b": "हाँ", "outro_c": "केवल SB खाते", "outro_d": "अनुमति पर"
     },
     (5, 1): {
         "hook": "डाकघर में डाक टिकटों की बिक्री कब तक होती है?",
@@ -227,7 +244,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "सामान्य टिकट बिक्री और डाक बुकिंग पूरे कार्य समय तक खुली रहती है।",
         "trap": "बचत बैंक काउंटर जल्दी बंद होता है, लेकिन टिकट पूरे समय मिलते हैं।",
-        "outro_q": "डाक टिकटों की बिक्री डाकघर में कितने समय तक होती है?"
+        "outro_q": "डाक टिकटों की बिक्री डाकघर में कितने समय तक होती है?",
+        "outro_a": "पूरे कार्य समय", "outro_b": "4 घंटे", "outro_c": "2 घंटे", "outro_d": "5 घंटे"
     },
     (5, 2): {
         "hook": "काउंटर बंद होने के बाद डाक कैसे बुक कराई जा सकती है?",
@@ -239,7 +257,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "सार्वजनिक काउंटर बंद होने के बाद निर्धारित लेट फीस देकर डाक बुक होती है।",
         "trap": "बिना लेट फीस के काउंटर समय के बाद डाक स्वीकार नहीं होती।",
-        "outro_q": "लेट फीस (Late Fee) देकर डाक कहाँ बुक की जा सकती है?"
+        "outro_q": "लेट फीस (Late Fee) देकर डाक कहाँ बुक की जा सकती है?",
+        "outro_a": "रात्रि काउंटर", "outro_b": "पार्सल काउंटर", "outro_c": "डिलीवरी ब्रांच", "outro_d": "कहीं नहीं"
     },
     (5, 3): {
         "hook": "शनिवार को डाकघर के कामकाज का क्या नियम है?",
@@ -251,7 +270,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "शनिवार को सामान्य डाक लेन-देन के समय में निर्धारित कटौती लागू होती है।",
         "trap": "शनिवार को सामान्य कार्यदिवसों जितना पूरा समय नहीं मिलता।",
-        "outro_q": "क्या शनिवार को डाकघर के कार्य के घंटे कम होते हैं?"
+        "outro_q": "क्या शनिवार को डाकघर के कार्य के घंटे कम होते हैं?",
+        "outro_a": "विभागीय कटौती लागू", "outro_b": "नहीं", "outro_c": "आधा दिन", "outro_d": "पूर्ण अवकाश"
     },
     (22, 1): {
         "hook": "क्या प्रथम श्रेणी डाक का पुनः प्रेषण पूरी तरह मुफ्त है?",
@@ -263,7 +283,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण पूरी तरह निःशुल्क होता है।",
         "trap": "पार्सल पर प्रभार लगता है, लेकिन प्रथम श्रेणी डाक निःशुल्क होती है।",
-        "outro_q": "प्रथम श्रेणी की डाक का पुनः प्रेषण शुल्क कितना होता है?"
+        "outro_q": "प्रथम श्रेणी की डाक का पुनः प्रेषण शुल्क कितना होता है?",
+        "outro_a": "निःशुल्क", "outro_b": "5 रुपये", "outro_c": "आधा प्रभार", "outro_d": "पूरा प्रभार"
     },
     (22, 2): {
         "hook": "पार्सल दूसरे वितरण क्षेत्र में भेजने पर कितना प्रभार लगता है?",
@@ -275,7 +296,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "वितरण क्षेत्र से बाहर भेजे जाने पर आधा डाक प्रभार देय होता है।",
         "trap": "उसी वितरण क्षेत्र में निःशुल्क होता है, बाहर भेजने पर आधा प्रभार लगता है।",
-        "outro_q": "वितरण क्षेत्र से बाहर पार्सल भेजने पर कितना प्रभार लगता है?"
+        "outro_q": "वितरण क्षेत्र से बाहर पार्सल भेजने पर कितना प्रभार लगता है?",
+        "outro_a": "आधा डाक प्रभार", "outro_b": "पूर्ण डाक प्रभार", "outro_c": "निःशुल्क", "outro_d": "दोगुना प्रभार"
     },
     (22, 3): {
         "hook": "खोला गया पार्सल दोबारा कैसे भेजा जा सकता है?",
@@ -287,7 +309,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "खोला गया पार्सल नए डाकभार के बिना पुनः प्रेषित नहीं किया जा सकता।",
         "trap": "बिना खुले पार्सल पर आधा प्रभार, लेकिन खुले पर पूरा नया चार्ज लगता है।",
-        "outro_q": "खुले हुए पार्सल को पुनः प्रेषित करने पर कितना डाकभार लगेगा?"
+        "outro_q": "खुले हुए पार्सल को पुनः प्रेषित करने पर कितना डाकभार लगेगा?",
+        "outro_a": "नया डाकभार", "outro_b": "आधा डाकभार", "outro_c": "निःशुल्क", "outro_d": "कोई नहीं"
     },
     (23, 1): {
         "hook": "डाक पुनः प्रेषण के लिखित निर्देश कितने समय मान्य रहते हैं?",
@@ -299,7 +322,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "लिखित पुनः प्रेषण अनुदेश की वैधता अवधि अधिकतम 3 माह तक होती है।",
         "trap": "3 महीने पूरे होने के बाद नया लिखित निर्देश देना आवश्यक होता है।",
-        "outro_q": "लिखित पुनः प्रेषण अनुदेश कितने समय तक वैध रहता है?"
+        "outro_q": "लिखित पुनः प्रेषण अनुदेश कितने समय तक वैध रहता है?",
+        "outro_a": "3 माह", "outro_b": "6 माह", "outro_c": "1 वर्ष", "outro_d": "1 माह"
     },
     (23, 2): {
         "hook": "विदेश जाने वाले पतेदारों की डाक के क्या नियम हैं?",
@@ -311,7 +335,8 @@ FALLBACK_SCRIPTS = {
         "correct": "A",
         "fact": "विदेश जाने वाले पतेदारों के लिए विशेष डाक नियम लागू होते हैं।",
         "trap": "अंतर्देशीय साधारण नियम विदेश जाने वाली डाक पर सीधे लागू नहीं होते।",
-        "outro_q": "विदेश जाने वाले पतेदारों पर कौन से डाक नियम लागू होते हैं?"
+        "outro_q": "विदेश जाने वाले पतेदारों पर कौन से डाक नियम लागू होते हैं?",
+        "outro_a": "विशेष डाक नियम", "outro_b": "घरेलू नियम", "outro_c": "पार्सल नियम", "outro_d": "निःशुल्क सेवा"
     },
 }
 
@@ -367,54 +392,50 @@ def clean_text(text):
     return " ".join(text.split()).strip()
 
 
-# -------------------- DRAWING HELPERS --------------------
+# -------------------- DRAWING HELPERS (WITH EMOJI SUPPORT) --------------------
 
 def new_canvas():
     return Image.new("RGB", (W, H), BG)
 
 
 def rounded(draw, box, radius=35, fill=CARD, outline=None, width=2):
-    draw.rounded_rectangle(
-        box,
-        radius=radius,
-        fill=fill,
-        outline=outline,
-        width=width,
-    )
+    draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
-def center_text(draw, text, y, size, fill=WHITE):
+def put_text(im, xy, text, size, fill, anchor="la"):
+    """
+    Safely renders text. If pilmoji is installed, it perfectly renders Emojis 🚨🔥.
+    If not, it falls back to standard text drawing.
+    """
     font = get_font(size)
-    draw.text((W / 2, y), text, font=font, fill=fill, anchor="mm")
+    if HAS_PILMOJI:
+        with Pilmoji(im) as pilmoji:
+            pilmoji.text(xy, text, font=font, fill=fill, anchor=anchor)
+    else:
+        d = ImageDraw.Draw(im)
+        d.text(xy, text, font=font, fill=fill, anchor=anchor)
 
 
-def brand(draw):
-    font = get_font(27)
-    draw.text((55, 45), "POSTAL WALA", font=font, fill="#64748B", anchor="la")
+def center_text(im, text, y, size, fill=WHITE):
+    put_text(im, (W / 2, y), text, size, fill, anchor="mm")
+
+
+def brand(im):
+    put_text(im, (55, 45), "POSTAL WALA", 27, "#64748B", anchor="la")
 
 
 def progress_bar(draw, ratio):
     left = 55
     right = W - 55
     y = 86
-
-    draw.rounded_rectangle(
-        (left, y, right, y + 8),
-        radius=4,
-        fill="#1B2A3A",
-    )
-
+    draw.rounded_rectangle((left, y, right, y + 8), radius=4, fill="#1B2A3A")
     current = left + (right - left) * max(0.0, min(1.0, ratio))
-    draw.rounded_rectangle(
-        (left, y, current, y + 8),
-        radius=4,
-        fill=CYAN,
-    )
+    draw.rounded_rectangle((left, y, current, y + 8), radius=4, fill=CYAN)
 
 
-def draw_blinking_target_badge(draw, t):
+def draw_blinking_target_badge(im, draw, t):
     """
-    Prominent GDS TO MTS / PM / PA badge that pulses across the entire video.
+    Prominent GDS TO MTS / PM / PA badge with glowing ✨ emojis.
     """
     is_bright = (int(t * 3.5) % 2) == 0
     bg_color = "#E11D48" if is_bright else "#881337"
@@ -422,25 +443,15 @@ def draw_blinking_target_badge(draw, t):
 
     box = (100, 115, W - 100, 185)
     draw.rounded_rectangle(box, radius=18, fill=bg_color, outline=border_color, width=3)
-
-    font_badge = get_font(34)
-    draw.text((W / 2, 150), "★ GDS TO MTS / PM / PA ★", font=font_badge, fill=WHITE, anchor="mm")
+    put_text(im, (W / 2, 150), "✨ GDS TO MTS / PM / PA ✨", 34, WHITE, anchor="mm")
 
 
 def draw_animated_x(draw, cx, cy, progress, size=32):
     p1 = min(1.0, max(0.0, progress / 0.5))
-    draw.line(
-        (cx - size, cy - size, cx - size + 2 * size * p1, cy - size + 2 * size * p1),
-        fill=RED,
-        width=12,
-    )
+    draw.line((cx - size, cy - size, cx - size + 2 * size * p1, cy - size + 2 * size * p1), fill=RED, width=12)
     if progress > 0.5:
         p2 = min(1.0, max(0.0, (progress - 0.5) / 0.5))
-        draw.line(
-            (cx + size, cy - size, cx + size - 2 * size * p2, cy - size + 2 * size * p2),
-            fill=RED,
-            width=12,
-        )
+        draw.line((cx + size, cy - size, cx + size - 2 * size * p2, cy - size + 2 * size * p2), fill=RED, width=12)
 
 
 def draw_animated_check(draw, cx, cy, progress, size=32):
@@ -459,7 +470,7 @@ def draw_animated_check(draw, cx, cy, progress, size=32):
         draw.line((x1, y1, curr_x2, curr_y2), fill=GREEN, width=13)
 
 
-def draw_option_card(draw, letter, text, y, status=None, anim_prog=1.0, slide_offset=0):
+def draw_option_card(im, draw, letter, text, y, status=None, anim_prog=1.0, slide_offset=0):
     x1, x2 = 100 + slide_offset, W - 100 + slide_offset
     h = 160
 
@@ -482,7 +493,7 @@ def draw_option_card(draw, letter, text, y, status=None, anim_prog=1.0, slide_of
     rounded(draw, (x1, y, x2, y + h), 26, fill, outline, border_w)
 
     card_label = f"{letter}. {text}"
-    center_text(draw, card_label, y + 80, 42, text_color)
+    center_text(im, card_label, y + 80, 42, text_color)
 
     cx = (x1 + x2) // 2
     if status == "wrong":
@@ -541,7 +552,8 @@ Instructions:
 6. FACT: Concise one-sentence summary of the rule (max 18 words).
 7. TRAP: One common misconception or exam confusion (max 16 words).
 8. OUTRO_Q: One highly relevant, exam-oriented one-liner question related to the topic (max 12 words) for the viewers to answer in comments.
-9. Absolutely no meta text, no dummy options.
+9. OUTRO_A, OUTRO_B, OUTRO_C, OUTRO_D: 4 short plausible options for the OUTRO_Q.
+10. Absolutely no meta text, no dummy options. Do NOT use emojis.
 
 Format exactly:
 HOOK: ...
@@ -554,6 +566,10 @@ CORRECT: [A/B/C/D]
 FACT: ...
 TRAP: ...
 OUTRO_Q: ...
+OUTRO_A: ...
+OUTRO_B: ...
+OUTRO_C: ...
+OUTRO_D: ...
 """
 
     try:
@@ -567,7 +583,7 @@ OUTRO_Q: ...
                 "model": "llama-3.3-70b-versatile",
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.2,
-                "max_tokens": 450,
+                "max_tokens": 480,
             },
             timeout=25,
         )
@@ -586,15 +602,19 @@ OUTRO_Q: ...
             "correct": extract_field(raw, "CORRECT", ["FACT"]).upper(),
             "fact": extract_field(raw, "FACT", ["TRAP"]),
             "trap": extract_field(raw, "TRAP", ["OUTRO_Q"]),
-            "outro_q": extract_field(raw, "OUTRO_Q", []),
+            "outro_q": extract_field(raw, "OUTRO_Q", ["OUTRO_A"]),
+            "outro_a": extract_field(raw, "OUTRO_A", ["OUTRO_B"]),
+            "outro_b": extract_field(raw, "OUTRO_B", ["OUTRO_C"]),
+            "outro_c": extract_field(raw, "OUTRO_C", ["OUTRO_D"]),
+            "outro_d": extract_field(raw, "OUTRO_D", []),
             "clause_no": clause_no
         }
 
         if data["correct"] not in {"A", "B", "C", "D"}:
             raise ValueError("Invalid CORRECT field")
 
-        required = ["hook", "question", "a", "b", "c", "d", "fact", "trap", "outro_q"]
-        if not all(data[k] for k in required):
+        required = ["hook", "question", "a", "b", "c", "d", "fact", "trap", "outro_q", "outro_a", "outro_b"]
+        if not all(data.get(k) for k in required):
             raise ValueError("Incomplete generated script")
 
         return data
@@ -697,19 +717,15 @@ def tighten_audio(path):
 # -------------------- SCENE AUDIO --------------------
 
 def make_scene_text(data):
-    """
-    Fixed flow to eliminate question repetition.
-    Generic viral hook audio for Scene 0, then Question audio for Scene 1.
-    """
     return [
-        "पोस्टल एग्जाम का यह सवाल, 90% छात्र गलत करते हैं! क्या आपको उत्तर पता है?", # 0: Generic Hook
-        data["question"],                                                         # 1: Question
-        "पहले सोचिए। आप क्या चुनेंगे? 5 सेकंड में कमेंट करें!",                         # 2: Options & Timer
-        "गलत विकल्प हटाइए।",                                                        # 3: Elimination
-        f"सही उत्तर है विकल्प {data['correct']}!",                                # 4: Answer Reveal
-        f"डाक सेवा का महत्वपूर्ण नियम: {data['fact']}",                             # 5: Rule Explanation
-        f"परीक्षा का ट्रैप: {data['trap']}",                                      # 6: Exam Trap
-        "आज का सवाल स्क्रीन पर है, उत्तर कमेंट करें और रील को सेव करें।",              # 7: Outro CTA
+        "पोस्टल एग्जाम का यह सवाल, 90% छात्र गलत करते हैं! क्या आपको उत्तर पता है?",
+        data["question"],
+        "पहले सोचिए। आप क्या चुनेंगे? 5 सेकंड में कमेंट करें!",
+        "गलत विकल्प हटाइए।",
+        f"सही उत्तर है विकल्प {data['correct']}!",
+        f"डाक सेवा का महत्वपूर्ण नियम: {data['fact']}",
+        f"परीक्षा का ट्रैप: {data['trap']}",
+        "आज का सवाल स्क्रीन पर है, सही विकल्प कमेंट करें और रील को सेव करें।",
     ]
 
 
@@ -751,80 +767,75 @@ def concat_audio(scene_paths, output):
     )
 
 
-# -------------------- SCENES (MATCHING VIDEO SEQUENCE) --------------------
+# -------------------- SCENES --------------------
 
 def scene_0_hook(data, t, duration):
     """
-    Slide 0: 2-Second Full-Screen Hook Scene
+    Slide 0: High-Energy Dark Red Hook Scene with Emojis rendered properly
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.05)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
-    rounded(d, (70, 240, W - 70, 1420), 40, CARD, CYAN, 4)
-    rounded(d, (130, 310, W - 130, 395), 20, CARD_2, YELLOW, 2)
-    center_text(d, f"📌 {data['title']}", 352, 34, YELLOW)
+    rounded(d, (70, 240, W - 70, 1420), 40, "#310A14", CYAN, 4)
+    rounded(d, (130, 310, W - 130, 395), 20, "#520A1E", YELLOW, 2)
+    center_text(im, f"📌 {data['title']}", 352, 34, YELLOW)
 
-    q_rad = int(60 + 6 * math.sin(t * 12))
+    q_rad = int(60 + 10 * math.sin(t * 15))
     d.ellipse(
         (W // 2 - q_rad, 520 - q_rad, W // 2 + q_rad, 520 + q_rad),
-        fill="#1E293B", outline=CYAN, width=4
+        fill="#1E293B", outline=CYAN, width=5
     )
-    center_text(d, "?", 520, 62, CYAN)
+    center_text(im, "?", 520, 62, CYAN)
 
-    center_text(d, "🚨 POSTAL EXAM 🚨", 730, 60, YELLOW)
-    center_text(d, "यह सवाल 90% छात्र", 830, 52, WHITE)
-    center_text(d, "गलत करते हैं!", 910, 52, WHITE)
+    pulse_fast = int(t * 10) % 2 == 0
+    center_text(im, "🚨 POSTAL EXAM ALERT 🚨", 730, 60, YELLOW if pulse_fast else WHITE)
+    
+    center_text(im, "यह सवाल 90% छात्र", 840, 56, WHITE)
+    center_text(im, "गलत करते हैं! 😱", 930, 56, RED)
 
-    pulse = math.sin(t * 10) > 0
-    box_border = YELLOW if pulse else RED
+    box_border = YELLOW if pulse_fast else RED
     rounded(d, (110, 1220, W - 110, 1340), 24, "#132338", box_border, 3)
-    center_text(d, "🔥 क्या आपको सही उत्तर पता है? 🔥", 1280, 38, WHITE)
+    center_text(im, "🔥 क्या आपको सही उत्तर पता है? 🔥", 1280, 42, WHITE)
 
-    center_text(d, "पहले जवाब मत देखिए ⏳", 1520, 42, YELLOW)
+    center_text(im, "पहले जवाब मत देखिए ⏳", 1520, 42, YELLOW)
     return im
 
 
 def scene_1_question(data, t, duration):
-    """
-    Slide 1: Question Hero Card
-    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.16)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
     rounded(d, (120, 360, 960, 465), 24, CARD_2, CYAN, 3)
-    center_text(d, data["title"], 412, 38, CYAN)
+    center_text(im, data["title"], 412, 38, CYAN)
 
     rounded(d, (80, 520, 1000, 1260), 40, CARD, "#334155", 4)
-    center_text(d, "POSTAL EXAM RULE", 615, 40, MUTED)
+    center_text(im, "POSTAL EXAM RULE", 615, 40, MUTED)
 
     wrapped_q = wrap_text(d, data["question"], 52, 840)
     lines = wrapped_q.split("\n")
     y_start = 850 - (len(lines) - 1) * 38
     for line in lines:
-        center_text(d, line, y_start, 52, WHITE)
+        center_text(im, line, y_start, 52, WHITE)
         y_start += 76
 
-    center_text(d, "पहले जवाब मत देखिए", 1460, 40, YELLOW)
+    center_text(im, "पहले जवाब मत देखिए ⏳", 1460, 40, YELLOW)
     return im
 
 
 def scene_2_options(data, t, duration):
-    """
-    Slide 2: Next Slide Option Selection ("आप क्या चुनेंगे?")
-    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.32)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
-    center_text(d, "आप क्या चुनेंगे?", 290, 58, WHITE)
+    center_text(im, "आप क्या चुनेंगे?", 290, 58, WHITE)
 
     options = [("A", data["a"]), ("B", data["b"]), ("C", data["c"]), ("D", data["d"])]
     y0 = 460
@@ -836,28 +847,25 @@ def scene_2_options(data, t, duration):
         ease_p = 1.0 - (1.0 - slide_p) * (1.0 - slide_p)
         slide_offset = int((1.0 - ease_p) * 200)
 
-        draw_option_card(d, letter, txt, y0 + idx * 190, status=None, slide_offset=slide_offset)
+        draw_option_card(im, d, letter, txt, y0 + idx * 190, status=None, slide_offset=slide_offset)
 
     progress = max(0.0, min(1.0, 1.0 - (t / max(duration, 0.1))))
     bx1, bx2 = 180, W - 180
     d.rounded_rectangle((bx1, 1340, bx2, 1350), radius=5, fill="#1E2A3A")
     d.rounded_rectangle((bx1, 1340, bx1 + (bx2 - bx1) * progress, 1350), radius=5, fill=YELLOW)
 
-    center_text(d, "सोचिए... ⏳", 1430, 48, YELLOW)
+    center_text(im, "सोचिए... ⏳", 1430, 48, YELLOW)
     return im
 
 
 def scene_3_elimination(data, t, duration):
-    """
-    Slide 3: Elimination with Cross & Check Transition
-    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.48)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
-    center_text(d, "गलत विकल्प हटते हैं", 290, 56, WHITE)
+    center_text(im, "गलत विकल्प हटते हैं", 290, 56, WHITE)
 
     correct_letter = data.get("correct", "A").upper()
     options = [("A", data["a"]), ("B", data["b"]), ("C", data["c"]), ("D", data["d"])]
@@ -889,22 +897,19 @@ def scene_3_elimination(data, t, duration):
                 status = "correct"
                 anim_prog = min(1.0, (t - t_correct) / 0.22)
 
-        draw_option_card(d, letter, txt, y0 + idx * 190, status=status, anim_prog=anim_prog)
+        draw_option_card(im, d, letter, txt, y0 + idx * 190, status=status, anim_prog=anim_prog)
 
     return im
 
 
 def scene_4_answer(data, t, duration):
-    """
-    Slide 4: Hero Correct Answer Card
-    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.62)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
-    center_text(d, "सही उत्तर", 320, 54, MUTED)
+    center_text(im, "सही उत्तर", 320, 54, MUTED)
     rounded(d, (100, 460, 980, 1180), 45, CARD_2, GREEN, 6)
 
     chk_p = min(1.0, t / 0.25)
@@ -913,121 +918,113 @@ def scene_4_answer(data, t, duration):
     correct_key = data.get("correct", "A").upper()
     correct_text = data.get(correct_key.lower(), "")
 
-    center_text(d, f"विकल्प {correct_key}", 740, 74, GREEN)
+    center_text(im, f"विकल्प {correct_key}", 740, 74, GREEN)
 
     wrapped = wrap_text(d, correct_text, 48, 800)
     y = 870
     for line in wrapped.split("\n"):
-        center_text(d, line, y, 48, WHITE)
+        center_text(im, line, y, 48, WHITE)
         y += 64
 
-    center_text(d, "यही point परीक्षा में याद रखें", 1350, 42, CYAN)
+    center_text(im, "यही point परीक्षा में याद रखें", 1350, 42, CYAN)
     return im
 
 
 def scene_5_fact(data, t, duration):
-    """
-    Slide 5: Verified Rule Card with Clause Number text
-    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.76)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
-    center_text(d, "महत्वपूर्ण नियम", 270, 52, CYAN)
+    center_text(im, "महत्वपूर्ण नियम", 270, 52, CYAN)
 
     rounded(d, (120, 360, 960, 455), 22, CARD_2, "#334155", 3)
-    center_text(d, data["title"], 408, 36, YELLOW)
+    center_text(im, data["title"], 408, 36, YELLOW)
 
     rounded(d, (80, 510, 1000, 1370), 40, CARD, GREEN, 5)
-    center_text(d, "VERIFIED RULE", 610, 42, GREEN)
+    center_text(im, "VERIFIED RULE", 610, 42, GREEN)
 
     fact = wrap_text(d, data["fact"], 46, 820)
     lines = fact.split("\n")
     y = 840 - (len(lines) - 1) * 35
     for line in lines:
-        center_text(d, line, y, 46, WHITE)
+        center_text(im, line, y, 46, WHITE)
         y += 68
 
-    # Clause Number Text properly placed below the box
-    f_clause = get_font(30)
-    d.text((W/2, 1420), f"PO Guide Part 1 • Clause: {data.get('clause_no', '')}", font=f_clause, fill=YELLOW, anchor="mm")
-
-    center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1540, 36, MUTED)
+    put_text(im, (W/2, 1420), f"PO Guide Part 1 • Clause: {data.get('clause_no', '')}", 30, YELLOW, anchor="mm")
+    center_text(im, "सीधे परीक्षा में पूछा जाने वाला नियम", 1540, 36, MUTED)
     return im
 
 
 def scene_6_trap(data, t, duration):
-    """
-    Slide 6: Exam Trap (Both Red and Green boxes strictly populated)
-    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.88)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
     rounded(d, (70, 270, 1010, 1570), 45, CARD, YELLOW, 5)
-    center_text(d, "EXAM TRAP", 370, 62, YELLOW)
-    center_text(d, "सावधानी: यहाँ गलती न करें!", 460, 36, MUTED)
+    center_text(im, "⚠️ EXAM TRAP ⚠️", 370, 62, YELLOW)
+    center_text(im, "सावधानी: यहाँ गलती न करें!", 460, 36, MUTED)
 
-    # Red Misconception Box with actual trap text
     rounded(d, (120, 520, 960, 910), 30, CARD_2, RED, 4)
-    center_text(d, "अक्सर होने वाला भ्रम", 580, 38, RED)
+    center_text(im, "अक्सर होने वाला भ्रम", 580, 38, RED)
     x_prog = min(1.0, max(0.0, (t - 0.1) / 0.25))
     draw_animated_x(d, 880, 580, progress=x_prog, size=24)
 
     trap_t = wrap_text(d, data["trap"], 42, 780)
     y = 670 - (len(trap_t.split("\n")) - 1) * 30
     for line in trap_t.split("\n"):
-        center_text(d, line, y, 42, WHITE)
+        center_text(im, line, y, 42, WHITE)
         y += 60
 
-    # Green Correct Insight Box with actual fact text
     rounded(d, (120, 950, 960, 1470), 30, CARD_2, GREEN, 4)
-    center_text(d, "याद रखने योग्य बात", 1010, 38, GREEN)
+    center_text(im, "याद रखने योग्य बात", 1010, 38, GREEN)
     chk_prog = min(1.0, max(0.0, (t - 0.45) / 0.25))
     draw_animated_check(d, 880, 1010, progress=chk_prog, size=24)
 
     fact_t = wrap_text(d, data["fact"], 40, 780)
     y = 1110 - (len(fact_t.split("\n")) - 1) * 30
     for line in fact_t.split("\n"):
-        center_text(d, line, y, 40, WHITE)
+        center_text(im, line, y, 40, WHITE)
         y += 60
 
     return im
 
 
 def scene_7_outro(data, t, duration):
-    """
-    Slide 7: Outro Save/Share CTA + Dynamic Official Exam Question
-    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
-    brand(d)
+    brand(im)
     progress_bar(d, 0.98)
-    draw_blinking_target_badge(d, t)
+    draw_blinking_target_badge(im, d, t)
 
-    # CTA Box
-    rounded(d, (90, 350, W - 90, 850), 42, CARD, CYAN, 5)
-    center_text(d, "POSTAL EXAM PREPARATION", 470, 44, MUTED)
-    center_text(d, "@POSTAL_WALA", 590, 72, CYAN)
-    center_text(d, "नियम याद रखने के लिए Reel को Save करें", 720, 40, WHITE)
+    rounded(d, (90, 310, W - 90, 720), 42, CARD, CYAN, 5)
+    center_text(im, "POSTAL EXAM PREPARATION", 430, 40, MUTED)
+    center_text(im, "@POSTAL_WALA", 540, 68, CYAN)
+    center_text(im, "नियम याद रखने के लिए Reel को Save करें 📌", 640, 38, WHITE)
 
-    # Interactive Question Box (Homework)
-    rounded(d, (90, 920, W - 90, 1340), 42, CARD_2, YELLOW, 4)
-    center_text(d, "🎯 आज का सवाल 🎯", 1010, 48, YELLOW)
+    rounded(d, (90, 760, W - 90, 1420), 42, CARD_2, YELLOW, 4)
+    center_text(im, "🎯 आज का सवाल 🎯", 840, 46, YELLOW)
     
-    # Render Dynamic 100% Exam-Oriented Outro Question
-    outro_q_text = wrap_text(d, data.get("outro_q", "डाक विभाग का प्रशासनिक प्रमुख कौन होता है?"), 42, 800)
+    outro_q_text = wrap_text(d, data.get("outro_q", "डाक विभाग का प्रशासनिक प्रमुख कौन होता है?"), 40, 800)
     lines = outro_q_text.split("\n")
-    y = 1140 - (len(lines) - 1) * 30
+    y_q = 940 - (len(lines) - 1) * 28
     for line in lines:
-        center_text(d, line, y, 42, WHITE)
-        y += 55
+        center_text(im, line, y_q, 40, WHITE)
+        y_q += 56
 
-    center_text(d, "अपना उत्तर कमेंट में बताएं! 👇", 1270, 36, CYAN)
+    f_opt = get_font(36)
+    opt_y1 = 1100
+    opt_y2 = 1180
+    
+    put_text(im, (160, opt_y1), f"A. {data.get('outro_a', 'DG Posts')[:20]}", 36, WHITE, anchor="lm")
+    put_text(im, (160, opt_y2), f"C. {data.get('outro_c', 'Secretary')[:20]}", 36, WHITE, anchor="lm")
+    put_text(im, (W//2 + 20, opt_y1), f"B. {data.get('outro_b', 'Postmaster')[:20]}", 36, WHITE, anchor="lm")
+    put_text(im, (W//2 + 20, opt_y2), f"D. {data.get('outro_d', 'CPMG')[:20]}", 36, WHITE, anchor="lm")
+
+    center_text(im, "अपना उत्तर A, B, C या D कमेंट में बताएं! 👇", 1330, 36, CYAN)
 
     return im
 
@@ -1098,19 +1095,18 @@ def build_reel(data, output_video=None):
 
     os.makedirs(os.path.dirname(output_video), exist_ok=True)
 
-    # 8 Clean, Dedicated Audio Scenes
     scene_audios = asyncio.run(generate_scene_audios(data))
     durations = [audio_duration(path) for path in scene_audios]
 
     scene_functions = [
-        scene_0_hook,         # 0: 2-Second Full-Screen Hook Scene
-        scene_1_question,     # 1: Question Hero Card
-        scene_2_options,      # 2: Next Slide Option Selection ("आप क्या चुनेंगे?")
-        scene_3_elimination,  # 3: Elimination with Cross & Check Transition
-        scene_4_answer,       # 4: "सही उत्तर" Card
-        scene_5_fact,         # 5: "महत्वपूर्ण नियम" Card (with Clause number)
-        scene_6_trap,         # 6: "EXAM TRAP" (with filled trap text boxes)
-        scene_7_outro,        # 7: Outro Save CTA + Official Exam Question
+        scene_0_hook,         
+        scene_1_question,     
+        scene_2_options,      
+        scene_3_elimination,  
+        scene_4_answer,       
+        scene_5_fact,         
+        scene_6_trap,         
+        scene_7_outro,        
     ]
 
     frame_paths = []
