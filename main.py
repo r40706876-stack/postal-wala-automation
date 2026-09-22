@@ -23,7 +23,9 @@ VOICE_RATE = "+8%"
 W, H = 1080, 1920
 FPS = 30
 
-FONT_DEV = "NotoSansDevanagari-Bold.ttf"
+# Mukta supports both complete Devanagari ligatures and full English Latin charset
+FONT_FILE = "Mukta-Bold.ttf"
+FONT_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-Bold.ttf"
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
@@ -96,23 +98,18 @@ POSTAL_CLAUSE_CATALOG = {
 # -------------------- FONT & SHAPING HELPERS --------------------
 
 def ensure_fonts():
-    if not os.path.exists(FONT_DEV):
-        url = (
-            "https://github.com/googlefonts/noto-fonts/raw/main/"
-            "hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
-        )
-        response = requests.get(url, timeout=30)
+    if not os.path.exists(FONT_FILE) or os.path.getsize(FONT_FILE) < 50000:
+        response = requests.get(FONT_URL, timeout=30)
         response.raise_for_status()
-        Path(FONT_DEV).write_bytes(response.content)
+        Path(FONT_FILE).write_bytes(response.content)
 
 
 def get_font(size):
     ensure_fonts()
     try:
-        # Complex layout engine (Raqm/HarfBuzz) for perfect Hindi ligatures
-        return ImageFont.truetype(FONT_DEV, size, layout_engine=ImageFont.Layout.RAQM)
+        return ImageFont.truetype(FONT_FILE, size, layout_engine=ImageFont.Layout.RAQM)
     except Exception:
-        return ImageFont.truetype(FONT_DEV, size)
+        return ImageFont.truetype(FONT_FILE, size)
 
 
 def wrap_text(draw, text, size, max_width):
@@ -519,7 +516,7 @@ def load_state():
 
     if default["clause_no"] not in POSTAL_CLAUSE_CATALOG:
         default["clause_no"] = 22
-        default["current_part": 2]
+        default["current_part"] = 2
 
     return default
 
@@ -657,7 +654,6 @@ def scene_hook(data, t, duration):
     if t > min(0.35, duration * 0.25):
         draw_clock(d, W // 2, 980, 130)
 
-    # Word wrapping added so Hook never overflows screen edges
     wrapped_hook = wrap_text(d, data["hook"], 52, 950)
     lines = wrapped_hook.split("\n")
     y_start = 1200 - (len(lines) - 1) * 35
