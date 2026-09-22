@@ -23,7 +23,6 @@ VOICE_RATE = "+8%"
 W, H = 1080, 1920
 FPS = 30
 
-# Mukta supports both complete Devanagari ligatures and full English Latin charset
 FONT_FILE = "Mukta-Bold.ttf"
 FONT_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-Bold.ttf"
 
@@ -91,6 +90,210 @@ POSTAL_CLAUSE_CATALOG = {
         "total_parts": 2,
         "part_1_focus": "लिखित पुनः प्रेषण अनुदेश की वैधता अवधि अधिकतम 3 माह तक प्रभावी रहती है।",
         "part_2_focus": "विदेश जाने वाले पतेदारों और अस्थाई रूप से स्थान बदलने वाले व्यक्तियों के लिए विशेष डाक नियम लागू होते हैं।",
+    },
+}
+
+
+# -------------------- CURATED FALLBACK BANK --------------------
+
+FALLBACK_SCRIPTS = {
+    (1, 1): {
+        "hook": "डाक विभाग का सर्वोच्च प्रशासनिक प्रमुख कौन होता है?",
+        "question": "डाक विभाग का शीर्ष प्रशासनिक प्रमुख कौन होता है?",
+        "a": "महानिदेशक (DG Posts)",
+        "b": "डाक सचिव",
+        "c": "पोस्टमास्टर जनरल",
+        "d": "अधीक्षक डाकघर",
+        "correct": "A",
+        "fact": "संचार मंत्रालय के अधीन महानिदेशक (DG Posts) शीर्ष प्रशासनिक प्रमुख हैं।",
+        "trap": "पोस्टमास्टर जनरल केवल सर्किल स्तर के प्रमुख होते हैं, विभाग के नहीं।",
+    },
+    (1, 2): {
+        "hook": "डाक सेवा बोर्ड में कितने पूर्णकालिक सदस्य होते हैं?",
+        "question": "डाक सेवा बोर्ड में कुल कितने पूर्णकालिक सदस्य होते हैं?",
+        "a": "6 सदस्य",
+        "b": "4 सदस्य",
+        "c": "5 सदस्य",
+        "d": "8 सदस्य",
+        "correct": "A",
+        "fact": "डाक सेवा बोर्ड में एक चेयरमैन और 6 पूर्णकालिक सदस्य होते हैं।",
+        "trap": "चेयरमैन को मिलाकर कुल 7 होते हैं, पूर्णकालिक सदस्य 6 ही हैं।",
+    },
+    (2, 1): {
+        "hook": "डाकघर को मुख्य रूप से कितनी श्रेणियों में बांटा गया है?",
+        "question": "डाकघर की कितनी प्रमुख श्रेणियां निर्धारित हैं?",
+        "a": "3 श्रेणियां",
+        "b": "2 श्रेणियां",
+        "c": "4 श्रेणियां",
+        "d": "5 श्रेणियां",
+        "correct": "A",
+        "fact": "डाकघर की 3 श्रेणियां हैं: प्रधान डाकघर, उप डाकघर और शाखा डाकघर।",
+        "trap": "मोबाइल डाकघर अलग श्रेणी नहीं बल्कि एक विशेष सेवा व्यवस्था है।",
+    },
+    (2, 2): {
+        "hook": "उप डाकघर अपना दैनिक हिसाब किसे भेजता है?",
+        "question": "उप डाकघर (SO) अपना दैनिक लेखा किसे प्रेषित करता है?",
+        "a": "प्रधान डाकघर (HO)",
+        "b": "मंडल कार्यालय",
+        "c": "सर्किल कार्यालय",
+        "d": "मुख्यालय",
+        "correct": "A",
+        "fact": "उप डाकघर दैनिक लेखा अपने प्रधान डाकघर (HO) को भेजता है।",
+        "trap": "SO सीधे मंडल अधीक्षक को दैनिक लेखा नहीं भेजता।",
+    },
+    (2, 3): {
+        "hook": "शाखा डाकघर के अधिकतम कार्य के घंटे कितने हैं?",
+        "question": "ग्रामीण शाखा डाकघर (BO) के अधिकतम कार्य घंटे कितने हैं?",
+        "a": "5 घंटे",
+        "b": "4 घंटे",
+        "c": "6 घंटे",
+        "d": "8 घंटे",
+        "correct": "A",
+        "fact": "शाखा डाकघर के कार्य घंटे न्यूनतम 4 और अधिकतम 5 घंटे होते हैं।",
+        "trap": "न्यूनतम 4 घंटे और अधिकतम 5 घंटे में भ्रमित न हों।",
+    },
+    (3, 1): {
+        "hook": "रात्रि डाकघर का समय 8:30 बजे तक कौन बढ़ा सकता है?",
+        "question": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का अधिकार किसे है?",
+        "a": "महानिदेशक (DG)",
+        "b": "Postmaster",
+        "c": "SSPO",
+        "d": "CPMG",
+        "correct": "A",
+        "fact": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का विशेष अधिकार DG को है।",
+        "trap": "यह अधिकार स्थानीय पोस्टमास्टर या SSPO के पास नहीं होता।",
+    },
+    (3, 2): {
+        "hook": "रविवार को रात्रि डाकघर कितने बजे तक सेवा देता है?",
+        "question": "रविवार और राष्ट्रीय अवकाश पर रात्रि डाकघर का समय क्या है?",
+        "a": "सुबह 10 से शाम 5",
+        "b": "सुबह 8 से दोपहर 2",
+        "c": "दोपहर 12 से शाम 8",
+        "d": "पूरे दिन",
+        "correct": "A",
+        "fact": "रविवार और अवकाश के दिन सीमित सेवाएं सुबह 10 से शाम 5 बजे तक मिलती हैं।",
+        "trap": "रविवार को रात 8:30 बजे वाला नियम लागू नहीं होता।",
+    },
+    (3, 3): {
+        "hook": "रविवार को रात्रि डाकघर में कौन-सा काम नहीं होता?",
+        "question": "रविवार और अवकाश के दिन रात्रि डाकघर में क्या नहीं होता?",
+        "a": "मनीऑर्डर व बचत बैंक",
+        "b": "डाक टिकट बिक्री",
+        "c": "स्पीड पोस्ट बुकिंग",
+        "d": "पंजीकृत डाक",
+        "correct": "A",
+        "fact": "रविवार और अवकाश के दिन मनीऑर्डर भुगतान और बचत बैंक कार्य नहीं होता।",
+        "trap": "सीमित बुकिंग चालू रहती है, लेकिन वित्तीय निकासी बंद होती है।",
+    },
+    (4, 1): {
+        "hook": "मोबाइल डाकघर मुख्य रूप से कौन-सी सुविधा देते हैं?",
+        "question": "मोबाइल डाकघर में मुख्य रूप से कौन-सा कार्य होता है?",
+        "a": "डाक व पार्सल बुकिंग",
+        "b": "मनीऑर्डर भुगतान",
+        "c": "बचत बैंक खाता",
+        "d": "डाक जीवन बीमा",
+        "correct": "A",
+        "fact": "मोबाइल डाकघर शाम तक सामान्य डाक और पार्सल बुकिंग की सुविधा देते हैं।",
+        "trap": "मोबाइल वैन में बैंकिंग और वित्तीय सुविधाएं उपलब्ध नहीं होती हैं।",
+    },
+    (4, 2): {
+        "hook": "मोबाइल डाकघर में कौन-सा कार्य पूरी तरह प्रतिबंधित है?",
+        "question": "मोबाइल डाकघर में किस कार्य की अनुमति नहीं होती है?",
+        "a": "मनीऑर्डर व बचत बैंक",
+        "b": "साधारण डाक बुकिंग",
+        "c": "पार्सल बुकिंग",
+        "d": "लेट फीस डाक",
+        "correct": "A",
+        "fact": "मोबाइल डाकघर में मनीऑर्डर, बचत बैंक और बीमा कार्य प्रतिबंधित होते हैं।",
+        "trap": "केवल डाक और पार्सल बुकिंग की ही अनुमति होती है।",
+    },
+    (5, 1): {
+        "hook": "डाकघर में डाक टिकटों की बिक्री कब तक होती है?",
+        "question": "डाक टिकटों की बिक्री काउंटर पर कब तक उपलब्ध रहती है?",
+        "a": "पूरे कार्य समय तक",
+        "b": "केवल 2 घंटे",
+        "c": "दोपहर 12 बजे तक",
+        "d": "शाम 4 बजे तक",
+        "correct": "A",
+        "fact": "सामान्य टिकट बिक्री और डाक बुकिंग पूरे कार्य समय तक खुली रहती है।",
+        "trap": "बचत बैंक काउंटर जल्दी बंद होता है, लेकिन टिकट पूरे समय मिलते हैं।",
+    },
+    (5, 2): {
+        "hook": "काउंटर बंद होने के बाद डाक कैसे बुक कराई जा सकती है?",
+        "question": "सार्वजनिक काउंटर बंद होने के बाद डाक कैसे स्वीकार की जाती है?",
+        "a": "लेट फीस भुगतान करके",
+        "b": "लिखित आवेदन से",
+        "c": "दोगुने टिकट लगाकर",
+        "d": "अगले कार्यदिवस पर",
+        "correct": "A",
+        "fact": "सार्वजनिक काउंटर बंद होने के बाद निर्धारित लेट फीस देकर डाक बुक होती है।",
+        "trap": "बिना लेट फीस के काउंटर समय के बाद डाक स्वीकार नहीं होती।",
+    },
+    (5, 3): {
+        "hook": "शनिवार को डाकघर के कामकाज का क्या नियम है?",
+        "question": "शनिवार को सामान्य डाक लेन-देन के समय में क्या लागू होता है?",
+        "a": "विभागीय समयावधि कटौती",
+        "b": "सामान्य दिनों जैसा समय",
+        "c": "पूर्ण अवकाश",
+        "d": "रविवार के नियम",
+        "correct": "A",
+        "fact": "शनिवार को सामान्य डाक लेन-देन के समय में निर्धारित कटौती लागू होती है।",
+        "trap": "शनिवार को सामान्य कार्यदिवसों जितना पूरा समय नहीं मिलता।",
+    },
+    (22, 1): {
+        "hook": "क्या प्रथम श्रेणी डाक का पुनः प्रेषण पूरी तरह मुफ्त है?",
+        "question": "प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण शुल्क कितना है?",
+        "a": "पूर्णतः निःशुल्क",
+        "b": "आधा डाक प्रभार",
+        "c": "पूरा डाक प्रभार",
+        "d": "दस रुपये",
+        "correct": "A",
+        "fact": "प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण पूरी तरह निःशुल्क होता है।",
+        "trap": "पार्सल पर प्रभार लगता है, लेकिन प्रथम श्रेणी डाक निःशुल्क होती है।",
+    },
+    (22, 2): {
+        "hook": "पार्सल दूसरे वितरण क्षेत्र में भेजने पर कितना प्रभार लगता है?",
+        "question": "वितरण क्षेत्र से बाहर पार्सल पुनः प्रेषित करने पर कितना प्रभार है?",
+        "a": "आधा डाक प्रभार",
+        "b": "पूर्ण डाक प्रभार",
+        "c": "निःशुल्क",
+        "d": "दोगुना प्रभार",
+        "correct": "A",
+        "fact": "वितरण क्षेत्र से बाहर भेजे जाने पर आधा डाक प्रभार देय होता है।",
+        "trap": "उसी वितरण क्षेत्र में निःशुल्क होता है, बाहर भेजने पर आधा प्रभार लगता है।",
+    },
+    (22, 3): {
+        "hook": "खोला गया पार्सल दोबारा कैसे भेजा जा सकता है?",
+        "question": "एक बार खुले हुए पार्सल को पुनः प्रेषित करने की क्या शर्त है?",
+        "a": "नया डाकभार देना होगा",
+        "b": "आधा डाकभार लगेगा",
+        "c": "निःशुल्क भेजा जाएगा",
+        "d": "विशेष छूट मिलेगी",
+        "correct": "A",
+        "fact": "खोला गया पार्सल नए डाकभार के बिना पुनः प्रेषित नहीं किया जा सकता।",
+        "trap": "बिना खुले पार्सल पर आधा प्रभार, लेकिन खुले पर पूरा नया चार्ज लगता है।",
+    },
+    (23, 1): {
+        "hook": "डाक पुनः प्रेषण के लिखित निर्देश कितने समय मान्य रहते हैं?",
+        "question": "लिखित पुनः प्रेषण अनुदेश (Redirection) की वैधता अवधि क्या है?",
+        "a": "अधिकतम 3 माह",
+        "b": "6 माह",
+        "c": "1 वर्ष",
+        "d": "1 माह",
+        "correct": "A",
+        "fact": "लिखित पुनः प्रेषण अनुदेश की वैधता अवधि अधिकतम 3 माह तक होती है।",
+        "trap": "3 महीने पूरे होने के बाद नया लिखित निर्देश देना आवश्यक होता है।",
+    },
+    (23, 2): {
+        "hook": "विदेश जाने वाले पतेदारों की डाक के क्या नियम हैं?",
+        "question": "विदेश जाने वाले पतेदारों के डाक पुनः प्रेषण पर क्या लागू होता है?",
+        "a": "विशेष डाक नियम",
+        "b": "सामान्य घरेलू नियम",
+        "c": "कोई नियम नहीं",
+        "d": "निःशुल्क विदेशी डाक",
+        "correct": "A",
+        "fact": "विदेश जाने वाले पतेदारों के लिए विशेष डाक नियम लागू होते हैं।",
+        "trap": "अंतर्देशीय साधारण नियम विदेश जाने वाली डाक पर सीधे लागू नहीं होते।",
     },
 }
 
@@ -191,134 +394,43 @@ def progress_bar(draw, ratio):
     )
 
 
-def draw_clock(draw, cx, cy, radius=180, hour=8, minute=30):
-    draw.ellipse(
-        (cx - radius, cy - radius, cx + radius, cy + radius),
-        fill="#F8FAFC",
-        outline="#CBD5E1",
-        width=8,
-    )
-
-    for i in range(12):
-        angle = math.radians(i * 30 - 90)
-        x1 = cx + math.cos(angle) * (radius - 22)
-        y1 = cy + math.sin(angle) * (radius - 22)
-        x2 = cx + math.cos(angle) * (radius - 42)
-        y2 = cy + math.sin(angle) * (radius - 42)
-        draw.line((x1, y1, x2, y2), fill="#334155", width=7)
-
-    hour_angle = math.radians((hour % 12) * 30 + minute * 0.5 - 90)
-    minute_angle = math.radians(minute * 6 - 90)
-
-    hx = cx + math.cos(hour_angle) * radius * 0.48
-    hy = cy + math.sin(hour_angle) * radius * 0.48
-
-    mx = cx + math.cos(minute_angle) * radius * 0.68
-    my = cy + math.sin(minute_angle) * radius * 0.68
-
-    draw.line((cx, cy, hx, hy), fill=RED, width=13)
-    draw.line((cx, cy, mx, my), fill=BLUE, width=10)
-    draw.ellipse((cx - 12, cy - 12, cx + 12, cy + 12), fill="#0F172A")
+def draw_x(draw, cx, cy, size=45):
+    draw.line((cx - size, cy - size, cx + size, cy + size), fill=RED, width=14)
+    draw.line((cx + size, cy - size, cx - size, cy + size), fill=RED, width=14)
 
 
-def draw_post_office(draw, cx, cy, scale=1.0, night=False):
-    width = int(620 * scale)
-    height = int(390 * scale)
-
-    left = int(cx - width / 2)
-    top = int(cy - height / 2)
-    right = int(cx + width / 2)
-    bottom = int(cy + height / 2)
-
-    draw.rectangle(
-        (left, top + 80, right, bottom),
-        fill="#E5E7EB",
-        outline="#CBD5E1",
-        width=6,
-    )
-
-    draw.polygon(
-        [
-            (left - 25, top + 90),
-            (cx, top - 70),
-            (right + 25, top + 90),
-        ],
-        fill="#991B1B" if night else "#B91C1C",
-    )
-
-    sign_left = left + 65
-    sign_right = right - 65
-    sign_top = top + 115
-    sign_bottom = top + 195
-
-    draw.rectangle(
-        (sign_left, sign_top, sign_right, sign_bottom),
-        fill="#FFFFFF",
-        outline="#CBD5E1",
-        width=4,
-    )
-    font = get_font(32)
-    draw.text((cx, sign_top + 38), "POST OFFICE", font=font, fill="#991B1B", anchor="mm")
-
-    door_w = int(105 * scale)
-    draw.rectangle(
-        (cx - door_w, bottom - 190, cx + door_w, bottom),
-        fill="#334155",
-    )
-
-    for offset in (-210, 210):
-        wx = cx + int(offset * scale)
-        draw.rectangle(
-            (wx - 65, bottom - 180, wx + 65, bottom - 55),
-            fill="#93C5FD",
-            outline="#1E3A8A",
-            width=5,
-        )
-
-    box_x = right - int(115 * scale)
-    box_y = bottom - int(105 * scale)
-    draw.rectangle(
-        (box_x - 65, box_y - 100, box_x + 65, box_y + 100),
-        fill="#B91C1C",
-        outline="#7F1D1D",
-        width=5,
-    )
-    draw.rectangle(
-        (box_x - 42, box_y - 50, box_x + 42, box_y - 20),
-        fill="#F8FAFC",
-    )
-
-    if night:
-        draw.ellipse(
-            (right - 125, top - 120, right - 45, top - 40),
-            fill="#F8FAFC",
-        )
-
-
-def draw_x(draw, cx, cy, size=95):
-    draw.line((cx - size, cy - size, cx + size, cy + size), fill=RED, width=22)
-    draw.line((cx + size, cy - size, cx - size, cy + size), fill=RED, width=22)
-
-
-def draw_check(draw, cx, cy, size=95):
-    draw.line((cx - size, cy, cx - size // 3, cy + size), fill=GREEN, width=22)
-    draw.line((cx - size // 3, cy + size, cx + size, cy - size), fill=GREEN, width=22)
+def draw_check(draw, cx, cy, size=45):
+    draw.line((cx - size, cy, cx - size // 3, cy + size), fill=GREEN, width=14)
+    draw.line((cx - size // 3, cy + size, cx + size, cy - size), fill=GREEN, width=14)
 
 
 def draw_authority_card(draw, label, x1, y1, x2, y2, status=None):
     outline = (
         GREEN if status == "correct"
         else RED if status == "wrong"
-        else "#334155"
+        else "#2A4058"
     )
 
-    rounded(draw, (x1, y1, x2, y2), 30, CARD_2, outline, 5)
-    center_text(draw, label, y1 + 58, 43, WHITE)
+    rounded(draw, (x1, y1, x2, y2), 26, CARD_2, outline, 4)
+    max_w = (x2 - x1) - 60
+    wrapped = wrap_text(draw, label, 38, max_w)
+    lines = wrapped.split("\n")
 
-    if status == "wrong":
-        draw_x(draw, (x1 + x2) // 2, y1 + 160, 52)
-    elif status == "correct":
-        draw_check(draw, (x1 + x2) // 2, y1 + 160, 52)
+    cx = (x1 + x2) // 2
+    if status:
+        text_y = y1 + 52 if len(lines) == 1 else y1 + 40
+        for line in lines:
+            center_text(draw, line, text_y, 36, WHITE)
+            text_y += 46
+        if status == "wrong":
+            draw_x(draw, cx, y1 + 138, 32)
+        elif status == "correct":
+            draw_check(draw, cx, y1 + 138, 32)
+    else:
+        text_y = (y1 + y2) // 2 - (len(lines) - 1) * 23
+        for line in lines:
+            center_text(draw, line, text_y, 38, WHITE)
+            text_y += 48
 
 
 # -------------------- SCRIPT --------------------
@@ -339,73 +451,22 @@ def extract_field(raw, name, next_names):
 
 
 def fallback_script(clause_no, part_no, focus, title):
-    if clause_no == 3 and part_no == 3:
-        return {
-            "title": title,
-            "hook": "रविवार को रात्रि डाकघर में कौन-सा काम नहीं होता?",
-            "question": "रविवार और अवकाश के दिन रात्रि डाकघर में क्या नहीं होता?",
-            "a": "मनीऑर्डर भुगतान",
-            "b": "डाक स्वीकारना",
-            "c": "सीमित सेवा",
-            "d": "जनता की सेवा",
-            "correct": "A",
-            "fact": "रविवार और अवकाश के दिन मनीऑर्डर भुगतान तथा बचत बैंक निकासी नहीं होती।",
-            "trap": "सीमित सेवाएं चल सकती हैं, लेकिन ये वित्तीय कार्य नहीं होते।",
-        }
-
-    if clause_no == 3 and part_no == 1:
-        return {
-            "title": title,
-            "hook": "रात्रि डाकघर का समय 8:30 बजे तक कौन बढ़ा सकता है?",
-            "question": "रात्रि डाकघर के कामकाज के घंटे 8:30 बजे तक बढ़ाने का अधिकार किसे है?",
-            "a": "महानिदेशक",
-            "b": "Postmaster",
-            "c": "SSPO",
-            "d": "Head of Circle",
-            "correct": "A",
-            "fact": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का विशेष अधिकार महानिदेशक को है।",
-            "trap": "यह अधिकार सामान्य स्थानीय अधिकारी को नहीं, महानिदेशक को दिया गया है।",
-        }
-
-    if clause_no == 3 and part_no == 2:
-        return {
-            "title": title,
-            "hook": "रविवार को रात्रि डाकघर कितने बजे तक सीमित सेवा देता है?",
-            "question": "रविवार और राष्ट्रीय डाक अवकाश पर रात्रि डाकघर का समय क्या है?",
-            "a": "सुबह 10 से शाम 5",
-            "b": "सुबह 8 से दोपहर 2",
-            "c": "दोपहर 12 से शाम 6",
-            "d": "पूरे दिन",
-            "correct": "A",
-            "fact": "रविवार और राष्ट्रीय डाक अवकाश पर सीमित सेवाएं सुबह 10 से शाम 5 बजे तक दी जाती हैं।",
-            "trap": "यह सामान्य कार्यदिवस का 8:30 बजे वाला नियम नहीं है।",
-        }
-
-    if clause_no == 22 and part_no == 2:
-        return {
-            "title": title,
-            "hook": "पार्सल दूसरे वितरण क्षेत्र में भेजने पर कितना प्रभार लगता है?",
-            "question": "वितरण क्षेत्र से बाहर पार्सल पुनः प्रेषित करने पर कितना डाक प्रभार है?",
-            "a": "आधा डाक प्रभार",
-            "b": "पूर्ण डाक प्रभार",
-            "c": "निःशुल्क",
-            "d": "दोगुना प्रभार",
-            "correct": "A",
-            "fact": "वितरण क्षेत्र से बाहर भेजे जाने पर आधा डाक प्रभार देय होता है।",
-            "trap": "वितरण क्षेत्र से बाहर जाने पर नियम बदलता है: आधा प्रभार याद रखें।",
-        }
+    if (clause_no, part_no) in FALLBACK_SCRIPTS:
+        data = FALLBACK_SCRIPTS[(clause_no, part_no)].copy()
+        data["title"] = title
+        return data
 
     return {
         "title": title,
-        "hook": f"{title} का यह नियम ध्यान से देखिए।",
-        "question": "दिए गए नियम के अनुसार सही बात कौन-सी है?",
-        "a": "ऊपर दिया नियम",
-        "b": "अलग नियम",
-        "c": "कोई नियम नहीं",
+        "hook": f"{title} का यह नियम अवश्य जानें।",
+        "question": f"{title} के अनुसार कौन-सा कथन सत्य है?",
+        "a": focus[:30],
+        "b": "कोई विशेष छूट नहीं",
+        "c": "अधीक्षक का अनुमोदन",
         "d": "इनमें से कोई नहीं",
         "correct": "A",
         "fact": focus,
-        "trap": "परीक्षा में शब्दों और अपवादों को ध्यान से पढ़ें।",
+        "trap": "परीक्षा में शब्दों और नियमों को ध्यान से पढ़ें।",
     }
 
 
@@ -421,47 +482,46 @@ def generate_script(state):
         return fallback_script(clause_no, part_no, focus, title)
 
     prompt = f"""
-You are writing one short educational India Post departmental exam Reel.
+You are creating an authentic India Post departmental exam Multiple Choice Question (MCQ) in Hindi.
 
 TOPIC: {title}
 PART: {part_no}/{info["total_parts"]}
-VERIFIED FACT:
+OFFICIAL VERIFIED FACT:
 {focus}
 
-Rules:
-1. Use only the verified fact above.
-2. Never invent statistics or claims.
-3. Do not say 90 percent, 2 marks guaranteed, promotion guaranteed,
-   most asked, repeated question, or similar unless the verified fact proves it.
-4. Hook must be a direct curiosity question.
-5. One rule only.
-6. MCQ must be answerable directly from the verified fact.
-7. Use simple Hindi.
-8. Avoid emojis and decorative symbols.
+Instructions:
+1. Create 1 genuine departmental exam question directly testable from the verified fact.
+2. HOOK: One sharp, curiosity question directly related to the fact (max 10 words).
+3. QUESTION: Clear, precise Hindi exam question (max 14 words).
+4. A, B, C, D: 4 plausible options (2-5 words each). One must strictly match the verified fact.
+5. CORRECT: Single letter A, B, C, or D.
+6. FACT: Concise one-sentence summary of the rule (max 18 words).
+7. TRAP: One common misconception or exam confusion (max 16 words).
+8. Absolutely no meta text, no dummy options.
 
-Return exactly:
-HOOK: [maximum 11 words]
-QUESTION: [maximum 15 words]
-A: [2-6 words]
-B: [2-6 words]
-C: [2-6 words]
-D: [2-6 words]
+Format exactly:
+HOOK: ...
+QUESTION: ...
+A: ...
+B: ...
+C: ...
+D: ...
 CORRECT: [A/B/C/D]
-FACT: [maximum 18 words]
-TRAP: [maximum 16 words]
+FACT: ...
+TRAP: ...
 """
 
     try:
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             headers={
-                "Authorization": GROQ_API_KEY.strip(),
+                "Authorization": f"Bearer {GROQ_API_KEY.strip()}",
                 "Content-Type": "application/json",
             },
             json={
-                "model": "qwen/qwen3-32b",
+                "model": "llama-3.3-70b-versatile",
                 "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.1,
+                "temperature": 0.2,
                 "max_tokens": 450,
             },
             timeout=25,
@@ -493,7 +553,7 @@ TRAP: [maximum 16 words]
         return data
 
     except Exception as exc:
-        print("AI script fallback:", exc)
+        print("Using Curated Fallback Script:", exc)
         return fallback_script(clause_no, part_no, focus, title)
 
 
@@ -501,8 +561,8 @@ TRAP: [maximum 16 words]
 
 def load_state():
     default = {
-        "clause_no": 22,
-        "current_part": 2,
+        "clause_no": 23,
+        "current_part": 1,
     }
 
     if os.path.exists(STATE_FILE):
@@ -515,8 +575,8 @@ def load_state():
             pass
 
     if default["clause_no"] not in POSTAL_CLAUSE_CATALOG:
-        default["clause_no"] = 22
-        default["current_part"] = 2
+        default["clause_no"] = 23
+        default["current_part"] = 1
 
     return default
 
@@ -588,7 +648,7 @@ def make_scene_text(data):
     return [
         data["hook"],
         "पहले सोचिए।",
-        "गलत विकल्प हटाइए। सही अधिकारी या सही नियम कौन-सा है?",
+        "गलत विकल्प हटाइए। सही नियम कौन-सा है?",
         data["fact"],
         "परीक्षा का ट्रैप: " + data["trap"],
         (
@@ -641,6 +701,28 @@ def concat_audio(scene_paths, output):
     )
 
 
+# -------------------- DYNAMIC OPTIONS HELPER --------------------
+
+def get_display_choices(data):
+    correct = data.get("correct", "A").upper()
+    if correct not in {"A", "B", "C", "D"}:
+        correct = "A"
+
+    all_keys = ["A", "B", "C", "D"]
+    wrong_keys = [k for k in all_keys if k != correct]
+    distractors = wrong_keys[:2]
+
+    selected_keys = sorted([correct, distractors[0], distractors[1]])
+    choices = []
+    for k in selected_keys:
+        choices.append({
+            "key": k,
+            "text": f"{k}. {data.get(k.lower(), '')}",
+            "is_correct": (k == correct),
+        })
+    return choices
+
+
 # -------------------- SCENES --------------------
 
 def scene_hook(data, t, duration):
@@ -649,19 +731,20 @@ def scene_hook(data, t, duration):
     brand(d)
     progress_bar(d, 0.05)
 
-    draw_post_office(d, W // 2, 600, 0.72, night=True)
+    rounded(d, (120, 360, 960, 465), 24, CARD_2, CYAN, 3)
+    center_text(d, data["title"], 412, 38, CYAN)
 
-    if t > min(0.35, duration * 0.25):
-        draw_clock(d, W // 2, 980, 130)
+    rounded(d, (80, 520, 1000, 1260), 40, CARD, "#334155", 4)
+    center_text(d, "POSTAL EXAM RULE", 615, 40, MUTED)
 
-    wrapped_hook = wrap_text(d, data["hook"], 52, 950)
+    wrapped_hook = wrap_text(d, data["hook"], 54, 840)
     lines = wrapped_hook.split("\n")
-    y_start = 1200 - (len(lines) - 1) * 35
+    y_start = 850 - (len(lines) - 1) * 38
     for line in lines:
-        center_text(d, line, y_start, 52, WHITE)
-        y_start += 72
+        center_text(d, line, y_start, 54, WHITE)
+        y_start += 76
 
-    center_text(d, "पहले जवाब मत देखिए", 1430, 36, YELLOW)
+    center_text(d, "पहले जवाब मत देखिए", 1460, 38, YELLOW)
     return im
 
 
@@ -673,12 +756,12 @@ def scene_guess(data, t, duration):
 
     center_text(d, "आप क्या चुनेंगे?", 260, 60, WHITE)
 
-    labels = ["Postmaster", "SSPO", "DG Posts"]
-    for i, label in enumerate(labels):
-        y = 500 + i * 300
-        draw_authority_card(d, label, 170, y, 910, y + 220, None)
+    choices = get_display_choices(data)
+    for i, item in enumerate(choices):
+        y = 480 + i * 270
+        draw_authority_card(d, item["text"], 110, y, 970, y + 210, None)
 
-    center_text(d, "सोचिए", 1450, 46, YELLOW)
+    center_text(d, "सोचिए...", 1450, 46, YELLOW)
     return im
 
 
@@ -688,18 +771,22 @@ def scene_elimination(data, t, duration):
     brand(d)
     progress_bar(d, 0.22)
 
-    center_text(d, "दो विकल्प हटते हैं", 270, 54, WHITE)
+    center_text(d, "गलत विकल्प हटते हैं", 270, 54, WHITE)
 
-    labels = ["Postmaster", "SSPO", "DG Posts"]
-    for i, label in enumerate(labels):
+    choices = get_display_choices(data)
+    wrong_count = 0
+    for i, item in enumerate(choices):
         status = None
-        if i < 2 and t > 0.45 + i * 0.55:
-            status = "wrong"
-        if i == 2 and t > 1.5:
-            status = "correct"
+        if not item["is_correct"]:
+            if t > 0.35 + wrong_count * 0.45:
+                status = "wrong"
+            wrong_count += 1
+        else:
+            if t > 1.25:
+                status = "correct"
 
-        y = 500 + i * 300
-        draw_authority_card(d, label, 170, y, 910, y + 220, status)
+        y = 480 + i * 270
+        draw_authority_card(d, item["text"], 110, y, 970, y + 210, status)
 
     return im
 
@@ -710,12 +797,23 @@ def scene_answer(data, t, duration):
     brand(d)
     progress_bar(d, 0.30)
 
-    center_text(d, "सही उत्तर", 300, 50, MUTED)
-    draw_clock(d, W // 2, 690, 190)
+    center_text(d, "सही उत्तर", 320, 52, MUTED)
 
-    center_text(d, "8:30 PM", 950, 78, CYAN)
-    center_text(d, "DG Posts", 1090, 76, GREEN)
-    center_text(d, "यही point याद रखें", 1260, 38, WHITE)
+    rounded(d, (100, 460, 980, 1140), 45, CARD_2, GREEN, 6)
+    draw_check(d, W // 2, 590, 48)
+
+    correct_key = data.get("correct", "A").upper()
+    correct_text = data.get(correct_key.lower(), "")
+
+    center_text(d, f"विकल्प {correct_key}", 740, 72, GREEN)
+
+    wrapped = wrap_text(d, correct_text, 46, 800)
+    y = 860
+    for line in wrapped.split("\n"):
+        center_text(d, line, y, 46, WHITE)
+        y += 64
+
+    center_text(d, "यही point परीक्षा में याद रखें", 1320, 40, CYAN)
     return im
 
 
@@ -725,20 +823,22 @@ def scene_fact(data, t, duration):
     brand(d)
     progress_bar(d, 0.39)
 
-    draw_post_office(d, W // 2, 620, 0.65, night=True)
+    center_text(d, "महत्वपूर्ण नियम", 270, 52, CYAN)
 
-    if t > 0.35:
-        draw_clock(d, W // 2, 1010, 105)
+    rounded(d, (120, 360, 960, 455), 22, CARD_2, "#334155", 3)
+    center_text(d, data["title"], 408, 36, YELLOW)
 
-    if t > 0.9:
-        center_text(d, "DG Posts", 1210, 60, GREEN)
+    rounded(d, (80, 510, 1000, 1370), 40, CARD, GREEN, 5)
+    center_text(d, "VERIFIED RULE", 610, 42, GREEN)
 
-    fact = wrap_text(d, data["fact"], 42, 880)
-    y = 1380
-    for line in fact.split("\n"):
-        center_text(d, line, y, 42, WHITE)
-        y += 62
+    fact = wrap_text(d, data["fact"], 46, 820)
+    lines = fact.split("\n")
+    y = 840 - (len(lines) - 1) * 35
+    for line in lines:
+        center_text(d, line, y, 46, WHITE)
+        y += 68
 
+    center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1520, 36, MUTED)
     return im
 
 
@@ -749,22 +849,21 @@ def scene_trap(data, t, duration):
     progress_bar(d, 0.50)
 
     rounded(d, (70, 270, 1010, 1570), 45, CARD, YELLOW, 5)
-    center_text(d, "EXAM TRAP", 390, 62, YELLOW)
+    center_text(d, "EXAM TRAP", 370, 62, YELLOW)
+    center_text(d, "सावधानी: यहाँ गलती न करें!", 460, 36, MUTED)
 
-    if t < 0.8:
-        center_text(d, "स्थानीय अधिकारी", 650, 55, WHITE)
-    else:
-        center_text(d, "स्थानीय अधिकारी", 650, 55, WHITE)
-        draw_x(d, W // 2, 790, 55)
+    rounded(d, (120, 550, 960, 880), 30, CARD_2, RED, 4)
+    center_text(d, "अक्सर होने वाला भ्रम", 620, 38, RED)
+    draw_x(d, W // 2, 740, 40)
 
-    center_text(d, "DG Posts", 1020, 68, GREEN)
-    draw_check(d, W // 2, 1160, 55)
+    rounded(d, (120, 940, 960, 1470), 30, CARD_2, GREEN, 4)
+    center_text(d, "याद रखने योग्य बात", 1010, 38, GREEN)
 
-    trap = wrap_text(d, data["trap"], 38, 820)
-    y = 1320
+    trap = wrap_text(d, data["trap"], 40, 780)
+    y = 1130
     for line in trap.split("\n"):
-        center_text(d, line, y, 38, WHITE)
-        y += 58
+        center_text(d, line, y, 40, WHITE)
+        y += 60
 
     return im
 
