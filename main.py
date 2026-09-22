@@ -28,7 +28,7 @@ FONT_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# Palette
+# Palette matching video
 BG = "#07111F"
 CARD = "#0E1B2D"
 CARD_2 = "#13263D"
@@ -396,7 +396,7 @@ def progress_bar(draw, ratio):
 
 def draw_blinking_target_badge(draw, t):
     """
-    Rhythmic blinking exam badge for high CTR and retention.
+    Prominent GDS TO MTS / PM / PA badge that pulses across the entire video.
     """
     is_bright = (int(t * 3.5) % 2) == 0
     bg_color = "#E11D48" if is_bright else "#881337"
@@ -410,10 +410,6 @@ def draw_blinking_target_badge(draw, t):
 
 
 def draw_animated_x(draw, cx, cy, progress, size=32):
-    """
-    Progressive draw transition for Red X:
-    Line 1 draws from 0.0 to 0.5, then Line 2 draws from 0.5 to 1.0
-    """
     p1 = min(1.0, max(0.0, progress / 0.5))
     draw.line(
         (cx - size, cy - size, cx - size + 2 * size * p1, cy - size + 2 * size * p1),
@@ -430,10 +426,6 @@ def draw_animated_x(draw, cx, cy, progress, size=32):
 
 
 def draw_animated_check(draw, cx, cy, progress, size=32):
-    """
-    Progressive draw transition for Green Checkmark:
-    First short down-tick (0.0 to 0.35), then long up-tick (0.35 to 1.0)
-    """
     p1 = min(1.0, max(0.0, progress / 0.35))
     x0, y0 = cx - size, cy
     x1, y1 = cx - size // 3, cy + size
@@ -450,63 +442,35 @@ def draw_animated_check(draw, cx, cy, progress, size=32):
 
 
 def draw_option_card(draw, letter, text, y, status=None, anim_prog=1.0, slide_offset=0):
-    """
-    Renders option card with animated slide-in, progressive tick/cross,
-    and pulsating green glow for the correct answer.
-    """
-    x1, x2 = 75 + slide_offset, W - 75 + slide_offset
-    h = 145
+    x1, x2 = 100 + slide_offset, W - 100 + slide_offset
+    h = 160
 
     if status == "correct":
         fill = "#064E3B"
         outline = GREEN
-        badge_fill = GREEN
-        badge_text = WHITE
-        text_color = WHITE
         border_w = 4
-        # Outer glow transition ring
-        glow_pad = int(3 * (anim_prog % 1.0))
-        draw.rounded_rectangle(
-            (x1 - glow_pad, y - glow_pad, x2 + glow_pad, y + h + glow_pad),
-            radius=26,
-            outline="#059669",
-            width=2,
-        )
+        text_color = WHITE
     elif status == "wrong":
-        fill = "#151F2E"
+        fill = CARD_2
         outline = RED
-        badge_fill = "#2A151F"
-        badge_text = RED
+        border_w = 4
         text_color = "#64748B"
-        border_w = 3
     else:
         fill = CARD_2
-        outline = "#2A4058"
-        badge_fill = "#1E293B"
-        badge_text = CYAN
-        text_color = WHITE
+        outline = "#1E2F47"
         border_w = 2
+        text_color = WHITE
 
-    rounded(draw, (x1, y, x2, y + h), 24, fill, outline, border_w)
+    rounded(draw, (x1, y, x2, y + h), 26, fill, outline, border_w)
 
-    # Letter badge
-    bx = x1 + 25
-    by = y + 25
-    draw.rounded_rectangle((bx, by, bx + 95, by + 95), radius=16, fill=badge_fill)
-    f_badge = get_font(42)
-    draw.text((bx + 47, by + 47), letter, font=f_badge, fill=badge_text, anchor="mm")
+    card_label = f"{letter}. {text}"
+    center_text(draw, card_label, y + 80, 42, text_color)
 
-    # Text
-    f_txt = get_font(38)
-    draw.text((bx + 125, y + 72), text[:32], font=f_txt, fill=text_color, anchor="lm")
-
-    # Animated Stamp Transitions
-    cx = x2 - 70
-    cy = y + 72
+    cx = (x1 + x2) // 2
     if status == "wrong":
-        draw_animated_x(draw, cx, cy, progress=anim_prog, size=28)
+        draw_animated_x(draw, cx, y + 105, progress=anim_prog, size=30)
     elif status == "correct":
-        draw_animated_check(draw, cx, cy, progress=anim_prog, size=28)
+        draw_animated_check(draw, cx, y + 105, progress=anim_prog, size=30)
 
 
 # -------------------- SCRIPT --------------------
@@ -721,13 +685,19 @@ def tighten_audio(path):
 # -------------------- SCENE AUDIO --------------------
 
 def make_scene_text(data):
+    """
+    8 distinct and focused audio scenes.
+    Scene 0 delivers the 2-second hook directly.
+    """
     return [
-        f"{data['hook']} सवाल है: {data['question']}",
-        "अपना जवाब सोचिए। 5 सेकंड में कमेंट करें!",
-        f"गलत विकल्प हटाइए। सही उत्तर है विकल्प {data['correct']}!",
-        f"विभागीय नियम याद रखें: {data['fact']}",
-        f"परीक्षा का ट्रैप: {data['trap']}",
-        "रिवीजन के लिए इस रील को सेव करें और शेयर करें।",
+        data["hook"],                                                        # 0: Hook (approx 2s)
+        data["question"],                                                    # 1: Question
+        "पहले सोचिए। आप क्या चुनेंगे?",                                        # 2: Options
+        "गलत विकल्प हटाइए। सही नियम कौन-सा है?",                             # 3: Elimination
+        f"सही उत्तर है विकल्प {data['correct']}!",                           # 4: Answer Reveal
+        f"डाक सेवा का महत्वपूर्ण नियम: {data['fact']}",                        # 5: Rule Explanation
+        f"परीक्षा का ट्रैप: {data['trap']}",                                 # 6: Exam Trap
+        "अगले पोस्टल MCQ के लिए अभी सेव और फॉलो करें।",                     # 7: Outro CTA
     ]
 
 
@@ -771,180 +741,225 @@ def concat_audio(scene_paths, output):
 
 # -------------------- SCENES --------------------
 
-def scene_question(data, t, duration):
+def scene_0_hook(data, t, duration):
+    """
+    Dedicated 2-Second Full-Screen Hook Scene with the pulsating GDS TO MTS / PM / PA badge.
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.15)
+    progress_bar(d, 0.05)
     draw_blinking_target_badge(d, t)
 
-    # Question Box
-    rounded(d, (65, 215, W - 65, 545), 28, CARD, "#334155", 3)
-    center_text(d, data["title"], 265, 34, CYAN)
+    # Full Screen Giant Hero Card
+    rounded(d, (70, 240, W - 70, 1420), 40, CARD, CYAN, 4)
 
-    question_text = wrap_text(d, data["question"], 44, 880)
-    lines = question_text.split("\n")
-    y_start = 345 - (len(lines) - 1) * 25
+    # Topic Ribbon
+    rounded(d, (130, 310, W - 130, 395), 20, CARD_2, YELLOW, 2)
+    center_text(d, f"📌 {data['title']}", 352, 34, YELLOW)
+
+    # Animated Pulsing Question Icon
+    q_rad = int(60 + 6 * math.sin(t * 12))
+    d.ellipse(
+        (W // 2 - q_rad, 520 - q_rad, W // 2 + q_rad, 520 + q_rad),
+        fill="#1E293B",
+        outline=CYAN,
+        width=4,
+    )
+    center_text(d, "?", 520, 62, CYAN)
+
+    # Large Bold Hook Text
+    wrapped_h = wrap_text(d, data["hook"], 54, 820)
+    lines = wrapped_h.split("\n")
+    y_start = 760 - (len(lines) - 1) * 38
     for line in lines:
-        center_text(d, line, y_start, 44, WHITE)
-        y_start += 56
+        center_text(d, line, y_start, 54, WHITE)
+        y_start += 78
 
-    # 4 Options with TV-Quiz style staggered slide-in transitions
+    # Bottom Flash Alert Box
+    pulse = math.sin(t * 10) > 0
+    box_border = YELLOW if pulse else RED
+    rounded(d, (110, 1220, W - 110, 1340), 24, "#132338", box_border, 3)
+    center_text(d, "🔥 क्या आपको सही उत्तर पता है? 🔥", 1280, 38, WHITE)
+
+    center_text(d, "पहले जवाब मत देखिए ⏳", 1520, 42, YELLOW)
+    return im
+
+
+def scene_1_question(data, t, duration):
+    """
+    Slide 1: Question Hero Card (as in video reference 00:00 - 00:02)[span_0](start_span)[span_0](end_span)
+    """
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.16)
+    draw_blinking_target_badge(d, t)
+
+    # Topic Pill (00:00 style)[span_1](start_span)[span_1](end_span)
+    rounded(d, (120, 360, 960, 465), 24, CARD_2, CYAN, 3)
+    center_text(d, data["title"], 412, 38, CYAN)
+
+    # Big Central Hero Card
+    rounded(d, (80, 520, 1000, 1260), 40, CARD, "#334155", 4)
+    center_text(d, "POSTAL EXAM RULE", 615, 40, MUTED)
+
+    wrapped_q = wrap_text(d, data["question"], 52, 840)
+    lines = wrapped_q.split("\n")
+    y_start = 850 - (len(lines) - 1) * 38
+    for line in lines:
+        center_text(d, line, y_start, 52, WHITE)
+        y_start += 76
+
+    center_text(d, "पहले जवाब मत देखिए", 1460, 40, YELLOW)
+    return im
+
+
+def scene_2_options(data, t, duration):
+    """
+    Slide 2: Next Slide Option Selection (as in video reference 00:03)[span_2](start_span)[span_2](end_span)
+    """
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.32)
+    draw_blinking_target_badge(d, t)
+
+    center_text(d, "आप क्या चुनेंगे?", 290, 58, WHITE)
+
     options = [("A", data["a"]), ("B", data["b"]), ("C", data["c"]), ("D", data["d"])]
-    y0 = 600
+    y0 = 460
     for idx, (letter, txt) in enumerate(options):
-        # Entry delay per option (0.15s stagger)
-        start_delay = idx * 0.18
-        if t < start_delay:
+        slide_delay = idx * 0.12
+        if t < slide_delay:
             continue
-        # Slide progress from right to position
-        slide_p = min(1.0, (t - start_delay) / 0.22)
-        # Ease out quadratic
+        slide_p = min(1.0, (t - slide_delay) / 0.18)
         ease_p = 1.0 - (1.0 - slide_p) * (1.0 - slide_p)
-        slide_offset = int((1.0 - ease_p) * 220)
+        slide_offset = int((1.0 - ease_p) * 200)
 
-        draw_option_card(d, letter, txt, y0 + idx * 175, status=None, slide_offset=slide_offset)
+        draw_option_card(d, letter, txt, y0 + idx * 190, status=None, slide_offset=slide_offset)
 
-    center_text(d, "ध्यान से प्रश्न को समझें...", 1380, 38, MUTED)
-    return im
-
-
-def scene_countdown(data, t, duration):
-    im = new_canvas()
-    d = ImageDraw.Draw(im)
-    brand(d)
-    progress_bar(d, 0.35)
-    draw_blinking_target_badge(d, t)
-
-    # Compact question box
-    rounded(d, (65, 215, W - 65, 485), 28, CARD, "#334155", 3)
-    center_text(d, "DEPARTMENTAL EXAM QUESTION", 260, 32, MUTED)
-    question_text = wrap_text(d, data["question"], 40, 880)
-    lines = question_text.split("\n")
-    y_start = 325
-    for line in lines:
-        center_text(d, line, y_start, 40, WHITE)
-        y_start += 52
-
-    # Options stay locked in place
-    options = [("A", data["a"]), ("B", data["b"]), ("C", data["c"]), ("D", data["d"])]
-    y0 = 530
-    for idx, (letter, txt) in enumerate(options):
-        draw_option_card(d, letter, txt, y0 + idx * 170, status=None)
-
-    # Animated depleting countdown bar
+    # Dynamic Depleting Countdown Line
     progress = max(0.0, min(1.0, 1.0 - (t / max(duration, 0.1))))
-    remaining = max(1, 5 - int((1.0 - progress) * 5))
+    bx1, bx2 = 180, W - 180
+    d.rounded_rectangle((bx1, 1340, bx2, 1350), radius=5, fill="#1E2A3A")
+    d.rounded_rectangle((bx1, 1340, bx1 + (bx2 - bx1) * progress, 1350), radius=5, fill=YELLOW)
 
-    rounded(d, (100, 1260, W - 100, 1490), 28, CARD, YELLOW, 3)
-    center_text(d, f"TIME LEFT: {remaining}s", 1325, 60, YELLOW)
-
-    bx1, bx2 = 140, W - 140
-    d.rounded_rectangle((bx1, 1395, bx2, 1407), radius=6, fill="#1B2A3A")
-    d.rounded_rectangle((bx1, 1395, bx1 + (bx2 - bx1) * progress, 1407), radius=6, fill=YELLOW)
-
-    center_text(d, "A / B / C / D कमेंट करें! 👇", 1540, 44, WHITE)
+    center_text(d, "सोचिए... ⏳", 1430, 48, YELLOW)
     return im
 
 
-def scene_elimination(data, t, duration):
+def scene_3_elimination(data, t, duration):
     """
-    Dramatic progressive elimination transition:
-    Wrong options are crossed out with dynamic red line draw animations,
-    and correct option pops up with a progressive green check and pulsing glow.
+    Slide 3: Elimination with Cross & Check Transition (as in video reference 00:04 - 00:05)[span_3](start_span)[span_3](end_span)
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.55)
+    progress_bar(d, 0.48)
     draw_blinking_target_badge(d, t)
 
-    center_text(d, "गलत विकल्प हटते हैं...", 240, 48, CYAN)
+    center_text(d, "गलत विकल्प हटते हैं", 290, 56, WHITE)
 
     correct_letter = data.get("correct", "A").upper()
     options = [("A", data["a"]), ("B", data["b"]), ("C", data["c"]), ("D", data["d"])]
     wrong_keys = [k for k, _ in options if k != correct_letter]
 
-    # Staggered animation triggers
-    t_stage1 = duration * 0.15
-    t_stage2 = duration * 0.40
-    t_stage3 = duration * 0.65
+    t1 = duration * 0.15
+    t2 = duration * 0.38
+    t3 = duration * 0.62
     t_correct = duration * 0.82
 
-    y0 = 330
+    y0 = 460
     for idx, (letter, txt) in enumerate(options):
         status = None
         anim_prog = 1.0
 
         if letter in wrong_keys:
-            wrong_idx = wrong_keys.index(letter)
-            if wrong_idx == 0 and t >= t_stage1:
+            w_idx = wrong_keys.index(letter)
+            if w_idx == 0 and t >= t1:
                 status = "wrong"
-                anim_prog = min(1.0, (t - t_stage1) / 0.22)
-            elif wrong_idx == 1 and t >= t_stage2:
+                anim_prog = min(1.0, (t - t1) / 0.22)
+            elif w_idx == 1 and t >= t2:
                 status = "wrong"
-                anim_prog = min(1.0, (t - t_stage2) / 0.22)
-            elif wrong_idx == 2 and t >= t_stage3:
+                anim_prog = min(1.0, (t - t2) / 0.22)
+            elif w_idx == 2 and t >= t3:
                 status = "wrong"
-                anim_prog = min(1.0, (t - t_stage3) / 0.22)
+                anim_prog = min(1.0, (t - t3) / 0.22)
         else:
             if t >= t_correct:
                 status = "correct"
                 anim_prog = min(1.0, (t - t_correct) / 0.22)
 
-        draw_option_card(d, letter, txt, y0 + idx * 180, status=status, anim_prog=anim_prog)
-
-    if t >= t_correct:
-        center_text(d, f"✓ सही उत्तर है: विकल्प {correct_letter}", 1120, 50, GREEN)
-    else:
-        center_text(d, "सोचिए सही नियम कौन-सा है...", 1120, 40, YELLOW)
+        draw_option_card(d, letter, txt, y0 + idx * 190, status=status, anim_prog=anim_prog)
 
     return im
 
 
-def scene_fact(data, t, duration):
+def scene_4_answer(data, t, duration):
+    """
+    Slide 4: Hero Correct Answer Card (as in video reference 00:06)[span_4](start_span)[span_4](end_span)
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.72)
+    progress_bar(d, 0.62)
     draw_blinking_target_badge(d, t)
 
-    center_text(d, "महत्वपूर्ण विभागीय नियम", 240, 48, CYAN)
+    center_text(d, "सही उत्तर", 320, 54, MUTED)
 
-    rounded(d, (100, 310, W - 100, 400), 20, CARD_2, "#334155", 3)
-    center_text(d, data["title"], 355, 36, YELLOW)
+    rounded(d, (100, 460, 980, 1180), 45, CARD_2, GREEN, 6)
 
-    # Fact Box with expanding animated entrance
-    grow_p = min(1.0, t / 0.3)
-    ease_grow = 1.0 - (1.0 - grow_p) * (1.0 - grow_p)
-    f_w = int((W - 140) * ease_grow)
-    left = (W - f_w) // 2
-    right = left + f_w
+    chk_p = min(1.0, t / 0.25)
+    draw_animated_check(d, W // 2, 590, progress=chk_p, size=48)
 
-    rounded(d, (left, 440, right, 1160), 36, CARD, GREEN, 5)
+    correct_key = data.get("correct", "A").upper()
+    correct_text = data.get(correct_key.lower(), "")
 
-    if t > 0.2:
-        check_p = min(1.0, (t - 0.2) / 0.3)
-        draw_animated_check(d, W // 2, 530, progress=check_p, size=38)
-        center_text(d, "VERIFIED POSTAL RULE", 620, 40, GREEN)
+    center_text(d, f"विकल्प {correct_key}", 740, 74, GREEN)
 
-        fact_text = wrap_text(d, data["fact"], 44, 820)
-        lines = fact_text.split("\n")
-        y = 750 - (len(lines) - 1) * 32
-        for line in lines:
-            center_text(d, line, y, 44, WHITE)
-            y += 64
+    wrapped = wrap_text(d, correct_text, 48, 800)
+    y = 870
+    for line in wrapped.split("\n"):
+        center_text(d, line, y, 48, WHITE)
+        y += 64
 
-        center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1260, 38, MUTED)
-
+    center_text(d, "यही point परीक्षा में याद रखें", 1350, 42, CYAN)
     return im
 
 
-def scene_trap(data, t, duration):
+def scene_5_fact(data, t, duration):
     """
-    Enhanced 2-step staggered reveal:
-    1. Trap mistake box pops and stamps animated Red X.
-    2. Correct memory box pops and stamps animated Green Checkmark.
+    Slide 5: Verified Rule Card (as in video reference 00:07 - 00:09)[span_5](start_span)[span_5](end_span)
+    """
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.76)
+    draw_blinking_target_badge(d, t)
+
+    center_text(d, "महत्वपूर्ण नियम", 270, 52, CYAN)
+
+    rounded(d, (120, 360, 960, 455), 22, CARD_2, "#334155", 3)
+    center_text(d, data["title"], 408, 36, YELLOW)
+
+    rounded(d, (80, 510, 1000, 1370), 40, CARD, GREEN, 5)
+    center_text(d, "VERIFIED RULE", 610, 42, GREEN)
+
+    fact = wrap_text(d, data["fact"], 46, 820)
+    lines = fact.split("\n")
+    y = 840 - (len(lines) - 1) * 35
+    for line in lines:
+        center_text(d, line, y, 46, WHITE)
+        y += 68
+
+    center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1520, 36, MUTED)
+    return im
+
+
+def scene_6_trap(data, t, duration):
+    """
+    Slide 6: Exam Trap (as in video reference 00:11 - 00:15)[span_6](start_span)[span_6](end_span)
     """
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -952,55 +967,53 @@ def scene_trap(data, t, duration):
     progress_bar(d, 0.88)
     draw_blinking_target_badge(d, t)
 
-    rounded(d, (70, 240, W - 70, 1420), 40, CARD, YELLOW, 5)
-    center_text(d, "EXAM TRAP ⚠️", 330, 60, YELLOW)
-    center_text(d, "सावधानी: यहाँ 90% छात्र गलती करते हैं!", 410, 36, MUTED)
+    rounded(d, (70, 270, 1010, 1570), 45, CARD, YELLOW, 5)
+    center_text(d, "EXAM TRAP", 370, 62, YELLOW)
+    center_text(d, "सावधानी: यहाँ गलती न करें!", 460, 36, MUTED)
 
-    # Trap Mistake Box (Stamps Red X at t = 0.2s)
-    rounded(d, (110, 490, W - 110, 780), 28, CARD_2, RED, 4)
-    center_text(d, "अक्सर होने वाला भ्रम", 560, 36, RED)
-    x_prog = min(1.0, max(0.0, (t - 0.15) / 0.28))
-    draw_animated_x(d, W // 2, 665, progress=x_prog, size=32)
+    # Red Misconception Box
+    rounded(d, (120, 550, 960, 880), 30, CARD_2, RED, 4)
+    center_text(d, "अक्सर होने वाला भ्रम", 620, 38, RED)
+    x_prog = min(1.0, max(0.0, (t - 0.1) / 0.25))
+    draw_animated_x(d, W // 2, 740, progress=x_prog, size=36)
 
-    # Correct Knowledge Box (Stamps Green Tick at t = 0.65s)
-    if t >= 0.55:
-        rounded(d, (110, 830, W - 110, 1340), 28, CARD_2, GREEN, 4)
-        center_text(d, "याद रखने योग्य बात", 900, 36, GREEN)
+    # Green Correct Insight Box
+    rounded(d, (120, 940, 960, 1470), 30, CARD_2, GREEN, 4)
+    center_text(d, "याद रखने योग्य बात", 1010, 38, GREEN)
 
-        chk_prog = min(1.0, max(0.0, (t - 0.65) / 0.30))
-        draw_animated_check(d, W - 170, 900, progress=chk_prog, size=24)
+    chk_prog = min(1.0, max(0.0, (t - 0.45) / 0.25))
+    draw_animated_check(d, W - 180, 1010, progress=chk_prog, size=24)
 
-        trap_text = wrap_text(d, data["trap"], 40, 760)
-        y = 1010
-        for line in trap_text.split("\n"):
-            center_text(d, line, y, 40, WHITE)
-            y += 58
+    trap = wrap_text(d, data["trap"], 42, 780)
+    y = 1130
+    for line in trap.split("\n"):
+        center_text(d, line, y, 42, WHITE)
+        y += 60
 
     return im
 
 
-def scene_result(data, t, duration):
+def scene_7_outro(data, t, duration):
+    """
+    Slide 7: Outro Save/Share CTA (as in video reference 00:31)[span_7](start_span)[span_7](end_span)
+    """
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
     progress_bar(d, 0.98)
     draw_blinking_target_badge(d, t)
 
-    # Outro Card
-    rounded(d, (90, 380, W - 90, 1260), 40, CARD, CYAN, 4)
+    rounded(d, (90, 420, W - 90, 1260), 42, CARD, CYAN, 5)
+    center_text(d, "POSTAL EXAM PREPARATION", 550, 44, MUTED)
+    center_text(d, "@POSTAL_WALA", 680, 72, CYAN)
 
-    center_text(d, "POSTAL EXAM PREPARATION", 490, 42, MUTED)
-    center_text(d, "@POSTAL_WALA", 610, 70, CYAN)
+    center_text(d, "नियम याद रखने के लिए Reel को Save करें", 870, 40, WHITE)
+    center_text(d, "और अपने सहकर्मियों के साथ Share करें! 🚀", 950, 40, YELLOW)
 
-    rounded(d, (130, 730, W - 130, 930), 26, CARD_2, GREEN, 4)
-    chk_prog = min(1.0, t / 0.3)
-    draw_animated_check(d, W // 2, 795, progress=chk_prog, size=32)
-    center_text(d, f"सही उत्तर: विकल्प {data['correct']}", 870, 44, GREEN)
+    rounded(d, (200, 1070, W - 200, 1170), 25, CYAN)
+    f_btn = get_font(38)
+    d.text((W / 2, 1120), "DAILY POSTAL RULES", font=f_btn, fill=BG, anchor="mm")
 
-    center_text(d, "नियम याद रखने के लिए Reel को Save करें", 1020, 38, WHITE)
-    center_text(d, "और अपने सहकर्मियों के साथ Share करें! 🚀", 1090, 38, YELLOW)
-
-    center_text(d, "अगले Postal Rule के लिए फॉलो करें", 1400, 42, CYAN)
     return im
 
 
@@ -1070,16 +1083,19 @@ def build_reel(data, output_video=None):
 
     os.makedirs(os.path.dirname(output_video), exist_ok=True)
 
+    # 8 Clean, Dedicated Audio Scenes
     scene_audios = asyncio.run(generate_scene_audios(data))
     durations = [audio_duration(path) for path in scene_audios]
 
     scene_functions = [
-        scene_question,     # 0: Hook + Staggered slide-in options
-        scene_countdown,    # 1: 5s Animated countdown timer
-        scene_elimination,  # 2: Progressive Cross & Tick draw transitions
-        scene_fact,         # 3: Verified rule explanation with scale-in
-        scene_trap,         # 4: Staggered animated trap & memory check
-        scene_result,       # 5: Outro save/share CTA
+        scene_0_hook,         # 0: 2-Second Full-Screen Hook Scene
+        scene_1_question,     # 1: Question Hero Card
+        scene_2_options,      # 2: Next Slide Option Selection ("आप क्या चुनेंगे?")
+        scene_3_elimination,  # 3: Elimination with Cross & Check Transition
+        scene_4_answer,       # 4: "सही उत्तर" Card
+        scene_5_fact,         # 5: "महत्वपूर्ण नियम" Card
+        scene_6_trap,         # 6: "EXAM TRAP"
+        scene_7_outro,        # 7: Outro Save/Share CTA
     ]
 
     frame_paths = []
