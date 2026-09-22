@@ -23,7 +23,9 @@ VOICE_RATE = "+8%"
 W, H = 1080, 1920
 FPS = 30
 
-FONT_DEV = "NotoSansDevanagari-Bold.ttf"
+# Mukta supports both complete Devanagari ligatures and full English Latin charset
+FONT_FILE = "Mukta-Bold.ttf"
+FONT_URL = "https://raw.githubusercontent.com/google/fonts/main/ofl/mukta/Mukta-Bold.ttf"
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
@@ -96,22 +98,18 @@ POSTAL_CLAUSE_CATALOG = {
 # -------------------- FONT & SHAPING HELPERS --------------------
 
 def ensure_fonts():
-    if not os.path.exists(FONT_DEV):
-        url = (
-            "https://github.com/googlefonts/noto-fonts/raw/main/"
-            "hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Bold.ttf"
-        )
-        response = requests.get(url, timeout=30)
+    if not os.path.exists(FONT_FILE) or os.path.getsize(FONT_FILE) < 50000:
+        response = requests.get(FONT_URL, timeout=30)
         response.raise_for_status()
-        Path(FONT_DEV).write_bytes(response.content)
+        Path(FONT_FILE).write_bytes(response.content)
 
 
 def get_font(size):
     ensure_fonts()
     try:
-        return ImageFont.truetype(FONT_DEV, size, layout_engine=ImageFont.Layout.RAQM)
+        return ImageFont.truetype(FONT_FILE, size, layout_engine=ImageFont.Layout.RAQM)
     except Exception:
-        return ImageFont.truetype(FONT_DEV, size)
+        return ImageFont.truetype(FONT_FILE, size)
 
 
 def wrap_text(draw, text, size, max_width):
@@ -397,20 +395,6 @@ def fallback_script(clause_no, part_no, focus, title):
             "trap": "वितरण क्षेत्र से बाहर जाने पर नियम बदलता है: आधा प्रभार याद रखें।",
         }
 
-    if clause_no == 22 and part_no == 3:
-        return {
-            "title": title,
-            "hook": "क्या खुला हुआ पार्सल दोबारा मुफ्त में भेजा जा सकता है?",
-            "question": "यदि पतेदार ने पार्सल खोल दिया हो, तो पुनः प्रेषण का नियम क्या है?",
-            "a": "नया डाकभार लगेगा",
-            "b": "केवल आधा डाकभार लगेगा",
-            "c": "पुनः प्रेषण निःशुल्क होगा",
-            "d": "पुनः प्रेषण प्रतिबंधित है",
-            "correct": "A",
-            "fact": "एक बार खोले गए पार्सल को बिना नए डाकभार के पुनः प्रेषित नहीं किया जा सकता।",
-            "trap": "पार्सल बंद होने पर आधा प्रभार लगता है, पर खुलते ही पूरा नया डाकभार लगेगा।",
-        }
-
     return {
         "title": title,
         "hook": f"{title} का यह नियम ध्यान से देखिए।",
@@ -542,30 +526,6 @@ def save_state(state):
         json.dump(state, file, ensure_ascii=False, indent=2)
 
 
-def advance_state(state):
-    clause_no = state["clause_no"]
-    part_no = state["current_part"]
-
-    total_parts = POSTAL_CLAUSE_CATALOG.get(clause_no, {}).get("total_parts", 1)
-
-    if part_no < total_parts:
-        state["current_part"] += 1
-    else:
-        all_clauses = sorted(POSTAL_CLAUSE_CATALOG.keys())
-        try:
-            current_index = all_clauses.index(clause_no)
-            next_index = (current_index + 1) % len(all_clauses)
-            state["clause_no"] = all_clauses[next_index]
-            state["current_part"] = 1
-        except ValueError:
-            state["clause_no"] = all_clauses[0]
-            state["current_part"] = 1
-
-    save_state(state)
-    print(f"अगले रन के लिए स्टेट सेट हुआ: Clause {state['clause_no']}, Part {state['current_part']}")
-    return state
-
-
 # -------------------- AUDIO --------------------
 
 async def make_audio(text, output):
@@ -681,13 +641,13 @@ def concat_audio(scene_paths, output):
     )
 
 
-# -------------------- SCENES RENDERING --------------------
+# -------------------- SCENES --------------------
 
-def scene_0(data, t, duration):
+def scene_hook(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.12)
+    progress_bar(d, 0.05)
 
     draw_post_office(d, W // 2, 600, 0.72, night=True)
 
@@ -701,240 +661,365 @@ def scene_0(data, t, duration):
         center_text(d, line, y_start, 52, WHITE)
         y_start += 72
 
-    center_text(d, "पहले जवाब मत देखिए", 1550, 36, MUTED)
+    center_text(d, "पहले जवाब मत देखिए", 1430, 36, YELLOW)
     return im
 
 
-def scene_1(data, t, duration):
+def scene_guess(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.25)
+    progress_bar(d, 0.14)
 
-    rounded(d, (100, 450, W - 100, 1350), 40, CARD, CYAN, 4)
-    center_text(d, "🧠 सोचिए और समझिए", 600, 56, YELLOW)
+    center_text(d, "आप क्या चुनेंगे?", 260, 60, WHITE)
 
-    wrapped_q = wrap_text(d, data["question"], 46, 820)
-    lines = wrapped_q.split("\n")
-    y_start = 800
-    for line in lines:
-        center_text(d, line, y_start, 46, WHITE)
-        y_start += 65
+    labels = ["Postmaster", "SSPO", "DG Posts"]
+    for i, label in enumerate(labels):
+        y = 500 + i * 300
+        draw_authority_card(d, label, 170, y, 910, y + 220, None)
 
-    center_text(d, "क्या आपको नियम याद है?", 1150, 38, MUTED)
+    center_text(d, "सोचिए", 1450, 46, YELLOW)
     return im
 
 
-def scene_2(data, t, duration):
+def scene_elimination(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.38)
+    progress_bar(d, 0.22)
 
-    center_text(d, "गलत विकल्प हटाइए", 320, 50, CYAN)
+    center_text(d, "दो विकल्प हटते हैं", 270, 54, WHITE)
 
-    draw_authority_card(d, "सामान्य डाक नियम (गलत अनुमान)", 100, 500, W - 100, 780, status="wrong")
-    draw_authority_card(d, "विभागीय सत्यापित नियम", 100, 880, W - 100, 1160, status="correct")
+    labels = ["Postmaster", "SSPO", "DG Posts"]
+    for i, label in enumerate(labels):
+        status = None
+        if i < 2 and t > 0.45 + i * 0.55:
+            status = "wrong"
+        if i == 2 and t > 1.5:
+            status = "correct"
 
-    center_text(d, "सही क्लॉज को पहचानें", 1350, 36, MUTED)
+        y = 500 + i * 300
+        draw_authority_card(d, label, 170, y, 910, y + 220, status)
+
     return im
 
 
-def scene_3(data, t, duration):
+def scene_answer(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.52)
+    progress_bar(d, 0.30)
 
-    rounded(d, (80, 420, W - 80, 1420), 40, CARD_2, GREEN, 4)
-    center_text(d, "📜 आधिकारिक नियम (Fact)", 560, 52, GREEN)
+    center_text(d, "सही उत्तर", 300, 50, MUTED)
+    draw_clock(d, W // 2, 690, 190)
 
-    wrapped_fact = wrap_text(d, data["fact"], 45, 840)
-    lines = wrapped_fact.split("\n")
-    y_start = 780
-    for line in lines:
-        center_text(d, line, y_start, 45, WHITE)
-        y_start += 65
-
-    center_text(d, f"विषय: {data['title']}", 1250, 34, MUTED)
+    center_text(d, "8:30 PM", 950, 78, CYAN)
+    center_text(d, "DG Posts", 1090, 76, GREEN)
+    center_text(d, "यही point याद रखें", 1260, 38, WHITE)
     return im
 
 
-def scene_4(data, t, duration):
+def scene_fact(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.65)
+    progress_bar(d, 0.39)
 
-    rounded(d, (80, 420, W - 80, 1420), 40, CARD_2, RED, 4)
-    center_text(d, "⚠️ परीक्षा का ट्रैप (Caution)", 560, 52, RED)
+    draw_post_office(d, W // 2, 620, 0.65, night=True)
 
-    wrapped_trap = wrap_text(d, data["trap"], 45, 840)
-    lines = wrapped_trap.split("\n")
-    y_start = 800
-    for line in lines:
-        center_text(d, line, y_start, 45, WHITE)
-        y_start += 65
+    if t > 0.35:
+        draw_clock(d, W // 2, 1010, 105)
 
-    center_text(d, "परीक्षा में ऐसी गलतियों से बचें!", 1250, 36, YELLOW)
+    if t > 0.9:
+        center_text(d, "DG Posts", 1210, 60, GREEN)
+
+    fact = wrap_text(d, data["fact"], 42, 880)
+    y = 1380
+    for line in fact.split("\n"):
+        center_text(d, line, y, 42, WHITE)
+        y += 62
+
     return im
 
 
-def draw_options(d, data, highlighted=None):
-    opts = [
+def scene_trap(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.50)
+
+    rounded(d, (70, 270, 1010, 1570), 45, CARD, YELLOW, 5)
+    center_text(d, "EXAM TRAP", 390, 62, YELLOW)
+
+    if t < 0.8:
+        center_text(d, "स्थानीय अधिकारी", 650, 55, WHITE)
+    else:
+        center_text(d, "स्थानीय अधिकारी", 650, 55, WHITE)
+        draw_x(d, W // 2, 790, 55)
+
+    center_text(d, "DG Posts", 1020, 68, GREEN)
+    draw_check(d, W // 2, 1160, 55)
+
+    trap = wrap_text(d, data["trap"], 38, 820)
+    y = 1320
+    for line in trap.split("\n"):
+        center_text(d, line, y, 38, WHITE)
+        y += 58
+
+    return im
+
+
+def draw_option_row(draw, letter, text, y, active=False):
+    outline = CYAN if active else "#2A4058"
+    rounded(draw, (65, y, 1015, y + 145), 28, CARD_2, outline, 4)
+
+    font = get_font(38)
+    draw.text((105, y + 72), letter + ".", font=font, fill=CYAN, anchor="lm")
+    draw.text((175, y + 72), text, font=font, fill=WHITE, anchor="lm")
+
+
+def scene_mcq(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.64)
+
+    center_text(d, "POSTAL MCQ", 245, 58, CYAN)
+
+    question = wrap_text(d, data["question"], 47, 900)
+    y = 365
+    for line in question.split("\n"):
+        center_text(d, line, y, 47, WHITE)
+        y += 68
+
+    options = [
         ("A", data["a"]),
         ("B", data["b"]),
         ("C", data["c"]),
         ("D", data["d"]),
     ]
 
-    y = 820
-    for key, text in opts:
-        is_correct = (key == highlighted)
-        box_fill = CARD_2
-        outline = GREEN if is_correct else "#334155"
-        text_color = GREEN if is_correct else WHITE
+    y0 = 610
+    for i, (letter, text) in enumerate(options):
+        reveal_at = i * 0.30
+        if t >= reveal_at:
+            draw_option_row(d, letter, text, y0 + i * 190, active=(t < reveal_at + 0.25))
 
-        rounded(d, (90, y, W - 90, y + 115), 25, box_fill, outline, 4 if is_correct else 2)
-
-        font = get_font(38)
-        d.text((130, y + 57), f"{key}.", font=font, fill=CYAN if not is_correct else GREEN, anchor="lm")
-        d.text((210, y + 57), text, font=font, fill=text_color, anchor="lm")
-
-        if is_correct:
-            draw_check(d, W - 150, y + 57, 28)
-
-        y += 140
+    return im
 
 
-def scene_5(data, t, duration):
+def scene_countdown(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.78)
+    progress_bar(d, 0.82)
 
-    rounded(d, (80, 260, W - 80, 680), 30, CARD, "#334155", 2)
-    center_text(d, "प्रश्न (Question)", 340, 42, YELLOW)
+    center_text(d, "अपना जवाब चुनिए", 270, 54, WHITE)
 
-    wrapped_q = wrap_text(d, data["question"], 40, 840)
-    lines = wrapped_q.split("\n")
-    y_start = 430
-    for line in lines:
-        center_text(d, line, y_start, 40, WHITE)
-        y_start += 56
-
-    draw_options(d, data)
-    return im
-
-
-def scene_6(data, t, duration):
-    im = scene_5(data, t, duration)
-    d = ImageDraw.Draw(im)
-    progress_bar(d, 0.90)
-
-    countdown = max(1, 5 - int(t))
-    rounded(d, (W // 2 - 140, 1460, W // 2 + 140, 1600), 70, "#1E293B", YELLOW, 5)
-    center_text(d, f"⏱️ {countdown}", 1530, 52, YELLOW)
-    center_text(d, "जल्दी कमेंट करें!", 1680, 36, CYAN)
-    return im
-
-
-def scene_7(data, t, duration):
-    im = new_canvas()
-    d = ImageDraw.Draw(im)
-    brand(d)
-    progress_bar(d, 1.0)
-
-    rounded(d, (80, 260, W - 80, 680), 30, CARD, GREEN, 3)
-    center_text(d, "सही उत्तर (Correct Answer)", 340, 42, GREEN)
-
-    wrapped_q = wrap_text(d, data["question"], 40, 840)
-    lines = wrapped_q.split("\n")
-    y_start = 430
-    for line in lines:
-        center_text(d, line, y_start, 40, WHITE)
-        y_start += 56
-
-    draw_options(d, data, highlighted=data["correct"])
-    center_text(d, f"उत्तर है विकल्प {data['correct']}", 1530, 48, GREEN)
-    return im
-
-
-SCENE_RENDERERS = [
-    scene_0,
-    scene_1,
-    scene_2,
-    scene_3,
-    scene_4,
-    scene_5,
-    scene_6,
-    scene_7,
-]
-
-
-# -------------------- MAIN PIPELINE --------------------
-
-async def main():
-    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-    ensure_fonts()
-
-    state = load_state()
-    print(f"शुरू हो रहा है: Clause {state['clause_no']}, Part {state['current_part']}")
-
-    data = generate_script(state)
-    print("तैयार स्क्रिप्ट:", data["hook"])
-
-    audio_files = await generate_scene_audios(data)
-    durations = [audio_duration(p) for p in audio_files]
-
-    combined_audio = "final_audio.aac"
-    concat_audio(audio_files, combined_audio)
-
-    # FFmpeg Video Process (Direct Pipe for optimal speed)
-    ffmpeg_cmd = [
-        "ffmpeg", "-y",
-        "-f", "rawvideo",
-        "-vcodec", "rawvideo",
-        "-s", f"{W}x{H}",
-        "-pix_fmt", "rgb24",
-        "-r", str(FPS),
-        "-i", "-",
-        "-i", combined_audio,
-        "-c:v", "libx264",
-        "-preset", "veryfast",
-        "-pix_fmt", "yuv420p",
-        "-c:a", "aac",
-        "-b:a", "192k",
-        "-shortest",
-        OUTPUT_VIDEO,
+    options = [
+        ("A", data["a"]),
+        ("B", data["b"]),
+        ("C", data["c"]),
+        ("D", data["d"]),
     ]
 
-    proc = subprocess.Popen(ffmpeg_cmd, stdin=subprocess.PIPE)
+    y0 = 500
+    for i, (letter, text) in enumerate(options):
+        draw_option_row(d, letter, text, y0 + i * 190, False)
 
-    for idx, renderer in enumerate(SCENE_RENDERERS):
-        duration = durations[idx]
-        total_frames = max(1, int(round(duration * FPS)))
+    remaining = max(1, 5 - int(t))
+    center_text(d, str(remaining), 1510, 100, YELLOW)
+    center_text(d, "A / B / C / D कमेंट करें", 1660, 42, WHITE)
+    return im
 
-        for f in range(total_frames):
-            t = f / FPS
-            img = renderer(data, t, duration)
-            proc.stdin.write(img.tobytes())
 
-    proc.stdin.close()
-    proc.wait()
+def scene_result(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.96)
 
-    # Clean temporary audio files
-    for p in audio_files:
-        if os.path.exists(p):
-            os.remove(p)
-    if os.path.exists(combined_audio):
-        os.remove(combined_audio)
+    center_text(d, "सही उत्तर", 360, 55, MUTED)
 
-    print(f"वीडियो सफलता से तैयार हो गया: {OUTPUT_VIDEO}")
+    rounded(d, (100, 500, 980, 1180), 50, CARD, GREEN, 6)
+    center_text(d, data["correct"], 650, 120, GREEN)
 
-    # अगली वीडियो के लिए स्टेट अपने आप अपडेट करें
-    advance_state(state)
+    key = {"A": "a", "B": "b", "C": "c", "D": "d"}[data["correct"]]
+
+    center_text(d, data[key], 850, 48, WHITE)
+    center_text(d, "नियम को ऐसे याद रखें", 1060, 38, MUTED)
+
+    center_text(d, "अगले Postal MCQ के लिए", 1370, 38, WHITE)
+    center_text(d, "@POSTAL_WALA", 1450, 48, CYAN)
+    return im
+
+
+# -------------------- FRAME / VIDEO BUILD --------------------
+
+def render_scene(scene_function, data, duration, prefix):
+    count = max(1, int(math.ceil(duration * FPS)))
+    paths = []
+
+    for index in range(count):
+        t = index / FPS
+        image = scene_function(data, t, duration)
+        path = f"{prefix}_{index:05d}.jpg"
+        image.save(path, quality=94, optimize=False)
+        paths.append(path)
+
+    return paths
+
+
+def frames_to_video(frame_paths, output_path):
+    concat_path = "frames.txt"
+    with open(concat_path, "w", encoding="utf-8") as file:
+        for frame in frame_paths:
+            file.write(f"file '{os.path.abspath(frame)}'\n")
+
+    subprocess.run(
+        [
+            "ffmpeg", "-y",
+            "-r", str(FPS),
+            "-f", "concat",
+            "-safe", "0",
+            "-i", concat_path,
+            "-vf", f"fps={FPS},format=yuv420p",
+            "-c:v", "libx264",
+            "-preset", "medium",
+            "-crf", "19",
+            output_path,
+        ],
+        check=True,
+    )
+    os.remove(concat_path)
+
+
+def mux(video, audio, output):
+    subprocess.run(
+        [
+            "ffmpeg", "-y",
+            "-i", video,
+            "-i", audio,
+            "-map", "0:v:0",
+            "-map", "1:a:0",
+            "-c:v", "copy",
+            "-c:a", "aac",
+            "-b:a", "192k",
+            "-shortest",
+            output,
+        ],
+        check=True,
+    )
+
+
+# -------------------- MAIN --------------------
+
+def build_reel(data, output_video=None):
+    if not output_video:
+        output_video = os.path.join(OUTPUT_DIR, OUTPUT_VIDEO)
+
+    os.makedirs(os.path.dirname(output_video), exist_ok=True)
+
+    scene_audios = asyncio.run(generate_scene_audios(data))
+    durations = [audio_duration(path) for path in scene_audios]
+
+    scene_functions = [
+        scene_hook,
+        scene_guess,
+        scene_elimination,
+        scene_answer,
+        scene_fact,
+        scene_trap,
+        scene_mcq,
+        scene_countdown,
+        scene_result,
+    ]
+
+    audio_chapter_map = [
+        (0, scene_functions[0]),
+        (1, scene_functions[1]),
+        (2, scene_functions[2]),
+        (2, scene_functions[3]),
+        (3, scene_functions[4]),
+        (4, scene_functions[5]),
+        (5, scene_functions[6]),
+        (6, scene_functions[7]),
+        (7, scene_functions[8]),
+    ]
+
+    chapter_remaining = durations[:]
+    visual_durations = []
+
+    for scene_index, chapter_index in enumerate([0, 1, 2, 2, 3, 4, 5, 6, 7]):
+        if scene_index == 2:
+            visual_durations.append(chapter_remaining[2] * 0.48)
+        elif scene_index == 3:
+            visual_durations.append(chapter_remaining[2] * 0.52)
+        else:
+            visual_durations.append(chapter_remaining[chapter_index])
+
+    frame_paths = []
+    for i, (chapter_index, scene_function) in enumerate(audio_chapter_map):
+        frame_paths += render_scene(
+            scene_function,
+            data,
+            visual_durations[i],
+            f"scene_{i}",
+        )
+
+    silent = "silent_reel.mp4"
+    frames_to_video(frame_paths, silent)
+
+    master_audio = "master_audio.m4a"
+    concat_audio(scene_audios, master_audio)
+
+    mux(silent, master_audio, output_video)
+
+    for path in frame_paths:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+    for path in scene_audios + [silent, master_audio]:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+    total = audio_duration(output_video)
+    print(f"COMPLETE: {output_video} ({total:.2f}s)")
+
+
+def advance_state(state):
+    clause = state["clause_no"]
+    part = state["current_part"]
+
+    info = POSTAL_CLAUSE_CATALOG[clause]
+
+    if part < info["total_parts"]:
+        state["current_part"] = part + 1
+    else:
+        keys = sorted(POSTAL_CLAUSE_CATALOG)
+        current_index = keys.index(clause)
+        state["clause_no"] = keys[(current_index + 1) % len(keys)]
+        state["current_part"] = 1
+
+    save_state(state)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    state = load_state()
+    print("Current State:", state)
+
+    data = generate_script(state)
+    print("\nSCRIPT DATA:")
+    print(json.dumps(data, ensure_ascii=False, indent=2))
+
+    reels_dir = "generated_reels"
+    os.makedirs(reels_dir, exist_ok=True)
+    output_filename = f"reel_clause_{state['clause_no']}_part_{state['current_part']}.mp4"
+    output_video_path = os.path.join(reels_dir, output_filename)
+
+    build_reel(data, output_video_path)
+    advance_state(state)
