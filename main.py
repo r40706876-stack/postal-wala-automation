@@ -1,8 +1,8 @@
-
 import os
 import re
 import json
 import math
+import shutil
 import asyncio
 import subprocess
 import requests
@@ -10,15 +10,14 @@ from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
 # ============================================================
-# POSTAL WALA — HIGH RETENTION REEL ENGINE v2
-# Goal: ~25–30 sec, visual event every 1–2.5 sec.
-# NOTE: No code can guarantee 10/10 or virality. This version
-# removes the main retention problems found in the previous Reel.
+# POSTAL WALA — HIGH RETENTION REEL ENGINE v2 (AUTO-UPLOAD TO GITHUB)
 # ============================================================
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 STATE_FILE = "progress_state.json"
-OUTPUT_VIDEO = "final_reel.mp4"
+REELS_DIR = "generated_reels"
+os.makedirs(REELS_DIR, exist_ok=True)
+
 VOICE_NAME = "hi-IN-SwaraNeural"
 
 W, H = 1080, 1920
@@ -39,12 +38,8 @@ ASSETS = "assets"
 os.makedirs(ASSETS, exist_ok=True)
 
 # ------------------------------------------------------------
-# 1) IMPORTANT: NO FAKE STATS / NO GENERIC VIRAL CLAIMS
+# 1) HOOK PATTERNS
 # ------------------------------------------------------------
-# Avoid hooks like:
-# "90% लोग फेल होते हैं", "2 नंबर पक्के", "पक्का प्रमोशन"
-# unless you have a verified source for that exact claim.
-
 HOOK_PATTERNS = [
     ("question", "इस नियम में सबसे ज्यादा confusion कहाँ होता है?"),
     ("trap", "⚠️ परीक्षा में यही छोटा सा फर्क गलती करा सकता है।"),
@@ -53,8 +48,7 @@ HOOK_PATTERNS = [
 ]
 
 # ------------------------------------------------------------
-# 2) YOUR CATALOG — keep only verified facts in this catalog.
-# Add/replace entries with your official source material.
+# 2) POSTAL CLAUSE CATALOG
 # ------------------------------------------------------------
 POSTAL_CLAUSE_CATALOG = {
     1: {
@@ -186,8 +180,6 @@ def extract_field(raw, name, next_names):
     return clean_text(m.group(1)) if m else ""
 
 def make_fallback(clause_no, part_no, focus, title):
-    # Deterministic fallback for clause 22/part 2 from the catalog.
-    # For any other rule, use the core fact directly rather than inventing details.
     if clause_no == 22 and part_no == 2:
         return {
             "title": title,
@@ -202,7 +194,6 @@ def make_fallback(clause_no, part_no, focus, title):
             "trap": "क्षेत्र के बाहर जाने पर नियम बदलता है: आधा प्रभार याद रखें।",
         }
 
-    # Safe generic fallback: do not fabricate options.
     return {
         "title": title,
         "hook": f"{title} का यह नियम ध्यान से देखिए।",
@@ -237,13 +228,9 @@ VERIFIED CORE FACT: {focus}
 
 Rules:
 - Never invent statistics.
-- Never say "90% लोग", "2 नंबर पक्के", "पक्का प्रमोशन", "सबसे ज्यादा पूछा जाता है" unless the supplied fact explicitly proves it.
-- Do not use motivational filler.
+- Never say "90% लोग", "2 नंबर पक्के", "पक्का प्रमोशन" unless explicitly proved.
 - One clear rule only.
-- The MCQ must be answerable from the supplied verified core fact.
-- Keep language simple Hindi/Hinglish suitable for a 20–30 second Reel.
-- Make the first line a curiosity question, not a generic intro.
-- The trap must be a real distinction/exception from the supplied fact.
+- Keep language simple Hindi suitable for a 20–30 second Reel.
 
 Return EXACTLY:
 HOOK: [max 10 words]
@@ -265,7 +252,7 @@ TRAP: [max 14 words]
                 "Content-Type": "application/json",
             },
             json={
-                "model": "qwen/qwen3-32b",
+                "model": "llama-3.3-70b-versatile",
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.15,
                 "max_tokens": 400,
@@ -293,14 +280,13 @@ TRAP: [max 14 words]
         if not all(data[k] for k in ["hook","question","a","b","c","d","fact","trap"]):
             raise ValueError("Incomplete AI script")
 
-        # Important: the script still comes from the supplied rule.
         return data
     except Exception as e:
-        print("Groq fallback:", e)
+        print("Groq fallback notice:", e)
         return make_fallback(clause_no, part_no, focus, title)
 
 # ------------------------------------------------------------
-# 5) STATE
+# 5) STATE MANAGEMENT
 # ------------------------------------------------------------
 def load_state():
     state = {
@@ -320,7 +306,7 @@ def save_state(state):
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 # ------------------------------------------------------------
-# 6) AUDIO — ONE CONTINUOUS VOICE TRACK
+# 6) AUDIO ENGINE
 # ------------------------------------------------------------
 def audio_duration(path):
     out = subprocess.check_output([
@@ -357,9 +343,7 @@ def tighten_audio(path):
             os.remove(tmp)
 
 # ------------------------------------------------------------
-# 7) VISUAL ENGINE
-#    Every scene contains an actual visual event:
-#    stamp/wax/paper, shake, pop, reveal, countdown.
+# 7) VISUAL RENDERING
 # ------------------------------------------------------------
 def base():
     return Image.new("RGB", (W,H), BG)
@@ -372,7 +356,6 @@ def centered(draw, text, y, size, fill=WHITE):
     draw_mixed(draw, (W//2, y), text, df, ef, fill, anchor="mm")
 
 def brand(draw):
-    # Tiny brand, not a distracting permanent banner.
     f = eng_font(28)
     draw.text((55,55), "POSTAL WALA", font=f, fill="#6E8299")
 
@@ -381,8 +364,7 @@ def progress(draw, ratio):
     draw.rounded_rectangle((x1,y,x2,y+8), 4, fill="#1C2A3A")
     draw.rounded_rectangle((x1,y,x1+(x2-x1)*max(0,min(1,ratio)),y+8), 4, fill=CYAN)
 
-def draw_stamp(draw, cx, cy, scale=1.0, angle=0):
-    # Stamp-like visual; intentionally simple and readable.
+def draw_stamp(draw, cx, cy, scale=1.0):
     s = int(230*scale)
     box = [cx-s//2, cy-s//2, cx+s//2, cy+s//2]
     draw.rectangle(box, fill="#F8FAFC", outline="#CBD5E1", width=max(2,int(5*scale)))
@@ -417,9 +399,7 @@ def draw_paper(draw, cx, cy, scale=1.0):
         draw.line((box[0]+35,yy,box[2]-35,yy),fill="#94A3B8",width=4)
 
 def scene_hook(data, t):
-    im=base(); d=ImageDraw.Draw(im); brand(d)
-    progress(d,0.06)
-    # Visual first: object appears before text.
+    im=base(); d=ImageDraw.Draw(im); brand(d); progress(d,0.06)
     if t < 0.45:
         draw_wax(d,W//2,650,0.9)
     else:
@@ -432,7 +412,6 @@ def scene_hook(data, t):
 def scene_guess(data, t):
     im=base(); d=ImageDraw.Draw(im); brand(d); progress(d,0.13)
     centered(d,"आप क्या चुनेंगे?",330,64,WHITE)
-    # Two visual choices, not paragraphs.
     rounded(d,(90,560,500,1030),40,CARD2,RED,5)
     centered(d,"❌",650,110,RED)
     centered(d,"सीधे मोम पर",820,42,WHITE)
@@ -445,7 +424,6 @@ def scene_guess(data, t):
 def scene_answer(data, t):
     im=base(); d=ImageDraw.Draw(im); brand(d); progress(d,0.20)
     centered(d,"सही तरीका",330,48,MUTED)
-    # Reveal correct visual with scale pop.
     sc = min(1.0,0.78 + t*0.18)
     draw_paper(d,W//2,650,sc)
     draw_stamp(d,W//2,650,sc*0.62)
@@ -455,7 +433,6 @@ def scene_answer(data, t):
 
 def scene_fact(data, t):
     im=base(); d=ImageDraw.Draw(im); brand(d); progress(d,0.31)
-    # Animated sequence: wax -> paper -> stamp.
     if t < 0.7:
         draw_wax(d,W//2,650,0.82)
     elif t < 1.35:
@@ -493,7 +470,6 @@ def scene_mcq(data, t, countdown=False):
     y0=650
     for i,(letter,text) in enumerate(opts):
         y=y0+i*210
-        # Sequential reveal creates movement.
         if t < i*0.35:
             continue
         outline=CYAN if countdown and i == 0 else "#24384F"
@@ -519,7 +495,7 @@ def scene_result(data, t):
     return im
 
 # ------------------------------------------------------------
-# 8) VIDEO BUILD
+# 8) VIDEO BUILD & EXPORT
 # ------------------------------------------------------------
 def save_frame(im, path):
     im.save(path, quality=95)
@@ -546,7 +522,8 @@ def frames_to_video(frame_paths, out_path):
         "-c:v","libx264","-preset","medium","-crf","19",
         out_path
     ],check=True)
-    os.remove(concat_file)
+    if os.path.exists(concat_file):
+        os.remove(concat_file)
 
 def mux(video_path, audio_path, output):
     subprocess.run([
@@ -558,8 +535,7 @@ def mux(video_path, audio_path, output):
         "-shortest",output
     ],check=True)
 
-def build_reel(data):
-    # ONE continuous voice track, no dead silence between sections.
+def build_reel(data, output_file):
     voice = (
         f"{data['hook']} "
         f"सोचिए... "
@@ -577,13 +553,8 @@ def build_reel(data):
     tighten_audio(audio)
 
     dur=audio_duration(audio)
-
-    # Keep the visual sequence aligned to the voice.
-    # If TTS is too long, increase rate or shorten script rather than
-    # stretching the whole video with slow visuals.
     target=min(max(dur,25.0),31.0)
 
-    # Scene durations are proportional to target.
     d1=target*0.09
     d2=target*0.10
     d3=target*0.10
@@ -593,24 +564,20 @@ def build_reel(data):
     d7=target*0.17
 
     all_frames=[]
-
     all_frames += make_scene_frames(scene_hook,d1,"fr_hook",data)
     all_frames += make_scene_frames(scene_guess,d2,"fr_guess",data)
     all_frames += make_scene_frames(scene_answer,d3,"fr_answer",data)
     all_frames += make_scene_frames(scene_fact,d4,"fr_fact",data)
     all_frames += make_scene_frames(scene_trap,d5,"fr_trap",data)
-
-    # MCQ reveal
     all_frames += make_scene_frames(lambda d,t: scene_mcq(d,t,False),d6*0.62,"fr_mcq",data)
     all_frames += make_scene_frames(lambda d,t: scene_mcq(d,t,True),d6*0.38,"fr_count",data)
-
     all_frames += make_scene_frames(scene_result,d7,"fr_result",data)
 
     silent="silent_reel.mp4"
     frames_to_video(all_frames,silent)
-    mux(silent,audio,OUTPUT_VIDEO)
+    mux(silent,audio,output_file)
 
-    # Cleanup generated frames.
+    # Clean temporary frame files
     for p in all_frames:
         try: os.remove(p)
         except: pass
@@ -618,29 +585,61 @@ def build_reel(data):
         try: os.remove(p)
         except: pass
 
-    print(f"\nDONE: {OUTPUT_VIDEO}")
-    print(f"Voice duration: {dur:.2f}s")
-    print("Retention design: hook → guess → visual answer → rule → trap → MCQ → countdown → result")
+    print(f"\n✅ REEL READY: {output_file}")
 
 # ------------------------------------------------------------
-# 9) RUN
+# 9) AUTO COMMIT / PUSH (IF RUN LOCALLY)
+# ------------------------------------------------------------
+def push_if_local(target_video, state_file):
+    # If running inside GitHub Actions, the workflow YAML handles the push.
+    if os.getenv("GITHUB_ACTIONS"):
+        print("Running in GitHub Actions - workflow will commit the reel automatically.")
+        return
+
+    try:
+        subprocess.run(["git", "add", target_video, state_file], check=True)
+        commit_msg = f"Add reel: {os.path.basename(target_video)} [skip ci]"
+        subprocess.run(["git", "commit", "-m", commit_msg], check=True)
+        subprocess.run(["git", "push"], check=True)
+        print("🚀 Successfully pushed video to GitHub repository!")
+    except Exception as e:
+        print("Local git push notice (workflow may handle it):", e)
+
+# ------------------------------------------------------------
+# 10) MAIN EXECUTION
 # ------------------------------------------------------------
 if __name__ == "__main__":
-    state=load_state()
-    data=generate_script(state)
+    state = load_state()
+    clause_no = state["clause_no"]
+    part_no = state["current_part"]
 
-    print("\nSCRIPT")
-    print(json.dumps(data,ensure_ascii=False,indent=2))
+    # 1. Target output path inside generated_reels folder
+    target_reel_name = f"reel_clause_{clause_no}_part_{part_no}.mp4"
+    target_output_path = os.path.join(REELS_DIR, target_reel_name)
 
-    build_reel(data)
+    # 2. Generate script and render video
+    data = generate_script(state)
+    print("\nSCRIPT:")
+    print(json.dumps(data, ensure_ascii=False, indent=2))
 
-    # Advance only AFTER successful render.
-    info=POSTAL_CLAUSE_CATALOG[state["clause_no"]]
-    if state["current_part"] < info["total_parts"]:
+    build_reel(data, target_output_path)
+
+    # Optional root fallback copy for existing setups
+    try:
+        shutil.copy(target_output_path, "final_reel.mp4")
+    except Exception:
+        pass
+
+    # 3. Advance state for next cycle
+    info = POSTAL_CLAUSE_CATALOG[clause_no]
+    if part_no < info["total_parts"]:
         state["current_part"] += 1
     else:
-        keys=sorted(POSTAL_CLAUSE_CATALOG.keys())
-        idx=keys.index(state["clause_no"])
-        state["clause_no"]=keys[(idx+1)%len(keys)]
-        state["current_part"]=1
+        keys = sorted(POSTAL_CLAUSE_CATALOG.keys())
+        idx = keys.index(clause_no)
+        state["clause_no"] = keys[(idx + 1) % len(keys)]
+        state["current_part"] = 1
     save_state(state)
+
+    # 4. Push to GitHub if running locally
+    push_if_local(target_output_path, STATE_FILE)
