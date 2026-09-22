@@ -688,8 +688,6 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
     print(f"🎵 Raw narration: {total_dur:.2f}s", flush=True)
 
     MAX_TARGET_DUR = 24.0
-    MIN_TARGET_DUR = 15.0
-
     if total_dur > MAX_TARGET_DUR:
         tempo_scale = min(1.20, round(total_dur / MAX_TARGET_DUR, 4))
     else:
@@ -900,67 +898,35 @@ def render_and_sync_video(script_data, output_video=OUTPUT_VIDEO):
 
     slide_filenames = [f"slide_{i}.png" for i in range(1, 6)]
 
-    FPS = 30
+    # --- SAFE LOOP & TRIM RENDER METHOD (PREVENTS INFINITE LOOP) ---
     inputs = []
     filter_parts = ""
-
     for i, fname in enumerate(slide_filenames):
-        inputs.extend(["-loop", "1", "-i", fname])
+        inputs.extend(["-i", fname])
         safe_dur = max(1.0, durations[i])
-
-        frames = max(1, round(safe_dur * FPS))
-        zoom_step = ["0.0018", "0.0012", "0.0020", "0.0010", "0.0016"][i]
-        fade_d = min(0.12, safe_dur / 5)
-        fade_out_start = max(0.0, safe_dur - fade_d)
-
         filter_parts += (
-            f"[{i}:v]"
+            f"[{i}:v]loop=loop=-1:size=1:start=0,trim=duration={safe_dur},"
             f"scale=1080:1920:force_original_aspect_ratio=decrease,"
-            f"pad=1080:1920:(ow-iw)/2:(oh-ih)/2,"
-            f"zoompan=z='min(zoom+{zoom_step},1.055)':"
-            f"d={frames}:"
-            f"x='iw/2-(iw/zoom/2)':"
-            f"y='ih/2-(ih/zoom/2)':"
-            f"s=1080x1920:fps={FPS},"
-            f"fade=t=in:st=0:d={fade_d},"
-            f"fade=t=out:st={fade_out_start}:d={fade_d},"
-            f"format=yuv420p[v{i}];"
+            f"pad=1080:1920:(ow-iw)/2:(oh-ih)/2,format=yuv420p[v{i}];"
         )
 
-    concat_str = "".join([f"[v{i}]" for i in range(5)])
-    video_filter = (
-        f"{filter_parts}{concat_str}"
-        f"concat=n=5:v=1:a=0,format=yuv420p[v]"
-    )
+    concat_str = "".join([f"[v{i}]" for i in range(len(slide_filenames))])
+    video_filter = f"{filter_parts}{concat_str}concat=n={len(slide_filenames)}:v=1:a=0,format=yuv420p[v]"
 
     cmd = ["ffmpeg", "-y", *inputs, "-i", "final_master.mp3"]
-    voice_idx = 5
-    full_filter = (
-        f"{video_filter};"
-        f"[{voice_idx}:a]aresample=48000,"
-        f"aformat=channel_layouts=stereo[a]"
-    )
+    voice_idx = len(slide_filenames)
+
+    full_filter = f"{video_filter}; [{voice_idx}:a]aresample=48000,aformat=channel_layouts=stereo[a]"
+    cmd.extend(["-filter_complex", full_filter, "-map", "[v]", "-map", "[a]"])
     cmd.extend([
-        "-filter_complex", full_filter,
-        "-map", "[v]", "-map", "[a]",
-        "-c:v", "libx264",
-        "-preset", "medium",
-        "-profile:v", "main",
-        "-level", "4.0",
-        "-pix_fmt", "yuv420p",
-        "-r", "30",
-        "-g", "60",
-        "-c:a", "aac",
-        "-b:a", "192k",
-        "-ar", "48000",
-        "-ac", "2",
-        "-movflags", "+faststart",
-        "-shortest",
-        output_video
+        "-c:v", "libx264", "-preset", "medium", "-profile:v", "main", "-level", "4.0",
+        "-pix_fmt", "yuv420p", "-r", "30", "-g", "60",
+        "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
+        "-movflags", "+faststart", "-shortest", output_video
     ])
 
     subprocess.run(cmd, check=True)
-    print(f"✅ Retention-first Reel created: {output_video}", flush=True)
+    print(f"✅ Safe Retention Reel created: {output_video}", flush=True)
 
 # --- LOCAL FOLDER SAVER FOR GITHUB WORKFLOW ---
 def save_reel_to_local_folder(video_file, script_data):
