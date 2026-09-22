@@ -13,6 +13,7 @@ import edge_tts
 
 # -------------------- CONFIG --------------------
 
+OUTPUT_DIR = "generated_reels"
 OUTPUT_VIDEO = "final_reel.mp4"
 STATE_FILE = "progress_state.json"
 
@@ -1065,7 +1066,12 @@ def mux(video, audio, output):
 
 # -------------------- MAIN --------------------
 
-def build_reel(data):
+def build_reel(data, output_video=None):
+    if not output_video:
+        output_video = os.path.join(OUTPUT_DIR, OUTPUT_VIDEO)
+
+    os.makedirs(os.path.dirname(output_video), exist_ok=True)
+
     scene_audios = asyncio.run(generate_scene_audios(data))
 
     # Exact audio duration for every scene = exact visual duration.
@@ -1140,7 +1146,7 @@ def build_reel(data):
     master_audio = "master_audio.m4a"
     concat_audio(scene_audios, master_audio)
 
-    mux(silent, master_audio, OUTPUT_VIDEO)
+    mux(silent, master_audio, output_video)
 
     # Cleanup
     for path in frame_paths:
@@ -1155,13 +1161,13 @@ def build_reel(data):
         except OSError:
             pass
 
-    total = audio_duration(OUTPUT_VIDEO)
+    total = audio_duration(output_video)
 
     print()
     print("==============================================")
     print("POSTAL WALA REEL V3 COMPLETE")
     print("==============================================")
-    print(f"Output: {OUTPUT_VIDEO}")
+    print(f"Output: {output_video}")
     print(f"Duration: {total:.2f} seconds")
     print("Structure:")
     print("Hook -> Guess -> Elimination -> Answer -> Rule")
@@ -1200,7 +1206,12 @@ if __name__ == "__main__":
     print("SCRIPT")
     print(json.dumps(data, ensure_ascii=False, indent=2))
 
-    build_reel(data)
+    reels_dir = "generated_reels"
+    os.makedirs(reels_dir, exist_ok=True)
+    output_filename = f"reel_clause_{state['clause_no']}_part_{state['current_part']}.mp4"
+    output_video_path = os.path.join(reels_dir, output_filename)
+
+    build_reel(data, output_video_path)
 
     # Advance only after successful rendering.
     advance_state(state)
