@@ -1,4 +1,4 @@
-Import os
+import os
 import re
 import json
 import math
@@ -109,7 +109,6 @@ def ensure_fonts():
 def get_font(size):
     ensure_fonts()
     try:
-        # Complex layout engine (Raqm/HarfBuzz) for perfect Hindi ligatures
         return ImageFont.truetype(FONT_DEV, size, layout_engine=ImageFont.Layout.RAQM)
     except Exception:
         return ImageFont.truetype(FONT_DEV, size)
@@ -398,6 +397,20 @@ def fallback_script(clause_no, part_no, focus, title):
             "trap": "वितरण क्षेत्र से बाहर जाने पर नियम बदलता है: आधा प्रभार याद रखें।",
         }
 
+    if clause_no == 22 and part_no == 3:
+        return {
+            "title": title,
+            "hook": "क्या खुला हुआ पार्सल दोबारा मुफ्त में भेजा जा सकता है?",
+            "question": "यदि पतेदार ने पार्सल खोल दिया हो, तो पुनः प्रेषण का नियम क्या है?",
+            "a": "नया डाकभार लगेगा",
+            "b": "केवल आधा डाकभार लगेगा",
+            "c": "पुनः प्रेषण निःशुल्क होगा",
+            "d": "पुनः प्रेषण प्रतिबंधित है",
+            "correct": "A",
+            "fact": "एक बार खोले गए पार्सल को बिना नए डाकभार के पुनः प्रेषित नहीं किया जा सकता।",
+            "trap": "पार्सल बंद होने पर आधा प्रभार लगता है, पर खुलते ही पूरा नया डाकभार लगेगा।",
+        }
+
     return {
         "title": title,
         "hook": f"{title} का यह नियम ध्यान से देखिए।",
@@ -519,7 +532,7 @@ def load_state():
 
     if default["clause_no"] not in POSTAL_CLAUSE_CATALOG:
         default["clause_no"] = 22
-        default["current_part": 2]
+        default["current_part"] = 2
 
     return default
 
@@ -527,6 +540,30 @@ def load_state():
 def save_state(state):
     with open(STATE_FILE, "w", encoding="utf-8") as file:
         json.dump(state, file, ensure_ascii=False, indent=2)
+
+
+def advance_state(state):
+    clause_no = state["clause_no"]
+    part_no = state["current_part"]
+
+    total_parts = POSTAL_CLAUSE_CATALOG.get(clause_no, {}).get("total_parts", 1)
+
+    if part_no < total_parts:
+        state["current_part"] += 1
+    else:
+        all_clauses = sorted(POSTAL_CLAUSE_CATALOG.keys())
+        try:
+            current_index = all_clauses.index(clause_no)
+            next_index = (current_index + 1) % len(all_clauses)
+            state["clause_no"] = all_clauses[next_index]
+            state["current_part"] = 1
+        except ValueError:
+            state["clause_no"] = all_clauses[0]
+            state["current_part"] = 1
+
+    save_state(state)
+    print(f"अगले रन के लिए स्टेट सेट हुआ: Clause {state['clause_no']}, Part {state['current_part']}")
+    return state
 
 
 # -------------------- AUDIO --------------------
@@ -644,20 +681,19 @@ def concat_audio(scene_paths, output):
     )
 
 
-# -------------------- SCENES --------------------
+# -------------------- SCENES RENDERING --------------------
 
-def scene_hook(data, t, duration):
+def scene_0(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
-    progress_bar(d, 0.05)
+    progress_bar(d, 0.12)
 
     draw_post_office(d, W // 2, 600, 0.72, night=True)
 
     if t > min(0.35, duration * 0.25):
         draw_clock(d, W // 2, 980, 130)
 
-    # Word wrapping added so Hook never overflows screen edges
     wrapped_hook = wrap_text(d, data["hook"], 52, 950)
     lines = wrapped_hook.split("\n")
     y_start = 1200 - (len(lines) - 1) * 35
@@ -665,4 +701,240 @@ def scene_hook(data, t, duration):
         center_text(d, line, y_start, 52, WHITE)
         y_start += 72
 
-    center_text(d, "पहले जवाब मत देखिए"
+    center_text(d, "पहले जवाब मत देखिए", 1550, 36, MUTED)
+    return im
+
+
+def scene_1(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.25)
+
+    rounded(d, (100, 450, W - 100, 1350), 40, CARD, CYAN, 4)
+    center_text(d, "🧠 सोचिए और समझिए", 600, 56, YELLOW)
+
+    wrapped_q = wrap_text(d, data["question"], 46, 820)
+    lines = wrapped_q.split("\n")
+    y_start = 800
+    for line in lines:
+        center_text(d, line, y_start, 46, WHITE)
+        y_start += 65
+
+    center_text(d, "क्या आपको नियम याद है?", 1150, 38, MUTED)
+    return im
+
+
+def scene_2(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.38)
+
+    center_text(d, "गलत विकल्प हटाइए", 320, 50, CYAN)
+
+    draw_authority_card(d, "सामान्य डाक नियम (गलत अनुमान)", 100, 500, W - 100, 780, status="wrong")
+    draw_authority_card(d, "विभागीय सत्यापित नियम", 100, 880, W - 100, 1160, status="correct")
+
+    center_text(d, "सही क्लॉज को पहचानें", 1350, 36, MUTED)
+    return im
+
+
+def scene_3(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.52)
+
+    rounded(d, (80, 420, W - 80, 1420), 40, CARD_2, GREEN, 4)
+    center_text(d, "📜 आधिकारिक नियम (Fact)", 560, 52, GREEN)
+
+    wrapped_fact = wrap_text(d, data["fact"], 45, 840)
+    lines = wrapped_fact.split("\n")
+    y_start = 780
+    for line in lines:
+        center_text(d, line, y_start, 45, WHITE)
+        y_start += 65
+
+    center_text(d, f"विषय: {data['title']}", 1250, 34, MUTED)
+    return im
+
+
+def scene_4(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.65)
+
+    rounded(d, (80, 420, W - 80, 1420), 40, CARD_2, RED, 4)
+    center_text(d, "⚠️ परीक्षा का ट्रैप (Caution)", 560, 52, RED)
+
+    wrapped_trap = wrap_text(d, data["trap"], 45, 840)
+    lines = wrapped_trap.split("\n")
+    y_start = 800
+    for line in lines:
+        center_text(d, line, y_start, 45, WHITE)
+        y_start += 65
+
+    center_text(d, "परीक्षा में ऐसी गलतियों से बचें!", 1250, 36, YELLOW)
+    return im
+
+
+def draw_options(d, data, highlighted=None):
+    opts = [
+        ("A", data["a"]),
+        ("B", data["b"]),
+        ("C", data["c"]),
+        ("D", data["d"]),
+    ]
+
+    y = 820
+    for key, text in opts:
+        is_correct = (key == highlighted)
+        box_fill = CARD_2
+        outline = GREEN if is_correct else "#334155"
+        text_color = GREEN if is_correct else WHITE
+
+        rounded(d, (90, y, W - 90, y + 115), 25, box_fill, outline, 4 if is_correct else 2)
+
+        font = get_font(38)
+        d.text((130, y + 57), f"{key}.", font=font, fill=CYAN if not is_correct else GREEN, anchor="lm")
+        d.text((210, y + 57), text, font=font, fill=text_color, anchor="lm")
+
+        if is_correct:
+            draw_check(d, W - 150, y + 57, 28)
+
+        y += 140
+
+
+def scene_5(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 0.78)
+
+    rounded(d, (80, 260, W - 80, 680), 30, CARD, "#334155", 2)
+    center_text(d, "प्रश्न (Question)", 340, 42, YELLOW)
+
+    wrapped_q = wrap_text(d, data["question"], 40, 840)
+    lines = wrapped_q.split("\n")
+    y_start = 430
+    for line in lines:
+        center_text(d, line, y_start, 40, WHITE)
+        y_start += 56
+
+    draw_options(d, data)
+    return im
+
+
+def scene_6(data, t, duration):
+    im = scene_5(data, t, duration)
+    d = ImageDraw.Draw(im)
+    progress_bar(d, 0.90)
+
+    countdown = max(1, 5 - int(t))
+    rounded(d, (W // 2 - 140, 1460, W // 2 + 140, 1600), 70, "#1E293B", YELLOW, 5)
+    center_text(d, f"⏱️ {countdown}", 1530, 52, YELLOW)
+    center_text(d, "जल्दी कमेंट करें!", 1680, 36, CYAN)
+    return im
+
+
+def scene_7(data, t, duration):
+    im = new_canvas()
+    d = ImageDraw.Draw(im)
+    brand(d)
+    progress_bar(d, 1.0)
+
+    rounded(d, (80, 260, W - 80, 680), 30, CARD, GREEN, 3)
+    center_text(d, "सही उत्तर (Correct Answer)", 340, 42, GREEN)
+
+    wrapped_q = wrap_text(d, data["question"], 40, 840)
+    lines = wrapped_q.split("\n")
+    y_start = 430
+    for line in lines:
+        center_text(d, line, y_start, 40, WHITE)
+        y_start += 56
+
+    draw_options(d, data, highlighted=data["correct"])
+    center_text(d, f"उत्तर है विकल्प {data['correct']}", 1530, 48, GREEN)
+    return im
+
+
+SCENE_RENDERERS = [
+    scene_0,
+    scene_1,
+    scene_2,
+    scene_3,
+    scene_4,
+    scene_5,
+    scene_6,
+    scene_7,
+]
+
+
+# -------------------- MAIN PIPELINE --------------------
+
+async def main():
+    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+    ensure_fonts()
+
+    state = load_state()
+    print(f"शुरू हो रहा है: Clause {state['clause_no']}, Part {state['current_part']}")
+
+    data = generate_script(state)
+    print("तैयार स्क्रिप्ट:", data["hook"])
+
+    audio_files = await generate_scene_audios(data)
+    durations = [audio_duration(p) for p in audio_files]
+
+    combined_audio = "final_audio.aac"
+    concat_audio(audio_files, combined_audio)
+
+    # FFmpeg Video Process (Direct Pipe for optimal speed)
+    ffmpeg_cmd = [
+        "ffmpeg", "-y",
+        "-f", "rawvideo",
+        "-vcodec", "rawvideo",
+        "-s", f"{W}x{H}",
+        "-pix_fmt", "rgb24",
+        "-r", str(FPS),
+        "-i", "-",
+        "-i", combined_audio,
+        "-c:v", "libx264",
+        "-preset", "veryfast",
+        "-pix_fmt", "yuv420p",
+        "-c:a", "aac",
+        "-b:a", "192k",
+        "-shortest",
+        OUTPUT_VIDEO,
+    ]
+
+    proc = subprocess.Popen(ffmpeg_cmd, stdin=subprocess.PIPE)
+
+    for idx, renderer in enumerate(SCENE_RENDERERS):
+        duration = durations[idx]
+        total_frames = max(1, int(round(duration * FPS)))
+
+        for f in range(total_frames):
+            t = f / FPS
+            img = renderer(data, t, duration)
+            proc.stdin.write(img.tobytes())
+
+    proc.stdin.close()
+    proc.wait()
+
+    # Clean temporary audio files
+    for p in audio_files:
+        if os.path.exists(p):
+            os.remove(p)
+    if os.path.exists(combined_audio):
+        os.remove(combined_audio)
+
+    print(f"वीडियो सफलता से तैयार हो गया: {OUTPUT_VIDEO}")
+
+    # अगली वीडियो के लिए स्टेट अपने आप अपडेट करें
+    advance_state(state)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
