@@ -60,8 +60,11 @@
       "_clause_no": 4,
       "auto_check": false,
       "check_errors": [
-        "'hint' me aisi sankhya hai jo source me nahi: ['2']"
-      ]
+        "LENGTH: 'hint' 13 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'trap' 23 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'yaad' 10 shabd ka hai, seema 9 - chhota karo, koi shart/sankhya mat hatao"
+      ],
+      "repair_tries": 1
     }
   ],
   "clause_text_en": "4. Mobile Post offices  –  Mobile Post Offices are functioning at Bomba y, \nCalcutta, Delhi, Madras, Ahmedabad, Nagpur, Hyderabad, Bangalore, Kanpur, Poona, \nJaipur and Bhilai Industrial Township.  These Mobile Post Offices are intended to \nprovide the facility of late posting in the different areas of the cities at different tim ings \naccording to a fixed schedule (excluding insured and V.P.).  “These offices remain closed \non Sundays and Postal Holidays.”  The Mobile Post Offices sell stamps and Postal \nstationery, grant certificate of posting, book surface and air mail registered a rticles of the \nletter mail (excluding insured and V.P.) and air parcels besides accepting unregistered \narticles of the letter mail for dispatch.  The mobile Post Offices at Madras and Nagpur are \nalso permitted to book money orders. \n \nBUSINESS HOURS"

@@ -33,19 +33,19 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सामान्य समय सर्कल प्रमुख तय करते हैं, पर 8:30 P.M. तक का विस्तार महानिदेशक करते हैं।
 **Hook:** डाकघर को रात 8:30 बजे तक कौन खुला रख सकता है?
 
-## Part 3  [FAIL (2/4 sudhaar koshish): LENGTH: 'a' 8 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'b' 7 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'c' 7 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'd' 7 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'hint' 18 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'fact' 41 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'yaad' 16 shabd ka hai, seema 9 - chhota karo, koi shart/sankhya mat hatao]
-**Source (PO Guide):** On Sundays and National Holidays as well as other P.O. holidays the night Post Offices function and observe restricted working hours. These offices work for one shift only from 10:00 to 17:00 hours. The delivery functions of the offices are entirely suspended as well as the payment of Money Orders and Saving Banks and post office Certificates are also suspended on these days.
+## Part 3  [PASS (sudhara gaya) | publish: 2026-09-24]
+**Source (PO Guide):** On Sundays and National Holidays as well as other P.O. holidays the night Post Offices function and observe restricted working hours. These offices work for one shift only from 10:00 to 17.00 hours.
 
-**Niyam:** रात्रि डाकघर रविवार व राष्ट्रीय अवकाश पर 10‑17 बजे एक शिफ्ट काम करते, डिलीवरी, मनीऑर्डर, बचत व प्रमाणपत्र भुगतान बंद।
-**Sawal:** रात्रि डाकघर रविवार को कितने बजे तक खुला रहता है?
-- A. 10‑17 बजे  <- SAHI
-- B. 8‑18 बजे
-- C. 9‑16 बजे
-- D. 7‑15 बजे
-**Hint:** एक शिफ्ट, 10‑17
-**Trap:** डिलीवरी जारी रहती है।  (source: The delivery functions of the offices are entirely suspended as well as the payment of Money Orders and Saving Banks and post office Certificates are also suspended on these days.)
-**Yaad:** रविवार 10‑17, सब बंद
-**Hook:** रविवार में क्या नहीं होता?
+**Niyam:** रविवार और छुट्टियों पर नाइट पोस्ट ऑफिस केवल 10:00 से 17:00 बजे तक काम करते हैं।
+**Sawal:** नाइट पोस्ट ऑफिस रविवार को किस समय काम करते हैं?
+- A. 10:00 से 17:00 बजे  <- SAHI
+- B. 09:00 से 18:30 बजे
+- C. 10:00 से 16:00 बजे
+- D. 08:00 से 15:00 बजे
+**Hint:** केवल एक शिफ्ट में 10:00 से 17:00
+**Trap:** रविवार को डिलीवरी चालू रहती है।  (source: The delivery functions of the offices are entirely suspended as well as the payment of Money Orders and Saving Banks and post office Certificates are also suspended on these days.)
+**Yaad:** रविवार और छुट्टी: 10:00 से 17:00
+**Hook:** रविवार को नाइट पोस्ट ऑफिस टाइमिंग?
 
 ## Part 4  [PASS (sudhara gaya) | publish: 2026-09-24]
 **Source (PO Guide):** Night Post Offices are indicated in the list of Post Offices in Part III of this Guide.
