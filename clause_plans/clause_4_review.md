@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रविवार और डाक छुट्टी = मोबाइल डाकघर बंद
 **Hook:** क्या मोबाइल डाकघर रविवार को खुलते हैं?
 
-## Part 3  [FAIL (3/4 sudhaar koshish): LENGTH: 'trap' 20 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao]
+## Part 3  [FAIL (4/4 sudhaar koshish): 'hint' me aisi sankhya hai jo source me nahi: ['2']]
 **Source (PO Guide):** The mobile Post Offices at Madras and Nagpur are also permitted to book money orders.
 
 **Niyam:** केवल मद्रास और नागपुर के मोबाइल डाकघर मनीऑर्डर बुक कर सकते हैं।
