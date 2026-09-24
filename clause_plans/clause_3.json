@@ -1,0 +1,92 @@
+{
+  "clause_no": 3,
+  "title_en": "Night Post Offices",
+  "title_hi": "रात्रि डाकघर नियम",
+  "source_pdf": "PO_Guide_Part_1.pdf",
+  "approved": true,
+  "build_tries": 1,
+  "note": "Automatic. Sirf auto_check=true wale parts ki reel banti hai. FAIL wale kabhi publish nahi honge.",
+  "parts": [
+    {
+      "source_quote": "The working hours of the post offices are generally fixed by the Head of the Circle according to the timings given in clause 5 of the Post Office Guide. However the Director -General may extend the working hours of any post office up to 8:30 P.M. and keep them open on Sundays also.",
+      "hook": "कौन बढ़ा सकता है समय?",
+      "question": "डाकघर के कार्यकाल बढ़ाने का अधिकार किसके पास है?",
+      "a": "सर्किल प्रमुख",
+      "b": "महानिदेशक डाकघर",
+      "c": "डाकघर अधीक्षक",
+      "d": "उप डाकघर",
+      "correct": "B",
+      "hint": "उपलब्ध समय 8:30 PM तक",
+      "fact": "डाकघर के कार्यकाल सामान्यतः सर्किल प्रमुख तय करते हैं, पर महानिदेशक 8:30 PM तक बढ़ा सकते हैं और रविवार को खोल सकते हैं।",
+      "trap": "डाकघर के कार्यकाल सर्किल प्रमुख तय करते हैं।",
+      "trap_quote": "The working hours of the post offices are generally fixed by the Head of the Circle according to the timings given in clause 5 of the Post Office Guide.",
+      "yaad": "बढ़ाओ समय, महानिदेशक",
+      "_clause_no": 3,
+      "auto_check": false,
+      "check_errors": [
+        "source ki sankhya ['5'] 'fact' me nahi aayi (niyam adhoora?)"
+      ]
+    },
+    {
+      "source_quote": "During the extended hours, these post offices will generally book registered articles including V.P. articles, issue T.M .Os, and sell I.P.Os. and postage stamps. Deposits into Savings Bank Account and sale of cash certificates will be available upto 7.00 p.m. on week days only.",
+      "hook": "क्या बेचते हैं रात में?",
+      "question": "विस्तारित समय में कौन सी सेवाएँ उपलब्ध हैं?",
+      "a": "पंजीकृत लेख",
+      "b": "डाक रिटर्न",
+      "c": "अंतर्राष्ट्रीय डाक",
+      "d": "रिटर्न लेटर",
+      "correct": "A",
+      "hint": "स्टैम्प और प्रमाणपत्र भी बेचते हैं",
+      "fact": "विस्तारित समय में पंजीकृत, वी.पी., टी.एम.ओ जारी, आई.पी.ओ और स्टैम्प बेचते हैं; बचत जमा व प्रमाणपत्र 7 PM तक उपलब्ध।",
+      "trap": "बचत जमा सभी दिनों में उपलब्ध है।",
+      "trap_quote": "Deposits into Savings Bank Account and sale of cash certificates will be available upto 7.00 p.m. on week days only.",
+      "yaad": "बुक, बेच, जमा 7 PM तक",
+      "_clause_no": 3,
+      "auto_check": false,
+      "check_errors": [
+        "AUDIT nahi ho paya: Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Gemini(gemini-3.8-flash) 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+      ]
+    },
+    {
+      "source_quote": "On Sundays and National Holidays as well as other P.O. holidays the night Post Offices function and observe restricted working hours. These offices work for one shift only from 10:00 to 17:00 hours. The delivery functions of the offices are entirely suspended as well as the payment of Money Orders and Saving Banks and post office Certificates are also suspended on these days.",
+      "hook": "रविवार में क्या नहीं होता?",
+      "question": "रात्रि डाकघर रविवार को कितने बजे तक खुला रहता है?",
+      "a": "10‑17 बजे",
+      "b": "8‑18 बजे",
+      "c": "9‑16 बजे",
+      "d": "7‑15 बजे",
+      "correct": "A",
+      "hint": "एक शिफ्ट, 10‑17",
+      "fact": "रात्रि डाकघर रविवार व राष्ट्रीय अवकाश पर 10‑17 बजे एक शिफ्ट काम करते, डिलीवरी, मनीऑर्डर, बचत व प्रमाणपत्र भुगतान बंद।",
+      "trap": "डिलीवरी जारी रहती है।",
+      "trap_quote": "The delivery functions of the offices are entirely suspended as well as the payment of Money Orders and Saving Banks and post office Certificates are also suspended on these days.",
+      "yaad": "रविवार 10‑17, सब बंद",
+      "_clause_no": 3,
+      "auto_check": false,
+      "check_errors": [
+        "AUDIT nahi ho paya: Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Gemini(gemini-3.8-flash) 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+      ]
+    },
+    {
+      "source_quote": "Night Post Offices are indicated in the list of Post Offices in Part III of this Guide.",
+      "hook": "कहाँ देखें रात्रि डाकघर?",
+      "question": "रात्रि डाकघर कहाँ सूचीबद्ध हैं?",
+      "a": "भाग III में",
+      "b": "भाग II में",
+      "c": "भाग IV में",
+      "d": "भाग I में",
+      "correct": "A",
+      "hint": "सूची भाग III में",
+      "fact": "रात्रि डाकघर इस गाइड के भाग III में सूचीबद्ध हैं।",
+      "trap": "",
+      "trap_quote": "",
+      "yaad": "सूची भाग III",
+      "_clause_no": 3,
+      "auto_check": false,
+      "check_errors": [
+        "'trap' khaali hai"
+      ]
+    }
+  ],
+  "clause_text_en": "3.Night Post Offices - (i) The working hours of the post offices are generally \nfixed by the Head of the Circle according to the timings given in clause 5 of the Post \nOffice Guide.  However the Director -General may extend the working hours of any post \noffice up to 8:30 P.M. and keep them open on Sundays also.  These post offices will be \ntermed ‘night post offices’ and will transact those transactions which have been \nauthorized by the Director-General in this behalf. \n \n (ii) During the extended hours, these post offices will generally book registered \narticles including V.P. articles, issue T.M .Os, and sell I.P.Os. and postage stamps.  \nDeposits into Savings Bank Account and sale of cash certificates will be available upto \n7.00 p.m. on week days only.  Payment of T.M.Os will also be effected upto 6 p.m. \n \n (iii) On Sundays and National Holidays as  well as other P.O. holidays the night \nPost Offices function and observe restricted working hours.  These offices work for one \n\n\nshift only from 10:00 to 17.00 hours.  The delivery functions of the offices are entirely \nsuspended as well as the payment of Mon ey Orders and Saving Banks and post office \nCertificates are also suspended on these days. \n \n (iv) Night Post Offices are indicated in the list of Post Offices in Part III of this \nGuide."
+}
