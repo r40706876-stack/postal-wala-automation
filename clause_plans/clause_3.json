@@ -66,9 +66,15 @@
       "_clause_no": 3,
       "auto_check": false,
       "check_errors": [
-        "AUDIT(groq): Trap statement says services are available until 8:30 pm, which contradicts the clause (only up to 7:00 pm)."
+        "LENGTH: 'a' 8 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'b' 7 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'c' 7 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'd' 7 shabd ka hai, seema 6 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'hint' 18 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'fact' 41 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'yaad' 16 shabd ka hai, seema 9 - chhota karo, koi shart/sankhya mat hatao"
       ],
-      "repair_tries": 1
+      "repair_tries": 2
     },
     {
       "source_quote": "Night Post Offices are indicated in the list of Post Offices in Part III of this Guide.",
@@ -88,7 +94,8 @@
       "auto_check": true,
       "check_errors": [],
       "repaired": true,
-      "repair_tries": 1
+      "repair_tries": 1,
+      "published": "2026-09-24"
     }
   ],
   "clause_text_en": "3.Night Post Offices - (i) The working hours of the post offices are generally \nfixed by the Head of the Circle according to the timings given in clause 5 of the Post \nOffice Guide.  However the Director -General may extend the working hours of any post \noffice up to 8:30 P.M. and keep them open on Sundays also.  These post offices will be \ntermed ‘night post offices’ and will transact those transactions which have been \nauthorized by the Director-General in this behalf. \n \n (ii) During the extended hours, these post offices will generally book registered \narticles including V.P. articles, issue T.M .Os, and sell I.P.Os. and postage stamps.  \nDeposits into Savings Bank Account and sale of cash certificates will be available upto \n7.00 p.m. on week days only.  Payment of T.M.Os will also be effected upto 6 p.m. \n \n (iii) On Sundays and National Holidays as  well as other P.O. holidays the night \nPost Offices function and observe restricted working hours.  These offices work for one \n\n\nshift only from 10:00 to 17.00 hours.  The delivery functions of the offices are entirely \nsuspended as well as the payment of Mon ey Orders and Saving Banks and post office \nCertificates are also suspended on these days. \n \n (iv) Night Post Offices are indicated in the list of Post Offices in Part III of this \nGuide."

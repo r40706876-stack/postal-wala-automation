@@ -1,0 +1,68 @@
+{
+  "clause_no": 4,
+  "title_en": "Mobile Post offices",
+  "title_hi": "मोबाइल डाकघर",
+  "source_pdf": "PO_Guide_Part_1.pdf",
+  "approved": true,
+  "build_tries": 1,
+  "note": "Automatic. Sirf auto_check=true wale parts ki reel banti hai. FAIL wale kabhi publish nahi honge.",
+  "parts": [
+    {
+      "source_quote": "These Mobile Post Offices are intended to provide the facility of late posting in the different areas of the cities at different timings according to a fixed schedule (excluding insured and V.P.).",
+      "hook": "क्या मोबाइल डाकघर से वीपी भेज सकते हैं?",
+      "question": "मोबाइल डाकघर द्वारा कौन सी वस्तुएं बुक नहीं की जा सकती हैं?",
+      "a": "पंजीकृत पत्र",
+      "b": "हवाई पार्सल",
+      "c": "बीमाकृत और वी.पी.",
+      "d": "साधारण पत्र",
+      "correct": "C",
+      "hint": "इन वस्तुओं में मूल्य और सुरक्षा शामिल होती है।",
+      "fact": "मोबाइल डाकघर में बीमाकृत वस्तु और वी.पी. बुक करने की अनुमति नहीं है।",
+      "trap": "पंजीकृत पत्र भी वर्जित हैं समझना गलत है।",
+      "trap_quote": "book surface and air mail registered articles of the letter mail (excluding insured and V.P.)",
+      "yaad": "मोबाइल डाकघर = नो बीमा + नो वीपी",
+      "_clause_no": 4,
+      "auto_check": true,
+      "check_errors": []
+    },
+    {
+      "source_quote": "These offices remain closed on Sundays and Postal Holidays.",
+      "hook": "क्या मोबाइल डाकघर रविवार को खुलते हैं?",
+      "question": "मोबाइल डाकघर किस दिन पूरी तरह बंद रहते हैं?",
+      "a": "केवल रविवार को",
+      "b": "केवल डाक छुट्टियों को",
+      "c": "रविवार और डाक छुट्टियां",
+      "d": "सभी शनिवार को",
+      "correct": "C",
+      "hint": "इनमें साप्ताहिक अवकाश और सरकारी अवकाश दोनों शामिल हैं।",
+      "fact": "मोबाइल डाकघर रविवार और डाक छुट्टियों के दिन बंद रहते हैं।",
+      "trap": "यह शनिवार को भी बंद होते हैं सोचना गलत है।",
+      "trap_quote": "",
+      "yaad": "रविवार और डाक छुट्टी = मोबाइल डाकघर बंद",
+      "_clause_no": 4,
+      "auto_check": true,
+      "check_errors": []
+    },
+    {
+      "source_quote": "The mobile Post Offices at Madras and Nagpur are also permitted to book money orders.",
+      "hook": "मनीऑर्डर बुक करने वाले मोबाइल डाकघर कौन से हैं?",
+      "question": "किन शहरों में मोबाइल डाकघर मनीऑर्डर बुक कर सकते हैं?",
+      "a": "दिल्ली और मुंबई",
+      "b": "मद्रास और नागपुर",
+      "c": "बंगलौर और कानपुर",
+      "d": "जयपुर और भिलाई",
+      "correct": "B",
+      "hint": "यह विशेष अनुमति केवल दो विशिष्ट शहरों को मिली है।",
+      "fact": "केवल मद्रास और नागपुर के मोबाइल डाकघर मनीऑर्डर बुक कर सकते हैं।",
+      "trap": "सभी मोबाइल डाकघर मनीऑर्डर बुक कर सकते हैं ऐसा सोचना गलत है।",
+      "trap_quote": "The Mobile Post Offices sell stamps and Postal stationery",
+      "yaad": "मनीऑर्डर = मद्रास + नागपुर मोबाइल डाकघर",
+      "_clause_no": 4,
+      "auto_check": false,
+      "check_errors": [
+        "'hint' me aisi sankhya hai jo source me nahi: ['2']"
+      ]
+    }
+  ],
+  "clause_text_en": "4. Mobile Post offices  –  Mobile Post Offices are functioning at Bomba y, \nCalcutta, Delhi, Madras, Ahmedabad, Nagpur, Hyderabad, Bangalore, Kanpur, Poona, \nJaipur and Bhilai Industrial Township.  These Mobile Post Offices are intended to \nprovide the facility of late posting in the different areas of the cities at different tim ings \naccording to a fixed schedule (excluding insured and V.P.).  “These offices remain closed \non Sundays and Postal Holidays.”  The Mobile Post Offices sell stamps and Postal \nstationery, grant certificate of posting, book surface and air mail registered a rticles of the \nletter mail (excluding insured and V.P.) and air parcels besides accepting unregistered \narticles of the letter mail for dispatch.  The mobile Post Offices at Madras and Nagpur are \nalso permitted to book money orders. \n \nBUSINESS HOURS"
+}
