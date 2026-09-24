@@ -44,7 +44,8 @@
       "yaad": "विलंब शुल्क = पंजीकृत पत्र बुकिंग",
       "_clause_no": 5,
       "auto_check": true,
-      "check_errors": []
+      "check_errors": [],
+      "published": "2026-09-24"
     },
     {
       "title_hi": "डाकघर के कामकाज के घंटे",
@@ -64,8 +65,12 @@
       "_clause_no": 5,
       "auto_check": false,
       "check_errors": [
-        "AUDIT(groq): Option b (शाम 5 बजे) is not definitely wrong; the clause allows counters to close at any \"latest hours fixed\" which could be 5 pm in some offices."
-      ]
+        "LENGTH: 'hook' 12 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'hint' 16 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao",
+        "LENGTH: 'trap' 19 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao",
+        "'trap' me aisi sankhya hai jo source me nahi: ['8']"
+      ],
+      "repair_tries": 1
     },
     {
       "title_hi": "स्टेशनरी और टिकट की बिक्री",
@@ -85,8 +90,10 @@
       "_clause_no": 5,
       "auto_check": false,
       "check_errors": [
-        "AUDIT(gemini): The provided script does not contain any errors regarding the facts, but the 'recent notes' provided for check 7 contain a factual error in point (f) which claims VP articles and MO cannot be booked to Field Post Offices; this assertion is not present in the official Clause 5 text, creating a mismatch between the provided notes and the source text."
-      ]
+        "LENGTH: 'fact' 19 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao",
+        "'trap' me aisi sankhya hai jo source me nahi: ['6', '7']"
+      ],
+      "repair_tries": 1
     },
     {
       "title_hi": "शनिवार को बचत बैंक लेनदेन",

@@ -1,0 +1,71 @@
+{
+  "clause_no": 7,
+  "title_en": "Business done on Sundays and P.O",
+  "title_hi": "रविवार और अवकाश के दिन व्यवसाय",
+  "source_pdf": "PO_Guide_Part_1.pdf",
+  "approved": true,
+  "build_tries": 1,
+  "note": "Automatic. Sirf auto_check=true wale parts ki reel banti hai. FAIL wale kabhi publish nahi honge.",
+  "parts": [
+    {
+      "source_quote": "Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.",
+      "hook": "मशीन फ्रैंकित वस्तुएं कहां नहीं डाली जा सकतीं?",
+      "question": "मशीन फ्रैंकित वस्तुएं निम्नलिखित में से किसमें नहीं डाली जानी चाहिए?",
+      "a": "केवल आरएमएस कार्यालय",
+      "b": "डाकघर या मेल वैन लेटर बॉक्स",
+      "c": "प्रेस सॉर्टिंग कार्यालय",
+      "d": "केवल रात्रि डाकघर",
+      "correct": "B",
+      "hint": "साधारण लेटर बॉक्स में इनका निषेध है।",
+      "fact": "मशीन फ्रैंकित वस्तुएं डाकघर या मेल वैन के लेटर बॉक्स में नहीं डाली जानी चाहिए।",
+      "trap": "इन्हें मेल वैन लेटर बॉक्स में डाल सकते हैं।",
+      "trap_quote": "Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.",
+      "yaad": "मशीन फ्रैंकित वस्तु + लेटर बॉक्स निषेध",
+      "_clause_no": 7,
+      "auto_check": true,
+      "check_errors": []
+    },
+    {
+      "source_quote": "Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays and no business transacted with the public.",
+      "hook": "रविवार को कौन से डाकघर खुले रहते हैं?",
+      "question": "रविवार और डाकघर अवकाश के दिन कौन से डाकघर सामान्यतः खुले रहते हैं?",
+      "a": "सभी मुख्य डाकघर",
+      "b": "रात्रि डाकघर",
+      "c": "मोबाइल डाकघर",
+      "d": "सभी उप डाकघर",
+      "correct": "B",
+      "hint": "रात में सेवा देने वाले विशेष डाकघर।",
+      "fact": "रात्रि डाकघरों को छोड़कर रविवार और डाकघर अवकाश के दिन सभी डाकघर बंद रहते हैं।",
+      "trap": "मोबाइल डाकघर भी रविवार को खुले रहते हैं।",
+      "trap_quote": "Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays",
+      "yaad": "रविवार बंद + रात्रि डाकघर चालू",
+      "_clause_no": 7,
+      "auto_check": false,
+      "check_errors": [
+        "AUDIT(gemini): OUTDATED: The script and notes do not contain outdated fee issues, but let's check Note e in coaching notes which lists specific fees (03 rupees, 02 rupees) not present in the original clause 7. However, the script itself doesn't use these fees. Let's check the script: fact is 'रात्रि डाकघरों को छोड़कर रविवार और डाकघर अवकाश के दिन सभी डाकघर बंद रहते हैं।', which correctly reflects Clause 7(a).",
+        "AUDIT(groq): Fact omits mobile post offices, dropping a condition"
+      ]
+    },
+    {
+      "source_quote": "Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.",
+      "hook": "पंजीकृत समाचार पत्र रविवार को कहां स्वीकार होते हैं?",
+      "question": "रविवार और अवकाश के दिन पंजीकृत समाचार पत्र बिना विलंब शुल्क के कहां स्वीकार किए जाते हैं?",
+      "a": "केवल शाखा डाकघरों में",
+      "b": "प्रेस सॉर्टिंग और आरएमएस कार्यालयों में",
+      "c": "केवल प्रधान डाकघरों में",
+      "d": "मोबाइल पोस्ट ऑफिस में",
+      "correct": "B",
+      "hint": "प्रेस सॉर्टिंग और आरएमएस कार्यालयों का नाम याद रखें।",
+      "fact": "पंजीकृत समाचार पत्र रविवार और अवकाश के दिन प्रेस सॉर्टिंग, आरएमएस और रात्रि डाकघरों में स्वीकार होते हैं।",
+      "trap": "रविवार को समाचार पत्रों के लिए विलंब शुल्क अनिवार्य है।",
+      "trap_quote": "Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.",
+      "yaad": "पंजीकृत समाचार पत्र + निःशुल्क रविवार",
+      "_clause_no": 7,
+      "auto_check": false,
+      "check_errors": [
+        "LENGTH: 'question' 17 shabd ka hai, seema 16 - chhota karo, koi shart/sankhya mat hatao"
+      ]
+    }
+  ],
+  "clause_text_en": "7. Business done on Sundays and P.O. holidays \n \n (a) Except the Night Post Offices all post offices Mobile Post Offices are \ngenerally closed on Sundays and PO Holidays and no business transacted with the public.  \nThere is also no clearance of street letter post boxes delivery of mails on such days. \n \n (b) Facilities are provided for the posting of letters on which the prescribed late \nfee is paid during certain specific ho urs in the letter boxes at RMS offices and at selected \noffices.  Such postings can also, be made in the letter boxes of the mail vans of R.M.S. \nSections, Machine franked articles should not be posted either in the Post Office letter \nbox or the mail van letter box. \n \n (c) Registered newspapers and packets of registered news papers are accepted on \nSundays and PO holidays without payment of any late fee in Press Sorting Offices, \nR.M.S. offices and at Night Post Offices. \n \n (d) Generally, all RMS offices stamps a nd postal stationary and grant certificates \nof posting and book registered articles on payment of usual late fee during specified \nhours on Sundays and PO holidays. \n \nNOTE 1 :- Postage stamps, postcards, inland letters, and envelopes are also sold at \nthe telegraph branches of the combined post and telegraph offices the \nhours they are open to public."
+}

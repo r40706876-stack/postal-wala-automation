@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** ED डाकघर = अधिकतम 5 घंटे
 **Hook:** ED डाकघर अधिकतम कितने घंटे खुलते हैं?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-24]
 **Source (PO Guide):** Facilities are provided at all important offices for the posting of correspondence and for the booking of registered letters for a limited period beyond the normal scheduled hours on payment of a late fee.
 
 **Niyam:** महत्वपूर्ण कार्यालयों में सामान्य घंटों के बाद विलंब शुल्क देकर पंजीकृत पत्रों की बुकिंग होती है।
@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** विलंब शुल्क = पंजीकृत पत्र बुकिंग
 **Hook:** सामान्य घंटों के बाद क्या बुक होता है?
 
-## Part 3  [FAIL (0/4 sudhaar koshish): AUDIT(groq): Option b (शाम 5 बजे) is not definitely wrong; the clause allows counters to close at any "latest hours fixed" which could be 5 pm in some offices.]
+## Part 3  [FAIL (1/4 sudhaar koshish): LENGTH: 'hook' 12 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'hint' 16 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'trap' 19 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao; 'trap' me aisi sankhya hai jo source me nahi: ['8']]
 **Source (PO Guide):** The public business hours are fixed with regard to local convenience and the arrival and departure timings of the mails and all work at the Post office counters is stopped precisely at the latest hours fixed.
 
 **Niyam:** डाकघर काउंटरों का सभी कार्य निर्धारित अंतिम समय पर सटीक रूप से बंद होता है।
@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** काउंटर कार्य = ठीक निर्धारित समय बंद
 **Hook:** डाकघर काउंटर का कार्य कब रुकता है?
 
-## Part 4  [FAIL (0/4 sudhaar koshish): AUDIT(gemini): The provided script does not contain any errors regarding the facts, but the 'recent notes' provided for check 7 contain a factual error in point (f) which claims VP articles and MO cannot be booked to Field Post Offices; this assertion is not present in the official Clause 5 text, creating a mismatch between the provided notes and the source text.]
+## Part 4  [FAIL (1/4 sudhaar koshish): LENGTH: 'fact' 19 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao; 'trap' me aisi sankhya hai jo source me nahi: ['6', '7']]
 **Source (PO Guide):** For Reference and enquiries, sale of the postage stamps and stationery and grant of certificate of posting During the entire working hour of the office.
 
 **Niyam:** डाक टिकटों और स्टेशनरी की बिक्री कार्यालय के संपूर्ण कार्य घंटों के दौरान होती है।
