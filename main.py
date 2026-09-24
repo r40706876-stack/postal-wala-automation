@@ -316,8 +316,7 @@ FALLBACK_SCRIPTS = {
     },
 }
 
-# -------------------- EASING & ANIMATION HELPERS --------------------
-
+# -------------------- EASING MATH --------------------
 def ease_out_back(x):
     c1 = 1.70158
     c3 = c1 + 1
@@ -327,58 +326,43 @@ def pulse(t, speed=5, amount=0.03):
     return 1.0 + math.sin(t * speed) * amount
 
 # -------------------- FONT & SHAPING HELPERS --------------------
-
 def ensure_fonts():
     if not os.path.exists(FONT_FILE) or os.path.getsize(FONT_FILE) < 50000:
         response = requests.get(FONT_URL, timeout=30)
         response.raise_for_status()
         Path(FONT_FILE).write_bytes(response.content)
 
-
 def get_font(size):
     ensure_fonts()
+    # CRITICAL FIX: Ensure font size is never 0 to prevent ValueError
+    size = max(1, int(size))
     try:
         return ImageFont.truetype(FONT_FILE, size, layout_engine=ImageFont.Layout.RAQM)
     except Exception:
         return ImageFont.truetype(FONT_FILE, size)
 
-
 def wrap_text(draw, text, size, max_width):
     words = text.split()
-    if not words:
-        return ""
-
+    if not words: return ""
     font = get_font(size)
-    lines = []
-    current = ""
-
+    lines, current = [], ""
     for word in words:
         candidate = word if not current else current + " " + word
         bbox = draw.textbbox((0, 0), candidate, font=font)
-        width = bbox[2] - bbox[0]
-        if width <= max_width:
+        if (bbox[2] - bbox[0]) <= max_width:
             current = candidate
         else:
-            if current:
-                lines.append(current)
+            if current: lines.append(current)
             current = word
-
-    if current:
-        lines.append(current)
-
+    if current: lines.append(current)
     return "\n".join(lines)
 
-
 def clean_text(text):
-    if not text:
-        return ""
+    if not text: return ""
     text = re.sub(r"[*_`#]+", "", text)
-    text = text.replace("…", ".")
     return " ".join(text.split()).strip()
 
-
 # -------------------- DRAWING HELPERS --------------------
-
 _bg_cache = None
 def new_canvas():
     global _bg_cache
@@ -386,25 +370,18 @@ def new_canvas():
     
     im = Image.new("RGB", (W, H))
     draw = ImageDraw.Draw(im)
-    
-    # 1. Background gradient & Grain[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
     for y in range(H):
         ratio = y / H
-        r = int(15 * (1 - ratio) + 4)
-        g = int(32 * (1 - ratio) + 10)
-        b = int(60 * (1 - ratio) + 20)
+        r, g, b = int(15*(1-ratio)+4), int(32*(1-ratio)+10), int(60*(1-ratio)+20)
         draw.line([(0, y), (W, y)], fill=(r, g, b))
-        
-    # 2. Vignette[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+    
     vig = Image.new("RGBA", (W, H), (0,0,0,0))
     vig_d = ImageDraw.Draw(vig)
     vig_d.ellipse((-300, -200, W+300, H+200), outline=(0,0,0,150), width=200)
     vig = vig.filter(ImageFilter.GaussianBlur(80))
     im.paste(vig, (0,0), vig)
-    
     _bg_cache = im
     return im.copy()
-
 
 def draw_shadow(im, box, radius, fill=(0,0,0, 100)):
     shadow = Image.new("RGBA", (W, H), (0,0,0,0))
@@ -413,98 +390,72 @@ def draw_shadow(im, box, radius, fill=(0,0,0, 100)):
     shadow = shadow.filter(ImageFilter.GaussianBlur(20))
     im.paste(shadow, (0,0), shadow)
 
+def rounded(draw, box, radius=35, fill=CARD, outline=None, width=2):
+    draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 def draw_badge(draw, text, cx, cy, size, bg_color, text_color):
+    size = max(1, int(size))
     font = get_font(size)
     bbox = draw.textbbox((0, 0), text, font=font)
     tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
     draw.rounded_rectangle((cx - tw/2 - 25, cy - th/2 - 15, cx + tw/2 + 25, cy + th/2 + 15), radius=15, fill=bg_color)
     draw.text((cx, cy - 5), text, font=font, fill=text_color, anchor="mm")
 
-
-def rounded(draw, box, radius=35, fill=CARD, outline=None, width=2):
-    draw.rounded_rectangle(
-        box,
-        radius=radius,
-        fill=fill,
-        outline=outline,
-        width=width,
-    )
-
-
 def center_text(draw, text, y, size, fill=WHITE, scale=1.0):
-    font = get_font(int(size * scale))
+    # CRITICAL FIX: max(1, ...) prevents size zero on text rendering
+    font = get_font(max(1, int(size * scale)))
     draw.text((W / 2, y), text, font=font, fill=fill, anchor="mm")
-
 
 def brand(draw):
     font = get_font(27)
     draw.text((55, 45), "POSTAL WALA", font=font, fill="#64748B", anchor="la")
 
-
 def progress_bar(draw, ratio):
     left = 55
     right = W - 55
     y = 92
-
-    draw.rounded_rectangle(
-        (left, y, right, y + 8),
-        radius=4,
-        fill="#1B2A3A",
-    )
-
+    draw.rounded_rectangle((left, y, right, y + 8), radius=4, fill="#1B2A3A")
     current = left + (right - left) * max(0.0, min(1.0, ratio))
-    draw.rounded_rectangle(
-        (left, y, current, y + 8),
-        radius=4,
-        fill=CYAN,
-    )
-
+    draw.rounded_rectangle((left, y, current, y + 8), radius=4, fill=CYAN)
 
 def draw_x(draw, cx, cy, size=45, scale=1.0):
-    s = int(size * scale)
-    draw.line((cx - s, cy - s, cx + s, cy + s), fill=RED, width=int(14*scale))
-    draw.line((cx + s, cy - s, cx - s, cy + s), fill=RED, width=int(14*scale))
-
+    # CRITICAL FIX: Safe values for lines
+    s = max(1, int(size * scale))
+    w = max(1, int(14 * scale))
+    draw.line((cx - s, cy - s, cx + s, cy + s), fill=RED, width=w)
+    draw.line((cx + s, cy - s, cx - s, cy + s), fill=RED, width=w)
 
 def draw_check(draw, cx, cy, size=45, scale=1.0):
-    s = int(size * scale)
-    draw.line((cx - s, cy, cx - s // 3, cy + s), fill=GREEN, width=int(14*scale))
-    draw.line((cx - s // 3, cy + s, cx + s, cy - s), fill=GREEN, width=int(14*scale))
-
+    # CRITICAL FIX: Safe values for lines
+    s = max(1, int(size * scale))
+    w = max(1, int(14 * scale))
+    draw.line((cx - s, cy, cx - s // 3, cy + s), fill=GREEN, width=w)
+    draw.line((cx - s // 3, cy + s, cx + s, cy - s), fill=GREEN, width=w)
 
 def draw_authority_card(im, draw, label, x1, y1, x2, y2, status=None, x_offset=0):
     x1, x2 = x1 + x_offset, x2 + x_offset
-    outline = (
-        GREEN if status == "correct"
-        else RED if status == "wrong"
-        else "#2A4058"
-    )
-
+    outline = GREEN if status == "correct" else RED if status == "wrong" else "#2A4058"
     draw_shadow(im, (x1, y1, x2, y2), 26)
     rounded(draw, (x1, y1, x2, y2), 26, CARD_2, outline, 4)
+    
     max_w = (x2 - x1) - 60
     wrapped = wrap_text(draw, label, 38, max_w)
     lines = wrapped.split("\n")
-
     cx = (x1 + x2) // 2
+    
     if status:
         text_y = y1 + 52 if len(lines) == 1 else y1 + 40
         for line in lines:
             center_text(draw, line, text_y, 36, WHITE)
             text_y += 46
-        if status == "wrong":
-            draw_x(draw, cx, y1 + 138, 32)
-        elif status == "correct":
-            draw_check(draw, cx, y1 + 138, 32)
+        if status == "wrong": draw_x(draw, cx, y1 + 138, 32)
+        elif status == "correct": draw_check(draw, cx, y1 + 138, 32)
     else:
         text_y = (y1 + y2) // 2 - (len(lines) - 1) * 23
         for line in lines:
             center_text(draw, line, text_y, 38, WHITE)
             text_y += 48
 
-
-# Word-by-word text drawing logic[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
 def draw_word_by_word(draw, text, y_start, font_size, max_w, t, words_per_sec=3.5):
     font = get_font(font_size)
     words = text.split()
@@ -534,8 +485,6 @@ def draw_word_by_word(draw, text, y_start, font_size, max_w, t, words_per_sec=3.
             global_idx += 1
         y += font_size * 1.5
 
-
-# Confetti Animation[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
 class Confetti:
     def __init__(self):
         self.particles = [{"x": random.randint(100, W-100), "y": random.randint(-400, -50), "s": random.randint(15, 30), "c": random.choice([GREEN, YELLOW, CYAN, WHITE]), "vy": random.randint(20, 35)} for _ in range(60)]
@@ -547,26 +496,18 @@ class Confetti:
 
 _confetti = Confetti()
 
-
 # -------------------- SCRIPT --------------------
 
 def extract_field(raw, name, next_names):
     next_part = "|".join(re.escape(x) for x in next_names)
-
     if next_part:
-        pattern = (
-            rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*?)"
-            rf"(?=(?:\n\s*(?:{next_part})\s*:)|$)"
-        )
+        pattern = (rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*?)(?=(?:\n\s*(?:{next_part})\s*:)|$)")
     else:
         pattern = rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*)$"
-
     match = re.search(pattern, raw, re.I | re.S)
     return clean_text(match.group(1)) if match else ""
 
-
 def shuffle_data(data):
-    # Shuffling logic so that the correct answer is not always A[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)
     options = [data["a"], data["b"], data["c"], data["d"]]
     correct_text = data[data["correct"].lower()]
     random.shuffle(options)
@@ -577,7 +518,6 @@ def shuffle_data(data):
             data["correct"] = letter.upper()
             break
     return data
-
 
 def fallback_script(clause_no, part_no, focus, title):
     if (clause_no, part_no) in FALLBACK_SCRIPTS:
@@ -600,11 +540,9 @@ def fallback_script(clause_no, part_no, focus, title):
     }
     return shuffle_data(data)
 
-
 def generate_script(state):
     clause_no = state["clause_no"]
     part_no = state["current_part"]
-
     info = POSTAL_CLAUSE_CATALOG[clause_no]
     title = info["name"]
     focus = info.get(f"part_{part_no}_focus", info["part_1_focus"])
@@ -612,7 +550,6 @@ def generate_script(state):
     if not GROQ_API_KEY:
         return fallback_script(clause_no, part_no, focus, title)
 
-    # Added rule to generate a short trick/mnemonic[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)
     prompt = f"""
 You are creating an authentic India Post departmental exam Multiple Choice Question (MCQ) in Hindi.
 
@@ -646,6 +583,7 @@ TRICK: ...
 """
 
     try:
+        # CRITICAL FIX: Explicit URL, fixed the url?id issue
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             headers={
@@ -691,7 +629,6 @@ TRICK: ...
         print("Using Curated Fallback Script:", exc)
         return fallback_script(clause_no, part_no, focus, title)
 
-
 # -------------------- STATE --------------------
 
 def load_state():
@@ -715,16 +652,13 @@ def load_state():
 
     return default
 
-
 def save_state(state):
     with open(STATE_FILE, "w", encoding="utf-8") as file:
         json.dump(state, file, ensure_ascii=False, indent=2)
 
-
 # -------------------- AUDIO --------------------
 
 async def make_audio(text, output):
-    # TTS retry logic[span_18](start_span)[span_18](end_span)
     for attempt in range(3):
         try:
             if os.path.exists(output):
@@ -741,7 +675,6 @@ async def make_audio(text, output):
                 print(f"Audio creation failed: {e}")
             await asyncio.sleep(1)
 
-
 def audio_duration(path):
     result = subprocess.check_output([
         "ffprobe",
@@ -752,10 +685,8 @@ def audio_duration(path):
     ])
     return float(result.decode().strip())
 
-
 def tighten_audio(path):
     temp = path + ".tmp.mp3"
-
     try:
         subprocess.run(
             [
@@ -783,9 +714,6 @@ def tighten_audio(path):
         if os.path.exists(temp):
             os.remove(temp)
 
-
-# -------------------- SCENE AUDIO --------------------
-
 def make_scene_text(data):
     trick_audio = data.get("trick", "")
     return [
@@ -805,29 +733,22 @@ def make_scene_text(data):
         "सही उत्तर है विकल्प " + data["correct"] + ".",
     ]
 
-
 async def generate_scene_audios(data):
     texts = make_scene_text(data)
     paths = []
-
     for index, text in enumerate(texts):
         path = f"scene_{index}.mp3"
         await make_audio(text, path)
         tighten_audio(path)
         paths.append(path)
-
     return paths
-
 
 def concat_audio(scene_paths, output):
     command = ["ffmpeg", "-y"]
-
     for path in scene_paths:
         command += ["-i", path]
-
     inputs = "".join(f"[{i}:a]" for i in range(len(scene_paths)))
     filter_complex = inputs + f"concat=n={len(scene_paths)}:v=0:a=1[outa]"
-
     command += [
         "-filter_complex", filter_complex,
         "-map", "[outa]",
@@ -835,7 +756,6 @@ def concat_audio(scene_paths, output):
         "-b:a", "192k",
         output,
     ]
-
     subprocess.run(
         command,
         check=True,
@@ -843,13 +763,11 @@ def concat_audio(scene_paths, output):
         stderr=subprocess.DEVNULL,
     )
 
-
 # -------------------- DYNAMIC OPTIONS HELPER --------------------
 
 def get_display_choices(data):
     correct = data.get("correct", "A").upper()
     keys = ["A", "B", "C", "D"]
-    
     choices = []
     for k in keys:
         choices.append({
@@ -859,6 +777,7 @@ def get_display_choices(data):
         })
     return choices
 
+_shuffled_choices = None
 
 # -------------------- SCENES --------------------
 
@@ -868,13 +787,11 @@ def scene_hook(data, t, duration):
     brand(d)
     progress_bar(d, 0.05)
 
-    scale = ease_out_back(min(t*1.5, 1.0)) # Camera motion[span_19](start_span)[span_19](end_span)
-
+    scale = ease_out_back(min(t*1.5, 1.0))
     box = (120, 360, 960, 465)
     draw_shadow(im, box, 24)
     rounded(d, box, 24, CARD_2, CYAN, 3)
     
-    # Stamp perforation effect[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span)[span_22](start_span)[span_22](end_span)
     for x in range(160, 920, 35):
         d.ellipse((x-8, 360-8, x+8, 360+8), fill=BG)
         d.ellipse((x-8, 465-8, x+8, 465+8), fill=BG)
@@ -885,8 +802,7 @@ def scene_hook(data, t, duration):
     draw_shadow(im, main_box, 40)
     rounded(d, main_box, 40, CARD, "#334155", 4)
     
-    # Badge inside hook[span_23](start_span)[span_23](end_span)
-    draw_badge(d, "POSTAL EXAM RULE", W/2, 615, 38, "#334155", MUTED)
+    draw_badge(d, "POSTAL EXAM RULE", W/2, 615, 38, "#334155", WHITE)
 
     wrapped_hook = wrap_text(d, data["hook"], 54, 840)
     lines = wrapped_hook.split("\n")
@@ -898,8 +814,10 @@ def scene_hook(data, t, duration):
     center_text(d, "पहले जवाब मत देखिए", 1460, 38, YELLOW, pulse(t, 6, 0.05))
     return im
 
-
 def scene_guess(data, t, duration):
+    global _shuffled_choices
+    if not _shuffled_choices: _shuffled_choices = get_display_choices(data)
+    
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
@@ -907,18 +825,14 @@ def scene_guess(data, t, duration):
 
     center_text(d, "आप क्या चुनेंगे?", 260, 60, WHITE)
 
-    choices = get_display_choices(data)
-    for i, item in enumerate(choices):
-        # Easing and option reveal timing[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span)
+    for i, item in enumerate(_shuffled_choices):
         anim_t = min(1.0, max(0.0, (t - i*0.2) * 2))
         slide = (1.0 - ease_out_back(anim_t)) * 300
-        
         y = 480 + i * 270
         draw_authority_card(im, d, item["text"], 110, y, 970, y + 210, None, x_offset=slide if i%2==0 else -slide)
 
     center_text(d, "सोचिए...", 1450, 46, YELLOW)
     return im
-
 
 def scene_elimination(data, t, duration):
     im = new_canvas()
@@ -928,15 +842,14 @@ def scene_elimination(data, t, duration):
 
     center_text(d, "गलत विकल्प हटते हैं", 270, 54, WHITE)
 
-    choices = get_display_choices(data)
     wrong_count = 0
-    for i, item in enumerate(choices):
+    for i, item in enumerate(_shuffled_choices):
         status = None
         shake = 0
         if not item["is_correct"]:
             if t > 0.35 + wrong_count * 0.45:
                 status = "wrong"
-                shake = math.sin(t * 30) * 10 # Elimination shake[span_26](start_span)[span_26](end_span)
+                shake = math.sin(t * 30) * 10
             wrong_count += 1
         else:
             if t > 1.25:
@@ -947,21 +860,19 @@ def scene_elimination(data, t, duration):
 
     return im
 
-
 def scene_answer(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
     brand(d)
     progress_bar(d, 0.30)
     
-    _confetti.draw(d, t) # Confetti effect[span_27](start_span)[span_27](end_span)[span_28](start_span)[span_28](end_span)
+    _confetti.draw(d, t)
 
     center_text(d, "सही उत्तर", 320, 52, MUTED)
 
     scale = ease_out_back(min(t*2, 1.0))
     box = (100, 460, 980, 1140)
     
-    # Ring animation for correct reveal[span_29](start_span)[span_29](end_span)
     ring_s = t * 60
     if t < 1.0:
         d.rounded_rectangle((box[0]-ring_s, box[1]-ring_s, box[2]+ring_s, box[3]+ring_s), int(45+ring_s), outline=GREEN, width=int(max(1, 8-ring_s/8)))
@@ -984,7 +895,6 @@ def scene_answer(data, t, duration):
     center_text(d, "यही point परीक्षा में याद रखें", 1320, 40, CYAN)
     return im
 
-
 def scene_fact(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -1001,13 +911,10 @@ def scene_fact(data, t, duration):
     rounded(d, box, 40, CARD, GREEN, 5)
     
     draw_badge(d, "VERIFIED RULE", W/2, 610, 42, GREEN, BG)
-
-    # Word-by-word highlight applied[span_30](start_span)[span_30](end_span)[span_31](start_span)[span_31](end_span)
     draw_word_by_word(d, data["fact"], 750, 46, 820, t)
 
     center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1520, 36, MUTED)
     return im
-
 
 def scene_trap(data, t, duration):
     im = new_canvas()
@@ -1015,7 +922,7 @@ def scene_trap(data, t, duration):
     brand(d)
     progress_bar(d, 0.50)
     
-    trap_scale = pulse(t, 8, 0.02) # Multi-beat pulse[span_32](start_span)[span_32](end_span)
+    trap_scale = pulse(t, 8, 0.02)
 
     rounded(d, (70, 270, 1010, 1570), 45, CARD, YELLOW, 5)
     center_text(d, "EXAM TRAP", 370, 62, YELLOW, trap_scale)
@@ -1031,7 +938,6 @@ def scene_trap(data, t, duration):
         center_text(d, line, y, 40, WHITE)
         y += 50
 
-    # Trick layout added inside Trap scene[span_33](start_span)[span_33](end_span)[span_34](start_span)[span_34](end_span)
     trick_text = data.get("trick", "")
     if trick_text:
         trick_y = 1250
@@ -1045,7 +951,6 @@ def scene_trap(data, t, duration):
             
     return im
 
-
 def draw_option_row(im, draw, letter, text, y, active=False):
     outline = CYAN if active else "#2A4058"
     box = (65, y, 1015, y + 145)
@@ -1055,7 +960,6 @@ def draw_option_row(im, draw, letter, text, y, active=False):
     font = get_font(38)
     draw.text((105, y + 72), letter + ".", font=font, fill=CYAN, anchor="lm")
     draw.text((175, y + 72), text, font=font, fill=WHITE, anchor="lm")
-
 
 def scene_mcq(data, t, duration):
     im = new_canvas()
@@ -1086,7 +990,6 @@ def scene_mcq(data, t, duration):
 
     return im
 
-
 def scene_countdown(data, t, duration):
     im = new_canvas()
     d = ImageDraw.Draw(im)
@@ -1107,10 +1010,9 @@ def scene_countdown(data, t, duration):
         draw_option_row(im, d, letter, text, y0 + i * 190, False)
 
     remaining = max(1, 5 - int(t))
-    center_text(d, str(remaining), 1510, 100, YELLOW, pulse(t, 10, 0.05)) # Countdown pulse[span_35](start_span)[span_35](end_span)
+    center_text(d, str(remaining), 1510, 100, YELLOW, pulse(t, 10, 0.05))
     center_text(d, "A / B / C / D कमेंट करें", 1660, 42, WHITE)
     return im
-
 
 def scene_result(data, t, duration):
     im = new_canvas()
@@ -1127,7 +1029,6 @@ def scene_result(data, t, duration):
 
     center_text(d, data[key], 850, 48, WHITE)
     
-    # CTA Script Teaser for the next part[span_36](start_span)[span_36](end_span)[span_37](start_span)[span_37](end_span)
     teaser_y = 1350
     draw_shadow(im, (150, teaser_y, 930, teaser_y + 180), 30)
     rounded(d, (150, teaser_y, 930, teaser_y + 180), 30, CARD_2, YELLOW, 3)
@@ -1136,7 +1037,6 @@ def scene_result(data, t, duration):
 
     center_text(d, "@POSTAL_WALA", 1650, 48, CYAN)
     return im
-
 
 # -------------------- FRAME / VIDEO BUILD --------------------
 
@@ -1152,7 +1052,6 @@ def render_scene(scene_function, data, duration, prefix):
         paths.append(path)
 
     return paths
-
 
 def frames_to_video(frame_paths, output_path):
     concat_path = "frames.txt"
@@ -1177,7 +1076,6 @@ def frames_to_video(frame_paths, output_path):
     )
     os.remove(concat_path)
 
-
 def mux(video, audio, output):
     subprocess.run(
         [
@@ -1194,7 +1092,6 @@ def mux(video, audio, output):
         ],
         check=True,
     )
-
 
 # -------------------- MAIN --------------------
 
@@ -1274,7 +1171,6 @@ def build_reel(data, output_video=None):
     total = audio_duration(output_video)
     print(f"COMPLETE: {output_video} ({total:.2f}s)")
 
-
 def advance_state(state):
     clause = state["clause_no"]
     part = state["current_part"]
@@ -1290,7 +1186,6 @@ def advance_state(state):
         state["current_part"] = 1
 
     save_state(state)
-
 
 if __name__ == "__main__":
     state = load_state()
