@@ -2509,3 +2509,30 @@ def run_daily():
     # publish mark (index ki jagah flag, taaki baad me sudhre parts se kram na bigde)
     import datetime
     part["published"] = datetime.date.today().isoformat()
+    save_plan(plan)
+
+    if advance_main:
+        _, left_no, _ = next_unpublished(plan)
+        if left_no == 0:
+            state["clause_no"] = nxt
+        state["current_part"] = max(1, left_no)
+        save_state(state)
+
+    upcoming = state["clause_no"]
+    if load_plan(upcoming) is None and not _RUN_FLAGS["busy"] and _RUN_FLAGS["builds"] == 0:
+        try:
+            print(f"Agle clause {upcoming} ka plan pehle se bana raha hoon...")
+            build_plan(upcoming, clauses)
+        except Exception as exc:
+            print("Agla plan abhi nahi bana (agle run me banega):", exc)
+
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    if args[:1] == ["--list-clauses"]:
+        list_clauses()
+    elif args[:1] == ["--build"] and len(args) >= 2:
+        for n in args[1:]:
+            build_plan(int(n))
+    else:
+        run_daily()
