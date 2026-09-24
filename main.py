@@ -111,8 +111,8 @@ FALLBACK_FONTS = [
 ]
 
 # Palette
-BG_TOP = (5, 10, 22)
-BG_BOTTOM = (10, 24, 44)
+BG_TOP = (10, 18, 38)
+BG_BOTTOM = (20, 36, 66)
 CARD = (14, 27, 45)
 CARD_2 = (19, 38, 61)
 WHITE = (248, 250, 252)
@@ -258,6 +258,10 @@ def ease_out_cubic(x):
     return 1 - (1 - x) ** 3
 
 
+def ease_in_out(x):
+    return 3 * x * x - 2 * x * x * x
+
+
 def ease_out_back(x, s=1.70158):
     x = x - 1
     return x * x * ((s + 1) * x + s) + 1
@@ -333,19 +337,20 @@ def option_sprite(letter, text, w, h, state):
     im = card_sprite(w, h, fill, outline, width, 30).copy()
     d = ImageDraw.Draw(im)
     pad = 30
-    bx, by, br = pad + 70, pad + h // 2, 40
+    br = int(h * 0.27)
+    bx, by = pad + 30 + br, pad + h // 2
     d.ellipse((bx - br, by - br, bx + br, by + br), fill=badge + (255,))
-    d.text((bx, by), letter, font=get_font(46), fill=(8, 16, 30, 255), anchor="mm")
+    d.text((bx, by), letter, font=get_font(int(br * 1.15)), fill=(8, 16, 30, 255), anchor="mm")
 
-    f, s, lines = fit_lines(text, w - 170, 2, 46, 30)
+    f, s, lines = fit_lines(text, w - (br * 2 + 110), 2, int(h * 0.33), 30)
     lh = int(s * 1.32)
     y0 = by - (len(lines) - 1) * lh / 2
     for i, ln in enumerate(lines):
-        d.text((pad + 135, y0 + i * lh), " ".join(ln), font=f, fill=tcol + (255,), anchor="lm")
+        d.text((bx + br + 40, y0 + i * lh), " ".join(ln), font=f, fill=tcol + (255,), anchor="lm")
 
     if state == "wrong":
         tw = max(text_w(" ".join(l), f) for l in lines)
-        d.line((pad + 130, by, pad + 140 + tw, by), fill=RED + (230,), width=6)
+        d.line((bx + br + 35, by, bx + br + 45 + tw, by), fill=RED + (230,), width=6)
     return im
 
 
@@ -487,7 +492,7 @@ def background(mood):
 
     # vignette
     d = np.sqrt(((xx - bw / 2) / (bw / 2)) ** 2 + ((yy - bh / 2) / (bh / 2)) ** 2)
-    base *= np.clip(1.15 - 0.45 * d, 0.45, 1)[..., None]
+    base *= np.clip(1.15 - 0.35 * d, 0.62, 1)[..., None]
 
     # film grain
     rng = np.random.default_rng(3)
@@ -1108,14 +1113,14 @@ STRICT RULES:
    part must be fully supported by this quote alone.
 2. fact: faithful Hindi translation of what the quote says. Do not add, drop or soften any condition,
    number, exception or authority. Keep standard postal terms (e.g. Head Post Office = प्रधान डाकघर,
-   Sub Post Office = उप डाकघर, Branch Post Office = शाखा डाकघर). Max 25 words.
+   Sub Post Office = उप डाकघर, Branch Post Office = शाखा डाकघर). Max 16 words (short and punchy, but never drop a condition, number, authority or exception).
 3. question: exam-style Hindi question answerable only from the quote. Max 16 words.
 4. a,b,c,d: 2-6 words each. Exactly one correct (matches the quote). The 3 wrong ones must be
    plausible but clearly contradicted by the clause.
 5. correct: the letter.
 6. hint: Hindi clue that comes ONLY from the quote, must not state the answer. No opinions,
    no reasons that are not written in the clause. Max 12 words.
-7. trap: the likely confusion in Hindi, built only from this clause. If it uses another sentence of
+7. trap: the likely confusion in Hindi (max 14 words), built only from this clause. If it uses another sentence of
    the clause, copy that sentence verbatim into trap_quote. Else trap_quote = "". Max 18 words.
 8. yaad: 1-line Hindi memory formula (max 8 words, = and + allowed), fully consistent with fact.
 9. hook: spoken Hindi challenge line, max 12 words, no fake statistics, no emoji.
@@ -1517,7 +1522,19 @@ def prepare_data(data, clause_no, part_no, total_parts=1, next_title="अगल�
         data[letters[i].lower()] = txt
     wrong = [l for l, _ in data["options"] if l != data["correct"]]
     rng.shuffle(wrong)
+    # HOOK ke liye 'A ya B?' jodi: sahi jawab + sabse zyada confuse karne wala galat option
+    # (jo trap/hint me aata ho, warna pehla). Wahi 'bache do' me sabse aakhir me katega.
+    def _overlap(txt):
+        words = set(re.findall(r"[\w\u0900-\u097F]+", txt))
+        ref = set(re.findall(r"[\w\u0900-\u097F]+", data.get("trap", "") + " " + data.get("hint", "")))
+        return len(words & ref)
+    confusing = max(wrong, key=lambda l: (_overlap(dict(data["options"])[l]), -wrong.index(l)))
+    wrong = [l for l in wrong if l != confusing] + [confusing]
     data["elim_order"] = wrong
+    pair = [data["correct_text"], dict(data["options"])[confusing]]
+    if rng.random() < 0.5:
+        pair.reverse()
+    data["vs_pair"] = pair
     data["clause_no"], data["part_no"] = clause_no, part_no
     data["total_parts"] = total_parts
     data["hl_words"] = [re.sub(r"[,.!?।:()]", "", w) for w in data["correct_text"].split() if len(w) > 1]
@@ -1571,10 +1588,10 @@ def build_scene_specs(data):
           jo sirf SUNNI hai (hook, reveal) uske baad turant agla scene.
     """
     return [
-        {"name": "hook", "mood": "red", "tail": 0.10, "min": 2.0,
-         "segs": [("hook", data["hook"])]},
+        {"name": "hook", "mood": "red", "tail": 0.15, "min": 2.2,
+         "segs": [("vs", f"{data['vs_pair'][0]}, या {data['vs_pair'][1]}?"), ("hook", data["hook"])]},
         {"name": "question", "mood": "blue", "tail": 0.35, "min": 2.6,
-         "segs": [("q", data["question"])]},
+         "segs": [("q", "चारों में से सही कौन सा?")]},
         {"name": "countdown", "mood": "purple", "tail": 0.0,
          "min": COUNTDOWN_SECONDS * COUNTDOWN_STEP + 0.35,
          "segs": [("lock", "जवाब कमेंट कीजिए!")]},
@@ -1938,109 +1955,197 @@ def topic_chip(canvas, data, y, a=1.0):
     place(canvas, chip, W / 2, y, alpha=a)
 
 
+# ==================== SCENES ====================
+
+@lru_cache(maxsize=4)
+def audience_banner():
+    text = "GDS  \u2192  MTS / POSTMAN  परीक्षा"
+    f = get_font(46)
+    w, h = int(text_w(text, f)) + 90, 96
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=22, fill=YELLOW + (255,))
+    d.text((w / 2, h / 2 + 2), text, font=f, fill=(25, 18, 0, 255), anchor="mm")
+    return im
+
+
+@lru_cache(maxsize=16)
+def vs_card(text, w=900, h=190, active=False):
+    fill = (30, 58, 96) if active else (22, 42, 72)
+    im = card_sprite(w, h, fill, CYAN if active else (80, 120, 170), 7 if active else 5, 36).copy()
+    d = ImageDraw.Draw(im)
+    f, s, lines = fit_lines(text, w - 80, 2, 70, 40)
+    lh = int(s * 1.25)
+    y0 = 30 + h / 2 - (len(lines) - 1) * lh / 2
+    for k, ln in enumerate(lines):
+        d.text((30 + w / 2, y0 + k * lh), " ".join(ln), font=f, fill=WHITE + (255,), anchor="mm")
+    return im
+
+
+def scene_hook(cv, data, t, dur, m, vd, sc):
+    """
+    Frame 0 pe hi: kiske liye (banner) + sawal (poora, chamakta) + '4 ya 5?' do bade jawab + EXAM TRAP.
+    Viewer pehle second me hi man me ek jawab chun leta hai -> jawab jaanne ke liye rukta hai.
+    """
+    fx = {}
+    place(cv, audience_banner(), W / 2, 215, scale=0.92 + 0.08 * ease_out_back(prog(t, 0, 0.3)))
+
+    # sawal: frame 0 se poora dikhe (koi grey/chhupa shabd nahi), bolte shabd peele
+    p, th = seg_progress(sc, "hook", t)
+    draw_kinetic(cv, data["hook"], W / 2, 0, 940, 74, max(p, 0.0), max_lines=3, min_size=48,
+                 ghost=1.0, center_y=470, th=th)
+
+    # 'A ya B?' cards
+    s0, s1 = m["vs"]
+    mid = s0 + (s1 - s0) * 0.5
+    a, b = data["vs_pair"]
+    k = ease_out_back(prog(t, 0, 0.28))
+    place(cv, glow_sprite(420, RED, 70), W / 2, 1010)
+    if t < s1 + 0.1:
+        act_a, act_b = t < mid, mid <= t
+    else:                                   # "ye ya wo?" - baari-baari chamak
+        flip = int((t - s1) / 0.55) % 2 == 0
+        act_a, act_b = flip, not flip
+    bump_a = 1.03 if (act_a and t >= s1) else 1.0
+    bump_b = 1.03 if (act_b and t >= s1) else 1.0
+    place(cv, vs_card(a, active=act_a), W / 2, 830, scale=(0.88 + 0.12 * k) * bump_a)
+    place(cv, vs_card(b, active=act_b), W / 2, 1190, scale=(0.88 + 0.12 * k) * bump_b)
+    pulse = 1 + 0.06 * math.sin(t * 9)
+    place(cv, glow_sprite(90, YELLOW, 160), W / 2, 1010)
+    place(cv, pill_sprite("या", 56, (25, 18, 0), YELLOW, ORANGE), W / 2, 1010, scale=pulse)
+
+    # EXAM TRAP stamp: 0.12s pe slam
+    st = sc["stamp_t"]
+    kk = prog(t, st, 0.16)
+    if t >= st:
+        place(cv, stamp_sprite(), W / 2 + 250, 680, scale=(1.9 - 0.9 * ease_out_cubic(kk)) * 0.62,
+              angle=-11, alpha=clamp(kk * 3))
+        if t < st + 0.3:
+            fx["shake"] = 12 * (1 - prog(t, st + 0.04, 0.26))
+    else:
+        place(cv, stamp_sprite(), W / 2 + 250, 680, scale=0.62, angle=-11, alpha=0.35)
+
+    d = ImageDraw.Draw(cv)
+    d.text((W / 2, 1420), "आपका जवाब? पूरा देखिए, आखिर में मिलेगा", font=get_font(40),
+           fill=YELLOW, anchor="mm")
+    return fx
+
+
+# ---- layout: poori screen use ho (pehle neeche 40% khaali rehta tha) ----
+OPT_W, OPT_H = 940, 176
+STEPPER_Y = 1552
+STEPS = ["सवाल", "हिंट", "जवाब", "नियम", "ट्रैप", "याद"]
+
+
+def current_step(name, t, m):
+    if name in ("question", "countdown"):
+        return 0
+    if name == "hint":
+        return 1
+    if name in ("eliminate", "reveal"):
+        return 2
+    if name == "rule":
+        return 4 if t >= m["trapx"][0] - 0.1 else 3
+    if name == "cta":
+        return 5
+    return -1
+
+
+def draw_stepper(cv, step, t):
+    """Neeche progress: viewer ko dikhe kya ho gaya aur kya baaki hai (open loop)."""
+    if step < 0:
+        return
+    n = len(STEPS)
+    x0, x1 = 90, W - 90
+    xs = [x0 + (x1 - x0) * k / (n - 1) for k in range(n)]
+    d = ImageDraw.Draw(cv)
+    d.line((x0, STEPPER_Y, x1, STEPPER_Y), fill=(60, 80, 110), width=6)
+    d.line((x0, STEPPER_Y, xs[step], STEPPER_Y), fill=GREEN, width=6)
+    f = get_font(30)
+    for k, x in enumerate(xs):
+        if k < step:
+            col, r, tcol = GREEN, 16, (150, 220, 170)
+        elif k == step:
+            col, r, tcol = YELLOW, 22 + 3 * math.sin(t * 8), YELLOW
+        else:
+            col, r, tcol = (70, 90, 120), 14, (120, 135, 160)
+        d.ellipse((x - r, STEPPER_Y - r, x + r, STEPPER_Y + r), fill=col)
+        d.text((x, STEPPER_Y + 48), STEPS[k], font=f, fill=tcol, anchor="mm")
+    if step < 4:
+        a = 0.6 + 0.4 * math.sin(t * 5)
+        d.text((W / 2, STEPPER_Y - 62), "आगे: EXAM TRAP  \u2192", font=get_font(34),
+               fill=mix(BG_BOTTOM, ORANGE, a), anchor="mm")
+
+
 def opt_positions(n=4, y0=720, gap=190):
     return [y0 + i * gap for i in range(n)]
 
 
-# ==================== SCENES ====================
-
-def scene_hook(cv, data, t, dur, m, vd, sc):
-    stamp_t = sc["stamp_t"]
-    e = ease_out_back(prog(t, 0, 0.35))
-    bob = math.sin(t * 5) * 8
-    place(cv, glow_sprite(260, RED, 90), W / 2, 430)
-    place(cv, envelope_sprite(), W / 2, 430 + bob, scale=0.6 + 0.4 * e, angle=math.sin(t * 3) * 4)
-
-    chip = pill_sprite("GDS  |  MTS  |  PA  |  IP  EXAM", 30, YELLOW, (45, 30, 5), ORANGE)
-    place(cv, chip, W / 2, 230, alpha=0.4 + 0.6 * prog(t, 0, 0.2))
-
-    p, th = seg_progress(sc, "hook", t)
-    draw_kinetic(cv, data["hook"], W / 2, 0, 920, 80, p, max_lines=4, min_size=50,
-                 ghost=0.22, center_y=880, th=th)
-
-    fx = {}
-    if t >= stamp_t:
-        k = prog(t, stamp_t, 0.18)
-        place(cv, stamp_sprite(), W / 2, 1310, scale=2.3 - 1.3 * ease_out_cubic(k), angle=-9,
-              alpha=clamp(k * 3))
-        if t < stamp_t + 0.35:
-            fx["shake"] = 16 * (1 - prog(t, stamp_t + 0.05, 0.3))
-        fx["flash"] = 0.25 * (1 - prog(t, stamp_t, 0.12))
-
-    blink = 0.55 + 0.45 * math.sin(t * 7)
-    d = ImageDraw.Draw(cv)
-    d.text((W / 2, 1500), "जवाब सबसे आखिर में, पहले खुद सोचिए", font=get_font(38),
-           fill=mix(BG_BOTTOM, YELLOW, blink), anchor="mm")
-    return fx
-
-
 def scene_question(cv, data, t, dur, m, vd, sc):
-    place(cv, pill_sprite("सवाल", 34, WHITE, (37, 60, 140), BLUE), W / 2, 215)
-    topic_chip(cv, data, 300, a=0.9)
+    place(cv, pill_sprite("सवाल", 40, WHITE, (37, 60, 140), BLUE), W / 2, 225)
+    topic_chip(cv, data, 318, a=0.95)
+    draw_kinetic(cv, data["question"], W / 2, 0, 960, 66, 1.0, max_lines=3, min_size=44,
+                 karaoke=False, center_y=500)
 
-    qp, th = seg_progress(sc, "q", t)
-    draw_kinetic(cv, data["question"], W / 2, 390, 920, 58, qp, max_lines=3, min_size=40, ghost=0.15, th=th)
-
-    ys = opt_positions()
+    ys = opt_positions(y0=760, gap=200)
     for i, (l, txt) in enumerate(data["options"]):
         s0 = sc["opt_t"][i]
         k = prog(t, s0, 0.3)
         if k <= 0:
-            place(cv, option_sprite(l, txt, 900, 150, "normal"), W / 2, ys[i], alpha=0.12)
+            place(cv, option_sprite(l, txt, OPT_W, OPT_H, "normal"), W / 2, ys[i], alpha=0.12)
             continue
         active = s0 <= t < s0 + 0.35
         e = ease_out_back(k)
-        place(cv, option_sprite(l, txt, 900, 150, "active" if active else "normal"),
+        place(cv, option_sprite(l, txt, OPT_W, OPT_H, "active" if active else "normal"),
               W / 2 + (1 - e) * 500, ys[i], alpha=clamp(k * 2), scale=1.04 if active else 1.0)
     return {}
 
 
 def scene_countdown(cv, data, t, dur, m, vd, sc):
     d = ImageDraw.Draw(cv)
-    d.text((W / 2, 230), "अपना जवाब लॉक कीजिए!", font=get_font(62), fill=WHITE, anchor="mm")
-    ys = opt_positions(y0=420, gap=165)
+    d.text((W / 2, 235), "अपना जवाब लॉक कीजिए!", font=get_font(70), fill=WHITE, anchor="mm")
+    ys = opt_positions(y0=420, gap=178)
     pulse = 1 + 0.015 * math.sin(t * 10)
     for i, (l, txt) in enumerate(data["options"]):
-        place(cv, option_sprite(l, txt, 860, 132, "normal"), W / 2, ys[i], scale=pulse)
+        place(cv, option_sprite(l, txt, OPT_W, 158, "normal"), W / 2, ys[i], scale=pulse)
 
-    cx, cy, r = W / 2, 1270, 150
+    cx, cy, r = W / 2, 1195, 150
     step = COUNTDOWN_STEP
     cd = COUNTDOWN_SECONDS * step
     done = t >= cd
     num = max(1, COUNTDOWN_SECONDS - int(t / step))
     frac = (t / step) - int(t / step)
-    place(cv, glow_sprite(260, PURPLE, 120), cx, cy)
+    place(cv, glow_sprite(280, PURPLE, 140), cx, cy)
     d = ImageDraw.Draw(cv)
-    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(20, 16, 40), outline=(60, 50, 100), width=14)
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(24, 20, 50), outline=(70, 60, 120), width=14)
     remain = 0.0 if done else clamp(1 - t / cd)
     if remain > 0.002:
         d.arc((cx - r, cy - r, cx + r, cy + r), -90, -90 + 360 * remain, fill=YELLOW, width=14)
     if done:
         place(cv, lock_sprite(150), cx, cy, scale=max(0.05, ease_out_back(prog(t, cd, 0.3))))
     else:
-        s = 1.35 - 0.35 * ease_out_cubic(clamp(frac * 3))
-        d.text((cx, cy), str(num), font=get_font(int(150 * s)), fill=YELLOW, anchor="mm")
-
-    d.text((W / 2, 1520), "कमेंट करें:  A  /  B  /  C  /  D", font=get_font(46), fill=WHITE, anchor="mm")
+        s_ = 1.35 - 0.35 * ease_out_cubic(clamp(frac * 3))
+        d.text((cx, cy), str(num), font=get_font(int(150 * s_)), fill=YELLOW, anchor="mm")
+    d.text((W / 2, 1400), "कमेंट करें:  A  /  B  /  C  /  D", font=get_font(52), fill=WHITE, anchor="mm")
     return {"shake": 5 if (not done and frac < 0.08 and t > 0.05) else 0}
 
 
 def scene_hint(cv, data, t, dur, m, vd, sc):
     k = ease_out_back(prog(t, 0, 0.35))
     glow = 0.7 + 0.3 * math.sin(t * 6)
-    place(cv, glow_sprite(280, YELLOW, int(120 * glow)), W / 2, 470)
-    place(cv, bulb_sprite(240), W / 2, 470, scale=max(0.05, 0.5 + 0.5 * k), angle=math.sin(t * 4) * 5)
-    place(cv, pill_sprite("HINT", 44, (30, 20, 0), YELLOW, YELLOW), W / 2, 690, scale=max(0.05, k))
+    place(cv, glow_sprite(330, YELLOW, int(130 * glow)), W / 2, 430)
+    place(cv, bulb_sprite(300), W / 2, 430, scale=max(0.05, 0.5 + 0.5 * k), angle=math.sin(t * 4) * 5)
+    place(cv, pill_sprite("HINT", 52, (30, 20, 0), YELLOW, YELLOW), W / 2, 680, scale=max(0.05, k))
 
-    bh = text_block_h(data["hint"], 820, 64, 4, 42)
-    ch = bh + 140
-    place(cv, card_sprite(940, ch, CARD, ORANGE, 5, 40), W / 2, 1000, alpha=clamp(k))
+    bh = text_block_h(data["hint"], 860, 74, 4, 46)
+    ch = max(bh + 170, 360)
+    cy = 1000
+    place(cv, card_sprite(980, ch, (34, 30, 18), ORANGE, 6, 44), W / 2, cy, alpha=clamp(k))
     p, th = seg_progress(sc, "hint", t)
-    draw_kinetic(cv, data["hint"], W / 2, 0, 820, 64, p, max_lines=4, min_size=42, ghost=0.12,
-                 center_y=1000, th=th)
-
+    draw_kinetic(cv, data["hint"], W / 2, 0, 860, 74, p, max_lines=4, min_size=46, ghost=0.18,
+                 center_y=cy, th=th)
     d = ImageDraw.Draw(cv)
-    d.text((W / 2, 1000 + ch / 2 + 110), "अब भी वही जवाब?", font=get_font(46), fill=MUTED, anchor="mm")
+    d.text((W / 2, cy + ch / 2 + 95), "अब भी वही जवाब?", font=get_font(54), fill=WHITE, anchor="mm")
     return {}
 
 
@@ -2053,9 +2158,9 @@ def scene_eliminate(cv, data, t, dur, m, vd, sc):
         title, tcol = "बचे दो... सही कौन?", YELLOW
     else:
         title, tcol = "गलत हटाओ!", WHITE
-    d.text((W / 2, 250), title, font=get_font(66), fill=tcol, anchor="mm")
+    d.text((W / 2, 260), title, font=get_font(74), fill=tcol, anchor="mm")
 
-    ys = opt_positions(y0=520, gap=200)
+    ys = opt_positions(y0=520, gap=212)
     fx = {}
     order = data["elim_order"]
     kill_t = {order[0]: m["x1"][0], order[1]: m["x2"][0], order[2]: m["x3"][0]}
@@ -2064,113 +2169,123 @@ def scene_eliminate(cv, data, t, dur, m, vd, sc):
         if l in kill_t and t >= kill_t[l]:
             k = prog(t, kill_t[l], 0.25)
             shake = math.sin(k * 40) * 18 * (1 - k)
-            place(cv, option_sprite(l, txt, 900, 150, "wrong"), W / 2 + shake, y,
-                  alpha=1 - 0.55 * k, scale=1 - 0.06 * k)
-            place(cv, x_mark_sprite(), W / 2 + 390, y, scale=max(0.05, 1.8 - 0.8 * ease_out_back(k)))
+            place(cv, option_sprite(l, txt, OPT_W, OPT_H, "wrong"), W / 2 + shake, y,
+                  alpha=1 - 0.5 * k, scale=1 - 0.05 * k)
+            place(cv, x_mark_sprite(), W / 2 + 400, y, scale=max(0.05, 1.8 - 0.8 * ease_out_back(k)))
             if t - kill_t[l] < 0.1:
                 fx["shake"] = 8
         else:
             suspense = t >= m["left"][0]
             sc_ = 1 + (0.03 * math.sin(t * 12) if suspense else 0)
-            place(cv, option_sprite(l, txt, 900, 150, "active" if suspense else "normal"), W / 2, y, scale=sc_)
+            place(cv, option_sprite(l, txt, OPT_W, OPT_H, "active" if suspense else "normal"), W / 2, y, scale=sc_)
 
     if suspense_phase:
         heart = 0.5 + 0.5 * math.sin(t * 14)
         d = ImageDraw.Draw(cv)
-        d.text((W / 2, 1400), "? ? ?", font=get_font(70), fill=mix(BG_BOTTOM, YELLOW, heart), anchor="mm")
+        d.text((W / 2, 1405), "? ? ?", font=get_font(84), fill=mix(BG_BOTTOM, YELLOW, heart), anchor="mm")
     return fx
 
 
 def scene_reveal(cv, data, t, dur, m, vd, sc):
-    place(cv, rays_sprite(), W / 2, 860, angle=t * 25, scale=1.1)
-    place(cv, glow_sprite(360, GREEN, 140), W / 2, 860)
+    cy = 820
+    place(cv, rays_sprite(), W / 2, cy, angle=t * 25, scale=1.25)
+    place(cv, glow_sprite(400, GREEN, 150), W / 2, cy)
 
     d = ImageDraw.Draw(cv)
-    d.text((W / 2, 290), "सही जवाब", font=get_font(72), fill=GREEN, anchor="mm")
+    d.text((W / 2, 280), "सही जवाब", font=get_font(84), fill=GREEN, anchor="mm")
 
     k = ease_out_back(prog(t, 0, 0.4))
-    place(cv, check_sprite(170), W / 2, 560, scale=max(0.05, 0.3 + 0.7 * k))
-    place(cv, option_sprite(data["correct"], data["correct_text"], 920, 170, "correct"),
-          W / 2, 860, scale=max(0.05, 0.7 + 0.35 * k))
+    place(cv, check_sprite(190), W / 2, 520, scale=max(0.05, 0.3 + 0.7 * k))
+    place(cv, option_sprite(data["correct"], data["correct_text"], 900, 200, "correct"),
+          W / 2, cy + 20, scale=max(0.05, 0.8 + 0.2 * min(k, 1.0) + 0.03 * max(k - 1.0, 0)))
 
     rng = random.Random(9)
     d = ImageDraw.Draw(cv)
-    for _ in range(70):
+    for _ in range(90):
         ang = rng.uniform(0, 2 * math.pi)
         sp = rng.uniform(500, 1300)
         col = rng.choice([GREEN, YELLOW, CYAN, WHITE, ORANGE])
-        sz = rng.randint(8, 16)
+        sz = rng.randint(10, 18)
         x = W / 2 + math.cos(ang) * sp * t * 0.9
-        y = 860 + math.sin(ang) * sp * t * 0.9 + 900 * t * t
+        y = cy + math.sin(ang) * sp * t * 0.9 + 900 * t * t
         if 0 < x < W and 0 < y < H and t < 1.8:
             d.rectangle((x, y, x + sz, y + sz * 0.6), fill=col)
 
-    d.text((W / 2, 1160), "आपका जवाब सही था?", font=get_font(48), fill=WHITE, anchor="mm")
+    d.text((W / 2, 1120), "आपका जवाब सही था?", font=get_font(60), fill=WHITE, anchor="mm")
+    place(cv, pill_sprite("सही था तो कमेंट:  " + data["correct"], 44, (5, 30, 15), GREEN, GREEN),
+          W / 2, 1260, scale=max(0.05, ease_out_back(prog(t, 0.35, 0.3))))
     return {"flash": 0.28 * (1 - prog(t, 0, 0.12))}
 
 
 def scene_rule(cv, data, t, dur, m, vd, sc):
-    topic_chip(cv, data, 230)
-    fh = text_block_h(data["fact"], 860, 58, 5, 38) + 150
-    th = text_block_h(data["trap"], 860, 54, 4, 36) + 150
-    gap = 110
-    top = max(330, (330 + 1560) / 2 - (fh + gap + th) / 2)
-    fc, tc = top + fh / 2, top + fh + gap + th / 2
-
-    k1 = ease_out_back(prog(t, 0, 0.35))
-    place(cv, card_sprite(960, int(fh), (12, 36, 28), GREEN, 5, 40), W / 2, fc,
-          scale=0.92 + 0.08 * k1, alpha=clamp(k1))
-    place(cv, pill_sprite("नियम", 40, (5, 30, 15), GREEN, GREEN), W / 2, fc - fh / 2, scale=max(0.05, k1))
-    fp, th_f = seg_progress(sc, "fact", t)
-    draw_kinetic(cv, data["fact"], W / 2, 0, 860, 58, fp, max_lines=5, min_size=38,
-                 hl_words=data["hl_words"], hl_color=GREEN, ghost=0.12, center_y=fc + 10, th=th_f)
+    topic_chip(cv, data, 235)
+    FS, TS = 64, 58
+    fh = text_block_h(data["fact"], 880, FS, 5, 42) + 160
+    th = text_block_h(data["trap"], 880, TS, 4, 40) + 160
+    gap = 105
+    area_top, area_bot = 320, 1450
+    top = max(area_top, (area_top + area_bot) / 2 - (fh + gap + th) / 2)
+    fc_final, tc = top + fh / 2, top + fh + gap + th / 2
+    fc_center = (area_top + area_bot) / 2 - 60
 
     ts = m["trapx"][0]
+    # trap aane se pehle niyam card screen ke beech me bada; trap aate hi upar khisakta hai
+    mv = ease_in_out(prog(t, ts - 0.45, 0.4)) if t >= ts - 0.45 else 0.0
+    fc = fc_center + (fc_final - fc_center) * mv
+
+    k1 = ease_out_back(prog(t, 0, 0.35))
+    place(cv, card_sprite(980, int(fh), (14, 44, 32), GREEN, 6, 44), W / 2, fc,
+          scale=0.92 + 0.08 * k1, alpha=clamp(k1))
+    place(cv, pill_sprite("नियम", 46, (5, 30, 15), GREEN, GREEN), W / 2, fc - fh / 2, scale=max(0.05, k1))
+    fp, th_f = seg_progress(sc, "fact", t)
+    draw_kinetic(cv, data["fact"], W / 2, 0, 880, FS, fp, max_lines=5, min_size=42,
+                 hl_words=data["hl_words"], hl_color=GREEN, ghost=0.18, center_y=fc + 10, th=th_f)
+
     fx = {}
     if t >= ts - 0.1:
         k2 = ease_out_back(prog(t, ts - 0.1, 0.35))
-        place(cv, card_sprite(960, int(th), (48, 16, 22), RED, 5, 40), W / 2, tc,
+        place(cv, card_sprite(980, int(th), (56, 18, 26), RED, 6, 44), W / 2, tc,
               scale=0.9 + 0.1 * k2, alpha=clamp(k2))
-        place(cv, pill_sprite("EXAM TRAP", 40, WHITE, RED, RED), W / 2, tc - th / 2,
+        place(cv, pill_sprite("EXAM TRAP", 46, WHITE, RED, RED), W / 2, tc - th / 2,
               scale=max(0.05, k2), angle=-3)
         tp, th2 = seg_progress(sc, "trap", t)
-        draw_kinetic(cv, data["trap"], W / 2, 0, 860, 54, tp, max_lines=4, min_size=36,
-                     ghost=0.12, center_y=tc + 10, th=th2)
+        draw_kinetic(cv, data["trap"], W / 2, 0, 880, TS, tp, max_lines=4, min_size=40,
+                     ghost=0.18, center_y=tc + 10, th=th2)
         if t - ts < 0.12:
             fx["shake"] = 6
     else:
         d = ImageDraw.Draw(cv)
         a = 0.5 + 0.5 * math.sin(t * 6)
-        d.text((W / 2, tc), "लेकिन असली ट्रैप अभी बाकी है...", font=get_font(46),
-               fill=mix(BG_BOTTOM, ORANGE, a), anchor="mm")
+        d.text((W / 2, fc + fh / 2 + 110), "लेकिन असली ट्रैप अभी बाकी है...", font=get_font(52),
+               fill=mix(BG_BOTTOM, ORANGE, 0.4 + 0.6 * a), anchor="mm")
     return fx
 
 
 def scene_cta(cv, data, t, dur, m, vd, sc):
     """Aakhri frame = sabse important info (yaad formula). Jo yahan tak aaya, wo niyam lekar jaye."""
     k = ease_out_back(prog(t, 0, 0.35))
-    place(cv, pill_sprite("याद रखिए", 46, (30, 20, 0), YELLOW, YELLOW), W / 2, 330, scale=max(0.05, k))
+    place(cv, pill_sprite("याद रखिए", 54, (30, 20, 0), YELLOW, YELLOW), W / 2, 330, scale=max(0.05, k))
 
-    bh = text_block_h(data["yaad"], 860, 76, 3, 48)
-    ch = bh + 170
-    place(cv, glow_sprite(420, YELLOW, 70), W / 2, 640)
-    place(cv, card_sprite(980, ch, (40, 32, 8), YELLOW, 6, 44), W / 2, 640,
+    cy = 640
+    bh = text_block_h(data["yaad"], 880, 84, 3, 52)
+    ch = bh + 190
+    place(cv, glow_sprite(460, YELLOW, 80), W / 2, cy)
+    place(cv, card_sprite(1000, ch, (46, 38, 10), YELLOW, 7, 46), W / 2, cy,
           scale=0.9 + 0.1 * k, alpha=clamp(k))
     p, th = seg_progress(sc, "yaad", t)
-    draw_kinetic(cv, data["yaad"], W / 2, 0, 860, 76, max(p, 0.001), max_lines=3, min_size=48,
-                 ghost=0.25, center_y=640, th=th, karaoke=True)
+    draw_kinetic(cv, data["yaad"], W / 2, 0, 880, 84, max(p, 0.001), max_lines=3, min_size=52,
+                 ghost=0.3, center_y=cy, th=th, karaoke=True)
 
-    y2 = 640 + ch / 2 + 120
+    y2 = cy + ch / 2 + 120
     k2 = ease_out_back(prog(t, 0.5, 0.35))
-    d = ImageDraw.Draw(cv)
-    place(cv, pill_sprite("सही था? कमेंट करें: पक्का", 44, (5, 30, 15), GREEN, GREEN), W / 2, y2,
+    place(cv, pill_sprite("सही था? कमेंट करें: पक्का", 50, (5, 30, 15), GREEN, GREEN), W / 2, y2,
           scale=max(0.05, k2))
+    d = ImageDraw.Draw(cv)
     if k2 > 0.3:
-        d = ImageDraw.Draw(cv)
-        d.text((W / 2, y2 + 130), "अगला:  " + data["next_title"], font=get_font(40), fill=MUTED, anchor="mm")
+        d.text((W / 2, y2 + 140), "अगला:  " + data["next_title"], font=get_font(46), fill=WHITE, anchor="mm")
     pulse = 1 + 0.04 * math.sin(t * 8)
-    place(cv, pill_sprite("FOLLOW  @POSTAL_WALA", 44, WHITE, (220, 38, 38), (255, 120, 120)),
-          W / 2, y2 + 250, scale=pulse, alpha=clamp(k2))
+    place(cv, pill_sprite("FOLLOW  @POSTAL_WALA", 50, WHITE, (220, 38, 38), (255, 120, 120)),
+          W / 2, y2 + 280, scale=pulse, alpha=clamp(k2))
     return {}
 
 
@@ -2188,9 +2303,10 @@ def render_frame(sc, data, gt, total):
     cv = bg_frame(sc["mood"], gt)
     fx = SCENES[sc["name"]](cv, data, t, sc["dur"], sc["marks"], sc["vdur"], sc) or {}
     draw_header(cv, data, gt, total)
+    draw_stepper(cv, current_step(sc["name"], t, sc["marks"]), t)
 
     # scene-entry punch zoom
-    if sc["index"] > 0 and t < 0.2:
+    if t < 0.2:
         z = 1 + 0.07 * (1 - ease_out_cubic(t / 0.2))
         nw, nh = int(W * z), int(H * z)
         big = cv.resize((nw, nh), Image.BILINEAR)
@@ -2235,13 +2351,10 @@ def build_timeline(specs, voices, data):
         }
         if sp["name"] == "hook":
             # stamp aakhri shabd (stake) ke saath girta hai
-            last_words = wt["hook"][-2:] if len(wt["hook"]) >= 2 else [vdur * 0.6]
-            sc["stamp_t"] = min(max(0.5, last_words[0]), dur - 0.4)
+            sc["stamp_t"] = 0.12                         # stamp pehle 0.12 sec me (pehle 2.2s tha)
         if sp["name"] == "question":
             # options sawal ke 60% pe aane lagte hain -> jab tak sawal khatam, options padhne layak
-            q_words = wt["q"]
-            first = q_words[int(len(q_words) * 0.6)] if q_words else vdur * 0.6
-            sc["opt_t"] = [first + j * 0.16 for j in range(4)]
+            sc["opt_t"] = [0.12 + j * 0.14 for j in range(4)]
         timeline.append(sc)
         cur += dur
     return timeline, cur
@@ -2396,30 +2509,3 @@ def run_daily():
     # publish mark (index ki jagah flag, taaki baad me sudhre parts se kram na bigde)
     import datetime
     part["published"] = datetime.date.today().isoformat()
-    save_plan(plan)
-
-    if advance_main:
-        _, left_no, _ = next_unpublished(plan)
-        if left_no == 0:
-            state["clause_no"] = nxt
-        state["current_part"] = max(1, left_no)
-        save_state(state)
-
-    upcoming = state["clause_no"]
-    if load_plan(upcoming) is None and not _RUN_FLAGS["busy"] and _RUN_FLAGS["builds"] == 0:
-        try:
-            print(f"Agle clause {upcoming} ka plan pehle se bana raha hoon...")
-            build_plan(upcoming, clauses)
-        except Exception as exc:
-            print("Agla plan abhi nahi bana (agle run me banega):", exc)
-
-
-if __name__ == "__main__":
-    args = sys.argv[1:]
-    if args[:1] == ["--list-clauses"]:
-        list_clauses()
-    elif args[:1] == ["--build"] and len(args) >= 2:
-        for n in args[1:]:
-            build_plan(int(n))
-    else:
-        run_daily()
