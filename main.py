@@ -64,7 +64,7 @@ POSTAL_CLAUSE_CATALOG = {
         "total_parts": 3,
         "part_1_focus": "रात्रि डाकघर की स्थापना और कामकाज के घंटे रात 8:30 बजे तक बढ़ाने का विशेष अधिकार महानिदेशक (DG) को है।",
         "part_2_focus": "रविवार और राष्ट्रीय डाक अवकाशों पर रात्रि डाकघर सुबह 10 से शाम 5 बजे तक केवल सीमित सेवाएं देते हैं।",
-        "part_3_focus": "रात्रि डाकघरों में रविवार और अवकाश के दिनों में मनीऑर्डर भुगतान या बचत बैंक निकासी कार्य float कार्य नहीं होता।",
+        "part_3_focus": "रात्रि डाकघरों में रविवार और अवकाश के दिनों में मनीऑर्डर भुगतान या बचत बैंक निकासी कार्य नहीं होता।",
     },
     4: {
         "name": "मोबाइल डाकघर की व्यवस्था",
@@ -96,10 +96,11 @@ POSTAL_CLAUSE_CATALOG = {
 
 
 # -------------------- CURATED FALLBACK BANK --------------------
-
+# FIXED: Hook ab adhure nahi hain. Ye poore, engaging aur suspenseful statements hain.
+# Question 100% formal aur alag rakha gaya hai.
 FALLBACK_SCRIPTS = {
     (1, 1): {
-        "hook": "डाक विभाग का असली बॉस कौन है, क्या आप जानते हैं?",
+        "hook": "क्या आप जानते हैं कि पूरे डाक विभाग को असल में कौन कंट्रोल करता है?",
         "question": "संचार मंत्रालय के अधीन डाक विभाग का शीर्ष प्रशासनिक प्रमुख कौन होता है?",
         "a": "महानिदेशक (DG Posts)", "b": "डाक सचिव", "c": "पोस्टमास्टर जनरल", "d": "अधीक्षक डाकघर",
         "correct": "A", "fact": "संचार मंत्रालय के अधीन महानिदेशक (DG Posts) शीर्ष प्रशासनिक प्रमुख हैं।",
@@ -107,7 +108,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: बॉस हमेशा महानिदेशक (DG) होता है।"
     },
     (1, 2): {
-        "hook": "डाक सेवा बोर्ड में कुल कितने मेंबर होते हैं? 90% गलत!",
+        "hook": "डाक सेवा बोर्ड के सदस्यों की गिनती में 90% छात्र गलती क्यों करते हैं?",
         "question": "डाक सेवा बोर्ड में चेयरमैन सहित कुल पूर्णकालिक सदस्यों की संख्या क्या है?",
         "a": "6 सदस्य", "b": "4 सदस्य", "c": "5 सदस्य", "d": "8 सदस्य",
         "correct": "A", "fact": "डाक सेवा बोर्ड में एक चेयरमैन और 6 पूर्णकालिक सदस्य होते हैं।",
@@ -115,7 +116,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: 1 चेयरमैन + 6 सदस्य = कुल 7।"
     },
     (2, 1): {
-        "hook": "क्या आपको पता है डाकघर की मुख्य श्रेणियां कितनी हैं?",
+        "hook": "क्या आपको पता है कि भारतीय डाकघर को मुख्य रूप से कितनी श्रेणियों में बांटा गया है?",
         "question": "विभागीय नियमों के अनुसार भारतीय डाकघर की कितनी प्रमुख श्रेणियां निर्धारित हैं?",
         "a": "3 श्रेणियां", "b": "2 श्रेणियां", "c": "4 श्रेणियां", "d": "5 श्रेणियां",
         "correct": "A", "fact": "डाकघर की 3 श्रेणियां हैं: प्रधान डाकघर, उप डाकघर और शाखा डाकघर।",
@@ -123,7 +124,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: HO, SO, BO यानी कुल 3 श्रेणियां।"
     },
     (2, 2): {
-        "hook": "एक उप डाकघर (SO) अपनी रिपोर्ट किसे भेजता है?",
+        "hook": "एक उप डाकघर (SO) अपनी रोज़ाना की कमाई का हिसाब किसे भेजता है?",
         "question": "नियमों के अनुसार उप डाकघर (SO) अपना दैनिक लेखा किसे प्रेषित करता है?",
         "a": "प्रधान डाकघर (HO)", "b": "मंडल कार्यालय", "c": "सर्किल कार्यालय", "d": "मुख्यालय",
         "correct": "A", "fact": "उप डाकघर दैनिक लेखा अपने प्रधान डाकघर (HO) को भेजता है।",
@@ -131,7 +132,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: SO का बॉस HO होता है।"
     },
     (2, 3): {
-        "hook": "गाँव के ब्रांच पोस्ट ऑफिस (BO) की ड्यूटी कितने घंटे होती है?",
+        "hook": "गाँव में स्थित ब्रांच पोस्ट ऑफिस (BO) की ड्यूटी असल में कितने घंटे की होती है?",
         "question": "ग्रामीण शाखा डाकघर (BO) के लिए अधिकतम कार्य घंटे कितने निर्धारित हैं?",
         "a": "5 घंटे", "b": "4 घंटे", "c": "6 घंटे", "d": "8 घंटे",
         "correct": "A", "fact": "शाखा डाकघर के कार्य घंटे न्यूनतम 4 और अधिकतम 5 घंटे होते हैं।",
@@ -139,7 +140,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: गाँव में 4-5 घंटे ही काम होता है।"
     },
     (3, 1): {
-        "hook": "डाकघर को रात 8:30 बजे तक खुला रखने का पॉवर किसके पास है?",
+        "hook": "किसी डाकघर को रात 8:30 बजे तक खुला रखने का स्पेशल पॉवर किसके पास है?",
         "question": "रात्रि डाकघर के कामकाज के घंटे 8:30 बजे तक बढ़ाने का विशेष अधिकार किसे है?",
         "a": "महानिदेशक (DG)", "b": "Postmaster", "c": "SSPO", "d": "CPMG",
         "correct": "A", "fact": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का विशेष अधिकार DG को है।",
@@ -147,7 +148,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: नाइट ड्यूटी का अधिकार केवल DG को।"
     },
     (3, 2): {
-        "hook": "संडे के दिन नाईट पोस्ट ऑफिस कितने बजे तक खुलता है?",
+        "hook": "अगर रविवार को नाईट पोस्ट ऑफिस जाना हो, तो उसकी सही टाइमिंग क्या होती है?",
         "question": "रविवार और राष्ट्रीय अवकाशों पर रात्रि डाकघर के काम करने का समय क्या है?",
         "a": "सुबह 10 से शाम 5", "b": "सुबह 8 से दोपहर 2", "c": "दोपहर 12 से शाम 8", "d": "पूरे दिन",
         "correct": "A", "fact": "रविवार और अवकाश के दिन सीमित सेवाएं सुबह 10 से शाम 5 बजे तक मिलती हैं।",
@@ -155,7 +156,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: छुट्टी के दिन 10 से 5 बजे तक की ड्यूटी।"
     },
     (3, 3): {
-        "hook": "छुट्टी के दिन नाईट पोस्ट ऑफिस में कौन सा काम सख्त मना है?",
+        "hook": "क्या रविवार के दिन नाईट पोस्ट ऑफिस से पैसे निकाले या जमा किए जा सकते हैं?",
         "question": "रविवार और अवकाश के दिनों में रात्रि डाकघर में कौन सा कार्य नहीं किया जाता?",
         "a": "मनीऑर्डर व बचत बैंक", "b": "डाक टिकट बिक्री", "c": "स्पीड पोस्ट बुकिंग", "d": "पंजीकृत डाक",
         "correct": "A", "fact": "रविवार और अवकाश के दिन मनीऑर्डर भुगतान और बचत बैंक कार्य नहीं होता।",
@@ -163,7 +164,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: संडे के दिन पैसे का कोई लेन-देन नहीं।"
     },
     (4, 1): {
-        "hook": "मोबाइल डाकघर (Mobile Van) में मेन रूप से क्या काम होता है?",
+        "hook": "शहरों में घूमने वाले मोबाइल डाकघर (Mobile Van) में मेन रूप से क्या काम होता है?",
         "question": "मोबाइल डाकघर में मुख्य रूप से कौन-सी सुविधा प्रदान की जाती है?",
         "a": "डाक व पार्सल बुकिंग", "b": "मनीऑर्डर भुगतान", "c": "बचत बैंक खाता", "d": "डाक जीवन बीमा",
         "correct": "A", "fact": "मोबाइल डाकघर शाम तक सामान्य डाक और पार्सल बुकिंग की सुविधा देते हैं।",
@@ -171,7 +172,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: वैन में सिर्फ पार्सल और डाक।"
     },
     (4, 2): {
-        "hook": "मोबाइल डाकघर में पैसे जमा करना अलाउड है या नहीं?",
+        "hook": "क्या मोबाइल डाकघर में पैसे जमा करने और निकालने की सुविधा दी जाती है?",
         "question": "नियमों के अनुसार मोबाइल डाकघर में किस कार्य की अनुमति नहीं होती है?",
         "a": "मनीऑर्डर व बचत बैंक", "b": "साधारण डाक बुकिंग", "c": "पार्सल बुकिंग", "d": "लेट फीस डाक",
         "correct": "A", "fact": "मोबाइल डाकघर में मनीऑर्डर, बचत बैंक और बीमा कार्य प्रतिबंधित होते हैं।",
@@ -179,7 +180,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: मोबाइल वैन में नो मनी, नो बैंक।"
     },
     (5, 1): {
-        "hook": "क्या डाकघर बंद होने तक आप टिकट खरीद सकते हैं?",
+        "hook": "क्या डाकघर बंद होने के टाइम तक आप काउंटर से डाक टिकट खरीद सकते हैं?",
         "question": "डाकघर में सामान्य डाक टिकटों की बिक्री काउंटर पर कब तक उपलब्ध रहती है?",
         "a": "पूरे कार्य समय तक", "b": "केवल 2 घंटे", "c": "दोपहर 12 बजे तक", "d": "शाम 4 बजे तक",
         "correct": "A", "fact": "सामान्य टिकट बिक्री और डाक बुकिंग पूरे कार्य समय तक खुली रहती है।",
@@ -187,7 +188,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: टिकट काउंटर पूरे दिन खुला रहता है।"
     },
     (5, 2): {
-        "hook": "पब्लिक काउंटर बंद होने के बाद डाक बुक करने का क्या जुगाड़ है?",
+        "hook": "अगर पब्लिक काउंटर का समय खत्म हो जाए, तो अपनी डाक कैसे बुक करवाएं?",
         "question": "सार्वजनिक काउंटर का समय समाप्त होने के बाद डाक कैसे स्वीकार की जाती है?",
         "a": "लेट फीस भुगतान करके", "b": "लिखित आवेदन से", "c": "दोगुने टिकट लगाकर", "d": "अगले कार्यदिवस पर",
         "correct": "A", "fact": "सार्वजनिक काउंटर बंद होने के बाद निर्धारित लेट फीस देकर डाक बुक होती है।",
@@ -195,7 +196,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: समय समाप्त, तो लेट फीस से बुकिंग।"
     },
     (5, 3): {
-        "hook": "शनिवार (Saturday) को डाकघर की टाइमिंग में क्या बदलाव होता है?",
+        "hook": "क्या शनिवार को भी डाकघर के काम करने का समय आम दिनों जितना ही होता है?",
         "question": "शनिवार को डाकघर के सामान्य डाक लेन-देन के समय में क्या नियम लागू होता है?",
         "a": "विभागीय समयावधि कटौती", "b": "सामान्य दिनों जैसा समय", "c": "पूर्ण अवकाश", "d": "रविवार के नियम",
         "correct": "A", "fact": "शनिवार को सामान्य डाक लेन-देन के समय में निर्धारित कटौती लागू होती है।",
@@ -203,7 +204,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: शनिवार हाफ-डे, इसलिए समय में कटौती।"
     },
     (22, 1): {
-        "hook": "अगर आप घर बदल लें, तो फर्स्ट क्लास डाक फॉरवर्ड करने का क्या चार्ज है?",
+        "hook": "अगर आप घर बदल लें, तो आपकी फर्स्ट क्लास डाक फ्री में फॉरवर्ड होगी या नहीं?",
         "question": "पतेदार के स्थान बदलने पर प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण शुल्क क्या है?",
         "a": "पूर्णतः निःशुल्क", "b": "आधा डाक प्रभार", "c": "पूरा डाक प्रभार", "d": "दस रुपये",
         "correct": "A", "fact": "प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण पूरी तरह निःशुल्क होता है।",
@@ -211,7 +212,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: फर्स्ट क्लास डाक की फॉरवर्डिंग एकदम फ्री।"
     },
     (22, 2): {
-        "hook": "पार्सल को दूसरे एरिया में भेजने पर कितना एक्स्ट्रा चार्ज लगता है?",
+        "hook": "अगर कोई पार्सल दूसरे एरिया में भिजवाना हो, तो उसका कितना एक्स्ट्रा चार्ज लगता है?",
         "question": "वितरण क्षेत्र से बाहर किसी पार्सल को पुनः प्रेषित करने पर कितना प्रभार देय होता है?",
         "a": "आधा डाक प्रभार", "b": "पूर्ण डाक प्रभार", "c": "निःशुल्क", "d": "दोगुना प्रभार",
         "correct": "A", "fact": "वितरण क्षेत्र से बाहर भेजे जाने पर आधा डाक प्रभार देय होता है।",
@@ -219,7 +220,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: एरिया बदला, तो आधा चार्ज लगेगा।"
     },
     (22, 3): {
-        "hook": "अगर पार्सल एक बार खोल लिया, तो उसे वापस भेजने का क्या नियम है?",
+        "hook": "अगर पार्सल एक बार खोल लिया जाए, तो उसे दोबारा वापस भेजने का क्या नियम है?",
         "question": "एक बार खुले हुए पार्सल को पुनः प्रेषित करने के लिए क्या शर्त लागू होती है?",
         "a": "नया डाकभार देना होगा", "b": "आधा डाकभार लगेगा", "c": "निःशुल्क भेजा जाएगा", "d": "विशेष छूट मिलेगी",
         "correct": "A", "fact": "खोला गया पार्सल नए डाकभार के बिना पुनः प्रेषित नहीं किया जा सकता।",
@@ -227,7 +228,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: पार्सल खुला, तो पूरा नया चार्ज लगेगा।"
     },
     (23, 1): {
-        "hook": "डाकघर में एड्रेस चेंज करने की एप्लीकेशन कितने दिन वैलिड होती है?",
+        "hook": "डाकघर में अपना नया एड्रेस रजिस्टर करवाने की एप्लीकेशन कितने दिन तक वैलिड रहती है?",
         "question": "लिखित पुनः प्रेषण अनुदेश (Redirection) की अधिकतम वैधता अवधि कितनी होती है?",
         "a": "अधिकतम 3 माह", "b": "6 माह", "c": "1 वर्ष", "d": "1 माह",
         "correct": "A", "fact": "लिखित पुनः प्रेषण अनुदेश की वैधता अवधि अधिकतम 3 माह तक होती है।",
@@ -235,7 +236,7 @@ FALLBACK_SCRIPTS = {
         "trick": "ट्रिक: डायरेक्शन बदलने की एप्लीकेशन सिर्फ 3 माह के लिए।"
     },
     (23, 2): {
-        "hook": "विदेश शिफ्ट होने वालों की डाक फॉरवर्ड करने का क्या रूल है?",
+        "hook": "जो लोग विदेश शिफ्ट हो जाते हैं, उनकी डाक को फॉरवर्ड करने के क्या नियम हैं?",
         "question": "विदेश जाने वाले पतेदारों के डाक पुनः प्रेषण पर कौन से नियम लागू होते हैं?",
         "a": "विशेष डाक नियम", "b": "सामान्य घरेलू नियम", "c": "कोई नियम नहीं", "d": "निःशुल्क विदेशी डाक",
         "correct": "A", "fact": "विदेश जाने वाले पतेदारों के लिए विशेष डाक नियम लागू होते हैं।",
@@ -289,7 +290,7 @@ def clean_text(text):
     text = re.sub(r"[*_`#]+", "", text)
     return " ".join(text.split()).strip()
 
-# -------------------- DRAWING HELPERS --------------------
+# -------------------- DRAWING HELPERS (UPGRADED VISUALS) --------------------
 _bg_cache = None
 def new_canvas():
     global _bg_cache
@@ -297,24 +298,34 @@ def new_canvas():
     
     im = Image.new("RGB", (W, H))
     draw = ImageDraw.Draw(im)
+    
+    # FIXED: Richer Premium Gradient (Dark Indigo to Deep Blue)
     for y in range(H):
         ratio = y / H
-        r, g, b = int(15*(1-ratio)+4), int(32*(1-ratio)+10), int(60*(1-ratio)+20)
+        r, g, b = int(10*(1-ratio)+2), int(22*(1-ratio)+8), int(45*(1-ratio)+15)
         draw.line([(0, y), (W, y)], fill=(r, g, b))
+        
+    # FIXED: Subtle Tech/Modern Dot Grid pattern in background
+    for x in range(0, W, 50):
+        for y in range(0, H, 50):
+            draw.rectangle((x, y, x+2, y+2), fill=(255, 255, 255, 12))
     
+    # Vignette
     vig = Image.new("RGBA", (W, H), (0,0,0,0))
     vig_d = ImageDraw.Draw(vig)
-    vig_d.ellipse((-300, -200, W+300, H+200), outline=(0,0,0,150), width=200)
-    vig = vig.filter(ImageFilter.GaussianBlur(80))
+    vig_d.ellipse((-300, -200, W+300, H+200), outline=(0,0,0,180), width=300)
+    vig = vig.filter(ImageFilter.GaussianBlur(100))
     im.paste(vig, (0,0), vig)
+    
     _bg_cache = im
     return im.copy()
 
-def draw_shadow(im, box, radius, fill=(0,0,0, 100)):
+def draw_shadow(im, box, radius, fill=(0,0,0, 140)):
+    # Darker, slightly wider shadow for better 3D pop
     shadow = Image.new("RGBA", (W, H), (0,0,0,0))
     d = ImageDraw.Draw(shadow)
-    d.rounded_rectangle((box[0]+15, box[1]+15, box[2]+15, box[3]+15), radius, fill=fill)
-    shadow = shadow.filter(ImageFilter.GaussianBlur(20))
+    d.rounded_rectangle((box[0]+12, box[1]+12, box[2]+12, box[3]+12), radius, fill=fill)
+    shadow = shadow.filter(ImageFilter.GaussianBlur(25))
     im.paste(shadow, (0,0), shadow)
 
 def rounded(draw, box, radius=35, fill=CARD, outline=None, width=2):
@@ -331,6 +342,16 @@ def draw_badge(draw, text, cx, cy, size, bg_color, text_color):
 def center_text(draw, text, y, size, fill=WHITE, scale=1.0):
     font = get_font(max(1, int(size * scale)))
     draw.text((W / 2, y), text, font=font, fill=fill, anchor="mm")
+    
+# ADDED: Glowing text function exclusively for the Hook to make it pop!
+def draw_glowing_text(im, draw, text, y, size, fill, scale=1.0):
+    font = get_font(max(1, int(size * scale)))
+    glow = Image.new("RGBA", im.size, (0,0,0,0))
+    glow_d = ImageDraw.Draw(glow)
+    glow_d.text((W/2, y), text, font=font, fill="#F59E0B99", anchor="mm") # Semi-transparent yellow
+    glow = glow.filter(ImageFilter.GaussianBlur(12))
+    im.paste(glow, (0,0), glow)
+    draw.text((W/2, y), text, font=font, fill=fill, anchor="mm")
 
 def brand(draw):
     font = get_font(27)
@@ -380,15 +401,10 @@ def draw_authority_card(im, draw, label, x1, y1, x2, y2, status=None, x_offset=0
             center_text(draw, line, text_y, 38, WHITE)
             text_y += 48
 
-# FIXED: Text Highlight logic strictly synced with Audio Duration
 def draw_word_by_word(draw, text, y_start, font_size, max_w, t, duration):
     font = get_font(font_size)
     words = text.split()
-    
-    # Text highlight ab audio duration ke hisaab se chalega
-    # duration * 0.90 ka matlab hai aawaz khatam hone se thoda pehle highlight poora ho jayega
     finish_time = max(0.1, duration * 0.90) 
-    
     if t >= finish_time:
         revealed_count = len(words)
     else:
@@ -460,8 +476,8 @@ def fallback_script(clause_no, part_no, focus, title):
 
     data = {
         "title": title,
-        "hook": f"{title} का यह नियम अवश्य जानें।",
-        "question": f"{title} के अनुसार कौन-सा कथन सत्य है?",
+        "hook": f"{title} के इस जरुरी नियम को क्या आप जानते हैं?",
+        "question": f"{title} के नियमों के अनुसार कौन-सा कथन पूर्णतः सत्य है?",
         "a": focus[:30],
         "b": "कोई विशेष छूट नहीं",
         "c": "अधीक्षक का अनुमोदन",
@@ -483,6 +499,7 @@ def generate_script(state):
     if not GROQ_API_KEY:
         return fallback_script(clause_no, part_no, focus, title)
 
+    # FIXED: Strict prompt demanding a complete sentence for Hook and a separate formal MCQ Question.
     prompt = f"""
 You are creating an authentic India Post departmental exam Multiple Choice Question (MCQ) in Hindi.
 
@@ -493,8 +510,8 @@ OFFICIAL VERIFIED FACT:
 
 Instructions:
 1. Create 1 genuine departmental exam question directly testable from the verified fact.
-2. HOOK: One sharp, conversational, curiosity-driven TEASER question (max 10 words). Make it informal and engaging.
-3. QUESTION: A formal, 100% exam-oriented MCQ question (max 14 words). MUST NOT be identical to the HOOK.
+2. HOOK: One conversational, curiosity-driven complete statement or question (12-20 words). It MUST feel like a complete thought to grab attention. Do not use fake statistics.
+3. QUESTION: A highly formal, 100% official exam-oriented MCQ question (10-18 words). It MUST be completely different from the HOOK in wording.
 4. A, B, C, D: 4 plausible options (2-5 words each). One must strictly match the verified fact.
 5. CORRECT: Single letter A, B, C, or D.
 6. FACT: Concise one-sentence summary of the rule (max 18 words).
@@ -716,30 +733,33 @@ def scene_hook(data, t, duration):
     bounce = ease_out_back(min(t*2.5, 1.0))
     scale = bounce * (1.0 + (t / duration) * 0.05)
     
-    box = (120, 360, 960, 465)
+    # Outer Border Box
+    box = (100, 360, 980, 465)
     draw_shadow(im, box, 24)
     rounded(d, box, 24, CARD_2, CYAN, 3)
     
-    for x in range(160, 920, 35):
+    for x in range(140, 960, 35):
         d.ellipse((x-8, 360-8, x+8, 360+8), fill=BG)
         d.ellipse((x-8, 465-8, x+8, 465+8), fill=BG)
 
     center_text(d, data["title"], 412, 38, CYAN)
 
-    main_box = (80, 520, 1000, 1260)
+    # Main Card Box
+    main_box = (60, 520, 1020, 1260)
     draw_shadow(im, main_box, 40)
     rounded(d, main_box, 40, CARD, CYAN, 4) 
     
-    draw_badge(d, "🔥 EXAM ALERT", W/2, 600, 42, RED, WHITE)
+    draw_badge(d, "🔥 EXAM ALERT", W/2, 600, 45, RED, WHITE)
 
-    wrapped_hook = wrap_text(d, data["hook"], 65, 860)
+    # FIXED: Hook visual made more engaging with Glowing text
+    wrapped_hook = wrap_text(d, data["hook"], 70, 880) # Larger size and wider width
     lines = wrapped_hook.split("\n")
     y_start = 850 - (len(lines) - 1) * 45
     for line in lines:
-        center_text(d, line, y_start, 65, YELLOW, scale)
-        y_start += 90
+        draw_glowing_text(im, d, line, y_start, 70, YELLOW, scale)
+        y_start += 95
 
-    center_text(d, "पहले जवाब मत देखिए", 1460, 40, WHITE, pulse(t, 6, 0.05))
+    center_text(d, "पहले जवाब मत देखिए", 1460, 42, WHITE, pulse(t, 6, 0.05))
     return im
 
 def scene_guess(data, t, duration):
@@ -839,8 +859,6 @@ def scene_fact(data, t, duration):
     rounded(d, box, 40, CARD, GREEN, 5)
     
     draw_badge(d, "VERIFIED RULE", W/2, 610, 42, GREEN, BG)
-    
-    # FIXED: Audio duration passed for perfect text highlight sync
     draw_word_by_word(d, data["fact"], 750, 46, 820, t, duration)
 
     center_text(d, "सीधे परीक्षा में पूछा जाने वाला नियम", 1520, 36, MUTED)
