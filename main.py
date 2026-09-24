@@ -59,6 +59,13 @@ def _ensure_packages():
 
 _ensure_packages()
 
+# GitHub Actions log me har line turant dikhe (warna sab kuch aakhir me ek saath aata hai)
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+    sys.stderr.reconfigure(line_buffering=True)
+except Exception:
+    pass
+
 import numpy as np
 import requests
 from PIL import Image, ImageDraw, ImageFont, features
@@ -909,30 +916,31 @@ def _raise_for(r, who):
         raise RuntimeError(f"{who} {r.status_code}: {r.text[:300]}")
 
 
-def gemini_model():
+class ProviderBusy(RuntimeError):
+    """AI provider abhi busy/quota khatam - content ki galti nahi."""
+
+
+def gemini_candidates():
     """
-    Google model ke naam badalte rehte hain (2.5 -> 3.x). Isliye har run me ListModels se
-    abhi chalu models dekh ke sabse naya stable 'flash' (ya 'pro') chunte hain.
-    GEMINI_MODEL env diya ho to wahi.
+    Abhi chalu Gemini models, pasand ke kram me. Ek busy (503) ya quota khatam (429) ho
+    to agla try hota hai (free tier me quota har model ka alag hota hai).
     """
     if os.getenv("GEMINI_MODEL"):
-        return os.getenv("GEMINI_MODEL")
-    if "gemini" in _MODEL_CACHE:
-        return _MODEL_CACHE["gemini"]
+        return [os.getenv("GEMINI_MODEL")]
+    if "gemini_list" in _MODEL_CACHE:
+        return _MODEL_CACHE["gemini_list"]
     names = []
     try:
-        url = "https://generativelanguage.googleapis.com/v1beta/models"
         token = None
         for _ in range(5):
             params = {"key": GEMINI_API_KEY.strip(), "pageSize": 200}
             if token:
                 params["pageToken"] = token
-            r = requests.get(url, params=params, timeout=60)
+            r = requests.get("https://generativelanguage.googleapis.com/v1beta/models", params=params, timeout=60)
             _raise_for(r, "Gemini ListModels")
             js = r.json()
-            for m in js.get("models", []):
-                if "generateContent" in (m.get("supportedGenerationMethods") or []):
-                    names.append(m["name"].split("/")[-1])
+            names += [m["name"].split("/")[-1] for m in js.get("models", [])
+                      if "generateContent" in (m.get("supportedGenerationMethods") or [])]
             token = js.get("nextPageToken")
             if not token:
                 break
@@ -943,17 +951,18 @@ def gemini_model():
         m = re.match(r"gemini-(\d+)(?:\.(\d+))?", n)
         return (int(m.group(1)), int(m.group(2) or 0)) if m else (0, 0)
 
-    bad = ("tts", "image", "live", "audio", "embedding", "robotics", "transcribe", "lite", "exp", "preview",
+    bad = ("tts", "image", "live", "audio", "embedding", "robotics", "transcribe", "exp", "preview",
            "learnlm", "gemma", "computer")
-    stable = [n for n in names if n.startswith("gemini-") and not any(b in n for b in bad)]
-    flash = sorted([n for n in stable if "flash" in n], key=ver, reverse=True)
-    pro = sorted([n for n in stable if "pro" in n], key=ver, reverse=True)
-    pick = (flash or pro or sorted([n for n in names if n.startswith("gemini-") and "flash" in n
-                                    and not any(b in n for b in bad[:9])], key=ver, reverse=True) or [None])[0]
-    pick = pick or "gemini-flash-latest"
-    print("Gemini model chuna:", pick)
-    _MODEL_CACHE["gemini"] = pick
-    return pick
+    ok = [n for n in names if n.startswith("gemini-") and not any(b in n for b in bad)]
+    flash = sorted([n for n in ok if "flash" in n and "lite" not in n], key=ver, reverse=True)
+    pro = sorted([n for n in ok if "pro" in n], key=ver, reverse=True)
+    lite = sorted([n for n in ok if "lite" in n], key=ver, reverse=True)
+    ranked = flash + pro + lite
+    if not ranked:
+        ranked = ["gemini-flash-latest"]
+    print("Gemini models (kram):", ", ".join(ranked[:6]))
+    _MODEL_CACHE["gemini_list"] = ranked
+    return ranked
 
 
 def groq_model():
@@ -986,19 +995,33 @@ def groq_model():
     return pick
 
 
+_BUSY = set()   # is run me jo models busy/quota-khatam mile
+_RUN_FLAGS = {"busy": False, "builds": 0}
+
+
 def _gemini(prompt):
-    model = gemini_model()
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-    body = {"contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {"responseMimeType": "application/json"}}
-    r = requests.post(url, params={"key": GEMINI_API_KEY.strip()}, json=body, timeout=240)
-    if r.status_code == 404:                      # model hat gaya -> dobara list se chuno
-        _MODEL_CACHE.pop("gemini", None)
-    _raise_for(r, f"Gemini({model})")
-    js = r.json()
-    parts = js["candidates"][0]["content"]["parts"]
-    text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
-    return _parse_json(text)
+    last = None
+    for model in gemini_candidates():
+        if model in _BUSY:
+            continue
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        body = {"contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"responseMimeType": "application/json"}}
+        try:
+            r = requests.post(url, params={"key": GEMINI_API_KEY.strip()}, json=body, timeout=240)
+        except requests.RequestException as exc:
+            last = exc
+            continue
+        if r.status_code in (404, 429, 503, 500):
+            print(f"  Gemini {model}: {r.status_code} (busy/quota) -> agla model")
+            _BUSY.add(model)
+            last = RuntimeError(f"{model} {r.status_code}")
+            continue
+        _raise_for(r, f"Gemini({model})")
+        parts = r.json()["candidates"][0]["content"]["parts"]
+        text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
+        return _parse_json(text)
+    raise ProviderBusy(f"Saare Gemini models busy/quota khatam: {last}")
 
 
 def _groq(prompt):
@@ -1015,6 +1038,8 @@ def _groq(prompt):
         r = requests.post(url, headers=headers, json=body, timeout=240)
     if r.status_code == 404:
         _MODEL_CACHE.pop("groq", None)
+    if r.status_code in (429, 503, 500, 404):
+        raise ProviderBusy(f"Groq({model}) {r.status_code}: {r.text[:200]}")
     _raise_for(r, f"Groq({model})")
     return _parse_json(r.json()["choices"][0]["message"]["content"])
 
@@ -1029,19 +1054,29 @@ def available_providers():
 
 
 def _llm_json(prompt, only=None):
-    last = None
+    """
+    only=None: jo provider chal jaaye (plan banana). only='gemini'/'groq': wahi (examiner).
+    Sab busy hon to ProviderBusy - taaki ise 'content galat' na maana jaaye.
+    """
+    import time
+    last, busy = None, False
     for name, fn in available_providers():
         if only and name != only:
             continue
-        for attempt in range(3):
+        for attempt in range(2):
             try:
                 return fn(prompt)
+            except ProviderBusy as exc:
+                last, busy = exc, True
+                print(f"  {name} busy: {str(exc)[:160]}")
+                break
             except Exception as exc:
                 last = exc
-                time_wait = 4 * (attempt + 1)
-                print(f"{name} fail ({exc}), {time_wait}s baad dobara...")
-                import time
-                time.sleep(time_wait)
+                print(f"  {name} fail ({str(exc)[:200]}), 6s baad dobara...")
+                time.sleep(6)
+    if busy:
+        _RUN_FLAGS["busy"] = True
+        raise ProviderBusy(str(last))
     raise RuntimeError(f"Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): {last}")
 
 
@@ -1181,23 +1216,30 @@ def build_plan(num, clauses=None, attempts=3):
     for attempt in range(attempts):
         data = _llm_json(PLAN_PROMPT.format(num=num, text=text[:40000], max_parts=MAX_PARTS))
         title_hi = clean_text(data.get("title_hi", "")) or title_hi
-        passed, failed = [], []
+        raw_parts = []
         for part in (data.get("parts") or [])[:MAX_PARTS]:
             part = {k: (v.strip() if isinstance(v, str) else v) for k, v in part.items()}
             part["_clause_no"] = num
-            errs = verify_part(part, text)
-            if not errs:
-                try:
-                    errs = audit_part(part, text)
-                except Exception as exc:
-                    errs = [f"AUDIT nahi ho paya: {exc}"]
+            raw_parts.append(part)
+        print(f"  Clause {num}: {len(raw_parts)} parts bane, jaanch chal rahi hai (ek saath)...")
+
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            results = list(ex.map(lambda pt: check_part(pt, text), raw_parts))
+
+        passed, failed = [], []
+        for part, errs in zip(raw_parts, results):
             part["auto_check"] = not errs
             part["check_errors"] = errs
             (failed if errs else passed).append(part)
         print(f"  Attempt {attempt + 1}: {len(passed)} pass, {len(failed)} fail")
         if attempt == 0 or len(passed) > len(best_passed):
             best_passed, best_failed = passed, failed
-        if passed and not failed:
+        # ek bhi pakka part mil gaya to ruk jao; fail wale agle runs me 'sudhaar' se aayenge
+        if passed:
+            break
+        if failed and all(is_pending(p) for p in failed):
+            print("  Examiner AI abhi busy hai - parts save kar rahe hain, jaanch agle run me.")
             break
     passed, failed = best_passed, best_failed
 
@@ -1300,13 +1342,22 @@ trap_quote, yaad.
 """
 
 
+PENDING = "AUDIT_PENDING"
+
+
+def is_pending(part):
+    errs = part.get("check_errors") or []
+    return bool(errs) and all(str(e).startswith(PENDING) for e in errs)
+
+
 def check_part(part, clause_text):
     errs = verify_part(part, clause_text)
     if not errs:
         try:
             errs = audit_part(part, clause_text)
         except Exception as exc:
-            errs = [f"AUDIT nahi ho paya: {exc}"]
+            # AI busy/quota: content galat nahi, bas jaanch baaki - agle run me dobara
+            errs = [f"{PENDING}: examiner abhi uplabdh nahi ({str(exc)[:120]})"]
     return errs
 
 
@@ -1322,49 +1373,88 @@ def repair_part(part, clause_text):
     return fixed, check_part(fixed, clause_text)
 
 
-def repair_pass(clauses, budget=REPAIRS_PER_RUN):
+def repair_pass(clauses, budget=REPAIRS_PER_RUN, pending_budget=6):
     """
-    Pichhle runs me chhoote parts ko sudharne ki koshish. Sudhar gaya to wo agle video me publish hoga.
-    Jis clause ka plan hi khaali bana tha, use dobara banata hai.
+    1) Jin parts ki jaanch AI busy hone se ruki thi -> sirf dobara jaanch (koshish nahi ginti).
+    2) Jo content ki wajah se fail hue -> galtiyon ke saath sudhaar (MAX_REPAIR_TRIES tak).
+    3) Jis clause ka plan khaali bana -> dobara plan.
+    AI busy mile to turant ruk jaata hai (quota bachane ke liye).
     """
     fixed_any = 0
-    for plan in all_plans():
-        if budget <= 0:
+    plans = sorted(all_plans(), key=lambda p: p["clause_no"])
+
+    for plan in plans:                                     # 1) pending jaanch
+        text = clauses.get(plan["clause_no"])
+        changed = False
+        for part in plan.get("parts", []):
+            if pending_budget <= 0 or _RUN_FLAGS["busy"] or not text:
+                break
+            if part.get("auto_check") or not is_pending(part):
+                continue
+            pending_budget -= 1
+            print(f"Clause {plan['clause_no']}: baaki jaanch ab ho rahi hai...")
+            errs = check_part(part, text)
+            part["check_errors"] = errs
+            changed = True
+            if not errs:
+                part.update({"auto_check": True, "repaired": True})
+                fixed_any += 1
+                print("  PASS - agle video me aayega.")
+            elif is_pending(part):
+                print("  AI abhi bhi busy - agle run me.")
+            else:
+                print("  jaanch me galti mili:", "; ".join(errs)[:200])
+        if changed:
+            save_plan(plan)
+
+    for plan in plans:                                     # 2) + 3) sudhaar
+        if budget <= 0 or _RUN_FLAGS["busy"]:
             break
         num = plan["clause_no"]
         text = clauses.get(num)
         if not text:
             continue
-
         if not plan.get("parts") and plan.get("build_tries", 1) < MAX_REPAIR_TRIES:
             print(f"Clause {num}: plan khaali tha, dobara bana raha hoon...")
             tries = plan.get("build_tries", 1) + 1
+            budget -= 1
             try:
                 plan = build_plan(num, clauses)
+                plan["build_tries"] = tries
+                save_plan(plan)
+            except ProviderBusy:
+                print("  AI busy - agle run me.")
+                break
             except Exception as exc:
                 print("  dobara nahi bana:", exc)
-            plan = load_plan(num) or plan
-            plan["build_tries"] = tries
-            save_plan(plan)
-            budget -= 1
             continue
 
         changed = False
         for i, part in enumerate(plan.get("parts", [])):
-            if budget <= 0:
+            if budget <= 0 or _RUN_FLAGS["busy"]:
                 break
-            if part.get("auto_check") or part.get("repair_tries", 0) >= MAX_REPAIR_TRIES:
+            if part.get("auto_check") or is_pending(part) or part.get("repair_tries", 0) >= MAX_REPAIR_TRIES:
                 continue
+            budget -= 1
             tries = part.get("repair_tries", 0) + 1
             print(f"Clause {num}: chhoota part sudhaar raha hoon (koshish {tries}/{MAX_REPAIR_TRIES})...")
-            budget -= 1
             try:
                 fixed, errs = repair_part(part, text)
+            except ProviderBusy:
+                print("  AI busy - ye koshish gini nahi gayi, agle run me.")
+                break
             except Exception as exc:
-                fixed, errs = None, [f"sudhaar nahi ho paya: {exc}"]
-            if fixed is not None and not errs:
-                fixed.update({"auto_check": True, "check_errors": [], "repaired": True,
-                              "repair_tries": tries})
+                print("  sudhaar nahi ho paya:", exc)
+                continue
+            others = [_squash_hi(p.get("question", "")) for k, p in enumerate(plan.get("parts", [])) if k != i]
+            if _squash_hi(fixed.get("question", "")) in others:
+                errs = ["DUPLICATE: ye sawal is clause me pehle se hai"]
+            if all(str(e).startswith(PENDING) for e in errs) and errs:
+                fixed.update({"auto_check": False, "check_errors": errs, "repair_tries": part.get("repair_tries", 0)})
+                plan["parts"][i] = fixed                    # naya version rakho, jaanch baad me
+                print("  sudhra hua version bana, jaanch AI busy hone se baaki.")
+            elif not errs:
+                fixed.update({"auto_check": True, "check_errors": [], "repaired": True, "repair_tries": tries})
                 plan["parts"][i] = fixed
                 fixed_any += 1
                 print("  SUDHAR GAYA - saari jaanch pass. Agle video me aayega.")
@@ -1376,6 +1466,10 @@ def repair_pass(clauses, budget=REPAIRS_PER_RUN):
         if changed:
             save_plan(plan)
     return fixed_any
+
+
+def _squash_hi(t):
+    return re.sub(r"[\s,.!?\u0964:()\-]", "", t or "")
 
 
 def usable_parts(plan):
@@ -2213,7 +2307,12 @@ def list_clauses():
         print(f" {mark}{n:>3}. {clause_title_en(t)[:70]}  ({len(t)} chars)")
 
 
+MAX_NEW_PLANS_PER_RUN = 2
+
+
 def run_daily():
+    _RUN_FLAGS.update({"busy": False, "builds": 0})
+    _BUSY.clear()
     if not os.path.exists(find_guide_pdf()):
         print(f"RUKA: '{PDF_FILE}' repo me nahi hai. Official PO Guide Part I ki PDF isi naam se daaliye. "
               "Bina official source ke koi reel nahi banegi.")
@@ -2249,12 +2348,23 @@ def run_daily():
             num = state["clause_no"]
             plan = load_plan(num)
             if plan is None:
+                if _RUN_FLAGS["busy"] or _RUN_FLAGS["builds"] >= MAX_NEW_PLANS_PER_RUN:
+                    print("Is run me aur naya plan nahi (AI busy / API bachat). Agle slot me.")
+                    return
                 print(f"Clause {num}: official PDF se plan ban raha hai...")
-                plan = build_plan(num, clauses)
+                _RUN_FLAGS["builds"] += 1
+                try:
+                    plan = build_plan(num, clauses)
+                except ProviderBusy as exc:
+                    print(f"AI abhi busy / quota khatam ({str(exc)[:150]}). Aaj is slot me reel nahi - agle slot me apne aap.")
+                    return
             part, part_no, total = next_unpublished(plan)
             if part is not None:
                 advance_main = True
                 break
+            if any(is_pending(p) for p in plan.get("parts", [])) and _RUN_FLAGS["busy"]:
+                print(f"Clause {num}: jaanch baaki hai aur AI busy hai. Agle slot me yahin se.")
+                return
             pending = sum(1 for p in plan.get("parts", []) if not p.get("auto_check"))
             if pending:
                 print(f"Clause {num}: {pending} part abhi fail hain -> baad me sudhaar ke aayenge. Agla clause.")
@@ -2296,7 +2406,7 @@ def run_daily():
         save_state(state)
 
     upcoming = state["clause_no"]
-    if load_plan(upcoming) is None:
+    if load_plan(upcoming) is None and not _RUN_FLAGS["busy"] and _RUN_FLAGS["builds"] == 0:
         try:
             print(f"Agle clause {upcoming} ka plan pehle se bana raha hoon...")
             build_plan(upcoming, clauses)
