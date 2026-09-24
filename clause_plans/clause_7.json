@@ -23,7 +23,8 @@
       "yaad": "मशीन फ्रैंकित वस्तु + लेटर बॉक्स निषेध",
       "_clause_no": 7,
       "auto_check": true,
-      "check_errors": []
+      "check_errors": [],
+      "published": "2026-09-24"
     },
     {
       "source_quote": "Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays and no business transacted with the public.",
@@ -42,11 +43,9 @@
       "_clause_no": 7,
       "auto_check": false,
       "check_errors": [
-        "LENGTH: 'hint' 17 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao",
-        "LENGTH: 'fact' 29 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao",
-        "'hint' me aisi sankhya hai jo source me nahi: ['7']"
+        "LENGTH: 'fact' 19 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao"
       ],
-      "repair_tries": 1
+      "repair_tries": 2
     },
     {
       "source_quote": "Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.",

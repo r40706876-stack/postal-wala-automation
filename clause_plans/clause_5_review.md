@@ -61,7 +61,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** स्टेशनरी बिक्री = संपूर्ण कार्य घंटे
 **Hook:** स्टेशनरी की बिक्री कब होती है?
 
-## Part 5  [FAIL (1/4 sudhaar koshish): LENGTH: 'question' 21 shabd ka hai, seema 16 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'fact' 28 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao]
+## Part 5  [FAIL (2/4 sudhaar koshish): source ki sankhya ['3', '5'] 'fact' me nahi aayi (niyam adhoora?)]
 **Source (PO Guide):** For issue of money orders, sale and payment of postal orders, Savings Bank and Post Office Certificate transa ctions and payment of telephone bills. Etc. For about five hours (One Saturdays for three hours stopping at 1 p.m.)
 
 **Niyam:** शनिवार को बचत बैंक लेनदेन आदि दोपहर 1 बजे समाप्त होकर 3 घंटे होते हैं।
