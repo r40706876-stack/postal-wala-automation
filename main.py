@@ -1,19 +1,25 @@
 """
-POSTAL WALA - Retention Reel Engine v2
---------------------------------------
-Flow (curiosity loop, answer sabse aakhir me):
-  0 HOOK        -> frame 0 se text + motion, "EXAM TRAP" stamp slam
-  1 QUESTION    -> sawal + options voice ke saath ek-ek karke slide-in
-  2 COUNTDOWN   -> 3-2-1 ring timer, "comment me lock karo"
-  3 HINT        -> clue (answer nahi batata, viewer ko smart feel karata hai)
-  4 ELIMINATE   -> galat options ek-ek karke kat-te hain, "bache 2" suspense
-  5 REVEAL      -> sahi option zoom + burst + confetti + ding
-  6 RULE + TRAP -> niyam + exam trap (keywords highlight)
-  7 CTA/LOOP    -> comment prompt + agle part ka teaser
+POSTAL WALA - Retention Reel Engine v3 (source-locked)
+------------------------------------------------------
+NIYAM KA SACH: sirf official Post Office Guide Part I (PO_Guide_Part_1.pdf, repo me).
+Code me koi niyam haath se nahi likha.
 
-Run:                         python main.py
-Test (bina internet/TTS):    DRY_RUN=1 python main.py
-Requirements:                pip install edge-tts pillow numpy requests   (+ ffmpeg installed)
+Har clause ke liye:
+  1. PDF se clause ka poora English text nikalta hai
+  2. AI (Gemini) clause ko jitne zaroori hon utne parts (1-9) me todta hai,
+     har part ke saath PDF ki exact line (source_quote)
+  3. TAALA 1 - code jaanch: quote PDF me hai? har sankhya/samay source se milta hai?
+  4. TAALA 2 - alag AI "examiner" jaanch: anuvad, exceptions, galat options sach me galat?
+  5. TAALA 3 - fail-closed: jis part pe zara bhi shak ho, wo reel NAHI banta.
+     Koi manual approval nahi. Har clause ki audit report clause_plans/ me save hoti hai.
+
+Commands:
+  python main.py                  -> roz ka run (sirf jaanch-pass part ki reel)
+  python main.py --list-clauses   -> PDF se mile clause (* = syllabus/notes me)
+  python main.py --build 4 7      -> clause 4 aur 7 ka plan (dobara) banao
+  DRY_RUN=1 python main.py        -> bina awaaz ke test render
+
+Reel flow: HOOK -> SAWAL -> COUNTDOWN -> HINT -> GALAT HATAO -> JAWAB -> NIYAM + TRAP -> YAAD RAKHIYE
 """
 
 import os
@@ -32,7 +38,8 @@ from functools import lru_cache
 
 # ---- Auto-install: GitHub Actions / naye PC pe missing package khud install ho jayega ----
 def _ensure_packages():
-    needed = {"numpy": "numpy", "PIL": "pillow", "requests": "requests", "edge_tts": "edge-tts"}
+    needed = {"numpy": "numpy", "PIL": "pillow", "requests": "requests", "edge_tts": "edge-tts",
+              "pypdf": "pypdf"}
     missing = []
     for module, pip_name in needed.items():
         try:
@@ -44,7 +51,7 @@ def _ensure_packages():
     print("Missing packages install ho rahe hain:", ", ".join(missing))
     base = [sys.executable, "-m", "pip", "install", "--quiet", *missing]
     for cmd in (base, base + ["--break-system-packages"], base + ["--user"]):
-        if subprocess.run(cmd).returncode == 0:
+        if subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
             importlib.invalidate_caches()
             return
     print("WARNING: auto-install fail. Workflow me ye line daaliye: pip install " + " ".join(missing))
@@ -63,13 +70,21 @@ OUTPUT_DIR = "generated_reels"
 STATE_FILE = "progress_state.json"
 
 VOICE_NAME = "hi-IN-SwaraNeural"
-VOICE_RATE = "+12%"
+VOICE_RATE = "+20%"
 VOICE_PITCH = "+2Hz"
 
 W, H = 1080, 1920
 FPS = 30
 SR = 44100
 COUNTDOWN_SECONDS = 3
+COUNTDOWN_STEP = 0.8          # 3-2-1 har number 0.8 sec (tez = urgency)
+
+# ---- PACING RULES (retention ka asli game) ----
+MAX_PAUSE = 0.14              # voice ke andar koi bhi chuppi isse lambi nahi
+VOICE_LEAD = 0.06             # text pehle aata hai, awaaz 60ms baad (aankh kaan se aage)
+EYE_LEAD = 0.12               # har word screen pe bolne se 0.12s pehle chamakta hai
+READ_WPS = 3.0                # mobile pe Hindi padhne ki speed (shabd / second)
+ABSORB = 0.5                  # info khatam hone ke baad dimaag me baithne ka time
 
 DRY_RUN = os.getenv("DRY_RUN", "0") == "1"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -112,226 +127,19 @@ MOODS = {
 }
 
 
-# ==================== VERIFIED CATALOG ====================
+# ==================== SOURCE OF TRUTH: OFFICIAL PO GUIDE PART I ====================
+# Code me koi niyam haath se nahi likha. Har reel sirf is PDF ke clause se banti hai.
 
-POSTAL_CLAUSE_CATALOG = {
-    1: {
-        "name": "डाक विभाग का नियंत्रण व संगठन",
-        "total_parts": 2,
-        "part_1_focus": "संचार मंत्रालय के अधीन महानिदेशक (DG Posts) शीर्ष प्रशासनिक प्रमुख हैं और मुख्यालय डाक भवन नई दिल्ली में स्थित है।",
-        "part_2_focus": "डाक सेवा बोर्ड में एक चेयरमैन और 6 पूर्णकालिक सदस्य होते हैं।",
-    },
-    2: {
-        "name": "डाकघरों के प्रकार और श्रेणियां",
-        "total_parts": 3,
-        "part_1_focus": "डाकघर की 3 प्रमुख श्रेणियां हैं: प्रधान डाकघर, उप डाकघर और शाखा डाकघर।",
-        "part_2_focus": "उप डाकघर प्रधान डाकघर के अधीन रहकर लेन-देन करता है और दैनिक लेखा HO को भेजता है।",
-        "part_3_focus": "ग्रामीण शाखा डाकघर के कार्य के घंटे न्यूनतम 4 घंटे और अधिकतम 5 घंटे प्रतिदिन निर्धारित किए जाते हैं।",
-    },
-    3: {
-        "name": "रात्रि डाकघर के नियम",
-        "total_parts": 3,
-        "part_1_focus": "रात्रि डाकघर की स्थापना और कामकाज के घंटे रात 8:30 बजे तक बढ़ाने का विशेष अधिकार महानिदेशक (DG) को है।",
-        "part_2_focus": "रविवार और राष्ट्रीय डाक अवकाशों पर रात्रि डाकघर सुबह 10 से शाम 5 बजे तक केवल सीमित सेवाएं देते हैं।",
-        "part_3_focus": "रात्रि डाकघरों में रविवार और अवकाश के दिनों में मनीऑर्डर भुगतान या बचत बैंक निकासी कार्य नहीं होता।",
-    },
-    4: {
-        "name": "मोबाइल डाकघर की व्यवस्था",
-        "total_parts": 2,
-        "part_1_focus": "मोबाइल डाकघर बड़े शहरों में देर शाम तक सामान्य डाक और पार्सल बुकिंग की सुविधा देते हैं।",
-        "part_2_focus": "मोबाइल डाकघर में मनीऑर्डर, बचत बैंक और बीमा के वित्तीय कार्य प्रतिबंधित होते हैं।",
-    },
-    5: {
-        "name": "डाकघर के कामकाज के घंटे",
-        "total_parts": 3,
-        "part_1_focus": "सामान्य डाक टिकट बिक्री और डाक बुकिंग पूरे कार्य समय तक होती है, जबकि बचत बैंक का समय पहले समाप्त होता है।",
-        "part_2_focus": "सार्वजनिक काउंटर बंद होने के बाद निर्धारित लेट फीस का भुगतान करके ही डाक बुक की जा सकती है।",
-        "part_3_focus": "शनिवार को सामान्य डाक लेन-देन के समय में विभागीय कटौती के नियम और समय-सारिणी लागू होती है।",
-    },
-    22: {
-        "name": "डाक का पुनः निर्देशन",
-        "total_parts": 3,
-        "part_1_focus": "पतेदार के नया पता छोड़कर जाने पर प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण निःशुल्क होता है।",
-        "part_2_focus": "पार्सल को वितरण क्षेत्र से बाहर पुनः प्रेषित करने पर आधा डाक प्रभार देय होता है।",
-        "part_3_focus": "यदि पार्सल पतेदार द्वारा एक बार खोल दिया गया हो तो नए डाकभार के बिना पुनः निर्देशित नहीं किया जा सकता।",
-    },
-    23: {
-        "name": "डाक पुनः प्रेषण के विशेष निर्देश",
-        "total_parts": 2,
-        "part_1_focus": "लिखित पुनः प्रेषण अनुदेश की वैधता अवधि अधिकतम 3 माह तक प्रभावी रहती है।",
-        "part_2_focus": "विदेश जाने वाले पतेदारों और अस्थाई रूप से स्थान बदलने वाले व्यक्तियों के लिए विशेष डाक नियम लागू होते हैं।",
-    },
-}
-
-
-# ==================== CURATED FALLBACK BANK ====================
-# hook = challenge + stake (bina fake statistic)
-# hint = clue jo answer seedha nahi batata
-
-FALLBACK_SCRIPTS = {
-    (1, 1): {
-        "hook": "डाक विभाग का सबसे बड़ा अफसर कौन? तीन सेकंड में बताइए!",
-        "question": "डाक विभाग का शीर्ष प्रशासनिक प्रमुख कौन होता है?",
-        "a": "महानिदेशक (DG Posts)", "b": "डाक सचिव", "c": "पोस्टमास्टर जनरल", "d": "अधीक्षक डाकघर",
-        "correct": "A",
-        "hint": "सर्किल का नहीं, पूरे देश के विभाग का प्रमुख सोचिए।",
-        "fact": "संचार मंत्रालय के अधीन महानिदेशक (DG Posts) शीर्ष प्रशासनिक प्रमुख हैं।",
-        "trap": "पोस्टमास्टर जनरल केवल सर्किल स्तर के प्रमुख होते हैं, विभाग के नहीं।",
-    },
-    (1, 2): {
-        "hook": "डाक सेवा बोर्ड में कितने पूर्णकालिक सदस्य? गिनती में यहीं गड़बड़ होती है!",
-        "question": "डाक सेवा बोर्ड में कुल कितने पूर्णकालिक सदस्य होते हैं?",
-        "a": "6 सदस्य", "b": "4 सदस्य", "c": "5 सदस्य", "d": "8 सदस्य",
-        "correct": "A",
-        "hint": "चेयरमैन को अलग रखकर गिनिए।",
-        "fact": "डाक सेवा बोर्ड में एक चेयरमैन और 6 पूर्णकालिक सदस्य होते हैं।",
-        "trap": "चेयरमैन को मिलाकर कुल 7 होते हैं, पूर्णकालिक सदस्य 6 ही हैं।",
-    },
-    (2, 1): {
-        "hook": "डाकघर कितनी श्रेणियों के होते हैं? सिर्फ तीन सेकंड हैं आपके पास!",
-        "question": "डाकघर की कितनी प्रमुख श्रेणियां निर्धारित हैं?",
-        "a": "3 श्रेणियां", "b": "2 श्रेणियां", "c": "4 श्रेणियां", "d": "5 श्रेणियां",
-        "correct": "A",
-        "hint": "प्रधान, उप और गाँव वाला डाकघर याद कीजिए।",
-        "fact": "डाकघर की 3 श्रेणियां हैं: प्रधान डाकघर, उप डाकघर और शाखा डाकघर।",
-        "trap": "मोबाइल डाकघर अलग श्रेणी नहीं बल्कि एक विशेष सेवा व्यवस्था है।",
-    },
-    (2, 2): {
-        "hook": "उप डाकघर रोज़ का हिसाब किसे भेजता है? सीधा ऊपर नहीं जाता!",
-        "question": "उप डाकघर (SO) अपना दैनिक लेखा किसे प्रेषित करता है?",
-        "a": "प्रधान डाकघर (HO)", "b": "मंडल कार्यालय", "c": "सर्किल कार्यालय", "d": "मुख्यालय",
-        "correct": "A",
-        "hint": "SO किसके अधीन काम करता है, जवाब वहीं है।",
-        "fact": "उप डाकघर दैनिक लेखा अपने प्रधान डाकघर (HO) को भेजता है।",
-        "trap": "SO सीधे मंडल अधीक्षक को दैनिक लेखा नहीं भेजता।",
-    },
-    (2, 3): {
-        "hook": "गाँव का शाखा डाकघर ज़्यादा से ज़्यादा कितने घंटे खुलता है?",
-        "question": "ग्रामीण शाखा डाकघर (BO) के अधिकतम कार्य घंटे कितने हैं?",
-        "a": "5 घंटे", "b": "4 घंटे", "c": "6 घंटे", "d": "8 घंटे",
-        "correct": "A",
-        "hint": "न्यूनतम और अधिकतम में सिर्फ एक घंटे का फर्क है।",
-        "fact": "शाखा डाकघर के कार्य घंटे न्यूनतम 4 और अधिकतम 5 घंटे होते हैं।",
-        "trap": "न्यूनतम 4 घंटे और अधिकतम 5 घंटे में भ्रमित न हों।",
-    },
-    (3, 1): {
-        "hook": "रात्रि डाकघर को रात साढ़े आठ तक खोलने की पावर किसके पास है?",
-        "question": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का अधिकार किसे है?",
-        "a": "महानिदेशक (DG)", "b": "Postmaster", "c": "SSPO", "d": "CPMG",
-        "correct": "A",
-        "hint": "यह पावर लोकल अफसर के पास नहीं, सबसे ऊपर है।",
-        "fact": "रात्रि डाकघर के घंटे 8:30 बजे तक बढ़ाने का विशेष अधिकार DG को है।",
-        "trap": "यह अधिकार स्थानीय पोस्टमास्टर या SSPO के पास नहीं होता।",
-    },
-    (3, 2): {
-        "hook": "रविवार को रात्रि डाकघर कब खुलता है? रात वाला नियम यहाँ नहीं चलता!",
-        "question": "रविवार और राष्ट्रीय अवकाश पर रात्रि डाकघर का समय क्या है?",
-        "a": "सुबह 10 से शाम 5", "b": "सुबह 8 से दोपहर 2", "c": "दोपहर 12 से शाम 8", "d": "पूरे दिन",
-        "correct": "A",
-        "hint": "छुट्टी के दिन समय दिन का ही रहता है, सुबह से शाम।",
-        "fact": "रविवार और अवकाश के दिन सीमित सेवाएं सुबह 10 से शाम 5 बजे तक मिलती हैं।",
-        "trap": "रविवार को रात 8:30 बजे वाला नियम लागू नहीं होता।",
-    },
-    (3, 3): {
-        "hook": "रविवार को रात्रि डाकघर में ये काम भूलकर भी मत माँगना!",
-        "question": "रविवार और अवकाश के दिन रात्रि डाकघर में क्या नहीं होता?",
-        "a": "मनीऑर्डर व बचत बैंक", "b": "डाक टिकट बिक्री", "c": "स्पीड पोस्ट बुकिंग", "d": "पंजीकृत डाक",
-        "correct": "A",
-        "hint": "छुट्टी के दिन पैसों वाला काम बंद रहता है।",
-        "fact": "रविवार और अवकाश के दिन मनीऑर्डर भुगतान और बचत बैंक कार्य नहीं होता।",
-        "trap": "सीमित बुकिंग चालू रहती है, लेकिन वित्तीय निकासी बंद होती है।",
-    },
-    (4, 1): {
-        "hook": "चलता-फिरता डाकघर! आखिर इसमें होता क्या है?",
-        "question": "मोबाइल डाकघर में मुख्य रूप से कौन-सा कार्य होता है?",
-        "a": "डाक व पार्सल बुकिंग", "b": "मनीऑर्डर भुगतान", "c": "बचत बैंक खाता", "d": "डाक जीवन बीमा",
-        "correct": "A",
-        "hint": "नाम में ही डाक है, पैसों का काम नहीं।",
-        "fact": "मोबाइल डाकघर शाम तक सामान्य डाक और पार्सल बुकिंग की सुविधा देते हैं।",
-        "trap": "मोबाइल वैन में बैंकिंग और वित्तीय सुविधाएं उपलब्ध नहीं होती हैं।",
-    },
-    (4, 2): {
-        "hook": "मोबाइल डाकघर में ये काम करवाया, तो सीधा नियम टूटेगा!",
-        "question": "मोबाइल डाकघर में किस कार्य की अनुमति नहीं होती है?",
-        "a": "मनीऑर्डर व बचत बैंक", "b": "साधारण डाक बुकिंग", "c": "पार्सल बुकिंग", "d": "लेट फीस डाक",
-        "correct": "A",
-        "hint": "सोचिए, चलती वैन में पैसों का लेन-देन कितना सुरक्षित होगा?",
-        "fact": "मोबाइल डाकघर में मनीऑर्डर, बचत बैंक और बीमा कार्य प्रतिबंधित होते हैं।",
-        "trap": "केवल डाक और पार्सल बुकिंग की ही अनुमति होती है।",
-    },
-    (5, 1): {
-        "hook": "डाक टिकट कब तक मिलते हैं? बचत बैंक के टाइम से कन्फ्यूज़ मत होना!",
-        "question": "डाक टिकटों की बिक्री काउंटर पर कब तक उपलब्ध रहती है?",
-        "a": "पूरे कार्य समय तक", "b": "केवल 2 घंटे", "c": "दोपहर 12 बजे तक", "d": "शाम 4 बजे तक",
-        "correct": "A",
-        "hint": "बचत बैंक जल्दी बंद होता है, टिकट काउंटर नहीं।",
-        "fact": "सामान्य टिकट बिक्री और डाक बुकिंग पूरे कार्य समय तक खुली रहती है।",
-        "trap": "बचत बैंक काउंटर जल्दी बंद होता है, लेकिन टिकट पूरे समय मिलते हैं।",
-    },
-    (5, 2): {
-        "hook": "काउंटर बंद हो गया, फिर भी डाक बुक हो सकती है! कैसे?",
-        "question": "सार्वजनिक काउंटर बंद होने के बाद डाक कैसे स्वीकार की जाती है?",
-        "a": "लेट फीस भुगतान करके", "b": "लिखित आवेदन से", "c": "दोगुने टिकट लगाकर", "d": "अगले कार्यदिवस पर",
-        "correct": "A",
-        "hint": "देर से आए हैं, तो कुछ एक्स्ट्रा देना पड़ेगा।",
-        "fact": "सार्वजनिक काउंटर बंद होने के बाद निर्धारित लेट फीस देकर डाक बुक होती है।",
-        "trap": "बिना लेट फीस के काउंटर समय के बाद डाक स्वीकार नहीं होती।",
-    },
-    (5, 3): {
-        "hook": "शनिवार को भी डाकघर का टाइम वही रहता है? ज़रा रुकिए!",
-        "question": "शनिवार को सामान्य डाक लेन-देन के समय में क्या लागू होता है?",
-        "a": "विभागीय समयावधि कटौती", "b": "सामान्य दिनों जैसा समय", "c": "पूर्ण अवकाश", "d": "रविवार के नियम",
-        "correct": "A",
-        "hint": "शनिवार को पूरा समय नहीं मिलता।",
-        "fact": "शनिवार को सामान्य डाक लेन-देन के समय में निर्धारित कटौती लागू होती है।",
-        "trap": "शनिवार को सामान्य कार्यदिवसों जितना पूरा समय नहीं मिलता।",
-    },
-    (22, 1): {
-        "hook": "पता बदल गया, तो चिट्ठी आगे भेजने के पैसे लगेंगे?",
-        "question": "प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण शुल्क कितना है?",
-        "a": "पूर्णतः निःशुल्क", "b": "आधा डाक प्रभार", "c": "पूरा डाक प्रभार", "d": "दस रुपये",
-        "correct": "A",
-        "hint": "प्रथम श्रेणी डाक को यहाँ खास राहत मिलती है।",
-        "fact": "प्रथम श्रेणी की अंतरदेशीय डाक का पुनः प्रेषण पूरी तरह निःशुल्क होता है।",
-        "trap": "पार्सल पर प्रभार लगता है, लेकिन प्रथम श्रेणी डाक निःशुल्क होती है।",
-    },
-    (22, 2): {
-        "hook": "पार्सल दूसरे इलाके में भेजना है, कितना चार्ज लगेगा?",
-        "question": "वितरण क्षेत्र से बाहर पार्सल पुनः प्रेषित करने पर कितना प्रभार है?",
-        "a": "आधा डाक प्रभार", "b": "पूर्ण डाक प्रभार", "c": "निःशुल्क", "d": "दोगुना प्रभार",
-        "correct": "A",
-        "hint": "न पूरा चार्ज, न मुफ्त, बीच का रास्ता।",
-        "fact": "वितरण क्षेत्र से बाहर भेजे जाने पर आधा डाक प्रभार देय होता है।",
-        "trap": "उसी वितरण क्षेत्र में निःशुल्क होता है, बाहर भेजने पर आधा प्रभार लगता है।",
-    },
-    (22, 3): {
-        "hook": "पार्सल एक बार खोल दिया, अब आगे भेजना है? बड़ा ट्रैप!",
-        "question": "एक बार खुले हुए पार्सल को पुनः प्रेषित करने की क्या शर्त है?",
-        "a": "नया डाकभार देना होगा", "b": "आधा डाकभार लगेगा", "c": "निःशुल्क भेजा जाएगा", "d": "विशेष छूट मिलेगी",
-        "correct": "A",
-        "hint": "खुला पार्सल मतलब नई बुकिंग जैसा मामला।",
-        "fact": "खोला गया पार्सल नए डाकभार के बिना पुनः प्रेषित नहीं किया जा सकता।",
-        "trap": "बिना खुले पार्सल पर आधा प्रभार, लेकिन खुले पर पूरा नया चार्ज लगता है।",
-    },
-    (23, 1): {
-        "hook": "पता बदलने का लिखित निर्देश कितने दिन चलता है? यहीं नंबर कटते हैं!",
-        "question": "लिखित पुनः प्रेषण अनुदेश (Redirection) की वैधता अवधि क्या है?",
-        "a": "अधिकतम 3 माह", "b": "6 माह", "c": "1 वर्ष", "d": "1 माह",
-        "correct": "A",
-        "hint": "एक तिमाही याद रखिए।",
-        "fact": "लिखित पुनः प्रेषण अनुदेश की वैधता अवधि अधिकतम 3 माह तक होती है।",
-        "trap": "3 महीने पूरे होने के बाद नया लिखित निर्देश देना आवश्यक होता है।",
-    },
-    (23, 2): {
-        "hook": "विदेश जाने वाले की डाक का क्या होगा? सामान्य नियम नहीं चलेगा!",
-        "question": "विदेश जाने वाले पतेदारों के डाक पुनः प्रेषण पर क्या लागू होता है?",
-        "a": "विशेष डाक नियम", "b": "सामान्य घरेलू नियम", "c": "कोई नियम नहीं", "d": "निःशुल्क विदेशी डाक",
-        "correct": "A",
-        "hint": "विदेश का मामला मतलब अलग व्यवस्था।",
-        "fact": "विदेश जाने वाले पतेदारों के लिए विशेष डाक नियम लागू होते हैं।",
-        "trap": "अंतर्देशीय साधारण नियम विदेश जाने वाली डाक पर सीधे लागू नहीं होते।",
-    },
-}
+PDF_FILE = os.getenv("PO_GUIDE_PDF", "PO_Guide_Part_1.pdf")
+PLAN_DIR = "clause_plans"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+MAX_PARTS = 9
+MAX_REPAIR_TRIES = 4          # ek chhoote part ko kitni baar (alag-alag din) sudharne ki koshish
+REPAIRS_PER_RUN = 2           # ek run me kitne chhoote parts sudharne ki koshish (API kharcha seemit)
+# Coaching notes (optional): sirf ye tay karne ke liye ki kaunse clause syllabus me hain.
+# Niyam ka sach hamesha official PO Guide se hi liya jaata hai.
+NOTES_PDF = os.getenv("NOTES_PDF", "mts content .pdf")
 
 
 # ==================== TEXT HELPERS ====================
@@ -707,8 +515,8 @@ def text_block_h(text, max_w, size, max_lines=4, min_size=30, line_h=1.34):
 
 def draw_kinetic(canvas, text, cx, top, max_w, size, p, max_lines=4, color=WHITE,
                  hl_words=(), hl_color=YELLOW, karaoke=True, ghost=0.0, min_size=30, line_h=1.34,
-                 center_y=None):
-    """Voice ke saath word-by-word text. p = 0..1 speech progress. Returns bottom y."""
+                 center_y=None, th=None):
+    """Voice ke saath word-by-word text. p = 0..1 speech progress. th = exact word thresholds."""
     font, s, lines = fit_lines(text, max_w, max_lines, size, min_size)
     lh = int(s * line_h)
     if center_y is not None:
@@ -716,7 +524,8 @@ def draw_kinetic(canvas, text, cx, top, max_w, size, p, max_lines=4, color=WHITE
     all_words = [w for ln in lines for w in ln]
     if not all_words:
         return top
-    th = word_thresholds(all_words)
+    if th is None or len(th) != len(all_words):
+        th = word_thresholds(all_words)
     n = len(all_words)
     space = text_w(" ", font)
 
@@ -753,111 +562,752 @@ def draw_kinetic(canvas, text, cx, top, max_w, size, p, max_lines=4, color=WHITE
     return top + lh * len(lines)
 
 
-# ==================== SCRIPT GENERATION ====================
+# ==================== PDF -> CLAUSES ====================
 
-def extract_field(raw, name, next_names):
-    next_part = "|".join(re.escape(x) for x in next_names)
-    if next_part:
-        pattern = rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*?)(?=(?:\n\s*(?:{next_part})\s*:)|$)"
-    else:
-        pattern = rf"(?:^|\n)\s*{re.escape(name)}\s*:\s*(.*)$"
-    m = re.search(pattern, raw, re.I | re.S)
-    return clean_text(m.group(1)) if m else ""
-
-
-def fallback_script(clause_no, part_no, focus, title):
-    if (clause_no, part_no) in FALLBACK_SCRIPTS:
-        data = dict(FALLBACK_SCRIPTS[(clause_no, part_no)])
-        data["title"] = title
-        return data
-    return {
-        "title": title,
-        "hook": f"{title} का ये नियम परीक्षा में सीधा पूछा जाता है!",
-        "question": f"{title} के अनुसार कौन-सा कथन सत्य है?",
-        "a": focus[:40], "b": "कोई विशेष छूट नहीं", "c": "अधीक्षक का अनुमोदन", "d": "इनमें से कोई नहीं",
-        "correct": "A",
-        "hint": "नियम के शब्दों पर ध्यान दीजिए।",
-        "fact": focus,
-        "trap": "परीक्षा में शब्दों और नियमों को ध्यान से पढ़ें।",
-    }
+_DEV_DIGITS = str.maketrans("०१२३४५६७८९", "0123456789")
+_EN_NUM = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
+           "ten": 10, "eleven": 11, "twelve": 12, "fifteen": 15, "twenty": 20, "thirty": 30,
+           "forty": 40, "fifty": 50, "sixty": 60, "ninety": 90, "hundred": 100}
+_HI_NUM = {"दो": 2, "तीन": 3, "चार": 4, "पाँच": 5, "पांच": 5, "छह": 6, "छः": 6, "सात": 7, "आठ": 8,
+           "नौ": 9, "दस": 10, "बारह": 12, "पंद्रह": 15, "बीस": 20, "तीस": 30, "चालीस": 40,
+           "पचास": 50, "साठ": 60, "नब्बे": 90, "सौ": 100}
 
 
-def generate_script(state):
-    clause_no, part_no = state["clause_no"], state["current_part"]
-    info = POSTAL_CLAUSE_CATALOG[clause_no]
-    title = info["name"]
-    focus = info.get(f"part_{part_no}_focus", info["part_1_focus"])
+def find_guide_pdf():
+    """PO_Guide_Part_1.pdf na mile to repo me 'guide' naam wali koi PDF (notes wali chhod ke)."""
+    if os.path.exists(PDF_FILE):
+        return PDF_FILE
+    for fn in sorted(os.listdir(".")):
+        low = fn.lower()
+        if low.endswith(".pdf") and "guide" in low and fn != NOTES_PDF:
+            return fn
+    return PDF_FILE
 
-    if not GROQ_API_KEY or DRY_RUN:
-        return fallback_script(clause_no, part_no, focus, title)
 
-    prompt = f"""
-You write viral-yet-accurate Hindi MCQ reels for India Post departmental exams (GDS to MTS/PA/IP).
-
-TOPIC: {title}
-PART: {part_no}/{info["total_parts"]}
-OFFICIAL VERIFIED FACT (only source of truth):
-{focus}
-
-Rules:
-1. HOOK: conversational spoken Hindi, max 12 words, a challenge or a stake. NO fake percentages, NO emojis.
-2. QUESTION: clear exam-style Hindi question, max 14 words.
-3. A, B, C, D: 2-5 words each, all plausible. Exactly one matches the fact.
-4. CORRECT: single letter.
-5. HINT: one-line clue (max 12 words) that points toward the answer WITHOUT stating it.
-6. FACT: one sentence, max 18 words.
-7. TRAP: the common confusion, max 16 words.
-8. No meta text. No emojis. Devanagari Hindi only (English acronyms allowed).
-
-Format exactly:
-HOOK: ...
-QUESTION: ...
-A: ...
-B: ...
-C: ...
-D: ...
-CORRECT: ...
-HINT: ...
-FACT: ...
-TRAP: ...
-"""
+def read_pdf_text(path=None):
+    path = path or find_guide_pdf()
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            f"'{path}' nahi mili. Official PO Guide Part I ki PDF repo me isi naam se upload kijiye.")
     try:
-        r = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"},
-            json={"model": "llama-3.3-70b-versatile",
-                  "messages": [{"role": "user", "content": prompt}],
-                  "temperature": 0.3, "max_tokens": 500},
-            timeout=25,
-        )
-        r.raise_for_status()
-        raw = r.json()["choices"][0]["message"]["content"]
-        data = {
-            "title": title,
-            "hook": extract_field(raw, "HOOK", ["QUESTION"]),
-            "question": extract_field(raw, "QUESTION", ["A"]),
-            "a": extract_field(raw, "A", ["B"]),
-            "b": extract_field(raw, "B", ["C"]),
-            "c": extract_field(raw, "C", ["D"]),
-            "d": extract_field(raw, "D", ["CORRECT"]),
-            "correct": extract_field(raw, "CORRECT", ["HINT"]).upper()[:1],
-            "hint": extract_field(raw, "HINT", ["FACT"]),
-            "fact": extract_field(raw, "FACT", ["TRAP"]),
-            "trap": extract_field(raw, "TRAP", []),
-        }
-        if data["correct"] not in {"A", "B", "C", "D"}:
-            raise ValueError("Invalid CORRECT")
-        if not all(data[k] for k in ["hook", "question", "a", "b", "c", "d", "hint", "fact", "trap"]):
-            raise ValueError("Incomplete script")
-        if len(data["hook"]) > 90 or any(len(data[k]) > 45 for k in "abcd"):
-            raise ValueError("Text too long")
-        return data
+        from pypdf import PdfReader
+    except ImportError:
+        subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "pypdf"])
+        from pypdf import PdfReader
+    reader = PdfReader(path)
+    pages = [(pg.extract_text() or "") for pg in reader.pages]
+    text = "\n\f\n".join(pages)
+    text = text.replace("\u00ad", "").replace("\r", "")
+    text = re.sub(r"(\w)-\n(\w)", r"\1\2", text)          # line-break hyphen jodna
+    if len(text.strip()) < 2000:
+        raise RuntimeError("PDF se text nahi nikla (scanned image PDF ho sakti hai). Text wali PDF chahiye.")
+    return text
+
+
+_LINE_NUM = re.compile(r"^\s*(?:clause\s*[-\u2013.]?\s*)?(\d{1,3})\s*\.\s*(.*)$", re.I)
+_TOC_LEADER = re.compile(r"(?:\.\s*){3,}\s*\d*\s*$")
+
+
+def _squash(s):
+    return re.sub(r"[^a-z]", "", (s or "").lower())
+
+
+def _is_toc_page(page):
+    ls = [l for l in page.splitlines() if l.strip()]
+    if not ls:
+        return False
+    first = ls[0].strip().upper()
+    leaders = sum(1 for l in ls if _TOC_LEADER.search(l))
+    return first.startswith("CONTENTS") or first.startswith("CLAUSE") or leaders / len(ls) >= 0.25
+
+
+def _title_match(title, rest):
+    from difflib import SequenceMatcher
+    a, b = _squash(title)[:22], _squash(rest)[:26]
+    if len(a) < 4:
+        return False
+    if b.startswith(a[:8]):
+        return True
+    return SequenceMatcher(None, a, b[:len(a)]).ratio() >= 0.72
+
+
+def split_clauses(text):
+    """
+    Official PO Guide: contents pages se clause -> title, fir body me heading dhoondhna:
+      1) 'N.Title – ...' jahan title contents se milta ho (spelling ke chhote farak maaf)
+      2) padosi clauses ke beech 'N.' wali line (jahan body me title nahi likha)
+      3) sirf 'Title – ...' (jahan body me number nahi likha, jaise clause 1)
+    Isse clause ke andar ki 1., 2., 3. wali list kabhi clause nahi banti.
+    """
+    pages = text.split("\f")
+    all_toc = [i for i, pg in enumerate(pages) if _is_toc_page(pg)]
+    toc_idx = []
+    for i in all_toc:                      # sirf shuru ka lagataar contents hissa (appendix tables nahi)
+        if not toc_idx or i - toc_idx[-1] <= 2:
+            toc_idx.append(i)
+        else:
+            break
+    if not toc_idx:
+        return _split_by_numbers(text.replace("\f", "").splitlines())
+    titles = {}
+    for i in toc_idx:
+        for line in pages[i].splitlines():
+            m = _LINE_NUM.match(line)
+            if m:
+                t = _TOC_LEADER.sub("", m.group(2)).strip(" .\u2013-")
+                num = int(m.group(1))
+                if t and num not in titles:
+                    titles[num] = t
+    if len(titles) < 10:
+        return _split_by_numbers(text.replace("\f", "").splitlines())
+
+    body = "\n".join(pages[max(toc_idx) + 1:]).splitlines()
+    numbered = []
+    for idx, line in enumerate(body):
+        m = _LINE_NUM.match(line)
+        if m:
+            numbered.append((idx, int(m.group(1)), m.group(2)))
+
+    # pass 1: number + title
+    found, last = {}, -1
+    for num in sorted(titles):
+        for idx, n, rest in numbered:
+            if n == num and idx > last and _title_match(titles[num], rest):
+                found[num] = idx
+                last = idx
+                break
+
+    # pass 2 + 3: jo nahi mile, unhe padosiyon ke beech dhoondho
+    for num in sorted(titles):
+        if num in found:
+            continue
+        lo = max([found[k] for k in found if k < num], default=-1)
+        hi = min([found[k] for k in found if k > num], default=len(body))
+        pick = None
+        for idx in range(lo + 1, hi):              # pehle: title + dash (number na likha ho tab bhi)
+            line = body[idx]
+            if re.search(r"[\u2013\u2014-]", line[:120]) and _title_match(titles[num], re.sub(r"^\s*\d{1,3}\s*\.\s*", "", line)):
+                pick = idx
+                break
+        if pick is None:                           # fir: padosiyon ke beech sirf number
+            pick = next((idx for idx, n, _ in numbered if n == num and lo < idx < hi), None)
+        if pick is not None:
+            found[num] = pick
+
+    heads = sorted(found.items(), key=lambda kv: kv[1])
+    clauses = {}
+    for k, (num, start) in enumerate(heads):
+        end = heads[k + 1][1] if k + 1 < len(heads) else len(body)
+        chunk = "\n".join(body[start:end]).strip()
+        if _squash(titles.get(num, "")) != "deleted":
+            clauses[num] = chunk
+    return clauses
+
+
+def _split_by_numbers(lines):
+    """Fallback: bina contents page wali PDF ke liye kram-se-number wala tareeka."""
+    head = re.compile(r"^\s*(\d{1,3})\s*[.\-\u2013]\s*[\(\"'\u201cA-Z]")
+    best, best_score = {}, -1
+    for st in [i for i, l in enumerate(lines) if (m := head.match(l)) and int(m.group(1)) == 1]:
+        run, expected, cur, buf = {}, 1, None, []
+        for line in lines[st:]:
+            m = head.match(line)
+            if m and int(m.group(1)) == expected:
+                if cur is not None:
+                    run[cur] = "\n".join(buf).strip()
+                cur, expected, buf = expected, expected + 1, [line]
+            elif cur is not None:
+                buf.append(line)
+        if cur is not None:
+            run[cur] = "\n".join(buf).strip()
+        long_ones = [v for v in run.values() if len(v) > 150]
+        score = len(long_ones) * 1_000_000 + sum(len(v) for v in long_ones)
+        if score > best_score:
+            best, best_score = run, score
+    return best
+
+
+def clause_title_en(clause_text):
+    first = clause_text.split("\n", 1)[0]
+    first = re.sub(r"^\s*(?:clause\s*[-\u2013.]?\s*)?\d{1,3}\s*\.\s*", "", first, flags=re.I)
+    return re.split(r"\s[\u2014\u2013-]\s|[\u2014\u2013]|--|\.\s*-|\.\s", first)[0].strip()[:90]
+
+
+def syllabus_clauses(available):
+    """Notes PDF me jin clauses ka zikr hai (खंड - 04 / Clause - 13), wahi syllabus. Notes na ho to sab."""
+    if not os.path.exists(NOTES_PDF):
+        return sorted(available)
+    try:
+        from pypdf import PdfReader
+        txt = "\n".join((pg.extract_text() or "") for pg in PdfReader(NOTES_PDF).pages)
+        nums = {int(n) for n in re.findall(r"(?:खंड|Clause)\s*-\s*(\d{1,3})", txt)}
+        nums.add(1)
+        chosen = sorted(n for n in nums if n in available)
+        return chosen or sorted(available)
     except Exception as exc:
-        print("Curated fallback script use ho rahi hai:", exc)
-        return fallback_script(clause_no, part_no, focus, title)
+        print("Notes PDF nahi padh paya, sab clauses syllabus maane ja rahe hain:", exc)
+        return sorted(available)
 
 
-def prepare_data(data, clause_no, part_no):
+_NOTES_CACHE = {}
+
+
+def notes_sections():
+    """Notes PDF ko clause-wise tukdon me: {clause_no: text}. Clause 1 = pehli heading se pehle ka hissa."""
+    if "sec" in _NOTES_CACHE:
+        return _NOTES_CACHE["sec"]
+    sec = {}
+    if os.path.exists(NOTES_PDF):
+        try:
+            from pypdf import PdfReader
+            txt = "\n".join((pg.extract_text() or "") for pg in PdfReader(NOTES_PDF).pages)
+            heads = [(m.start(), int(m.group(1)))
+                     for m in re.finditer(r"(?:खंड|Clause)\s*-\s*0*(\d{1,3})", txt)]
+            if heads:
+                sec[1] = txt[:heads[0][0]]
+            for k, (pos, num) in enumerate(heads):
+                end = heads[k + 1][0] if k + 1 < len(heads) else len(txt)
+                if num not in sec:
+                    sec[num] = txt[pos:end]
+        except Exception as exc:
+            print("Notes PDF nahi padh paya:", exc)
+    _NOTES_CACHE["sec"] = sec
+    return sec
+
+
+# ==================== VERIFICATION (auto-check) ====================
+
+def _norm_en(s):
+    s = (s or "").lower().replace("\u2019", "'").replace("\u201c", '"').replace("\u201d", '"')
+    s = re.sub(r"[\u2014\u2013-]", " ", s)
+    s = re.sub(r"[^a-z0-9 ]", " ", s)
+    return " ".join(s.split())
+
+
+def _alnum(s):
+    s = (s or "").lower().replace("\u2019", "'")
+    return re.sub(r"[^a-z0-9]", "", s)
+
+
+def quote_in_source(quote, source):
+    """
+    Quote PDF me sach me hai? Spaces/punctuation hata ke milaan (PDF me 'Bomba y', 'tim ings'
+    jaise toote shabd hote hain). Shabd ya akshar badle to fail.
+    """
+    q, src = _alnum(quote), _alnum(source)
+    if len(q) < 25:
+        return False
+    if q in src:
+        return True
+    n = 30
+    grams = [q[i:i + n] for i in range(0, len(q) - n + 1, 5)]
+    hit = sum(1 for g in grams if g in src)
+    return bool(grams) and hit / len(grams) >= 0.9
+
+
+def number_groups(text, lang):
+    """
+    Har sankhya ka 'barabar roop' group: 17.00 = 17:00 = 17 = 5 (shaam), 8.30 = 8:30,
+    five = 5 = पाँच, half = आधा. 1/एक ko chhod diya (Hindi me 'एक' article jaisa aata hai).
+    """
+    t = (text or "").translate(_DEV_DIGITS)
+    t = re.sub(r"(?<=\d),(?=\d{3})", "", t)
+    groups = []
+    for n in re.findall(r"\d+(?:[:.]\d+)?", t):
+        n = n.replace(".", ":")
+        g = {n}
+        if ":" in n:
+            h, m = n.split(":", 1)
+            h = str(int(h))
+            g.add(f"{h}:{m}")
+            if int(m or 0) == 0:
+                g.add(h)
+                if int(h) > 12:
+                    g.add(str(int(h) - 12))
+        else:
+            n2 = str(int(n))
+            g.add(n2)
+            if n2 == "1":
+                continue
+        groups.append(g)
+    table = _EN_NUM if lang == "en" else _HI_NUM
+    words = re.findall(r"[a-z]+", t.lower()) if lang == "en" else re.findall(r"[\u0900-\u097F]+", t)
+    for w in words:
+        if w in table:
+            groups.append({str(table[w])})
+    if (lang == "en" and "half" in t.lower()) or (lang == "hi" and ("आधा" in t or "आधे" in t)):
+        groups.append({"half"})
+    return groups
+
+
+def _extra(hi_text, allowed_groups):
+    allowed = set().union(*allowed_groups) if allowed_groups else set()
+    return sorted({min(g) for g in number_groups(hi_text, "hi") if not (g & allowed)})
+
+
+def _missing(src_groups, hi_text):
+    have = set().union(*number_groups(hi_text, "hi")) if number_groups(hi_text, "hi") else set()
+    return sorted({min(g) for g in src_groups if not (g & have)})
+
+
+def verify_part(part, clause_text):
+    """Jo bhi check fail ho, uski wajah lautata hai. Khaali list = pass."""
+    errs = []
+    need = ["source_quote", "hook", "question", "a", "b", "c", "d", "correct", "hint", "fact", "trap", "yaad"]
+    for k in need:
+        if not str(part.get(k, "")).strip():
+            errs.append(f"'{k}' khaali hai")
+    if errs:
+        return errs
+
+    if not quote_in_source(part["source_quote"], clause_text):
+        errs.append("source_quote PDF ke clause me nahi mila")
+    trap_q = part.get("trap_quote", "")
+    if trap_q and not quote_in_source(trap_q, clause_text):
+        errs.append("trap_quote PDF ke clause me nahi mila")
+
+    corr = str(part["correct"]).strip().upper()[:1]
+    if corr not in ("A", "B", "C", "D"):
+        errs.append("correct A/B/C/D nahi hai")
+        return errs
+    opts = [clean_text(part[k]) for k in "abcd"]
+    if len(set(opts)) != 4:
+        errs.append("options me duplicate hai")
+
+    allowed = number_groups(part["source_quote"], "en")
+    allowed_trap = allowed + number_groups(trap_q, "en")
+    for field in ("fact", "yaad", "hint"):
+        extra = _extra(part[field], allowed)
+        if extra:
+            errs.append(f"'{field}' me aisi sankhya hai jo source me nahi: {extra}")
+    extra = _extra(part[corr.lower()], allowed)
+    if extra:
+        errs.append(f"sahi option me aisi sankhya hai jo source me nahi: {extra}")
+    extra = _extra(part["trap"], allowed_trap)
+    if extra:
+        errs.append(f"'trap' me aisi sankhya hai jo source me nahi: {extra}")
+
+    missing = _missing(allowed, part["fact"])
+    if missing:
+        errs.append(f"source ki sankhya {missing} 'fact' me nahi aayi (niyam adhoora?)")
+
+    correct_forms = [frozenset(g) for g in number_groups(part[corr.lower()], "hi")]
+    for k in "abcd":
+        if k != corr.lower() and correct_forms:
+            other = [frozenset(g) for g in number_groups(part[k], "hi")]
+            if other and set(other) == set(correct_forms):
+                errs.append(f"galat option {k.upper()} me bhi wahi sankhya hai jo sahi me")
+    return errs
+
+
+# ==================== LLM (Gemini, fallback Groq) ====================
+
+def _gemini(prompt):
+    url = (f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}"
+           f":generateContent?key={GEMINI_API_KEY.strip()}")
+    r = requests.post(url, timeout=180, json={
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": 0.1, "responseMimeType": "application/json"},
+    })
+    r.raise_for_status()
+    return _parse_json(r.json()["candidates"][0]["content"]["parts"][0]["text"])
+
+
+def _groq(prompt):
+    r = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions", timeout=180,
+        headers={"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"},
+        json={"model": "llama-3.3-70b-versatile", "temperature": 0.1, "max_tokens": 6000,
+              "response_format": {"type": "json_object"},
+              "messages": [{"role": "user", "content": prompt}]})
+    r.raise_for_status()
+    return _parse_json(r.json()["choices"][0]["message"]["content"])
+
+
+def available_providers():
+    out = []
+    if GEMINI_API_KEY:
+        out.append(("gemini", _gemini))
+    if GROQ_API_KEY:
+        out.append(("groq", _groq))
+    return out
+
+
+def _llm_json(prompt, only=None):
+    last = None
+    for name, fn in available_providers():
+        if only and name != only:
+            continue
+        for attempt in range(3):
+            try:
+                return fn(prompt)
+            except Exception as exc:
+                last = exc
+                time_wait = 4 * (attempt + 1)
+                print(f"{name} fail ({exc}), {time_wait}s baad dobara...")
+                import time
+                time.sleep(time_wait)
+    raise RuntimeError(f"Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): {last}")
+
+
+def _parse_json(raw):
+    raw = re.sub(r"^```(?:json)?|```$", "", raw.strip(), flags=re.M).strip()
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        m = re.search(r"\{.*\}", raw, re.S)
+        if not m:
+            raise
+        return json.loads(m.group(0))
+
+
+PLAN_PROMPT = """You are preparing exam-accurate Hindi MCQ reels for India Post departmental exams
+(GDS to MTS / Postman / PA). The ONLY source of truth is the official Post Office Guide Part I
+clause given below. Accuracy matters more than anything else.
+
+CLAUSE {num} (official English text):
+<<<
+{text}
+>>>
+
+TASK: Split this clause into the exam-relevant rules it contains. One rule = one part.
+Short clause -> 1-2 parts. Long clause -> up to {max_parts} parts. Skip parts that are not exam-worthy.
+
+STRICT RULES:
+1. source_quote: copy 1-3 sentences from the clause EXACTLY word for word (English). Every fact of the
+   part must be fully supported by this quote alone.
+2. fact: faithful Hindi translation of what the quote says. Do not add, drop or soften any condition,
+   number, exception or authority. Keep standard postal terms (e.g. Head Post Office = प्रधान डाकघर,
+   Sub Post Office = उप डाकघर, Branch Post Office = शाखा डाकघर). Max 25 words.
+3. question: exam-style Hindi question answerable only from the quote. Max 16 words.
+4. a,b,c,d: 2-6 words each. Exactly one correct (matches the quote). The 3 wrong ones must be
+   plausible but clearly contradicted by the clause.
+5. correct: the letter.
+6. hint: Hindi clue that comes ONLY from the quote, must not state the answer. No opinions,
+   no reasons that are not written in the clause. Max 12 words.
+7. trap: the likely confusion in Hindi, built only from this clause. If it uses another sentence of
+   the clause, copy that sentence verbatim into trap_quote. Else trap_quote = "". Max 18 words.
+8. yaad: 1-line Hindi memory formula (max 8 words, = and + allowed), fully consistent with fact.
+9. hook: spoken Hindi challenge line, max 12 words, no fake statistics, no emoji.
+10. Write numbers as digits. No emoji anywhere.
+12. EXCEPTIONS: if anywhere in the clause there is an exception, "also permitted", "except",
+    "excluding", "only", "generally", "usually" etc. that affects a part, that part's fact, correct answer,
+    wrong options and trap must respect it, and the exception sentence must be inside source_quote.
+    Never turn "generally/usually" into "always". A wrong option must be definitely wrong per the clause,
+    never partly true.
+15. This Guide is corrected up to 1985. AVOID time-sensitive facts that may have changed (number of
+    postal circles, postal rates, fee amounts, commission %, names of firms/dealers/officers, lists of
+    cities) unless they are the only exam-relevant content. Prefer procedural rules, authorities,
+    conditions and exceptions.
+13. Standard Hindi terms (use exactly): registered = पंजीकृत, insured article = बीमाकृत वस्तु (NOT
+    insurance/बीमा), V.P. = वी.पी. (मूल्य देय), money order = मनीऑर्डर, night post office = रात्रि डाकघर,
+    mobile post office = मोबाइल डाकघर, Head of the Circle = सर्किल प्रमुख, Director General = महानिदेशक,
+    extra-departmental = अतिरिक्त विभागीय, certificate of posting = पोस्टिंग प्रमाणपत्र,
+    late fee = विलंब शुल्क, letter mail = पत्र डाक, Superintendent of Post Offices = डाकघर अधीक्षक.
+11. title_hi: short Hindi title of the clause (max 6 words).
+
+Return ONLY JSON:
+{{"title_hi": "...", "parts": [{{"source_quote": "...", "hook": "...", "question": "...",
+"a": "...", "b": "...", "c": "...", "d": "...", "correct": "A", "hint": "...", "fact": "...",
+"trap": "...", "trap_quote": "...", "yaad": "..."}}]}}
+"""
+
+
+# ==================== CLAUSE PLAN (review file) ====================
+
+def plan_path(num):
+    return os.path.join(PLAN_DIR, f"clause_{num}.json")
+
+
+def load_plan(num):
+    p = plan_path(num)
+    if not os.path.exists(p):
+        return None
+    with open(p, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_plan(plan):
+    os.makedirs(PLAN_DIR, exist_ok=True)
+    with open(plan_path(plan["clause_no"]), "w", encoding="utf-8") as f:
+        json.dump(plan, f, ensure_ascii=False, indent=2)
+    write_review_md(plan)
+
+
+def all_plans():
+    if not os.path.isdir(PLAN_DIR):
+        return []
+    out = []
+    for fn in sorted(os.listdir(PLAN_DIR)):
+        m = re.fullmatch(r"clause_(\d+)\.json", fn)
+        if m:
+            p = load_plan(int(m.group(1)))
+            if p:
+                out.append(p)
+    return out
+
+
+def write_review_md(plan):
+    lines = [f"# Clause {plan['clause_no']}: {plan.get('title_hi', '')}",
+             f"English title: {plan['title_en']}", "",
+             "## Audit report (automatic)",
+             "Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.",
+             "Kisi reel pe shak ho to yahan uska English source dekh sakte hain.", ""]
+    for i, p in enumerate(plan["parts"], 1):
+        if p.get("auto_check"):
+            status = "PASS" + (" (sudhara gaya)" if p.get("repaired") else "")
+            status += f" | publish: {p['published']}" if p.get("published") else " | publish baaki"
+        else:
+            status = (f"FAIL ({p.get('repair_tries', 0)}/{MAX_REPAIR_TRIES} sudhaar koshish): "
+                      + "; ".join(p.get("check_errors", [])))
+        corr = str(p.get("correct", "")).upper()[:1]
+        lines += [f"## Part {i}  [{status}]",
+                  f"**Source (PO Guide):** {p.get('source_quote', '')}", "",
+                  f"**Niyam:** {p.get('fact', '')}",
+                  f"**Sawal:** {p.get('question', '')}"]
+        for k in "abcd":
+            mark = "  <- SAHI" if k.upper() == corr else ""
+            lines.append(f"- {k.upper()}. {p.get(k, '')}{mark}")
+        lines += [f"**Hint:** {p.get('hint', '')}",
+                  f"**Trap:** {p.get('trap', '')}"
+                  + (f"  (source: {p['trap_quote']})" if p.get("trap_quote") else ""),
+                  f"**Yaad:** {p.get('yaad', '')}", f"**Hook:** {p.get('hook', '')}", ""]
+    lines += ["---", "## Poora clause (PDF se)", "```", plan["clause_text_en"], "```"]
+    with open(os.path.join(PLAN_DIR, f"clause_{plan['clause_no']}_review.md"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+def build_plan(num, clauses=None, attempts=3):
+    clauses = clauses or split_clauses(read_pdf_text())
+    if num not in clauses:
+        raise KeyError(f"Clause {num} PDF me nahi mila. `python main.py --list-clauses` se list dekhiye.")
+    text = clauses[num]
+    best_passed, best_failed, title_hi = [], [], ""
+    for attempt in range(attempts):
+        data = _llm_json(PLAN_PROMPT.format(num=num, text=text[:40000], max_parts=MAX_PARTS))
+        title_hi = clean_text(data.get("title_hi", "")) or title_hi
+        passed, failed = [], []
+        for part in (data.get("parts") or [])[:MAX_PARTS]:
+            part = {k: (v.strip() if isinstance(v, str) else v) for k, v in part.items()}
+            part["_clause_no"] = num
+            errs = verify_part(part, text)
+            if not errs:
+                try:
+                    errs = audit_part(part, text)
+                except Exception as exc:
+                    errs = [f"AUDIT nahi ho paya: {exc}"]
+            part["auto_check"] = not errs
+            part["check_errors"] = errs
+            (failed if errs else passed).append(part)
+        print(f"  Attempt {attempt + 1}: {len(passed)} pass, {len(failed)} fail")
+        if attempt == 0 or len(passed) > len(best_passed):
+            best_passed, best_failed = passed, failed
+        if passed and not failed:
+            break
+    passed, failed = best_passed, best_failed
+
+    os.makedirs(PLAN_DIR, exist_ok=True)
+    plan = {
+        "clause_no": num,
+        "title_en": clause_title_en(text),
+        "title_hi": title_hi or clause_title_en(text),
+        "source_pdf": os.path.basename(PDF_FILE),
+        "approved": True,
+        "build_tries": 1,
+        "note": "Automatic. Sirf auto_check=true wale parts ki reel banti hai. FAIL wale kabhi publish nahi honge.",
+        "parts": passed + failed,
+        "clause_text_en": text,
+    }
+    save_plan(plan)
+    print(f"Clause {num} plan bana: {len(passed)} part PASS, {len(failed)} FAIL -> {plan_path(num)}")
+    return plan
+
+
+AUDIT_PROMPT = """You are a strict examiner of India Post rules. Below is an official Post Office Guide
+Part I clause and one Hindi MCQ reel script made from it. Check it word by word.
+
+CLAUSE (official):
+<<<
+{text}
+>>>
+
+RECENT COACHING NOTES for the same clause (Hindi, text may be garbled; may be empty):
+<<<
+{notes}
+>>>
+
+SCRIPT (JSON):
+{part}
+
+Answer these, using the clause (and the notes only for check 7):
+1. Is the Hindi 'fact' a faithful translation (no added/dropped condition, number, authority, exception)?
+2. Is the marked correct option fully correct per the clause?
+3. Is EVERY wrong option definitely wrong per the clause (not partly true, not true for some case)?
+4. Are 'hint', 'trap', 'yaad', 'hook' fully consistent with the clause and free of invented reasons?
+5. Is any exception elsewhere in the clause ignored?
+6. Are postal terms translated correctly (insured = बीमाकृत वस्तु, not insurance)?
+7. OUTDATED CHECK: this Guide is corrected only up to 1985. If the recent notes state a DIFFERENT
+   value for any fact the script uses (a count, number, fee, time, authority, name, list), or the fact
+   is obviously time-sensitive (number of circles, postal rates/fees, office-bearer names, dealer firms)
+   and the notes do not confirm it, report a problem starting with "OUTDATED:".
+
+Return ONLY JSON: {{"ok": true/false, "problems": ["short Hindi or English description", ...]}}
+ok must be false if there is even one problem.
+"""
+
+
+def audit_part(part, clause_text):
+    """
+    Har uplabdh AI (Gemini + Groq) alag-alag examiner ki tarah jaanchta hai.
+    SABKO ok kehna hoga. Ek ne bhi shak kiya to part reject.
+    """
+    view = {k: part.get(k) for k in ("fact", "question", "a", "b", "c", "d", "correct",
+                                     "hint", "trap", "yaad", "hook")}
+    num = part.get("_clause_no")
+    notes = notes_sections().get(num, "") if num else ""
+    prompt = AUDIT_PROMPT.format(text=clause_text[:40000], notes=notes[:8000] or "(none)",
+                                 part=json.dumps(view, ensure_ascii=False))
+    providers = available_providers()
+    if not providers:
+        return ["AUDIT: koi AI examiner uplabdh nahi (GEMINI_API_KEY/GROQ_API_KEY) - bina jaanch pass nahi"]
+    problems = []
+    for name, _ in providers:
+        res = _llm_json(prompt, only=name)
+        probs = [str(p) for p in (res.get("problems") or []) if str(p).strip()]
+        if res.get("ok") is not True or probs:
+            problems += [f"AUDIT({name}): {p}" for p in probs] or [f"AUDIT({name}): ok nahi kaha"]
+    return problems
+
+
+REPAIR_PROMPT = """You are fixing ONE Hindi MCQ reel script for India Post exams. It FAILED accuracy checks.
+The ONLY source of truth is this official Post Office Guide Part I clause:
+<<<
+{text}
+>>>
+
+FAILED SCRIPT (JSON):
+{part}
+
+PROBLEMS FOUND:
+{errors}
+
+Rewrite the script so that every problem is fixed. You may change the question, options, answer,
+hint, trap, yaad, hook completely, or pick a different exam-relevant rule from the SAME clause if this
+one cannot be made fully accurate. All earlier rules still apply:
+- source_quote copied word for word from the clause (English), and it alone must support the fact.
+- fact = faithful Hindi translation, keep every condition, number, authority and exception.
+- exactly one correct option; each wrong option definitely wrong per the clause (never partly true).
+- hint/trap/yaad only from the clause, no invented reasons. Numbers as digits. No emoji.
+- insured article = बीमाकृत वस्तु (not insurance). Never turn "generally/usually" into "always".
+
+Return ONLY JSON with keys: source_quote, hook, question, a, b, c, d, correct, hint, fact, trap,
+trap_quote, yaad.
+"""
+
+
+def check_part(part, clause_text):
+    errs = verify_part(part, clause_text)
+    if not errs:
+        try:
+            errs = audit_part(part, clause_text)
+        except Exception as exc:
+            errs = [f"AUDIT nahi ho paya: {exc}"]
+    return errs
+
+
+def repair_part(part, clause_text):
+    """Ek chhoote part ko uski galtiyon ke saath AI ko wapas deta hai, fir poori jaanch dobara."""
+    view = {k: part.get(k) for k in ("source_quote", "hook", "question", "a", "b", "c", "d", "correct",
+                                     "hint", "fact", "trap", "trap_quote", "yaad")}
+    fixed = _llm_json(REPAIR_PROMPT.format(
+        text=clause_text[:40000], part=json.dumps(view, ensure_ascii=False),
+        errors="\n".join("- " + e for e in part.get("check_errors", [])) or "- unknown"))
+    fixed = {k: (v.strip() if isinstance(v, str) else v) for k, v in fixed.items()}
+    fixed["_clause_no"] = part.get("_clause_no")
+    return fixed, check_part(fixed, clause_text)
+
+
+def repair_pass(clauses, budget=REPAIRS_PER_RUN):
+    """
+    Pichhle runs me chhoote parts ko sudharne ki koshish. Sudhar gaya to wo agle video me publish hoga.
+    Jis clause ka plan hi khaali bana tha, use dobara banata hai.
+    """
+    fixed_any = 0
+    for plan in all_plans():
+        if budget <= 0:
+            break
+        num = plan["clause_no"]
+        text = clauses.get(num)
+        if not text:
+            continue
+
+        if not plan.get("parts") and plan.get("build_tries", 1) < MAX_REPAIR_TRIES:
+            print(f"Clause {num}: plan khaali tha, dobara bana raha hoon...")
+            tries = plan.get("build_tries", 1) + 1
+            try:
+                plan = build_plan(num, clauses)
+            except Exception as exc:
+                print("  dobara nahi bana:", exc)
+            plan = load_plan(num) or plan
+            plan["build_tries"] = tries
+            save_plan(plan)
+            budget -= 1
+            continue
+
+        changed = False
+        for i, part in enumerate(plan.get("parts", [])):
+            if budget <= 0:
+                break
+            if part.get("auto_check") or part.get("repair_tries", 0) >= MAX_REPAIR_TRIES:
+                continue
+            tries = part.get("repair_tries", 0) + 1
+            print(f"Clause {num}: chhoota part sudhaar raha hoon (koshish {tries}/{MAX_REPAIR_TRIES})...")
+            budget -= 1
+            try:
+                fixed, errs = repair_part(part, text)
+            except Exception as exc:
+                fixed, errs = None, [f"sudhaar nahi ho paya: {exc}"]
+            if fixed is not None and not errs:
+                fixed.update({"auto_check": True, "check_errors": [], "repaired": True,
+                              "repair_tries": tries})
+                plan["parts"][i] = fixed
+                fixed_any += 1
+                print("  SUDHAR GAYA - saari jaanch pass. Agle video me aayega.")
+            else:
+                part["repair_tries"] = tries
+                part["check_errors"] = errs
+                print("  abhi bhi fail:", "; ".join(errs)[:200])
+            changed = True
+        if changed:
+            save_plan(plan)
+    return fixed_any
+
+
+def usable_parts(plan):
+    return [p for p in plan.get("parts", []) if p.get("auto_check")]
+
+
+def next_unpublished(plan):
+    """(part, display_no, total) - plan ka pehla pakka part jo abhi publish nahi hua."""
+    good = usable_parts(plan)
+    for i, p in enumerate(good, 1):
+        if not p.get("published"):
+            return p, i, len(good)
+    return None, 0, len(good)
+
+
+def pending_repaired(current_clause):
+    """Pichhle clauses ke sudhare gaye parts jo abhi publish nahi hue (inhe pehle mauka)."""
+    for plan in all_plans():
+        if plan["clause_no"] == current_clause:
+            continue
+        part, no, total = next_unpublished(plan)
+        if part is not None and part.get("repaired"):
+            return plan, part, no, total
+    return None
+
+
+def prepare_data(data, clause_no, part_no, total_parts=1, next_title="अगला नियम"):
     """Clean + options shuffle (pehle har baar A sahi hota tha - viewer pattern pakad leta tha)."""
     data = {k: clean_text(v) if isinstance(v, str) else v for k, v in data.items()}
     correct_key = (data.get("correct") or "A").upper()
@@ -880,35 +1330,35 @@ def prepare_data(data, clause_no, part_no):
     rng.shuffle(wrong)
     data["elim_order"] = wrong
     data["clause_no"], data["part_no"] = clause_no, part_no
-    data["total_parts"] = POSTAL_CLAUSE_CATALOG[clause_no]["total_parts"]
+    data["total_parts"] = total_parts
     data["hl_words"] = [re.sub(r"[,.!?।:()]", "", w) for w in data["correct_text"].split() if len(w) > 1]
-    data["next_title"] = next_topic_title(clause_no, part_no)
+    data["next_title"] = clean_text(next_title) or "अगला नियम"
+    if not data.get("yaad"):
+        data["yaad"] = " ".join(data["fact"].split()[:8])
+    # awaaz ke liye symbols ko shabd me
+    data["yaad_voice"] = (data["yaad"].replace("=", ",").replace("+", " और ")
+                          .replace(":", ",").replace("  ", " "))
     return data
 
 
 # ==================== STATE ====================
 
 def load_state():
-    default = {"clause_no": 23, "current_part": 1}
+    state = {"clause_no": 1, "current_part": 1}
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r", encoding="utf-8") as f:
                 saved = json.load(f)
             if isinstance(saved, dict):
-                default.update(saved)
+                state.update(saved)
         except Exception:
             pass
     try:
-        default["clause_no"] = int(default["clause_no"])
-        default["current_part"] = int(default["current_part"])
+        state["clause_no"] = int(state["clause_no"])
+        state["current_part"] = max(1, int(state["current_part"]))
     except (TypeError, ValueError):
-        default = {"clause_no": 23, "current_part": 1}
-    if default["clause_no"] not in POSTAL_CLAUSE_CATALOG:
-        default = {"clause_no": 23, "current_part": 1}
-    total = POSTAL_CLAUSE_CATALOG[default["clause_no"]]["total_parts"]
-    if not (1 <= default["current_part"] <= total):
-        default["current_part"] = 1
-    return default
+        state = {"clause_no": 1, "current_part": 1}
+    return state
 
 
 def save_state(state):
@@ -916,46 +1366,42 @@ def save_state(state):
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
-def next_position(clause, part):
-    info = POSTAL_CLAUSE_CATALOG[clause]
-    if part < info["total_parts"]:
-        return clause, part + 1
-    keys = sorted(POSTAL_CLAUSE_CATALOG)
-    return keys[(keys.index(clause) + 1) % len(keys)], 1
-
-
-def next_topic_title(clause, part):
-    c, _ = next_position(clause, part)
-    return POSTAL_CLAUSE_CATALOG[c]["name"]
-
-
-def advance_state(state):
-    state["clause_no"], state["current_part"] = next_position(state["clause_no"], state["current_part"])
-    save_state(state)
+def next_clause_no(num, clause_numbers):
+    """clause_numbers = syllabus order. Current ke baad wala; aakhir me wapas pehla."""
+    later = [n for n in clause_numbers if n > num]
+    return later[0] if later else clause_numbers[0]
 
 
 # ==================== SCENE SCRIPT (voice segments) ====================
 
 def build_scene_specs(data):
+    """
+    tail = voice khatam hone ke baad scene kitni der ruke (info ko 'absorb' karne ka time)
+    min  = scene ki kam se kam lambai
+    Rule: jo info screen pe PADHNI hai (options) usko hold milta hai,
+          jo sirf SUNNI hai (hook, reveal) uske baad turant agla scene.
+    """
     return [
-        {"name": "hook", "mood": "red", "tail": 0.15, "min": 2.2,
+        {"name": "hook", "mood": "red", "tail": 0.10, "min": 2.0,
          "segs": [("hook", data["hook"])]},
-        {"name": "question", "mood": "blue", "tail": 1.1, "min": 3.2,
+        {"name": "question", "mood": "blue", "tail": 0.35, "min": 2.6,
          "segs": [("q", data["question"])]},
-        {"name": "countdown", "mood": "purple", "tail": 0.15, "min": 3.45,
-         "segs": [("lock", "कमेंट में जवाब लॉक कीजिए, तीन सेकंड!")]},
-        {"name": "hint", "mood": "yellow", "tail": 0.25, "min": 2.5,
-         "segs": [("pre", "एक हिंट सुनिए।"), ("hint", data["hint"])]},
-        {"name": "eliminate", "mood": "red", "tail": 0.35, "min": 3.5,
-         "segs": [("pre", "अब गलत हटाते हैं।"), ("x1", "ये नहीं।"), ("x2", "ये भी नहीं।"),
-                  ("left", "बचे दो, सही कौन?"), ("x3", "ये भी नहीं!")]},
-        {"name": "reveal", "mood": "green", "tail": 0.4, "min": 2.4,
-         "segs": [("rev", f"सही जवाब है, {data['correct']}, {data['correct_text']}!")]},
+        {"name": "countdown", "mood": "purple", "tail": 0.0,
+         "min": COUNTDOWN_SECONDS * COUNTDOWN_STEP + 0.35,
+         "segs": [("lock", "जवाब कमेंट कीजिए!")]},
+        {"name": "hint", "mood": "yellow", "tail": 0.2, "min": 2.0,
+         "segs": [("hint", data["hint"])], "read": [("hint", data["hint"])]},
+        {"name": "eliminate", "mood": "red", "tail": 0.2, "min": 2.4,
+         "segs": [("x1", "ये नहीं,"), ("x2", "ये भी नहीं,"),
+                  ("left", "बचे दो..."), ("x3", "ये भी नहीं!")]},
+        {"name": "reveal", "mood": "green", "tail": 0.45, "min": 1.7,
+         "segs": [("rev", f"सही जवाब, {data['correct']}!")]},
         {"name": "rule", "mood": "blue", "tail": 0.3, "min": 0,
-         "segs": [("fact", data["fact"]),
-                  ("trapx", "और ट्रैप ये है,"), ("trap", data["trap"])]},
-        {"name": "cta", "mood": "purple", "tail": 0.6, "min": 3.0,
-         "segs": [("cta", "सही था? कमेंट में लिखिए, पक्का! अगला सवाल और भी मुश्किल है!")]},
+         "segs": [("fact", data["fact"]), ("trapx", "ट्रैप:"), ("trap", data["trap"])],
+         "read": [("trap", data["trap"])]},
+        {"name": "cta", "mood": "purple", "tail": 0.3, "min": 2.4,
+         "segs": [("yaad", "याद रखिए, " + data["yaad_voice"] + "।")],
+         "read": [("yaad", data["yaad"])]},
     ]
 
 
@@ -963,40 +1409,111 @@ def seg_weight(text):
     return len(text.replace(" ", "")) + 4 * len(re.findall(r"[,.!?।]", text)) + 2
 
 
-def compute_marks(segs, voice_dur):
-    total = sum(seg_weight(t) for _, t in segs)
-    marks, acc = {}, 0.0
+def _proportional_word_times(segs, voice_dur):
+    """Fallback: word timing andaze se (DRY_RUN / boundary na mile tab)."""
+    words = []
     for key, text in segs:
-        w = seg_weight(text)
-        marks[key] = (voice_dur * acc / total, voice_dur * (acc + w) / total)
-        acc += w
-    return marks
+        for w in text.split():
+            words.append((key, w))
+    th = word_thresholds([w for _, w in words])
+    return [(key, w, voice_dur * t) for (key, w), t in zip(words, th)]
+
+
+def _exact_word_times(segs, boundaries, voice_dur):
+    """edge-tts WordBoundary -> har display-word ka asli start time."""
+    full, spans = "", []
+    for key, text in segs:
+        if full:
+            full += " "
+        for m in re.finditer(r"\S+", text):
+            spans.append((key, m.group(), len(full) + m.start(), len(full) + m.end()))
+        full += text
+
+    known = {}
+    ptr = 0
+    for start, _end, wtext in boundaries:
+        wtext = (wtext or "").strip()
+        if not wtext:
+            continue
+        pos = full.find(wtext, ptr)
+        if pos < 0:
+            continue
+        ptr = pos + len(wtext)
+        for i, (_, _, a, b) in enumerate(spans):
+            if a <= pos < b and i not in known:
+                known[i] = start
+                break
+
+    if len(known) < 2:
+        return None
+    idx = sorted(known)
+    xs = np.array(idx, dtype=float)
+    ys = np.array([known[i] for i in idx], dtype=float)
+    ys = np.maximum.accumulate(ys)
+    all_t = np.interp(np.arange(len(spans)), xs, ys)
+    return [(key, w, float(min(t, voice_dur))) for (key, w, _, _), t in zip(spans, all_t)]
+
+
+def compute_marks(segs, voice_dur, boundaries=None):
+    """Returns marks {key: (start, end)} aur word_times {key: [start per word]}."""
+    wt = _exact_word_times(segs, boundaries, voice_dur) if boundaries else None
+    if wt is None:
+        wt = _proportional_word_times(segs, voice_dur)
+    keys = [k for k, _ in segs]
+    word_times = {k: [t for kk, _, t in wt if kk == k] for k in keys}
+    marks = {}
+    for i, k in enumerate(keys):
+        st = word_times[k][0] if word_times[k] else 0.0
+        nxt = None
+        for k2 in keys[i + 1:]:
+            if word_times[k2]:
+                nxt = word_times[k2][0]
+                break
+        marks[k] = (st, nxt if nxt is not None else voice_dur)
+    return marks, word_times
+
+
+def seg_progress(sc, key, t):
+    """Kinetic text ke liye: (p, thresholds) exact word timing ke saath."""
+    s0, s1 = sc["marks"][key]
+    span = max(0.1, s1 - s0)
+    th = [clamp((w - EYE_LEAD - s0) / span) for w in sc["wt"][key]]
+    return clamp((t - s0) / span), th
 
 
 # ==================== AUDIO: TTS ====================
 
 async def tts_save(text, path):
+    """MP3 save karta hai aur har word ka (start, end, text) lautata hai."""
     import edge_tts
     last = None
     for attempt in range(4):
         try:
-            com = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=VOICE_RATE, pitch=VOICE_PITCH)
-            await com.save(path)
-            if os.path.exists(path) and os.path.getsize(path) > 1000:
-                return
+            try:
+                com = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=VOICE_RATE,
+                                           pitch=VOICE_PITCH, boundary="WordBoundary")
+            except TypeError:  # purana edge-tts: boundary param nahi hota, default WordBoundary
+                com = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=VOICE_RATE, pitch=VOICE_PITCH)
+            words = []
+            with open(path, "wb") as f:
+                async for chunk in com.stream():
+                    if chunk.get("type") == "audio":
+                        f.write(chunk["data"])
+                    elif chunk.get("type") == "WordBoundary":
+                        st = chunk["offset"] / 1e7
+                        words.append((st, st + chunk["duration"] / 1e7, chunk.get("text", "")))
+            if os.path.getsize(path) > 1000:
+                return words
         except Exception as exc:
             last = exc
         await asyncio.sleep(1.5 * (attempt + 1))
     raise RuntimeError(f"TTS fail: {last}")
 
 
-def decode_voice(path):
-    cmd = [
-        "ffmpeg", "-v", "error", "-i", path,
-        "-af", ("silenceremove=start_periods=1:start_threshold=-45dB,areverse,"
-                "silenceremove=start_periods=1:start_threshold=-45dB,areverse"),
-        "-ac", "1", "-ar", str(SR), "-f", "s16le", "-",
-    ]
+def decode_raw(path, trim=False):
+    af = ["-af", ("silenceremove=start_periods=1:start_threshold=-45dB,areverse,"
+                  "silenceremove=start_periods=1:start_threshold=-45dB,areverse")] if trim else []
+    cmd = ["ffmpeg", "-v", "error", "-i", path, *af, "-ac", "1", "-ar", str(SR), "-f", "s16le", "-"]
     raw = subprocess.run(cmd, check=True, capture_output=True).stdout
     arr = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
     if len(arr) < SR * 0.2:
@@ -1004,17 +1521,59 @@ def decode_voice(path):
     return arr
 
 
+def tighten_voice(arr, words):
+    """
+    Har chuppi ko MAX_PAUSE tak kaat deta hai aur word timings ko usi hisaab se shift karta hai.
+    Yahi 46s -> ~30s ka sabse bada fix hai (TTS comma/full-stop pe 0.4-0.6s rukta hai).
+    """
+    if not words:
+        return arr, None
+    words = sorted(words)
+    keep = []                 # (src_start, src_end) seconds
+    new_words = []
+    out_t = 0.0
+    cur = max(0.0, words[0][0] - 0.03)
+    for i, (ws, we, wt) in enumerate(words):
+        if i > 0:
+            prev_end = max(words[i - 1][1], cur)
+            gap = ws - prev_end
+            if gap > MAX_PAUSE:
+                keep.append((cur, prev_end + MAX_PAUSE / 2))
+                out_t += prev_end + MAX_PAUSE / 2 - cur
+                cur = ws - MAX_PAUSE / 2
+        new_words.append((out_t + (ws - cur), out_t + (we - cur), wt))
+    tail_end = min(len(arr) / SR, words[-1][1] + 0.12)
+    keep.append((cur, tail_end))
+
+    fade = int(0.006 * SR)
+    pieces = []
+    for a, b in keep:
+        seg = arr[int(a * SR):int(b * SR)].copy()
+        if len(seg) > 2 * fade:
+            seg[:fade] *= np.linspace(0, 1, fade)
+            seg[-fade:] *= np.linspace(1, 0, fade)
+        pieces.append(seg)
+    out = np.concatenate(pieces) if pieces else arr
+    return out.astype(np.float32), new_words
+
+
 def make_voices(specs):
+    """Returns list of (audio_array, word_boundaries_or_None)."""
     voices = []
     for i, sp in enumerate(specs):
         text = " ".join(t for _, t in sp["segs"])
         if DRY_RUN:
-            est = max(0.8, seg_weight(text) * 0.055)
-            voices.append(np.zeros(int(est * SR), dtype=np.float32))
+            est = max(0.6, seg_weight(text) * 0.058)
+            voices.append((np.zeros(int(est * SR), dtype=np.float32), None))
             continue
         path = f"_voice_{i}.mp3"
-        asyncio.run(tts_save(text, path))
-        voices.append(decode_voice(path))
+        words = asyncio.run(tts_save(text, path))
+        if words:
+            arr, words = tighten_voice(decode_raw(path), words)
+        else:
+            print(f"  (scene {sp['name']}: word timing nahi mila, andaze se timing)")
+            arr, words = decode_raw(path, trim=True), None
+        voices.append((arr, words))
         os.remove(path)
     return voices
 
@@ -1113,8 +1672,8 @@ def build_audio(voices, timeline, total, out_path):
     n = int(total * SR) + SR
     buf = np.zeros(n, dtype=np.float32)
     voice_track = np.zeros(n, dtype=np.float32)
-    for sc, v in zip(timeline, voices):
-        add_at(voice_track, v, sc["start"])
+    for sc, (v, _) in zip(timeline, voices):
+        add_at(voice_track, v, sc["start"] + VOICE_LEAD)
 
     # ducking: voice ke time music neeche
     env = np.abs(voice_track)
@@ -1138,9 +1697,9 @@ def build_audio(voices, timeline, total, out_path):
                 add_at(buf, sfx_pop(0.35), s + ot)
         elif name == "countdown":
             for k in range(COUNTDOWN_SECONDS):
-                add_at(buf, sfx_tick(0.5), s + k)
-                add_at(buf, sfx_heartbeat(0.5), s + k)
-            add_at(buf, sfx_pop(0.45), s + COUNTDOWN_SECONDS)
+                add_at(buf, sfx_tick(0.5), s + k * COUNTDOWN_STEP)
+                add_at(buf, sfx_heartbeat(0.45), s + k * COUNTDOWN_STEP)
+            add_at(buf, sfx_pop(0.45), s + COUNTDOWN_SECONDS * COUNTDOWN_STEP)
         elif name == "hint":
             add_at(buf, sfx_ding(0.18), s + 0.05)
         elif name == "eliminate":
@@ -1206,9 +1765,9 @@ def scene_hook(cv, data, t, dur, m, vd, sc):
     chip = pill_sprite("GDS  |  MTS  |  PA  |  IP  EXAM", 30, YELLOW, (45, 30, 5), ORANGE)
     place(cv, chip, W / 2, 230, alpha=0.4 + 0.6 * prog(t, 0, 0.2))
 
-    p = clamp(t / max(0.1, vd))
+    p, th = seg_progress(sc, "hook", t)
     draw_kinetic(cv, data["hook"], W / 2, 0, 920, 80, p, max_lines=4, min_size=50,
-                 ghost=0.22, center_y=880)
+                 ghost=0.22, center_y=880, th=th)
 
     fx = {}
     if t >= stamp_t:
@@ -1230,9 +1789,8 @@ def scene_question(cv, data, t, dur, m, vd, sc):
     place(cv, pill_sprite("सवाल", 34, WHITE, (37, 60, 140), BLUE), W / 2, 215)
     topic_chip(cv, data, 300, a=0.9)
 
-    q0, q1 = m["q"]
-    qp = clamp((t - q0) / max(0.1, q1 - q0))
-    draw_kinetic(cv, data["question"], W / 2, 390, 920, 58, qp, max_lines=3, min_size=40, ghost=0.15)
+    qp, th = seg_progress(sc, "q", t)
+    draw_kinetic(cv, data["question"], W / 2, 390, 920, 58, qp, max_lines=3, min_size=40, ghost=0.15, th=th)
 
     ys = opt_positions()
     for i, (l, txt) in enumerate(data["options"]):
@@ -1257,10 +1815,11 @@ def scene_countdown(cv, data, t, dur, m, vd, sc):
         place(cv, option_sprite(l, txt, 860, 132, "normal"), W / 2, ys[i], scale=pulse)
 
     cx, cy, r = W / 2, 1270, 150
-    cd = COUNTDOWN_SECONDS
+    step = COUNTDOWN_STEP
+    cd = COUNTDOWN_SECONDS * step
     done = t >= cd
-    num = max(1, cd - int(t))
-    frac = t - int(t)
+    num = max(1, COUNTDOWN_SECONDS - int(t / step))
+    frac = (t / step) - int(t / step)
     place(cv, glow_sprite(260, PURPLE, 120), cx, cy)
     d = ImageDraw.Draw(cv)
     d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(20, 16, 40), outline=(60, 50, 100), width=14)
@@ -1287,9 +1846,9 @@ def scene_hint(cv, data, t, dur, m, vd, sc):
     bh = text_block_h(data["hint"], 820, 64, 4, 42)
     ch = bh + 140
     place(cv, card_sprite(940, ch, CARD, ORANGE, 5, 40), W / 2, 1000, alpha=clamp(k))
-    h0, h1 = m["hint"]
-    p = clamp((t - h0) / max(0.1, h1 - h0))
-    draw_kinetic(cv, data["hint"], W / 2, 0, 820, 64, p, max_lines=4, min_size=42, ghost=0.12, center_y=1000)
+    p, th = seg_progress(sc, "hint", t)
+    draw_kinetic(cv, data["hint"], W / 2, 0, 820, 64, p, max_lines=4, min_size=42, ghost=0.12,
+                 center_y=1000, th=th)
 
     d = ImageDraw.Draw(cv)
     d.text((W / 2, 1000 + ch / 2 + 110), "अब भी वही जवाब?", font=get_font(46), fill=MUTED, anchor="mm")
@@ -1373,10 +1932,9 @@ def scene_rule(cv, data, t, dur, m, vd, sc):
     place(cv, card_sprite(960, int(fh), (12, 36, 28), GREEN, 5, 40), W / 2, fc,
           scale=0.92 + 0.08 * k1, alpha=clamp(k1))
     place(cv, pill_sprite("नियम", 40, (5, 30, 15), GREEN, GREEN), W / 2, fc - fh / 2, scale=max(0.05, k1))
-    f0, f1 = m["fact"]
-    fp = clamp((t - f0) / max(0.1, f1 - f0))
+    fp, th_f = seg_progress(sc, "fact", t)
     draw_kinetic(cv, data["fact"], W / 2, 0, 860, 58, fp, max_lines=5, min_size=38,
-                 hl_words=data["hl_words"], hl_color=GREEN, ghost=0.12, center_y=fc + 10)
+                 hl_words=data["hl_words"], hl_color=GREEN, ghost=0.12, center_y=fc + 10, th=th_f)
 
     ts = m["trapx"][0]
     fx = {}
@@ -1386,10 +1944,9 @@ def scene_rule(cv, data, t, dur, m, vd, sc):
               scale=0.9 + 0.1 * k2, alpha=clamp(k2))
         place(cv, pill_sprite("EXAM TRAP", 40, WHITE, RED, RED), W / 2, tc - th / 2,
               scale=max(0.05, k2), angle=-3)
-        t0, t1 = m["trap"]
-        tp = clamp((t - t0) / max(0.1, t1 - t0))
+        tp, th2 = seg_progress(sc, "trap", t)
         draw_kinetic(cv, data["trap"], W / 2, 0, 860, 54, tp, max_lines=4, min_size=36,
-                     ghost=0.12, center_y=tc + 10)
+                     ghost=0.12, center_y=tc + 10, th=th2)
         if t - ts < 0.12:
             fx["shake"] = 6
     else:
@@ -1401,29 +1958,30 @@ def scene_rule(cv, data, t, dur, m, vd, sc):
 
 
 def scene_cta(cv, data, t, dur, m, vd, sc):
+    """Aakhri frame = sabse important info (yaad formula). Jo yahan tak aaya, wo niyam lekar jaye."""
     k = ease_out_back(prog(t, 0, 0.35))
-    place(cv, check_sprite(150), W / 2, 330, scale=max(0.05, k))
-    d = ImageDraw.Draw(cv)
-    d.text((W / 2, 500), "सही किया?", font=get_font(84), fill=WHITE, anchor="mm")
-    place(cv, pill_sprite("कमेंट करें:  पक्का", 52, (5, 30, 15), GREEN, GREEN), W / 2, 640,
-          scale=max(0.05, 0.6 + 0.4 * k))
+    place(cv, pill_sprite("याद रखिए", 46, (30, 20, 0), YELLOW, YELLOW), W / 2, 330, scale=max(0.05, k))
 
-    k2 = ease_out_back(prog(t, 0.35, 0.4))
-    place(cv, card_sprite(940, 360, CARD, PURPLE, 5, 40), W / 2, 990, alpha=clamp(k2), scale=0.9 + 0.1 * k2)
-    if k2 > 0.2:
+    bh = text_block_h(data["yaad"], 860, 76, 3, 48)
+    ch = bh + 170
+    place(cv, glow_sprite(420, YELLOW, 70), W / 2, 640)
+    place(cv, card_sprite(980, ch, (40, 32, 8), YELLOW, 6, 44), W / 2, 640,
+          scale=0.9 + 0.1 * k, alpha=clamp(k))
+    p, th = seg_progress(sc, "yaad", t)
+    draw_kinetic(cv, data["yaad"], W / 2, 0, 860, 76, max(p, 0.001), max_lines=3, min_size=48,
+                 ghost=0.25, center_y=640, th=th, karaoke=True)
+
+    y2 = 640 + ch / 2 + 120
+    k2 = ease_out_back(prog(t, 0.5, 0.35))
+    d = ImageDraw.Draw(cv)
+    place(cv, pill_sprite("सही था? कमेंट करें: पक्का", 44, (5, 30, 15), GREEN, GREEN), W / 2, y2,
+          scale=max(0.05, k2))
+    if k2 > 0.3:
         d = ImageDraw.Draw(cv)
-        d.text((W / 2, 880), "अगला सवाल और भी मुश्किल", font=get_font(44), fill=YELLOW, anchor="mm")
-        f, s, lines = fit_lines(data["next_title"], 700, 2, 50, 34)
-        for i, ln in enumerate(lines):
-            d.text((W / 2 + 50, 985 + i * s * 1.3), " ".join(ln), font=f, fill=WHITE, anchor="mm")
-        place(cv, lock_sprite(90), W / 2 - 390, 1005, angle=math.sin(t * 6) * 8)
-
-    pulse = 1 + 0.05 * math.sin(t * 8)
-    place(cv, glow_sprite(230, RED, 110), W / 2, 1320)
-    place(cv, pill_sprite("FOLLOW  @POSTAL_WALA", 50, WHITE, (220, 38, 38), (255, 120, 120)),
-          W / 2, 1320, scale=pulse)
-    d = ImageDraw.Draw(cv)
-    d.text((W / 2, 1460), "रोज़ 1 नियम, सीधा परीक्षा से", font=get_font(40), fill=MUTED, anchor="mm")
+        d.text((W / 2, y2 + 130), "अगला:  " + data["next_title"], font=get_font(40), fill=MUTED, anchor="mm")
+    pulse = 1 + 0.04 * math.sin(t * 8)
+    place(cv, pill_sprite("FOLLOW  @POSTAL_WALA", 44, WHITE, (220, 38, 38), (255, 120, 120)),
+          W / 2, y2 + 250, scale=pulse, alpha=clamp(k2))
     return {}
 
 
@@ -1467,18 +2025,34 @@ def render_frame(sc, data, gt, total):
 
 def build_timeline(specs, voices, data):
     timeline, cur = [], 0.0
-    for i, (sp, v) in enumerate(zip(specs, voices)):
-        vdur = len(v) / SR
+    for i, (sp, (v, words)) in enumerate(zip(specs, voices)):
+        vdur = len(v) / SR + VOICE_LEAD
         dur = max(vdur + sp["tail"], sp["min"])
+        shifted = [(a + VOICE_LEAD, b + VOICE_LEAD, w) for a, b, w in words] if words else None
+        marks, wt = compute_marks(sp["segs"], vdur, shifted)
+        # RULE: jo text padhna hai, use (shabd / READ_WPS) + ABSORB time zaroor mile
+        for key, text in sp.get("read", []):
+            need = marks[key][0] + len(text.split()) / READ_WPS + ABSORB
+            dur = max(dur, need)
+        if sp["name"] == "countdown" and timeline:
+            # options padhne ka time: options dikhne se countdown khatam hone tak
+            q = timeline[-1]
+            opt_words = sum(len(t.split()) for _, t in data["options"])
+            seen = q["dur"] - q["opt_t"][0]
+            dur = max(dur, opt_words / READ_WPS + 0.3 - seen)
         sc = {
             "index": i, "name": sp["name"], "mood": sp["mood"], "start": cur, "dur": dur,
-            "vdur": vdur, "marks": compute_marks(sp["segs"], vdur), "data": data,
+            "vdur": vdur, "marks": marks, "wt": wt, "data": data,
         }
         if sp["name"] == "hook":
-            sc["stamp_t"] = min(max(0.6, vdur * 0.55), dur - 0.5)
+            # stamp aakhri shabd (stake) ke saath girta hai
+            last_words = wt["hook"][-2:] if len(wt["hook"]) >= 2 else [vdur * 0.6]
+            sc["stamp_t"] = min(max(0.5, last_words[0]), dur - 0.4)
         if sp["name"] == "question":
-            first = max(0.4, vdur * 0.55)
-            sc["opt_t"] = [first + j * 0.22 for j in range(4)]
+            # options sawal ke 60% pe aane lagte hain -> jab tak sawal khatam, options padhne layak
+            q_words = wt["q"]
+            first = q_words[int(len(q_words) * 0.6)] if q_words else vdur * 0.6
+            sc["opt_t"] = [first + j * 0.16 for j in range(4)]
         timeline.append(sc)
         cur += dur
     return timeline, cur
@@ -1492,8 +2066,11 @@ def build_reel(data, output_video):
     print("Voice ban rahi hai...")
     voices = make_voices(specs)
     timeline, total = build_timeline(specs, voices, data)
+    print("  PACING REPORT (scene | kab shuru | kitni der | voice | voice ke baad hold)")
+    print(f"  Rules: max pause {MAX_PAUSE}s | padhne ki speed {READ_WPS} shabd/s | absorb {ABSORB}s")
     for sc in timeline:
-        print(f"  {sc['name']:<10} start {sc['start']:5.2f}s  dur {sc['dur']:4.2f}s")
+        print(f"  {sc['name']:<10} {sc['start']:5.2f}s  {sc['dur']:4.2f}s  "
+              f"voice {sc['vdur']:4.2f}s  hold {sc['dur'] - sc['vdur']:4.2f}s")
 
     audio_path = "_master_audio.wav"
     build_audio(voices, timeline, total, audio_path)
@@ -1532,16 +2109,112 @@ def build_reel(data, output_video):
 
 # ==================== MAIN ====================
 
-if __name__ == "__main__":
+def list_clauses():
+    clauses = split_clauses(read_pdf_text())
+    syl = set(syllabus_clauses(clauses.keys()))
+    print(f"{len(clauses)} clause mile official PDF me ({len(syl)} syllabus me):")
+    for n, t in clauses.items():
+        mark = "*" if n in syl else " "
+        print(f" {mark}{n:>3}. {clause_title_en(t)[:70]}  ({len(t)} chars)")
+
+
+def run_daily():
+    if not os.path.exists(find_guide_pdf()):
+        print(f"RUKA: '{PDF_FILE}' repo me nahi hai. Official PO Guide Part I ki PDF isi naam se daaliye. "
+              "Bina official source ke koi reel nahi banegi.")
+        return
+    clauses = split_clauses(read_pdf_text())
+    order = syllabus_clauses(clauses.keys())
+    if not order:
+        print("RUKA: PDF me koi clause nahi mila. `python main.py --list-clauses` chala ke dekhiye.")
+        return
+
     state = load_state()
+    if state["clause_no"] not in order:
+        later = [n for n in order if n >= state["clause_no"]]
+        state["clause_no"] = later[0] if later else order[0]
     print("Current State:", state)
 
-    raw = generate_script(state)
-    data = prepare_data(raw, state["clause_no"], state["current_part"])
-    print("\nSCRIPT DATA:")
-    print(json.dumps({k: v for k, v in data.items() if k != "hl_words"}, ensure_ascii=False, indent=2))
+    # 1) pichhle chhoote parts ko sudharne ki koshish
+    try:
+        repair_pass(clauses)
+    except Exception as exc:
+        print("Sudhaar pass me dikkat (aage badh rahe hain):", exc)
 
-    out = os.path.join(OUTPUT_DIR, f"reel_clause_{state['clause_no']}_part_{state['current_part']}.mp4")
+    # 2) aaj kya publish ho: pehle sudhara hua purana part, warna current clause ka agla part
+    pick = pending_repaired(state["clause_no"])
+    advance_main = False
+    if pick:
+        plan, part, part_no, total = pick
+        num = plan["clause_no"]
+        print(f"Aaj pichhla sudhara hua part: Clause {num} Part {part_no}/{total}")
+    else:
+        part = None
+        for _ in range(len(order) + 1):
+            num = state["clause_no"]
+            plan = load_plan(num)
+            if plan is None:
+                print(f"Clause {num}: official PDF se plan ban raha hai...")
+                plan = build_plan(num, clauses)
+            part, part_no, total = next_unpublished(plan)
+            if part is not None:
+                advance_main = True
+                break
+            pending = sum(1 for p in plan.get("parts", []) if not p.get("auto_check"))
+            if pending:
+                print(f"Clause {num}: {pending} part abhi fail hain -> baad me sudhaar ke aayenge. Agla clause.")
+            state["clause_no"] = next_clause_no(num, order)
+            state["current_part"] = 1
+            save_state(state)
+        if part is None:
+            print("Aaj koi pakka part nahi mila. Reel nahi banegi (galat reel se behtar).")
+            return
+
+    nxt = next_clause_no(num, order)
+    if part_no < total:
+        next_title = plan.get("title_hi", "")
+    else:
+        next_title = (load_plan(nxt) or {}).get("title_hi") or "अगला नियम"
+
+    data_in = dict(part)
+    data_in["title"] = plan.get("title_hi") or plan.get("title_en", "")
+    data = prepare_data(data_in, num, part_no, total_parts=total, next_title=next_title)
+    print("\nSCRIPT DATA:")
+    print(json.dumps({k: v for k, v in data.items() if k not in ("hl_words",)}, ensure_ascii=False, indent=2))
+    print("SOURCE (PO Guide):", part.get("source_quote", ""))
+
+    out = os.path.join(OUTPUT_DIR, f"reel_clause_{num}_part_{part_no}.mp4")
     build_reel(data, out)
-    if not DRY_RUN:
-        advance_state(state)
+    if DRY_RUN:
+        return
+
+    # publish mark (index ki jagah flag, taaki baad me sudhre parts se kram na bigde)
+    import datetime
+    part["published"] = datetime.date.today().isoformat()
+    save_plan(plan)
+
+    if advance_main:
+        _, left_no, _ = next_unpublished(plan)
+        if left_no == 0:
+            state["clause_no"] = nxt
+        state["current_part"] = max(1, left_no)
+        save_state(state)
+
+    upcoming = state["clause_no"]
+    if load_plan(upcoming) is None:
+        try:
+            print(f"Agle clause {upcoming} ka plan pehle se bana raha hoon...")
+            build_plan(upcoming, clauses)
+        except Exception as exc:
+            print("Agla plan abhi nahi bana (agle run me banega):", exc)
+
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    if args[:1] == ["--list-clauses"]:
+        list_clauses()
+    elif args[:1] == ["--build"] and len(args) >= 2:
+        for n in args[1:]:
+            build_plan(int(n))
+    else:
+        run_daily()
