@@ -5,40 +5,33 @@ English title: Night Post Offices
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (0/4 sudhaar koshish): source ki sankhya ['5'] 'fact' me nahi aayi (niyam adhoora?)]
-**Source (PO Guide):** The working hours of the post offices are generally fixed by the Head of the Circle according to the timings given in clause 5 of the Post Office Guide. However the Director -General may extend the working hours of any post office up to 8:30 P.M. and keep them open on Sundays also.
+## Part 1  [PASS (sudhara gaya) | publish: 2026-09-24]
+**Source (PO Guide):** The working hours of the post offices are generally fixed by the Head of the Circle according to the timings given in clause 5 of the Post Office Guide.  However the Director -General may extend the working hours of any post office up to 8:30 P.M. and keep them open on Sundays also.
 
-**Niyam:** डाकघर के कार्यकाल सामान्यतः सर्किल प्रमुख तय करते हैं, पर महानिदेशक 8:30 PM तक बढ़ा सकते हैं और रविवार को खोल सकते हैं।
-**Sawal:** डाकघर के कार्यकाल बढ़ाने का अधिकार किसके पास है?
+**Niyam:** डाकघर के कार्य-समय सामान्यतः पोस्ट ऑफिस गाइड के क्लॉज़ 5 के अनुसार सर्किल प्रमुख तय करते हैं, परंतु महानिदेशक समय को 8:30 P.M. तक बढ़ा सकते हैं और रविवार को भी खुला रख सकते हैं।
+**Sawal:** डाकघर के कार्य-समय को रात 8:30 बजे तक बढ़ाने का अधिकार किसके पास है?
 - A. सर्किल प्रमुख
-- B. महानिदेशक डाकघर  <- SAHI
+- B. महानिदेशक  <- SAHI
 - C. डाकघर अधीक्षक
-- D. उप डाकघर
-**Hint:** उपलब्ध समय 8:30 PM तक
-**Trap:** डाकघर के कार्यकाल सर्किल प्रमुख तय करते हैं।  (source: The working hours of the post offices are generally fixed by the Head of the Circle according to the timings given in clause 5 of the Post Office Guide.)
-**Yaad:** बढ़ाओ समय, महानिदेशक
-**Hook:** कौन बढ़ा सकता है समय?
+- D. प्रथम श्रेणी पोस्टमास्टर
+**Hint:** सामान्य कार्य-समय क्लॉज़ 5 के अनुसार सर्किल प्रमुख तय करते हैं।
+**Trap:** सामान्य कार्य-समय क्लॉज़ 5 के अनुसार सर्किल प्रमुख तय करते हैं।  (source: The working hours of the post offices are generally fixed by the Head of the Circle according to the timings given in clause 5 of the Post Office Guide.)
+**Yaad:** समय बढ़ाएं महानिदेशक
+**Hook:** समय कौन बढ़ा सकता है?
 
-## Part 2  [FAIL (0/4 sudhaar koshish): AUDIT nahi ho paya: Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Gemini(gemini-3.8-flash) 503: {
-  "error": {
-    "code": 503,
-    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
-    "status": "UNAVAILABLE"
-  }
-}
-]
-**Source (PO Guide):** During the extended hours, these post offices will generally book registered articles including V.P. articles, issue T.M .Os, and sell I.P.Os. and postage stamps. Deposits into Savings Bank Account and sale of cash certificates will be available upto 7.00 p.m. on week days only.
+## Part 2  [PASS (sudhara gaya) | publish baaki]
+**Source (PO Guide):** However the Director -General may extend the working hours of any post office up to 8:30 P.M. and keep them open on Sundays also.
 
-**Niyam:** विस्तारित समय में पंजीकृत, वी.पी., टी.एम.ओ जारी, आई.पी.ओ और स्टैम्प बेचते हैं; बचत जमा व प्रमाणपत्र 7 PM तक उपलब्ध।
-**Sawal:** विस्तारित समय में कौन सी सेवाएँ उपलब्ध हैं?
-- A. पंजीकृत लेख  <- SAHI
-- B. डाक रिटर्न
-- C. अंतर्राष्ट्रीय डाक
-- D. रिटर्न लेटर
-**Hint:** स्टैम्प और प्रमाणपत्र भी बेचते हैं
-**Trap:** बचत जमा सभी दिनों में उपलब्ध है।  (source: Deposits into Savings Bank Account and sale of cash certificates will be available upto 7.00 p.m. on week days only.)
-**Yaad:** बुक, बेच, जमा 7 PM तक
-**Hook:** क्या बेचते हैं रात में?
+**Niyam:** महानिदेशक किसी भी डाकघर के काम के घंटे 8:30 P.M. तक बढ़ा सकते हैं और उन्हें रविवार को भी खुला रख सकते हैं।
+**Sawal:** किसी भी डाकघर के काम के घंटे 8:30 P.M. तक बढ़ाने और उन्हें रविवार को भी खुला रखने का अधिकार किसके पास है?
+- A. महानिदेशक (Director-General)  <- SAHI
+- B. सर्कल के प्रमुख (Head of the Circle)
+- C. पोस्टमास्टर जनरल (Postmaster General)
+- D. डाकघर अधीक्षक (Superintendent of Post Offices)
+**Hint:** यह अधिकार सर्कल के प्रमुख के पास नहीं बल्कि महानिदेशक के पास होता है।
+**Trap:** सर्कल के प्रमुख सामान्य कार्य घंटे तय करते हैं, लेकिन रात 8:30 P.M. तक विस्तार का विशेष अधिकार महानिदेशक का है।  (source: The working hours of the post offices are generally fixed by the Head of the Circle according to the timings given in clause 5 of the Post Office Guide. However the Director -General may extend the working hours of any post office up to 8:30 P.M. and keep them open on Sundays also.)
+**Yaad:** सामान्य समय सर्कल प्रमुख तय करते हैं, पर 8:30 P.M. तक का विस्तार महानिदेशक करते हैं।
+**Hook:** डाकघर को रात 8:30 बजे तक कौन खुला रख सकता है?
 
 ## Part 3  [FAIL (0/4 sudhaar koshish): AUDIT nahi ho paya: Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Gemini(gemini-3.8-flash) 503: {
   "error": {
