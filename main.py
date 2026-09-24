@@ -133,7 +133,6 @@ MOODS = {
 PDF_FILE = os.getenv("PO_GUIDE_PDF", "PO_Guide_Part_1.pdf")
 PLAN_DIR = "clause_plans"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 MAX_PARTS = 9
 MAX_REPAIR_TRIES = 4          # ek chhoote part ko kitni baar (alag-alag din) sudharne ki koshish
 REPAIRS_PER_RUN = 2           # ek run me kitne chhoote parts sudharne ki koshish (API kharcha seemit)
@@ -902,25 +901,121 @@ def verify_part(part, clause_text):
 
 # ==================== LLM (Gemini, fallback Groq) ====================
 
+_MODEL_CACHE = {}
+
+
+def _raise_for(r, who):
+    if r.status_code >= 400:
+        raise RuntimeError(f"{who} {r.status_code}: {r.text[:300]}")
+
+
+def gemini_model():
+    """
+    Google model ke naam badalte rehte hain (2.5 -> 3.x). Isliye har run me ListModels se
+    abhi chalu models dekh ke sabse naya stable 'flash' (ya 'pro') chunte hain.
+    GEMINI_MODEL env diya ho to wahi.
+    """
+    if os.getenv("GEMINI_MODEL"):
+        return os.getenv("GEMINI_MODEL")
+    if "gemini" in _MODEL_CACHE:
+        return _MODEL_CACHE["gemini"]
+    names = []
+    try:
+        url = "https://generativelanguage.googleapis.com/v1beta/models"
+        token = None
+        for _ in range(5):
+            params = {"key": GEMINI_API_KEY.strip(), "pageSize": 200}
+            if token:
+                params["pageToken"] = token
+            r = requests.get(url, params=params, timeout=60)
+            _raise_for(r, "Gemini ListModels")
+            js = r.json()
+            for m in js.get("models", []):
+                if "generateContent" in (m.get("supportedGenerationMethods") or []):
+                    names.append(m["name"].split("/")[-1])
+            token = js.get("nextPageToken")
+            if not token:
+                break
+    except Exception as exc:
+        print("Gemini model list nahi mili:", exc)
+
+    def ver(n):
+        m = re.match(r"gemini-(\d+)(?:\.(\d+))?", n)
+        return (int(m.group(1)), int(m.group(2) or 0)) if m else (0, 0)
+
+    bad = ("tts", "image", "live", "audio", "embedding", "robotics", "transcribe", "lite", "exp", "preview",
+           "learnlm", "gemma", "computer")
+    stable = [n for n in names if n.startswith("gemini-") and not any(b in n for b in bad)]
+    flash = sorted([n for n in stable if "flash" in n], key=ver, reverse=True)
+    pro = sorted([n for n in stable if "pro" in n], key=ver, reverse=True)
+    pick = (flash or pro or sorted([n for n in names if n.startswith("gemini-") and "flash" in n
+                                    and not any(b in n for b in bad[:9])], key=ver, reverse=True) or [None])[0]
+    pick = pick or "gemini-flash-latest"
+    print("Gemini model chuna:", pick)
+    _MODEL_CACHE["gemini"] = pick
+    return pick
+
+
+def groq_model():
+    """Groq pe abhi chalu models me se sabse bada/behtar text model."""
+    if os.getenv("GROQ_MODEL"):
+        return os.getenv("GROQ_MODEL")
+    if "groq" in _MODEL_CACHE:
+        return _MODEL_CACHE["groq"]
+    ids = []
+    try:
+        r = requests.get("https://api.groq.com/openai/v1/models", timeout=60,
+                         headers={"Authorization": f"Bearer {GROQ_API_KEY.strip()}"})
+        _raise_for(r, "Groq models")
+        ids = [m["id"] for m in r.json().get("data", []) if m.get("active", True)]
+    except Exception as exc:
+        print("Groq model list nahi mili:", exc)
+    bad = ("whisper", "guard", "tts", "playai", "orpheus", "distil", "compound", "prompt-guard", "safeguard")
+    ids = [i for i in ids if not any(b in i.lower() for b in bad)]
+    prefs = [r"gpt-oss-120b", r"llama-3\.3-70b", r"llama-4-maverick", r"kimi-k2", r"qwen.*(32b|235b)",
+             r"deepseek", r"llama-4", r"70b", r"gpt-oss", r"llama"]
+    pick = None
+    for pat in prefs:
+        hits = sorted([i for i in ids if re.search(pat, i.lower())], reverse=True)
+        if hits:
+            pick = hits[0]
+            break
+    pick = pick or (ids[0] if ids else "llama-3.3-70b-versatile")
+    print("Groq model chuna:", pick)
+    _MODEL_CACHE["groq"] = pick
+    return pick
+
+
 def _gemini(prompt):
-    url = (f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}"
-           f":generateContent?key={GEMINI_API_KEY.strip()}")
-    r = requests.post(url, timeout=180, json={
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.1, "responseMimeType": "application/json"},
-    })
-    r.raise_for_status()
-    return _parse_json(r.json()["candidates"][0]["content"]["parts"][0]["text"])
+    model = gemini_model()
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+    body = {"contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"responseMimeType": "application/json"}}
+    r = requests.post(url, params={"key": GEMINI_API_KEY.strip()}, json=body, timeout=240)
+    if r.status_code == 404:                      # model hat gaya -> dobara list se chuno
+        _MODEL_CACHE.pop("gemini", None)
+    _raise_for(r, f"Gemini({model})")
+    js = r.json()
+    parts = js["candidates"][0]["content"]["parts"]
+    text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
+    return _parse_json(text)
 
 
 def _groq(prompt):
-    r = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions", timeout=180,
-        headers={"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"},
-        json={"model": "llama-3.3-70b-versatile", "temperature": 0.1, "max_tokens": 6000,
-              "response_format": {"type": "json_object"},
-              "messages": [{"role": "user", "content": prompt}]})
-    r.raise_for_status()
+    model = groq_model()
+    headers = {"Authorization": f"Bearer {GROQ_API_KEY.strip()}", "Content-Type": "application/json"}
+    body = {"model": model, "max_tokens": 8000, "temperature": 0.1,
+            "response_format": {"type": "json_object"},
+            "messages": [{"role": "user", "content": prompt}]}
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    r = requests.post(url, headers=headers, json=body, timeout=240)
+    if r.status_code == 400:                      # kuch model json_mode/temperature nahi lete
+        body.pop("response_format", None)
+        body.pop("temperature", None)
+        r = requests.post(url, headers=headers, json=body, timeout=240)
+    if r.status_code == 404:
+        _MODEL_CACHE.pop("groq", None)
+    _raise_for(r, f"Groq({model})")
     return _parse_json(r.json()["choices"][0]["message"]["content"])
 
 
