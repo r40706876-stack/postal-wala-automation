@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** मोबाइल डाकघर = नो बीमा + नो वीपी
 **Hook:** क्या मोबाइल डाकघर से वीपी भेज सकते हैं?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-24]
 **Source (PO Guide):** These offices remain closed on Sundays and Postal Holidays.
 
 **Niyam:** मोबाइल डाकघर रविवार और डाक छुट्टियों के दिन बंद रहते हैं।
@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रविवार और डाक छुट्टी = मोबाइल डाकघर बंद
 **Hook:** क्या मोबाइल डाकघर रविवार को खुलते हैं?
 
-## Part 3  [FAIL (2/4 sudhaar koshish): 'hint' me aisi sankhya hai jo source me nahi: ['2']]
+## Part 3  [FAIL (3/4 sudhaar koshish): LENGTH: 'trap' 20 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao]
 **Source (PO Guide):** The mobile Post Offices at Madras and Nagpur are also permitted to book money orders.
 
 **Niyam:** केवल मद्रास और नागपुर के मोबाइल डाकघर मनीऑर्डर बुक कर सकते हैं।
