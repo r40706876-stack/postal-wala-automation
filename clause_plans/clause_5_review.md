@@ -33,33 +33,33 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** विलंब शुल्क = पंजीकृत पत्र बुकिंग
 **Hook:** सामान्य घंटों के बाद क्या बुक होता है?
 
-## Part 3  [FAIL (1/4 sudhaar koshish): LENGTH: 'hook' 12 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'hint' 16 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'trap' 19 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao; 'trap' me aisi sankhya hai jo source me nahi: ['8']]
-**Source (PO Guide):** The public business hours are fixed with regard to local convenience and the arrival and departure timings of the mails and all work at the Post office counters is stopped precisely at the latest hours fixed.
+## Part 3  [PASS (sudhara gaya) | publish: 2026-09-24]
+**Source (PO Guide):** Post Offices in charge of extra-departmental agents are kept open for a maximum period of five hours only.
 
-**Niyam:** डाकघर काउंटरों का सभी कार्य निर्धारित अंतिम समय पर सटीक रूप से बंद होता है।
-**Sawal:** डाकघर के काउंटरों पर सभी कार्य कब बंद कर दिए जाते हैं?
-- A. निर्धारित समय पर  <- SAHI
-- B. शाम 5 बजे
-- C. रात 8 बजे
-- D. सूर्यास्त के समय
-**Hint:** काउंटर कार्य समाप्ति का नियम
-**Trap:** लोग सोचते हैं कि कार्य समय के बाद भी कुछ देर चल सकता है।  (source: all work at the Post office counters is stopped precisely at the latest hours fixed.)
-**Yaad:** काउंटर कार्य = ठीक निर्धारित समय बंद
-**Hook:** डाकघर काउंटर का कार्य कब रुकता है?
+**Niyam:** अतिरिक्त-विभागीय एजेंटों के प्रभार वाले डाकघर केवल अधिकतम 5 घंटे की अवधि के लिए खुले रखे जाते हैं।
+**Sawal:** अतिरिक्त-विभागीय एजेंटों के प्रभार वाले डाकघर अधिकतम कितने समय तक खुले रखे जाते हैं?
+- A. 3 घंटे
+- B. 4 घंटे
+- C. 5 घंटे  <- SAHI
+- D. 6 घंटे
+**Hint:** यह डाकघर केवल अधिकतम 5 घंटे ही खुलते हैं।
+**Trap:** लोग मान लेते हैं कि ये डाकघर पूरे दिन खुलते हैं।  (source: Post Offices in charge of extra-departmental agents are kept open for a maximum period of five hours only.)
+**Yaad:** ED एजेंट डाकघर = अधिकतम 5 घंटे
+**Hook:** ED एजेंट के डाकघर अधिकतम कितने घंटे खुलते हैं?
 
-## Part 4  [FAIL (1/4 sudhaar koshish): LENGTH: 'fact' 19 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao; 'trap' me aisi sankhya hai jo source me nahi: ['6', '7']]
+## Part 4  [PASS (sudhara gaya) | publish baaki]
 **Source (PO Guide):** For Reference and enquiries, sale of the postage stamps and stationery and grant of certificate of posting During the entire working hour of the office.
 
 **Niyam:** डाक टिकटों और स्टेशनरी की बिक्री कार्यालय के संपूर्ण कार्य घंटों के दौरान होती है।
-**Sawal:** डाक टिकटों और स्टेशनरी की बिक्री कार्यालय के किस समय के दौरान होती है?
+**Sawal:** डाक टिकटों और स्टेशनरी की बिक्री कार्यालय के किस समय के दौरान की जाती है?
 - A. संपूर्ण कार्य अवधि में  <- SAHI
 - B. केवल 3 घंटे
-- C. केवल सुबह के समय
-- D. केवल शाम के समय
-**Hint:** स्टेशनरी बिक्री का समय
-**Trap:** इसे सीमित घंटों का मान लिया जाता है।  (source: For Reference and enquiries, sale of the postage stamps and stationery and grant of certificate of posting During the entire working hour of the office.)
-**Yaad:** टिकट बिक्री = संपूर्ण कार्य घंटे
-**Hook:** टिकटों की बिक्री कितने समय होती है?
+- C. केवल शाम को
+- D. केवल शनिवार को
+**Hint:** कार्यालय का संपूर्ण समय
+**Trap:** इसे सीमित घंटे माना जाता है।  (source: For Reference and enquiries, sale of the postage stamps and stationery and grant of certificate of posting During the entire working hour of the office.)
+**Yaad:** स्टेशनरी बिक्री = संपूर्ण कार्य घंटे
+**Hook:** स्टेशनरी की बिक्री कब होती है?
 
 ## Part 5  [FAIL (0/4 sudhaar koshish): LENGTH: 'trap' 17 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao; source ki sankhya ['5'] 'fact' me nahi aayi (niyam adhoora?)]
 **Source (PO Guide):** For issue of money orders, sale and payment of postal orders, Savings Bank and Post Office Certificate transa ctions and payment of telephone bills. Etc. For about five hours (One Saturdays for three hours stopping at 1 p.m.)
