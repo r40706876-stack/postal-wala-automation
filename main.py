@@ -18,14 +18,39 @@ Requirements:                pip install edge-tts pillow numpy requests   (+ ffm
 
 import os
 import re
+import sys
 import json
 import math
 import wave
 import random
 import asyncio
 import subprocess
+import importlib
 from pathlib import Path
 from functools import lru_cache
+
+
+# ---- Auto-install: GitHub Actions / naye PC pe missing package khud install ho jayega ----
+def _ensure_packages():
+    needed = {"numpy": "numpy", "PIL": "pillow", "requests": "requests", "edge_tts": "edge-tts"}
+    missing = []
+    for module, pip_name in needed.items():
+        try:
+            importlib.import_module(module)
+        except ImportError:
+            missing.append(pip_name)
+    if not missing:
+        return
+    print("Missing packages install ho rahe hain:", ", ".join(missing))
+    base = [sys.executable, "-m", "pip", "install", "--quiet", *missing]
+    for cmd in (base, base + ["--break-system-packages"], base + ["--user"]):
+        if subprocess.run(cmd).returncode == 0:
+            importlib.invalidate_caches()
+            return
+    print("WARNING: auto-install fail. Workflow me ye line daaliye: pip install " + " ".join(missing))
+
+
+_ensure_packages()
 
 import numpy as np
 import requests
