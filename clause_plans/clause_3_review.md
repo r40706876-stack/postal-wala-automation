@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** समय बढ़ाएं महानिदेशक
 **Hook:** समय कौन बढ़ा सकता है?
 
-## Part 2  [PASS (sudhara gaya) | publish baaki]
+## Part 2  [PASS (sudhara gaya) | publish: 2026-09-24]
 **Source (PO Guide):** However the Director -General may extend the working hours of any post office up to 8:30 P.M. and keep them open on Sundays also.
 
 **Niyam:** महानिदेशक किसी भी डाकघर के काम के घंटे 8:30 P.M. तक बढ़ा सकते हैं और उन्हें रविवार को भी खुला रख सकते हैं।
@@ -33,14 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सामान्य समय सर्कल प्रमुख तय करते हैं, पर 8:30 P.M. तक का विस्तार महानिदेशक करते हैं।
 **Hook:** डाकघर को रात 8:30 बजे तक कौन खुला रख सकता है?
 
-## Part 3  [FAIL (0/4 sudhaar koshish): AUDIT nahi ho paya: Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Gemini(gemini-3.8-flash) 503: {
-  "error": {
-    "code": 503,
-    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
-    "status": "UNAVAILABLE"
-  }
-}
-]
+## Part 3  [FAIL (1/4 sudhaar koshish): AUDIT(groq): Trap statement says services are available until 8:30 pm, which contradicts the clause (only up to 7:00 pm).]
 **Source (PO Guide):** On Sundays and National Holidays as well as other P.O. holidays the night Post Offices function and observe restricted working hours. These offices work for one shift only from 10:00 to 17:00 hours. The delivery functions of the offices are entirely suspended as well as the payment of Money Orders and Saving Banks and post office Certificates are also suspended on these days.
 
 **Niyam:** रात्रि डाकघर रविवार व राष्ट्रीय अवकाश पर 10‑17 बजे एक शिफ्ट काम करते, डिलीवरी, मनीऑर्डर, बचत व प्रमाणपत्र भुगतान बंद।
@@ -54,19 +47,19 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रविवार 10‑17, सब बंद
 **Hook:** रविवार में क्या नहीं होता?
 
-## Part 4  [FAIL (0/4 sudhaar koshish): 'trap' khaali hai]
+## Part 4  [PASS (sudhara gaya) | publish baaki]
 **Source (PO Guide):** Night Post Offices are indicated in the list of Post Offices in Part III of this Guide.
 
-**Niyam:** रात्रि डाकघर इस गाइड के भाग III में सूचीबद्ध हैं।
-**Sawal:** रात्रि डाकघर कहाँ सूचीबद्ध हैं?
-- A. भाग III में  <- SAHI
-- B. भाग II में
-- C. भाग IV में
-- D. भाग I में
-**Hint:** सूची भाग III में
-**Trap:** 
-**Yaad:** सूची भाग III
-**Hook:** कहाँ देखें रात्रि डाकघर?
+**Niyam:** रात्रि डाकघरों को इस गाइड के भाग III में दी गई डाकघरों की सूची में दर्शाया जाता है।
+**Sawal:** रात्रि डाकघर इस गाइड के किस भाग की डाकघरों की सूची में दर्शाए जाते हैं?
+- A. भाग I
+- B. भाग II
+- C. भाग III  <- SAHI
+- D. भाग IV
+**Hint:** गाइड का भाग III देखें।
+**Trap:** इन्हें भाग I में दर्शाया जाता है  (source: Night Post Offices are indicated in the list of Post Offices in Part III of this Guide.)
+**Yaad:** भाग III
+**Hook:** कहाँ मिलेंगे रात्रि डाकघर के नाम?
 
 ---
 ## Poora clause (PDF se)
