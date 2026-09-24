@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** ED एजेंट डाकघर = अधिकतम 5 घंटे
 **Hook:** ED एजेंट के डाकघर अधिकतम कितने घंटे खुलते हैं?
 
-## Part 4  [PASS (sudhara gaya) | publish baaki]
+## Part 4  [PASS (sudhara gaya) | publish: 2026-09-24]
 **Source (PO Guide):** For Reference and enquiries, sale of the postage stamps and stationery and grant of certificate of posting During the entire working hour of the office.
 
 **Niyam:** डाक टिकटों और स्टेशनरी की बिक्री कार्यालय के संपूर्ण कार्य घंटों के दौरान होती है।
@@ -61,7 +61,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** स्टेशनरी बिक्री = संपूर्ण कार्य घंटे
 **Hook:** स्टेशनरी की बिक्री कब होती है?
 
-## Part 5  [FAIL (0/4 sudhaar koshish): LENGTH: 'trap' 17 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao; source ki sankhya ['5'] 'fact' me nahi aayi (niyam adhoora?)]
+## Part 5  [FAIL (1/4 sudhaar koshish): LENGTH: 'question' 21 shabd ka hai, seema 16 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'fact' 28 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao]
 **Source (PO Guide):** For issue of money orders, sale and payment of postal orders, Savings Bank and Post Office Certificate transa ctions and payment of telephone bills. Etc. For about five hours (One Saturdays for three hours stopping at 1 p.m.)
 
 **Niyam:** शनिवार को बचत बैंक लेनदेन आदि दोपहर 1 बजे समाप्त होकर 3 घंटे होते हैं।

@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** मशीन फ्रैंकित वस्तु + लेटर बॉक्स निषेध
 **Hook:** मशीन फ्रैंकित वस्तुएं कहां नहीं डाली जा सकतीं?
 
-## Part 2  [FAIL (0/4 sudhaar koshish): AUDIT(gemini): OUTDATED: The script and notes do not contain outdated fee issues, but let's check Note e in coaching notes which lists specific fees (03 rupees, 02 rupees) not present in the original clause 7. However, the script itself doesn't use these fees. Let's check the script: fact is 'रात्रि डाकघरों को छोड़कर रविवार और डाकघर अवकाश के दिन सभी डाकघर बंद रहते हैं।', which correctly reflects Clause 7(a).; AUDIT(groq): Fact omits mobile post offices, dropping a condition]
+## Part 2  [FAIL (1/4 sudhaar koshish): LENGTH: 'hint' 17 shabd ka hai, seema 12 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'fact' 29 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao; 'hint' me aisi sankhya hai jo source me nahi: ['7']]
 **Source (PO Guide):** Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays and no business transacted with the public.
 
 **Niyam:** रात्रि डाकघरों को छोड़कर रविवार और डाकघर अवकाश के दिन सभी डाकघर बंद रहते हैं।
