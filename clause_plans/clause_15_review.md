@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** नाजुक वस्तु → सुरक्षा → कोई विशेष सावधानी नहीं
 **Hook:** क्या डाकघर नाजुक सामान की विशेष देखभाल करता है?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** जब टकसी पैक े ि, पासणल या पत्र की सुरक्षा के टलए मॉम कपड़े (wax-cloth) का प्रयोग टकया जाता है तो इसे आंतररक आवरर् (Inside cover) की तरह इस्तेमाल करना चाटहए |
 
 **Niyam:** मोम कपड़े का प्रयोग करते समय इसे आंतरिक आवरण (Inside cover) की तरह इस्तेमाल करना चाहिए।

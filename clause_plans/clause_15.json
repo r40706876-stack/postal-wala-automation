@@ -217,13 +217,15 @@
       "_clause_no": 15,
       "hook_v": {
         "ok": true,
-        "text": "पार्सल पर मोम कपड़ा अंदर लगाएं या बाहर?"
+        "text": "पार्सल में मोम कपड़े का उपयोग करना है? इसे कैसे लगाएँ?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26b",
+      "published": "2026-09-25"
     },
     {
       "basis": "notes",
