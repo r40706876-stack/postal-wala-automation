@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पूर्ण भुगतान + शीघ्रतम मेल
 **Hook:** पूर्ण भुगतान वाली डाक का क्या होता है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** Unpaid articles or articles on which the postage is not fully prepaid are not afforded any greater security in transmission over other unregistered mail. On the other hand, such articles are liable to detention for the purpose of taxing the postage due on them.
 
 **Niyam:** अपूर्ण भुगतान वाली वस्तुएं डाक शुल्क निर्धारण के लिए रोकी जाती हैं।
