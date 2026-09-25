@@ -62,10 +62,9 @@
       "_clause_no": 9,
       "auto_check": false,
       "check_errors": [
-        "AUDIT(gemini): Fact and question mismatch: The clause states that unpaid/underpaid articles are NOT issued along with special deliveries, but held over for general deliveries. The fact states they are 'held over' for general delivery, but the question asks 'in which delivery are they issued', leading to a confusing premise since they are held over (delayed) rather than actively issued in special deliveries. Furthermore, the trap 'विशेष डिलीवरी में जारी होना गलत है, सामान्य डिलीवरी में ही जारी होती हैं' is misleading because they are NOT issued in special deliveries, they are delayed/held for general deliveries.",
-        "AUDIT(groq): Fact omits detention condition (articles may be detained for tax)",
-        "AUDIT(groq): Exception of detention not reflected in fact"
-      ]
+        "LENGTH: 'trap' 15 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao"
+      ],
+      "repair_tries": 1
     }
   ],
   "clause_text_en": "9.Desirability of prepayment of postage  – It is the endeavour of the Post Office \nto forward by the earliest possible mail and effect delivery as expeditiously as possible of \nall fully prepaid postal articles.  Unpaid articles or articles on which the postage is not \nfully prepaid are not afforded any greater security in transmission over other unregistered \nmail.  On the other hand, such articles are liable to detention for the purpose of taxing the \npostage due on them.  The are, also, not issued along with the special deliveries intended \nonly for unregistered mails but held over for the general deliveries for all classes of mail."

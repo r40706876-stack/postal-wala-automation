@@ -29,25 +29,53 @@
       "repair_tries": 4
     },
     {
-      "source_quote": "Post offices Holidays – The following holidays are observed as Post Office holidays :- (1) Republic Day (26th January) (2) Independence Day (15th August) (3) Mahatma Gandhi’s Birthday (2nd October)",
-      "hook": "कितने राष्ट्रीय अवकाश डाकघरों में मनाए जाते हैं?",
-      "question": "डाकघरों में कौन-से राष्ट्रीय अवकाश मनाए जाते हैं?",
-      "a": "केवल गणतंत्र दिवस",
-      "b": "गणतंत्र, स्वतंत्रता दिवस और गांधी जयंती",
-      "c": "केवल स्वतंत्रता दिवस",
-      "d": "केवल गांधी जयंती",
-      "correct": "B",
-      "hint": "तीन राष्ट्रीय दिवसों को याद रखें।",
-      "fact": "गणतंत्र दिवस, स्वतंत्रता दिवस और गांधी जयंती पर डाकघर अवकाश होते हैं।",
-      "trap": "केवल एक राष्ट्रीय अवकाश मानना",
-      "trap_quote": "",
-      "yaad": "26 Jan + 15 Aug + 2 Oct",
+      "source_quote": "In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.",
+      "hook": "सर्किल वाले डाकघर अवकाश कितने हैं?",
+      "question": "डाकघर में सर्किल के अनुसार कितने अतिरिक्त अवकाश होते हैं?",
+      "a": "केवल 3 दिन",
+      "b": "केवल 4 दिन",
+      "c": "केवल 5 दिन",
+      "d": "केवल 6 दिन",
+      "correct": "C",
+      "fact": "डाकघर 5 अन्य दिनों पर अवकाश मनाते हैं जो सर्किल के अनुसार भिन्न होते हैं।",
+      "trap": "सभी जगह समान समझना गलत है, 5 अवकाश बदलते हैं",
+      "trap_quote": "In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.",
+      "yaad": "अतिरिक्त अवकाश = 5 दिन",
+      "hint": "",
       "_clause_no": 8,
-      "auto_check": false,
-      "check_errors": [
-        "'trap' me aisi sankhya hai jo source me nahi: ['3']"
-      ],
-      "repair_tries": 1
+      "auto_check": true,
+      "check_errors": [],
+      "repaired": true,
+      "repair_tries": 2,
+      "en": {
+        "question": "How many additional holidays do post offices observe varying by circle?",
+        "a": "Only 3 days",
+        "b": "Only 4 days",
+        "c": "Only 5 days",
+        "d": "Only 6 days",
+        "fact": "Post offices observe post office holidays on 5 other days which vary from circle to circle.",
+        "trap": "Thinking holidays are uniform is wrong, 5 vary by circle",
+        "yaad": "Additional holidays = 5 days",
+        "ok": true
+      },
+      "hook_v": {
+        "ok": true,
+        "text": "सर्किल के हिसाब से डाकघर में कितने एक्स्ट्रा छुट्टी?"
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "अन्य 5 दिन अवकाश",
+            "mark": "key"
+          },
+          {
+            "text": "सर्किल अनुसार भिन्न",
+            "mark": "yes"
+          }
+        ]
+      },
+      "published": "2026-09-25"
     }
   ],
   "clause_text_en": "8. Post offices Holidays  –  The following holidays are observed as Post Office \nholidays :- \n \n (1)    Republic Day   (26th  January) \n (2)    Independence Day  (15th  August) \n (3)    Mahatma Gandhi’s Birthday (2nd October) \n(4)   Idul-Zuha (Bakr-Id)   \n\n\n(5)   Muharram \n(6)   Idul-Fitr \n(7)   Good Friday   (Friday before Easter Sunday) \n(8)   Christmas Day   (25th  December) \n(9)   Budha Purnima \n(10)  Guru Nanak Birthday \n(11)  Mahavir Jayanti \n \n In add ition the post offices observe post office holidays on 5 other days which \nvary from circle to circle. \n \n \nPAYMENT OF POSTAGE"

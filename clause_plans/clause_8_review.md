@@ -19,19 +19,19 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सर्किल भिन्नता = 5 अतिरिक्त दिन
 **Hook:** सर्किल के अनुसार कितने अतिरिक्त अवकाश होते हैं?
 
-## Part 2  [FAIL (1/4 sudhaar koshish): 'trap' me aisi sankhya hai jo source me nahi: ['3']]
-**Source (PO Guide):** Post offices Holidays – The following holidays are observed as Post Office holidays :- (1) Republic Day (26th January) (2) Independence Day (15th August) (3) Mahatma Gandhi’s Birthday (2nd October)
+## Part 2  [PASS (sudhara gaya) | publish: 2026-09-25]
+**Source (PO Guide):** In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.
 
-**Niyam:** गणतंत्र दिवस, स्वतंत्रता दिवस और गांधी जयंती पर डाकघर अवकाश होते हैं।
-**Sawal:** डाकघरों में कौन-से राष्ट्रीय अवकाश मनाए जाते हैं?
-- A. केवल गणतंत्र दिवस
-- B. गणतंत्र, स्वतंत्रता दिवस और गांधी जयंती  <- SAHI
-- C. केवल स्वतंत्रता दिवस
-- D. केवल गांधी जयंती
-**Hint:** तीन राष्ट्रीय दिवसों को याद रखें।
-**Trap:** केवल एक राष्ट्रीय अवकाश मानना
-**Yaad:** 26 Jan + 15 Aug + 2 Oct
-**Hook:** कितने राष्ट्रीय अवकाश डाकघरों में मनाए जाते हैं?
+**Niyam:** डाकघर 5 अन्य दिनों पर अवकाश मनाते हैं जो सर्किल के अनुसार भिन्न होते हैं।
+**Sawal:** डाकघर में सर्किल के अनुसार कितने अतिरिक्त अवकाश होते हैं?
+- A. केवल 3 दिन
+- B. केवल 4 दिन
+- C. केवल 5 दिन  <- SAHI
+- D. केवल 6 दिन
+**Hint:** 
+**Trap:** सभी जगह समान समझना गलत है, 5 अवकाश बदलते हैं  (source: In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.)
+**Yaad:** अतिरिक्त अवकाश = 5 दिन
+**Hook:** सर्किल वाले डाकघर अवकाश कितने हैं?
 
 ---
 ## Poora clause (PDF se)

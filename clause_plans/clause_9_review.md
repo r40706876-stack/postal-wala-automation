@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** अपूर्ण भुगतान + शुल्क हेतु रोक
 **Hook:** अपूर्ण भुगतान वाली डाक का नियम?
 
-## Part 3  [FAIL (0/4 sudhaar koshish): AUDIT(gemini): Fact and question mismatch: The clause states that unpaid/underpaid articles are NOT issued along with special deliveries, but held over for general deliveries. The fact states they are 'held over' for general delivery, but the question asks 'in which delivery are they issued', leading to a confusing premise since they are held over (delayed) rather than actively issued in special deliveries. Furthermore, the trap 'विशेष डिलीवरी में जारी होना गलत है, सामान्य डिलीवरी में ही जारी होती हैं' is misleading because they are NOT issued in special deliveries, they are delayed/held for general deliveries.; AUDIT(groq): Fact omits detention condition (articles may be detained for tax); AUDIT(groq): Exception of detention not reflected in fact]
+## Part 3  [FAIL (1/4 sudhaar koshish): LENGTH: 'trap' 15 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao]
 **Source (PO Guide):** The are, also, not issued along with the special deliveries intended only for unregistered mails but held over for the general deliveries for all classes of mail.
 
 **Niyam:** अपूर्ण भुगतान वाली वस्तुएं केवल सामान्य डिलीवरी के लिए रोकी जाती हैं।
