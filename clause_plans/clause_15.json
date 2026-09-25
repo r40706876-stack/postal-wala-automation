@@ -238,7 +238,7 @@
       "correct": "A",
       "fact": "मोम कपड़े के बाहर पर्याप्त मजबूत कागज बांधना चाहिए ताकि तारीख मोहर और टिकट लग सकें।",
       "trap": "सीधे मोम पर टिकट लगाना गलत है, मजबूत कागज जरूरी है।",
-      "yaad": "मोम के बाहर = मजबूत कागज",
+      "yaad": "मोम कपड़ा → मजबूत कागज बांधें → टिकट व मोहर",
       "hook": "मोम कपड़े के ऊपर क्या बांधा जाना चाहिए?",
       "en": {
         "question": "What should be fastened outside the wax-cloth to affix date-stamps and postage stamps?",
@@ -273,13 +273,15 @@
       "_clause_no": 15,
       "hook_v": {
         "ok": true,
-        "text": "मोम कपड़े के ऊपर क्या बांधा जाना चाहिए?"
+        "text": "मोम कपड़े पर तारीख मोहर लगानी है, बाहर क्या लगाएं?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "published": "2026-09-25"
     },
     {
       "basis": "notes",
