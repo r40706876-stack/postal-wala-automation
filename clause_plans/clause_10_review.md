@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** राजस्व टिकट = डाक भुगतान अवैध
 **Hook:** क्या राजस्व टिकट से डाक भेज सकते हैं?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** If the postage required on such embossed postal stationery is more than the value of the stamp printed on the article, the difference can be made good by affixing additional postage stamps of the requisite value.
 
 **Niyam:** एम्बोस्ड स्टेशनरी पर कम मूल्य होने पर अंतर की भरपाई अतिरिक्त डाक टिकट लगाकर की जा सकती है।

@@ -24,13 +24,9 @@
       "_clause_no": 8,
       "auto_check": false,
       "check_errors": [
-        "'fact' me aisi sankhya hai jo source me nahi: ['11']",
-        "'yaad' me aisi sankhya hai jo source me nahi: ['11']",
-        "sahi option me aisi sankhya hai jo source me nahi: ['11']",
-        "'trap' me aisi sankhya hai jo source me nahi: ['11']",
-        "source ki sankhya ['8'] 'fact' me nahi aayi (niyam adhoora?)"
+        "AUDIT(gemini): OUTDATED: Recent coaching notes state that 3 holidays vary from circle to circle (with 14 compulsory holidays making 17 total), whereas the old clause states 5 holidays vary from circle to circle. The script uses the outdated value of 5."
       ],
-      "repair_tries": 3
+      "repair_tries": 4
     },
     {
       "source_quote": "Post offices Holidays – The following holidays are observed as Post Office holidays :- (1) Republic Day (26th January) (2) Independence Day (15th August) (3) Mahatma Gandhi’s Birthday (2nd October)",
@@ -49,8 +45,9 @@
       "_clause_no": 8,
       "auto_check": false,
       "check_errors": [
-        "source ki sankhya ['15', '2', '26', '3'] 'fact' me nahi aayi (niyam adhoora?)"
-      ]
+        "'trap' me aisi sankhya hai jo source me nahi: ['3']"
+      ],
+      "repair_tries": 1
     }
   ],
   "clause_text_en": "8. Post offices Holidays  –  The following holidays are observed as Post Office \nholidays :- \n \n (1)    Republic Day   (26th  January) \n (2)    Independence Day  (15th  August) \n (3)    Mahatma Gandhi’s Birthday (2nd October) \n(4)   Idul-Zuha (Bakr-Id)   \n\n\n(5)   Muharram \n(6)   Idul-Fitr \n(7)   Good Friday   (Friday before Easter Sunday) \n(8)   Christmas Day   (25th  December) \n(9)   Budha Purnima \n(10)  Guru Nanak Birthday \n(11)  Mahavir Jayanti \n \n In add ition the post offices observe post office holidays on 5 other days which \nvary from circle to circle. \n \n \nPAYMENT OF POSTAGE"

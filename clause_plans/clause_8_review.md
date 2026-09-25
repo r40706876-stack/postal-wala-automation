@@ -5,7 +5,7 @@ English title: Post offices Holidays
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (3/4 sudhaar koshish): 'fact' me aisi sankhya hai jo source me nahi: ['11']; 'yaad' me aisi sankhya hai jo source me nahi: ['11']; sahi option me aisi sankhya hai jo source me nahi: ['11']; 'trap' me aisi sankhya hai jo source me nahi: ['11']; source ki sankhya ['8'] 'fact' me nahi aayi (niyam adhoora?)]
+## Part 1  [FAIL (4/4 sudhaar koshish): AUDIT(gemini): OUTDATED: Recent coaching notes state that 3 holidays vary from circle to circle (with 14 compulsory holidays making 17 total), whereas the old clause states 5 holidays vary from circle to circle. The script uses the outdated value of 5.]
 **Source (PO Guide):** In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.
 
 **Niyam:** डाकघर सर्किल दर सर्किल भिन्न होने वाले 5 अन्य दिनों पर भी अवकाश मनाते हैं।
@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सर्किल भिन्नता = 5 अतिरिक्त दिन
 **Hook:** सर्किल के अनुसार कितने अतिरिक्त अवकाश होते हैं?
 
-## Part 2  [FAIL (0/4 sudhaar koshish): source ki sankhya ['15', '2', '26', '3'] 'fact' me nahi aayi (niyam adhoora?)]
+## Part 2  [FAIL (1/4 sudhaar koshish): 'trap' me aisi sankhya hai jo source me nahi: ['3']]
 **Source (PO Guide):** Post offices Holidays – The following holidays are observed as Post Office holidays :- (1) Republic Day (26th January) (2) Independence Day (15th August) (3) Mahatma Gandhi’s Birthday (2nd October)
 
 **Niyam:** गणतंत्र दिवस, स्वतंत्रता दिवस और गांधी जयंती पर डाकघर अवकाश होते हैं।

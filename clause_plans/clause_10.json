@@ -72,7 +72,36 @@
       "hint": "",
       "_clause_no": 10,
       "auto_check": true,
-      "check_errors": []
+      "check_errors": [],
+      "en": {
+        "question": "If postage required on embossed postal stationery exceeds the printed stamp value, what is required?",
+        "a": "Make cash payment",
+        "b": "Affix additional postage stamps",
+        "c": "Return the article",
+        "d": "Buy a new envelope",
+        "fact": "The difference can be made good by affixing additional postage stamps of the requisite value.",
+        "trap": "Cash payment is not allowed; additional stamps must be affixed.",
+        "yaad": "Short value = + additional stamps",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "एम्बोस्ड स्टेशनरी कम मूल्य",
+            "mark": "key"
+          },
+          {
+            "text": "अंतर की भरपाई",
+            "mark": "yes"
+          },
+          {
+            "text": "अतिरिक्त डाक टिकट",
+            "mark": "yes"
+          }
+        ]
+      },
+      "published": "2026-09-25"
     },
     {
       "source_quote": "Overseas orders are executed at the Indian Philatelic Bureau, Bombay G.P.O. Bombay.",
