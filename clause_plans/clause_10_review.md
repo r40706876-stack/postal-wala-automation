@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** कम मूल्य = अतिरिक्त टिकट
 **Hook:** कम मूल्य की स्टेशनरी पर क्या करें?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** Overseas orders are executed at the Indian Philatelic Bureau, Bombay G.P.O. Bombay.
 
 **Niyam:** विदेशी ऑर्डर केवल भारतीय फिलाटेलिक ब्यूरो, बॉम्बे जी.पी.ओ. बॉम्बे में निष्पादित किए जाते हैं।

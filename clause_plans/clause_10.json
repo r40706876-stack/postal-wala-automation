@@ -119,7 +119,40 @@
       "hint": "",
       "_clause_no": 10,
       "auto_check": true,
-      "check_errors": []
+      "check_errors": [],
+      "en": {
+        "question": "Where are overseas orders executed?",
+        "a": "New Delhi G.P.O.",
+        "b": "Calcutta G.P.O.",
+        "c": "Bombay G.P.O. Bombay",
+        "d": "Madras G.P.O.",
+        "fact": "Overseas orders are executed at the Indian Philatelic Bureau, Bombay G.P.O. Bombay.",
+        "trap": "Not other bureaux, only Bombay G.P.O. executes overseas orders.",
+        "yaad": "Overseas orders = Bombay G.P.O. Bombay",
+        "ok": true
+      },
+      "hook_v": {
+        "ok": true,
+        "text": "विदेश से आया फिलाटेलिक ऑर्डर कहाँ पूरा होता है?"
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "विदेशी ऑर्डर",
+            "mark": "key"
+          },
+          {
+            "text": "भारतीय फिलाटेलिक ब्यूरो बॉम्बे जीपीओ",
+            "mark": "yes"
+          },
+          {
+            "text": "अन्य स्थान",
+            "mark": "no"
+          }
+        ]
+      },
+      "published": "2026-09-25"
     }
   ],
   "clause_text_en": "10. Postage Stamps and Stationery.  –  (i) Payment of postage is normally to be \neffected by means of postage stamps issued by the Indian Post Office under the authority \nof the Govt. of India.  The Post Office issues, also, certain items of stationery like \nenvelopes, inland letter cards, postcards with the value of the requisite stamps embossed \non them.  If the postage required on such embossed postal stationery is more than the \nvalue of the stamp printed on the article, the difference can be made good by affixing  \nadditional postage stamps of the requisite value. \n \n (ii) The denominations of postage stamps and the varieties of postal stationery \nissued by the Indian Post Office have been indicated in the Appendix to this Part. \n \nNOTE:- Post Offices also, sell Revenue stamps issued by the Central Government.  \nThese stamps cannot be used for payment of postage. \n \n (iii) Postage charges can, also, be paid by means of a proper impression or \nimpressions of a franking machine or in certain cases in cash as indicated in Claus es 11 \nand 12 respectively. \n \n (iv) Philatelic Bureaux –  In order to cater to the needs of philatelists and stamp \ncollectors, the department has set up Philatelic Bureaux at the principal Post Offices at \nallahabad, Ahmedabad, Bangalore, Bhopal, Bombay, Calcu tta, Chandigarh, Srinagar, \nCuttack, Hyderabad, Jaipur, Kanpur, Kurnool, Lucknow, Madras, Nagpur, New Delhi, \nPatna, Shillong, Simla, Trivandrum, 1 CBPO C/o 50 APO and 2 CBPO C/o 99 APO. \n \n\n\n Overseas orders are executed at the Indian Philatelic Bureau, Bombay G.P.O. \nBombay. \n \n N.B. :- For details refer to Section VII of this Guide."
