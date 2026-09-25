@@ -5,7 +5,7 @@ English title: Franking Machine
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (0/4 sudhaar koshish): 'fact' me aisi sankhya hai jo source me nahi: ['1:5']; 'yaad' me aisi sankhya hai jo source me nahi: ['1:5']; sahi option me aisi sankhya hai jo source me nahi: ['1:5']; 'trap' me aisi sankhya hai jo source me nahi: ['1:5']; source ki sankhya ['2'] 'fact' me nahi aayi (niyam adhoora?)]
+## Part 1  [FAIL (1/4 sudhaar koshish): galat option C me bhi wahi sankhya hai jo sahi me; galat option D me bhi wahi sankhya hai jo sahi me]
 **Source (PO Guide):** A postal franking machine is a stamping machine intended to stamp impressions of dies of approved design on private and official postal articles in payment o f postage and postal fees. A commission of 1 -1/2 per cent is permitted on the value of franks used.
 
 **Niyam:** फ्रैंकिंग मशीन के उपयोग पर 1.5 प्रतिशत कमीशन की अनुमति है।
@@ -47,19 +47,19 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** लाیسेंस = डाक मंडल प्रमुख
 **Hook:** फ्रैंकिंग मशीन लाइसेंस कौन जारी करता है?
 
-## Part 4  [FAIL (0/4 sudhaar koshish): LENGTH: 'question' 18 shabd ka hai, seema 16 - chhota karo, koi shart/sankhya mat hatao]
+## Part 4  [FAIL (0/4 sudhaar koshish): AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {"error":{"message":)]
 **Source (PO Guide):** Machine franked articles can be posted at not more than two offices specified by SPO in the licence.
 
 **Niyam:** मशीन फ्रैंक वस्तुएं लाइसेंस में SPO द्वारा निर्दिष्ट अधिकतम दो कार्यालयों में पोस्ट हो सकती हैं।
-**Sawal:** मशीन से फ्रैंक की गई वस्तुएं लाइसेंस में निर्दिष्ट अधिकतम कितने कार्यालयों में पोस्ट की जा सकती हैं?
-- A. एक कार्यालय
-- B. दो कार्यालय  <- SAHI
-- C. तीन कार्यालय
+**Sawal:** मशीन फ्रैंक वस्तुएं लाइसेंस में निर्दिष्ट अधिकतम कितने कार्यालयों में पोस्ट हो सकती हैं?
+- A. केवल एक कार्यालय
+- B. अधिकतम दो कार्यालय  <- SAHI
+- C. अधिकतम तीन कार्यालय
 - D. कोई सीमा नहीं
 **Hint:** 
-**Trap:** केवल एक कार्यालय समझना गलत है, अधिकतम दो कार्यालय हो सकते हैं।
-**Yaad:** अधिकतम दो डाकघर
-**Hook:** कितने कार्यालयों में फ्रैंक डाक पोस्ट कर सकते हैं?
+**Trap:** एक कार्यालय समझना गलत है, अधिकतम दो कार्यालय हो सकते हैं।  (source: Machine franked articles can be posted at not more than two offices specified by SPO in the licence.)
+**Yaad:** अधिकतम 2 कार्यालय
+**Hook:** कितने कार्यालयों में फ्रैंक डाक?
 
 ## Part 5  [FAIL (0/4 sudhaar koshish): AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {"error":{"message":)]
 **Source (PO Guide):** Impression should be of b right red colour, clear and distinct and should not overlap.

@@ -24,12 +24,10 @@
       "_clause_no": 11,
       "auto_check": false,
       "check_errors": [
-        "'fact' me aisi sankhya hai jo source me nahi: ['1:5']",
-        "'yaad' me aisi sankhya hai jo source me nahi: ['1:5']",
-        "sahi option me aisi sankhya hai jo source me nahi: ['1:5']",
-        "'trap' me aisi sankhya hai jo source me nahi: ['1:5']",
-        "source ki sankhya ['2'] 'fact' me nahi aayi (niyam adhoora?)"
-      ]
+        "galat option C me bhi wahi sankhya hai jo sahi me",
+        "galat option D me bhi wahi sankhya hai jo sahi me"
+      ],
+      "repair_tries": 1
     },
     {
       "source_quote": "For being recognized valid, the impressions of ‘frank’ should consist of the following dies :- (a) Value Die and (b) Licence Die.",
@@ -73,23 +71,24 @@
     },
     {
       "source_quote": "Machine franked articles can be posted at not more than two offices specified by SPO in the licence.",
-      "hook": "कितने कार्यालयों में फ्रैंक डाक पोस्ट कर सकते हैं?",
-      "question": "मशीन से फ्रैंक की गई वस्तुएं लाइसेंस में निर्दिष्ट अधिकतम कितने कार्यालयों में पोस्ट की जा सकती हैं?",
-      "a": "एक कार्यालय",
-      "b": "दो कार्यालय",
-      "c": "तीन कार्यालय",
+      "hook": "कितने कार्यालयों में फ्रैंक डाक?",
+      "question": "मशीन फ्रैंक वस्तुएं लाइसेंस में निर्दिष्ट अधिकतम कितने कार्यालयों में पोस्ट हो सकती हैं?",
+      "a": "केवल एक कार्यालय",
+      "b": "अधिकतम दो कार्यालय",
+      "c": "अधिकतम तीन कार्यालय",
       "d": "कोई सीमा नहीं",
       "correct": "B",
       "fact": "मशीन फ्रैंक वस्तुएं लाइसेंस में SPO द्वारा निर्दिष्ट अधिकतम दो कार्यालयों में पोस्ट हो सकती हैं।",
-      "trap": "केवल एक कार्यालय समझना गलत है, अधिकतम दो कार्यालय हो सकते हैं।",
-      "trap_quote": "",
-      "yaad": "अधिकतम दो डाकघर",
+      "trap": "एक कार्यालय समझना गलत है, अधिकतम दो कार्यालय हो सकते हैं।",
+      "trap_quote": "Machine franked articles can be posted at not more than two offices specified by SPO in the licence.",
+      "yaad": "अधिकतम 2 कार्यालय",
       "hint": "",
       "_clause_no": 11,
       "auto_check": false,
       "check_errors": [
-        "LENGTH: 'question' 18 shabd ka hai, seema 16 - chhota karo, koi shart/sankhya mat hatao"
-      ]
+        "AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {\"error\":{\"message\":)"
+      ],
+      "repair_tries": 0
     },
     {
       "source_quote": "Impression should be of b right red colour, clear and distinct and should not overlap.",
