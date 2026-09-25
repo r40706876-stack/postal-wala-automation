@@ -1,0 +1,334 @@
+{
+  "clause_no": 15,
+  "title_en": "Packing",
+  "title_hi": "पैकिंग नियम (क्लॉज 15)",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "प्रत्येक ित्र, िैक े ि या िासाि िर कम से कम दो डाकघरों की िारीख मोहर िगी होनी चातहए ➢ ये दो PO हैं बुटक ं ग डाकघर )Booking PO ( गंतव्य डाकघर (Destination PO (",
+      "question": "प्रत्येक पत्र, पैकेट या पार्सल पर कम से कम कितने डाकघरों की तारीख मोहर होनी चाहिए?",
+      "a": "केवल एक",
+      "b": "कम से कम दो",
+      "c": "तीन डाकघर",
+      "d": "कोई आवश्यकता नहीं",
+      "correct": "B",
+      "fact": "प्रत्येक पत्र, पैकेट या पार्सल पर कम से कम दो डाकघरों की तारीख मोहर होनी चाहिए।",
+      "trap": "एक डाकघर मानना गलत है, कम से कम दो डाकघर सही है।",
+      "yaad": "दो PO = बुकिंग + गंतव्य",
+      "hook": "डाक पर कम से कम कितनी मोहरें लगनी चाहिए?",
+      "en": {
+        "question": "How many post offices' date stamps must be stamped on every letter, packet, or parcel?",
+        "a": "Only one",
+        "b": "At least two",
+        "c": "Three post offices",
+        "d": "Not required",
+        "fact": "Every letter, packet or parcel has to be stamped with the date stamps of at least two post offices.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "कम से कम दो",
+            "mark": "key"
+          },
+          {
+            "text": "डाकघरों की मोहर",
+            "mark": "yes"
+          },
+          {
+            "text": "केवल एक मोहर",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 15,
+      "hook_v": {
+        "ok": true,
+        "text": "डाक पर कम से कम कितनी मोहरें लगनी चाहिए?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "notes",
+      "source_quote": "बुटक ं ग डाकघर )Booking PO ( गंतव्य डाकघर (Destination PO (",
+      "question": "नियम के अनुसार पत्र पर जिन दो डाकघरों की मोहर लगती है, वे कौन से हैं?",
+      "a": "बुकिंग और गंतव्य डाकघर",
+      "b": "प्रधान और उप डाकघर",
+      "c": "शाखा और प्रधान डाकघर",
+      "d": "मुख्य और स्थानीय डाकघर",
+      "correct": "A",
+      "fact": "तारीख मोहर लगाने वाले दो डाकघर बुकिंग डाकघर और गंतव्य डाकघर होते हैं।",
+      "trap": "हेड और सब पोस्ट ऑफिस समझना गलत है, बुकिंग और गंतव्य ही सही है।",
+      "yaad": "बुकिंग और गंतव्य डाकघर",
+      "hook": "वे दो डाकघर कौन से हैं जिनकी मोहर लगती है?",
+      "en": {
+        "question": "Which are the two post offices whose date stamps must be stamped on the article?",
+        "a": "Booking and Destination PO",
+        "b": "Head and Sub PO",
+        "c": "Branch and Head PO",
+        "d": "Main and Local PO",
+        "fact": "The two post offices are Booking PO and Destination PO.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "बुकिंग डाकघर",
+            "mark": "yes"
+          },
+          {
+            "text": "गंतव्य डाकघर",
+            "mark": "yes"
+          },
+          {
+            "text": "केवल प्रधान डाकघर",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 15,
+      "hook_v": {
+        "ok": true,
+        "text": "वे दो डाकघर कौन से हैं जिनकी मोहर लगती है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "guide",
+      "source_quote": "The post office cannot take any special precautions to secure the safety of fragile articles.",
+      "question": "नाजुक वस्तुओं की सुरक्षा के लिए डाकघर क्या करता है?",
+      "a": "विशेष सावधानी बरतता है",
+      "b": "कोई विशेष सावधानी नहीं बरतता",
+      "c": "सुरक्षा बीमा करता है",
+      "d": "अतिरिक्त सुरक्षा देता है",
+      "correct": "B",
+      "fact": "डाकघर नाजुक वस्तुओं की सुरक्षा के लिए कोई विशेष सावधानी नहीं बरतता है।",
+      "trap": "विशेष सावधानी बरतना मानना गलत है, कोई सावधानी नहीं बरती जाती।",
+      "yaad": "नाजुक वस्तु = कोई विशेष सावधानी नहीं",
+      "hook": "क्या डाकघर नाजुक सामान की विशेष देखभाल करता है?",
+      "en": {
+        "question": "What precaution does the post office take to secure the safety of fragile articles?",
+        "a": "Takes special precautions",
+        "b": "Cannot take any special precautions",
+        "c": "Provides transit insurance",
+        "d": "Secures extra safety",
+        "fact": "The post office cannot take any special precautions to secure the safety of fragile articles.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "नाजुक वस्तुएं",
+            "mark": "key"
+          },
+          {
+            "text": "विशेष सावधानी नहीं",
+            "mark": "yes"
+          },
+          {
+            "text": "विशेष सावधानी बरतना",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 15,
+      "hook_v": {
+        "tries": 9
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    },
+    {
+      "basis": "notes",
+      "source_quote": "जब टकसी पैक े ि, पासणल या पत्र की सुरक्षा के टलए मॉम कपड़े (wax-cloth) का प्रयोग टकया जाता है तो इसे आंतररक आवरर् (Inside cover) की तरह इस्तेमाल करना चाटहए |",
+      "question": "पार्सल की सुरक्षा के लिए उपयोग होने वाले मोम कपड़े (wax-cloth) को कैसे लगाना चाहिए?",
+      "a": "बाहरी आवरण के रूप में",
+      "b": "आंतरिक आवरण के रूप में",
+      "c": "केवल किनारों पर",
+      "d": "खुले रूप में",
+      "correct": "B",
+      "fact": "मोम कपड़े का प्रयोग करते समय इसे आंतरिक आवरण (Inside cover) की तरह इस्तेमाल करना चाहिए।",
+      "trap": "बाहर लगाना गलत है, आंतरिक आवरण बनाना ही सही है।",
+      "yaad": "मोम कपड़ा = आंतरिक आवरण",
+      "hook": "पार्सल पर मोम कपड़ा अंदर लगाएं या बाहर?",
+      "en": {
+        "question": "How should wax-cloth be used when it is used for the protection of a parcel?",
+        "a": "As an outside cover",
+        "b": "As an inside cover",
+        "c": "Only on edges",
+        "d": "Openly",
+        "fact": "When wax-cloth is used for the protection of a parcel, it should be used as an inside cover.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "मोम कपड़ा",
+            "mark": "key"
+          },
+          {
+            "text": "आंतरिक आवरण",
+            "mark": "yes"
+          },
+          {
+            "text": "बाहरी आवरण",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 15,
+      "hook_v": {
+        "ok": true,
+        "text": "पार्सल पर मोम कपड़ा अंदर लगाएं या बाहर?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "notes",
+      "source_quote": "मोम कपड़े के बाहर पयाणप्त मात्रा में मजबूत कागज बांि देना चाटहए ताटक लेख के ऊपर लगाए जाने वाले टदनांक मोहर, डाक टिकि इत्याटद को उस कागज के ऊपर टचपकाया जा सक े ।",
+      "question": "मोम कपड़े के बाहर क्या बांधना चाहिए ताकि तारीख मोहर और टिकट लग सके?",
+      "a": "मजबूत कागज",
+      "b": "प्लास्टिक शीट",
+      "c": "कपड़ा",
+      "d": "रस्सी",
+      "correct": "A",
+      "fact": "मोम कपड़े के बाहर पर्याप्त मजबूत कागज बांधना चाहिए ताकि तारीख मोहर और टिकट लग सकें।",
+      "trap": "सीधे मोम पर टिकट लगाना गलत है, मजबूत कागज जरूरी है।",
+      "yaad": "मोम के बाहर = मजबूत कागज",
+      "hook": "मोम कपड़े के ऊपर क्या बांधा जाना चाहिए?",
+      "en": {
+        "question": "What should be fastened outside the wax-cloth to affix date-stamps and postage stamps?",
+        "a": "Sufficient strong paper",
+        "b": "Plastic sheet",
+        "c": "Cloth wrapper",
+        "d": "String",
+        "fact": "Sufficient strong paper should be securely fastened outside the wax-cloth to receive date-stamps and postage stamps.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "मोम कपड़े के बाहर",
+            "mark": "key"
+          },
+          {
+            "text": "मजबूत कागज बांधना",
+            "mark": "yes"
+          },
+          {
+            "text": "सीधे मोम पर मोहर",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 15,
+      "hook_v": {
+        "ok": true,
+        "text": "मोम कपड़े के ऊपर क्या बांधा जाना चाहिए?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "notes",
+      "source_quote": "प्रत्येक पत्र, पैक े ि, पासणल को इस तरह से पैक करना चाटहए ताटक यह तीखे टकनारों को जन्म ना दे । ❖ टजनकी वजह से अटिकाररयों को चोि पत्राचार को क्षटत और डाक संचालन में कोई रुकावि आए",
+      "question": "पैकिंग करते समय किस बात का विशेष ध्यान रखना चाहिए ताकि चोट या क्षति न हो?",
+      "a": "तीखे किनारे न हों",
+      "b": "रंग-बिरंगा हो",
+      "c": "हल्का वजन हो",
+      "d": "अधिक सिलाई हो",
+      "correct": "A",
+      "fact": "प्रत्येक वस्तु को ऐसे पैक करें कि तीखे किनारे न हों जिससे अधिकारियों को चोट या क्षति पहुँचे।",
+      "trap": "तीखे किनारे रखना स्वीकार्य नहीं है, अधिकारियों की सुरक्षा जरूरी है।",
+      "yaad": "तीखे किनारे = मना है",
+      "hook": "पैकिंग से अधिकारियों को क्या नहीं होना चाहिए?",
+      "en": {
+        "question": "How should every letter or parcel be closed regarding its edges to prevent injuries?",
+        "a": "So that it does not give rise to sharp edges",
+        "b": "With colorful tapes",
+        "c": "With light weight",
+        "d": "With extra stitching",
+        "fact": "Every article should be closed so that it does not give rise to sharp edges exposing officials to injury.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "तीखे किनारे न हों",
+            "mark": "yes"
+          },
+          {
+            "text": "चोट और क्षति",
+            "mark": "key"
+          },
+          {
+            "text": "तीखे किनारे बनाना",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 15,
+      "hook_v": {
+        "ok": true,
+        "text": "पैकिंग से अधिकारियों को क्या नहीं होना चाहिए?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    }
+  ],
+  "clause_text_en": "15. Packing. –  (1) Every letter, packet or parcel has to be stamped with the date stamps of \nat least two post offices and is liable to a great deal of pressure and friction in the mail bags during \n\n\ntransit.  All articles, therefore, which are likely to suffer from stampling of pressure should be \npacked in strong covers.  The post office cannot take any special precautions to secure the safety of \nfragile articles.  When wax-cloth is used for the protection of a parcel, packet or letter, it should be \nused as an inside cover, or there should at least be sufficient strong paper securely fastened outside \nthe wax-cloth to receive the impression of the post office date-stamps, and any postage stamps \nwhich have to be affixed to the article. \n \n (2) Special rules regarding the packing of particular classes of articles are given in the \nclauses relating to those articles.  These rules are absolute rules, for the breach of which a  penalty \nis prescribed in each case.  However, every letter, packet or parcel should be closed in such a \nmanner that it does not give rise to sharp edges which may expose officials to injury, damage \ncorrespondence or hinder postal operations."
+}

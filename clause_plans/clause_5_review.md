@@ -61,7 +61,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** स्टेशनरी बिक्री = संपूर्ण कार्य घंटे
 **Hook:** स्टेशनरी की बिक्री कब होती है?
 
-## Part 5  [FAIL (4/4 sudhaar koshish): 'trap' me aisi sankhya hai jo source me nahi: ['8']]
+## Part 5  [PASS | publish baaki]
 **Source (PO Guide):** For issue of money orders, sale and payment of postal orders, Savings Bank and Post Office Certificate transa ctions and payment of telephone bills. Etc. For about five hours (One Saturdays for three hours stopping at 1 p.m.)
 
 **Niyam:** शनिवार को बचत बैंक लेनदेन आदि दोपहर 1 बजे समाप्त होकर 3 घंटे होते हैं।
@@ -70,8 +70,8 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - B. दोपहर 3 बजे
 - C. शाम 5 बजे
 - D. शाम 4 बजे
-**Hint:** शनिवार बचत बैंक समय सीमा
-**Trap:** लोग शनिवार को भी इसे 3 बजे तक समझ लेते हैं जो पंजीकृत बुकिंग का समय है।  (source: For about five hours (One Saturdays for three hours stopping at 1 p.m.))
+**Hint:** 
+**Trap:** इसे दोपहर 3 बजे समझना गलत है, सही समय दोपहर 1 बजे है।
 **Yaad:** शनिवार बचत बैंक = दोपहर 1 बजे बंद
 **Hook:** शनिवार को बचत बैंक लेनदेन कब बंद?
 

@@ -1,0 +1,114 @@
+{
+  "clause_no": 14,
+  "title_en": "Fictitious Stamps",
+  "title_hi": "फिशीशस स्टैम्प और जनरल रूल्स",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "तनतषद्ध है और यह भारिीय दंड संतहिा 1860 की धारा 263-A के िहि दंडनीय अिराध है",
+      "question": "नकली डाक टिकटों का निर्माण और उपयोग किस धारा के तहत दंडनीय है?",
+      "a": "धारा 263-A",
+      "b": "धारा 270",
+      "c": "धारा 280",
+      "d": "धारा 290",
+      "correct": "A",
+      "fact": "नकली डाक टिकटों का निर्माण और उपयोग भारतीय दंड संहिता 1860 की धारा 263-A के तहत दंडनीय है।",
+      "trap": "दूसरी धारा समझना गलत है, धारा 263-A ही सही है।",
+      "yaad": "नकली टिकट = धारा 263-A",
+      "hook": "नकली डाक टिकट छापना कौन सी धारा में अपराध है?",
+      "en": {
+        "tries": 9
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "नकली डाक टिकट",
+            "mark": "key"
+          },
+          {
+            "text": "धारा 263-A",
+            "mark": "key"
+          },
+          {
+            "text": "दंडनीय अपराध",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 14,
+      "hook_v": {
+        "ok": true,
+        "text": "नकली डाक टिकट छापना कौन सी धारा में अपराध है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "published": "2026-09-25"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "लेटकन यह क े वल काले रंग में होनी चाटहए",
+      "question": "फिलाटेलिक प्रकाशन में डाक टिकटों के पुनरुत्पादन के लिए कौन सा रंग होना चाहिए?",
+      "a": "केवल काला रंग",
+      "b": "लाल रंग",
+      "c": "नीला रंग",
+      "d": "हरा रंग",
+      "correct": "A",
+      "fact": "डाक टिकटों के पुनरुत्पादन की अनुमति केवल काले रंग में होनी चाहिए।",
+      "trap": "कोई भी रंग समझना गलत है, केवल काला रंग ही सही है।",
+      "yaad": "पुनरुत्पादन = केवल काला रंग",
+      "hook": "प्रकाशन में छपने वाले टिकट किस रंग के होने चाहिए?",
+      "en": {
+        "question": "In which color is the reproduction of stamps allowed in publications?",
+        "a": "Only black",
+        "b": "Red color",
+        "c": "Blue color",
+        "d": "Green color",
+        "fact": "Such productions of stamps must only be in black.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "टिकट पुनरुत्पादन",
+            "mark": "key"
+          },
+          {
+            "text": "केवल काले रंग",
+            "mark": "yes"
+          },
+          {
+            "text": "रंगीन छपाई",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 14,
+      "hook_v": {
+        "ok": true,
+        "text": "प्रकाशन में छपने वाले टिकट किस रंग के होने चाहिए?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    }
+  ],
+  "clause_text_en": "14. Fictitious Stamps . –  The manufacture and use of fictitious postage stamps for any \npurpose whatsoever is prohibited, and is an offence punishab le under Section 263-A of the Indian \nPenal Code.  Reproduction of stamps is, however, allowed for illustration purposes in a philatelic \npublication or in an article or section relating wholly to postage stamps which may appear in a \npublication or a general character.  Such productions, however, must only be in black. \n \n \nGENERAL RULES AS TO POSTING"
+}
