@@ -46,8 +46,19 @@
       "_clause_no": 11,
       "auto_check": false,
       "check_errors": [
-        "AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {\"error\":{\"message\":)"
-      ]
+        "AUDIT: examiner ne jawab nahi diya"
+      ],
+      "basis": "guide",
+      "hook_v": {
+        "ok": true,
+        "text": "वैध फ्रैंक में कौन सी डाई होती हैं?"
+      },
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      }
     },
     {
       "source_quote": "The use of a franking machine except under a valid licence issued by the Head of the Postal Division in which the machine is located, is prohibited.",
@@ -66,8 +77,19 @@
       "_clause_no": 11,
       "auto_check": false,
       "check_errors": [
-        "AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {\"error\":{\"message\":)"
-      ]
+        "AUDIT: examiner ne jawab nahi diya"
+      ],
+      "basis": "guide",
+      "hook_v": {
+        "ok": true,
+        "text": "फ्रैंकिंग मशीन लाइसेंस कौन जारी करता है?"
+      },
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      }
     },
     {
       "source_quote": "Machine franked articles can be posted at not more than two offices specified by SPO in the licence.",
@@ -86,9 +108,20 @@
       "_clause_no": 11,
       "auto_check": false,
       "check_errors": [
-        "AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {\"error\":{\"message\":)"
+        "AUDIT: examiner ne jawab nahi diya"
       ],
-      "repair_tries": 0
+      "repair_tries": 0,
+      "basis": "guide",
+      "hook_v": {
+        "ok": true,
+        "text": "कितने कार्यालयों में फ्रैंक डाक?"
+      },
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      }
     },
     {
       "source_quote": "Impression should be of b right red colour, clear and distinct and should not overlap.",
@@ -105,10 +138,19 @@
       "yaad": "चमकीला लाल रंग",
       "hint": "",
       "_clause_no": 11,
-      "auto_check": false,
-      "check_errors": [
-        "AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {\"error\":{\"message\":)"
-      ]
+      "auto_check": true,
+      "check_errors": [],
+      "basis": "guide",
+      "hook_v": {
+        "ok": true,
+        "text": "फ्रैंक इंप्रेशन का रंग क्या होना चाहिए?"
+      },
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      }
     },
     {
       "source_quote": "Machine franked articles posted in letter boxes shall be treated as unpaid articles.",

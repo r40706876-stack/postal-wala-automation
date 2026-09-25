@@ -9,7 +9,6 @@
   "parts": [
     {
       "source_quote": "Certain important post offices are authorized by the Head of the Circle to realize the postage charges in cash from firms or other persos who post a very large number of unregistered packets subject to a mini mum of 500 packets at a time in big cities and 250 in small towns.",
-      "hook": "बड़े शहरों में कितने बिना पंजीकृत पैकेट पर नकद भुगतान संभव है?",
       "question": "बड़े शहरों में बिना पंजीकृत पैकेटों के नकद भुगतान हेतु न्यूनतम संख्या क्या है?",
       "a": "500 पैकेट",
       "b": "250 पैकेट",
@@ -18,18 +17,27 @@
       "correct": "A",
       "fact": "बड़े शहरों में न्यूनतम 500 और छोटे शहरों में 250 बिना पंजीकृत पैकेट।",
       "trap": "सभी जगह 500 मानना गलत है, छोटे शहरों के लिए 250 पैकेट तय हैं।",
-      "trap_quote": "",
       "yaad": "बड़ा शहर 500 + छोटा शहर 250",
+      "hook": "बड़े शहरों में कितने बिना पंजीकृत पैकेट पर नकद भुगतान संभव है?",
+      "basis": "guide",
       "hint": "",
+      "trap_quote": "",
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      },
       "_clause_no": 12,
-      "auto_check": false,
-      "check_errors": [
-        "LENGTH: 'hook' 12 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao"
-      ]
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
     },
     {
       "source_quote": "Certain post offices in Bombay, Calcutta, Madras, Nagpur and Delhi are also authorized by the Heads of the circle to realize the postage and registration fee on ordinary registered article s of letter mail in cash provided the sender uses special registered journals for bookinig of registered articles and the total number of articles of the same typr and weight to be registered at one time is not less than 50.",
-      "hook": "पंजीकृत वस्तुओं पर नकद भुगतान के लिए न्यूनतम कितनी संख्या चाहिए?",
       "question": "साधारण पंजीकृत पत्रों पर नकद शुल्क हेतु एक समय में न्यूनतम कितनी वस्तुएं होनी चाहिए?",
       "a": "50 वस्तुएं",
       "b": "500 वस्तुएं",
@@ -38,19 +46,27 @@
       "correct": "A",
       "fact": "साधारण पंजीकृत पत्र मेल पर नकद शुल्क हेतु एक बार में न्यूनतम 50 वस्तुएं।",
       "trap": "500 वस्तुएं समझना गलत है, पंजीकृत के लिए न्यूनतम संख्या 50 है।",
-      "trap_quote": "",
       "yaad": "पंजीकृत पत्र मेल + न्यूनतम 50",
+      "hook": "पंजीकृत वस्तुओं पर नकद भुगतान के लिए न्यूनतम कितनी संख्या चाहिए?",
+      "basis": "guide",
       "hint": "",
+      "trap_quote": "",
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      },
       "_clause_no": 12,
-      "auto_check": false,
-      "check_errors": [
-        "LENGTH: 'hook' 11 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao",
-        "'trap' me aisi sankhya hai jo source me nahi: ['500']"
-      ]
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
     },
     {
       "source_quote": "The facility of pre -payment of postage in cash is also available at selected Gazetted and H.s.G. Post Offices to Firms or business establishments who post not less than 500 articles at a time in re spect of letters (closed covers).  Inland Letter Cards, Post Cards and un-registered parcels.",
-      "hook": "पत्रों और पोस्टकार्ड के लिए नकद भुगतान हेतु न्यूनतम कितने लेख होने चाहिए?",
       "question": "चुनिंदा राजपत्रित और एच.एस.जी. डाकघरों में पत्रों हेतु नकद भुगतान की न्यूनतम संख्या क्या है?",
       "a": "500 लेख",
       "b": "250 लेख",
@@ -59,19 +75,27 @@
       "correct": "A",
       "fact": "चुनिंदा राजपत्रित और एच.एस.जी. डाकघरों में पत्रों व पार्सलों हेतु न्यूनतम 500 लेख।",
       "trap": "केवल 50 लेख समझना गलत है, चुनिंदा डाकघरों में न्यूनतम 500 लेख जरूरी हैं।",
-      "trap_quote": "",
       "yaad": "राजपत्रित/एचएसजी + न्यूनतम 500 लेख",
+      "hook": "पत्रों और पोस्टकार्ड के लिए नकद भुगतान हेतु न्यूनतम कितने लेख होने चाहिए?",
+      "basis": "guide",
       "hint": "",
+      "trap_quote": "",
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      },
       "_clause_no": 12,
-      "auto_check": false,
-      "check_errors": [
-        "LENGTH: 'hook' 13 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao",
-        "'trap' me aisi sankhya hai jo source me nahi: ['50']"
-      ]
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
     },
     {
       "source_quote": "The facility of prepayment of post age charges in cash is not available for any other classes of postal articles.",
-      "hook": "क्या अन्य सभी प्रकार की डाक के लिए नकद भुगतान की सुविधा है?",
       "question": "डाक शुल्क के नकद अग्रिम भुगतान की सुविधा किन पर लागू नहीं होती?",
       "a": "अन्य किसी भी श्रेणी की डाक",
       "b": "बिना पंजीकृत पैकेट",
@@ -80,15 +104,24 @@
       "correct": "A",
       "fact": "डाक शुल्क के नकद अग्रिम भुगतान की सुविधा अन्य किसी भी श्रेणी की डाक पर उपलब्ध नहीं है।",
       "trap": "सभी प्रकार की डाक पर नकद भुगतान संभव है सोचना गलत है, यह केवल निर्दिष्ट डाक पर है।",
-      "trap_quote": "",
       "yaad": "केवल निर्धारित डाक + अन्य पर पाबंदी",
+      "hook": "क्या अन्य सभी प्रकार की डाक के लिए नकद भुगतान की सुविधा है?",
+      "basis": "guide",
       "hint": "",
+      "trap_quote": "",
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      },
       "_clause_no": 12,
-      "auto_check": false,
-      "check_errors": [
-        "LENGTH: 'hook' 13 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao",
-        "LENGTH: 'trap' 18 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao"
-      ]
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
     }
   ],
   "clause_text_en": "12. Prepayment of postage in cash  - (1) Certain important post offices are authorized by \nthe Head of the Circle to realize the postage charges in cash from firms or other persos who post a \nvery large number of unregistered packets subject to a mini mum of 500 packets at a time in big \ncities and 250 in small towns.  Certain post offices in Bombay, Calcutta, Madras, Nagpur and \nDelhi are also authorized by the Heads of the circle to realize the postage and registration fee on \nordinary registered article s of letter mail in cash provided the sender uses special registered \njournals for bookinig of registered articles and the total number of articles of the same typr and \nweight to be registered at one time is not less than 50.  Particulars of this facility can be ascertained \nfrom the nearest principal post office.  The facility of pre -payment of postage in cash is also \navailable at selected Gazetted and H.s.G. Post Offices to Firms or business establishments who \npost not less than 500 articles at a time in re spect of letters (closed covers).  Inland Letter Cards, \nPost Cards and un-registered parcels. \n \n (2) A similar procedure is extended in the case of registered newspapers, details of which \nwill be found in clause 143. \n \n (3) The facility of prepayment of post age charges in cash is not available for any other \nclasses of postal articles."

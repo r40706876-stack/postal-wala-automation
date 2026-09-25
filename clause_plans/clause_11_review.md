@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** फ्रैंकिंग मशीन + 1.5 प्रतिशत कमीशन
 **Hook:** फ्रैंकिंग मशीन कमीशन कितना है?
 
-## Part 2  [FAIL (0/4 sudhaar koshish): AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {"error":{"message":)]
+## Part 2  [FAIL (0/4 sudhaar koshish): AUDIT: examiner ne jawab nahi diya]
 **Source (PO Guide):** For being recognized valid, the impressions of ‘frank’ should consist of the following dies :- (a) Value Die and (b) Licence Die.
 
 **Niyam:** वैध फ्रैंक में वैल्यू डाई और लाइसेंस डाई दोनों शामिल होनी चाहिए।
@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** वैध फ्रैंक = वैल्यू + लाइसेंस डाई
 **Hook:** वैध फ्रैंक में कौन सी डाई होती हैं?
 
-## Part 3  [FAIL (0/4 sudhaar koshish): AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {"error":{"message":)]
+## Part 3  [FAIL (0/4 sudhaar koshish): AUDIT: examiner ne jawab nahi diya]
 **Source (PO Guide):** The use of a franking machine except under a valid licence issued by the Head of the Postal Division in which the machine is located, is prohibited.
 
 **Niyam:** लाइसेंस मशीन स्थित डाक मंडल के प्रमुख (Head of the Postal Division) द्वारा जारी किया जाता है।
@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** लाیسेंस = डाक मंडल प्रमुख
 **Hook:** फ्रैंकिंग मशीन लाइसेंस कौन जारी करता है?
 
-## Part 4  [FAIL (0/4 sudhaar koshish): AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {"error":{"message":)]
+## Part 4  [FAIL (0/4 sudhaar koshish): AUDIT: examiner ne jawab nahi diya]
 **Source (PO Guide):** Machine franked articles can be posted at not more than two offices specified by SPO in the licence.
 
 **Niyam:** मशीन फ्रैंक वस्तुएं लाइसेंस में SPO द्वारा निर्दिष्ट अधिकतम दो कार्यालयों में पोस्ट हो सकती हैं।
@@ -61,7 +61,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** अधिकतम 2 कार्यालय
 **Hook:** कितने कार्यालयों में फ्रैंक डाक?
 
-## Part 5  [FAIL (0/4 sudhaar koshish): AUDIT_PENDING: examiner abhi uplabdh nahi (Koi LLM kaam nahi kiya (GEMINI_API_KEY / GROQ_API_KEY check karein): Groq(openai/gpt-oss-120b) 413: {"error":{"message":)]
+## Part 5  [PASS | publish baaki]
 **Source (PO Guide):** Impression should be of b right red colour, clear and distinct and should not overlap.
 
 **Niyam:** फ्रैंक का इंप्रेशन चमकीले लाल रंग का, स्पष्ट और अलग होना चाहिए।

@@ -5,7 +5,7 @@ English title: Packing
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** प्रत्येक ित्र, िैक े ि या िासाि िर कम से कम दो डाकघरों की िारीख मोहर िगी होनी चातहए ➢ ये दो PO हैं बुटक ं ग डाकघर )Booking PO ( गंतव्य डाकघर (Destination PO (
 
 **Niyam:** प्रत्येक पत्र, पैकेट या पार्सल पर कम से कम दो डाकघरों की तारीख मोहर होनी चाहिए।

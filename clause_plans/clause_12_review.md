@@ -5,7 +5,7 @@ English title: Prepayment of postage in cash
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (0/4 sudhaar koshish): LENGTH: 'hook' 12 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao]
+## Part 1  [PASS | publish baaki]
 **Source (PO Guide):** Certain important post offices are authorized by the Head of the Circle to realize the postage charges in cash from firms or other persos who post a very large number of unregistered packets subject to a mini mum of 500 packets at a time in big cities and 250 in small towns.
 
 **Niyam:** बड़े शहरों में न्यूनतम 500 और छोटे शहरों में 250 बिना पंजीकृत पैकेट।
@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** बड़ा शहर 500 + छोटा शहर 250
 **Hook:** बड़े शहरों में कितने बिना पंजीकृत पैकेट पर नकद भुगतान संभव है?
 
-## Part 2  [FAIL (0/4 sudhaar koshish): LENGTH: 'hook' 11 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao; 'trap' me aisi sankhya hai jo source me nahi: ['500']]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** Certain post offices in Bombay, Calcutta, Madras, Nagpur and Delhi are also authorized by the Heads of the circle to realize the postage and registration fee on ordinary registered article s of letter mail in cash provided the sender uses special registered journals for bookinig of registered articles and the total number of articles of the same typr and weight to be registered at one time is not less than 50.
 
 **Niyam:** साधारण पंजीकृत पत्र मेल पर नकद शुल्क हेतु एक बार में न्यूनतम 50 वस्तुएं।
@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पंजीकृत पत्र मेल + न्यूनतम 50
 **Hook:** पंजीकृत वस्तुओं पर नकद भुगतान के लिए न्यूनतम कितनी संख्या चाहिए?
 
-## Part 3  [FAIL (0/4 sudhaar koshish): LENGTH: 'hook' 13 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao; 'trap' me aisi sankhya hai jo source me nahi: ['50']]
+## Part 3  [PASS | publish baaki]
 **Source (PO Guide):** The facility of pre -payment of postage in cash is also available at selected Gazetted and H.s.G. Post Offices to Firms or business establishments who post not less than 500 articles at a time in re spect of letters (closed covers).  Inland Letter Cards, Post Cards and un-registered parcels.
 
 **Niyam:** चुनिंदा राजपत्रित और एच.एस.जी. डाकघरों में पत्रों व पार्सलों हेतु न्यूनतम 500 लेख।
@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** राजपत्रित/एचएसजी + न्यूनतम 500 लेख
 **Hook:** पत्रों और पोस्टकार्ड के लिए नकद भुगतान हेतु न्यूनतम कितने लेख होने चाहिए?
 
-## Part 4  [FAIL (0/4 sudhaar koshish): LENGTH: 'hook' 13 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao; LENGTH: 'trap' 18 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao]
+## Part 4  [PASS | publish baaki]
 **Source (PO Guide):** The facility of prepayment of post age charges in cash is not available for any other classes of postal articles.
 
 **Niyam:** डाक शुल्क के नकद अग्रिम भुगतान की सुविधा अन्य किसी भी श्रेणी की डाक पर उपलब्ध नहीं है।
