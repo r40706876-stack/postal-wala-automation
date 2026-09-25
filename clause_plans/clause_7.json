@@ -43,9 +43,13 @@
       "_clause_no": 7,
       "auto_check": false,
       "check_errors": [
-        "LENGTH: 'fact' 19 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao"
+        "AUDIT(gemini): The clause mentions both Night Post Offices and Mobile Post Offices under exceptions for closures ('Except the Night Post Offices all post offices Mobile Post Offices are generally closed...'). The fact only mentions 'रात्रि डाकघरों को छोड़कर' (leaving out Mobile Post Offices mentioned in the coaching notes).",
+        "AUDIT(groq): Fact ignores RMS offices exception – clause (d) says RMS offices are open on Sundays/holidays, so statement is not a faithful translation.",
+        "AUDIT(groq): Correct answer B (only Night Post Offices) is incomplete; RMS offices also provide services on those days per clause (d).",
+        "AUDIT(groq): Trap, yaad and hook describe the rule as \"only Night Post Offices open\" which contradicts the clause’s RMS offices exception.",
+        "AUDIT(groq): The script ignores the RMS offices exception altogether, violating clause (d)."
       ],
-      "repair_tries": 2
+      "repair_tries": 3
     },
     {
       "source_quote": "Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.",

@@ -1,0 +1,71 @@
+{
+  "clause_no": 9,
+  "title_en": "Desirability of prepayment of postage",
+  "title_hi": "डाक शुल्क का पूर्व भुगतान",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "note": "Automatic. Sirf auto_check=true wale parts ki reel banti hai. FAIL wale kabhi publish nahi honge.",
+  "parts": [
+    {
+      "source_quote": "It is the endeavour of the Post Office to forward by the earliest possible mail and effect delivery as expeditiously as possible of all fully prepaid postal articles.",
+      "hook": "पूर्ण भुगतान वाली डाक का क्या होता है?",
+      "question": "पूर्ण रूप से अग्रिम भुगतान की गई डाक वस्तुओं को कैसे भेजा जाता है?",
+      "a": "शीघ्रतम मेल से",
+      "b": "सामान्य मेल से",
+      "c": "अगले सप्ताह",
+      "d": "विलंब से",
+      "correct": "A",
+      "fact": "पूर्ण भुगतान वाली डाक वस्तुओं को शीघ्रतम मेल से अग्रेषित और वितरित किया जाता है।",
+      "trap": "केवल सामान्य मेल से भेजना गलत है, शीघ्रतम मेल से भेजना ही सही है।",
+      "trap_quote": "",
+      "yaad": "पूर्ण भुगतान + शीघ्रतम मेल",
+      "hint": "",
+      "_clause_no": 9,
+      "auto_check": true,
+      "check_errors": [],
+      "published": "2026-09-25"
+    },
+    {
+      "source_quote": "Unpaid articles or articles on which the postage is not fully prepaid are not afforded any greater security in transmission over other unregistered mail. On the other hand, such articles are liable to detention for the purpose of taxing the postage due on them.",
+      "hook": "अपूर्ण भुगतान वाली डाक का नियम?",
+      "question": "अपूर्ण भुगतान वाली डाक वस्तुओं के साथ क्या कार्रवाई की जाती है?",
+      "a": "शुल्क निर्धारण हेतु रोकी जाती हैं",
+      "b": "तुरंत नष्ट की जाती हैं",
+      "c": "बिना जाँच के बांटी जाती हैं",
+      "d": "विशेष सुरक्षा मिलती है",
+      "correct": "A",
+      "fact": "अपूर्ण भुगतान वाली वस्तुएं डाक शुल्क निर्धारण के लिए रोकी जाती हैं।",
+      "trap": "विशेष सुरक्षा मिलना सोचना गलत है, शुल्क निर्धारण हेतु रोकना ही सही है।",
+      "trap_quote": "Unpaid articles or articles on which the postage is not fully prepaid are not afforded any greater security in transmission over other unregistered mail.",
+      "yaad": "अपूर्ण भुगतान + शुल्क हेतु रोक",
+      "hint": "",
+      "_clause_no": 9,
+      "auto_check": true,
+      "check_errors": []
+    },
+    {
+      "source_quote": "The are, also, not issued along with the special deliveries intended only for unregistered mails but held over for the general deliveries for all classes of mail.",
+      "hook": "अपूर्ण भुगतान डाक कब वितरित होती है?",
+      "question": "अपूर्ण भुगतान वाली वस्तुएं किस डिलीवरी में जारी की जाती हैं?",
+      "a": "सामान्य डिलीवरी",
+      "b": "विशेष डिलीवरी",
+      "c": "तत्काल डिलीवरी",
+      "d": "रात की डिलीवरी",
+      "correct": "A",
+      "fact": "अपूर्ण भुगतान वाली वस्तुएं केवल सामान्य डिलीवरी के लिए रोकी जाती हैं।",
+      "trap": "विशेष डिलीवरी में जारी होना गलत है, सामान्य डिलीवरी में ही जारी होती हैं।",
+      "trap_quote": "The are, also, not issued along with the special deliveries intended only for unregistered mails but held over for the general deliveries for all classes of mail.",
+      "yaad": "अपूर्ण डाक + सामान्य डिलीवरी",
+      "hint": "",
+      "_clause_no": 9,
+      "auto_check": false,
+      "check_errors": [
+        "AUDIT(gemini): Fact and question mismatch: The clause states that unpaid/underpaid articles are NOT issued along with special deliveries, but held over for general deliveries. The fact states they are 'held over' for general delivery, but the question asks 'in which delivery are they issued', leading to a confusing premise since they are held over (delayed) rather than actively issued in special deliveries. Furthermore, the trap 'विशेष डिलीवरी में जारी होना गलत है, सामान्य डिलीवरी में ही जारी होती हैं' is misleading because they are NOT issued in special deliveries, they are delayed/held for general deliveries.",
+        "AUDIT(groq): Fact omits detention condition (articles may be detained for tax)",
+        "AUDIT(groq): Exception of detention not reflected in fact"
+      ]
+    }
+  ],
+  "clause_text_en": "9.Desirability of prepayment of postage  – It is the endeavour of the Post Office \nto forward by the earliest possible mail and effect delivery as expeditiously as possible of \nall fully prepaid postal articles.  Unpaid articles or articles on which the postage is not \nfully prepaid are not afforded any greater security in transmission over other unregistered \nmail.  On the other hand, such articles are liable to detention for the purpose of taxing the \npostage due on them.  The are, also, not issued along with the special deliveries intended \nonly for unregistered mails but held over for the general deliveries for all classes of mail."
+}

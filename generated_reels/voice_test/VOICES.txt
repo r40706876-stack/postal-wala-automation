@@ -1,0 +1,11 @@
+Har file sun ke sabse insaani awaaz chuniye, fir main.py me
+GEMINI_TTS_VOICE = "..." me uska VOICE naam/ID likhiye.
+
+01. Digital Assistant 2  ->  VOICE = hi-in-assistant-2   (56-year-old Sibling from Uttar Pradesh, India. Speaks Awadhi Hindi. Currently at an appoin)
+02. Digital Assistant 6  ->  VOICE = hi-in-assistant-6   (52-year-old Friend from Haryana, India. Speaks Haryanvi Hindi. Currently on podcast. Voice)
+03. Digital Assistant 9  ->  VOICE = hi-in-assistant-9   (23-year-old Sibling from Bihar, India. Speaks Bhojpuri Hindi. Voice is natural and clear.)
+04. Podcaster 10  ->  VOICE = hi-in-podcaster-10   (36-year-old Podcast Interviewer from Madhya Pradesh, India. Speaks Bundeli Hindi. Currentl)
+05. Sulafat  ->  VOICE = Sulafat   (Warm)
+06. Achird  ->  VOICE = Achird   (Friendly)
+07. Aoede  ->  VOICE = Aoede   (Breezy)
+08. Kore  ->  VOICE = Kore   (Firm)

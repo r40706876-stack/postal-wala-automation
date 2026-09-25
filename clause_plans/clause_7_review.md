@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** मशीन फ्रैंकित वस्तु + लेटर बॉक्स निषेध
 **Hook:** मशीन फ्रैंकित वस्तुएं कहां नहीं डाली जा सकतीं?
 
-## Part 2  [FAIL (2/4 sudhaar koshish): LENGTH: 'fact' 19 shabd ka hai, seema 18 - chhota karo, koi shart/sankhya mat hatao]
+## Part 2  [FAIL (3/4 sudhaar koshish): AUDIT(gemini): The clause mentions both Night Post Offices and Mobile Post Offices under exceptions for closures ('Except the Night Post Offices all post offices Mobile Post Offices are generally closed...'). The fact only mentions 'रात्रि डाकघरों को छोड़कर' (leaving out Mobile Post Offices mentioned in the coaching notes).; AUDIT(groq): Fact ignores RMS offices exception – clause (d) says RMS offices are open on Sundays/holidays, so statement is not a faithful translation.; AUDIT(groq): Correct answer B (only Night Post Offices) is incomplete; RMS offices also provide services on those days per clause (d).; AUDIT(groq): Trap, yaad and hook describe the rule as "only Night Post Offices open" which contradicts the clause’s RMS offices exception.; AUDIT(groq): The script ignores the RMS offices exception altogether, violating clause (d).]
 **Source (PO Guide):** Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays and no business transacted with the public.
 
 **Niyam:** रात्रि डाकघरों को छोड़कर रविवार और डाकघर अवकाश के दिन सभी डाकघर बंद रहते हैं।
