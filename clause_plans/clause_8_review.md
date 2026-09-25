@@ -5,7 +5,7 @@ English title: Post offices Holidays
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (2/4 sudhaar koshish): AUDIT(gemini): OUTDATED: The script uses '5 days' (5 दिन) as the correct answer based on the old clause, but the recent coaching notes state that 14 holidays are compulsory and only 3 holidays vary from circle to circle (3 छुट्टियां सर्किल से सर्किल में अलग-अलग होती हैं).]
+## Part 1  [FAIL (3/4 sudhaar koshish): 'fact' me aisi sankhya hai jo source me nahi: ['11']; 'yaad' me aisi sankhya hai jo source me nahi: ['11']; sahi option me aisi sankhya hai jo source me nahi: ['11']; 'trap' me aisi sankhya hai jo source me nahi: ['11']; source ki sankhya ['8'] 'fact' me nahi aayi (niyam adhoora?)]
 **Source (PO Guide):** In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.
 
 **Niyam:** डाकघर सर्किल दर सर्किल भिन्न होने वाले 5 अन्य दिनों पर भी अवकाश मनाते हैं।

@@ -48,25 +48,36 @@
       "repair_tries": 4
     },
     {
-      "source_quote": "Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.",
-      "hook": "पंजीकृत समाचार पत्र रविवार को कहां स्वीकार होते हैं?",
-      "question": "रविवार और अवकाश के दिन पंजीकृत समाचार पत्र बिना विलंब शुल्क के कहां स्वीकार किए जाते हैं?",
-      "a": "केवल शाखा डाकघरों में",
-      "b": "प्रेस सॉर्टिंग और आरएमएस कार्यालयों में",
-      "c": "केवल प्रधान डाकघरों में",
-      "d": "मोबाइल पोस्ट ऑफिस में",
-      "correct": "B",
-      "hint": "प्रेस सॉर्टिंग और आरएमएस कार्यालयों का नाम याद रखें।",
-      "fact": "पंजीकृत समाचार पत्र रविवार और अवकाश के दिन प्रेस सॉर्टिंग, आरएमएस और रात्रि डाकघरों में स्वीकार होते हैं।",
-      "trap": "रविवार को समाचार पत्रों के लिए विलंब शुल्क अनिवार्य है।",
-      "trap_quote": "Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.",
-      "yaad": "पंजीकृत समाचार पत्र + निःशुल्क रविवार",
+      "source_quote": "Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.",
+      "hook": "फ्रैंक्ड डाक कहां नहीं डालें?",
+      "question": "मशीन फ्रैंक्ड डाक वस्तुएं कहां पोस्ट नहीं करनी चाहिए?",
+      "a": "लेटर बॉक्स में",
+      "b": "डाकघर काउंटर पर",
+      "c": "सॉर्टिंग हब में",
+      "d": "आरएमएस कार्यालय में",
+      "correct": "A",
+      "fact": "मशीन फ्रैंक्ड वस्तुएं डाकघर या मेल वैन के लेटर बॉक्स में नहीं डालनी चाहिए।",
+      "trap": "लेटर बॉक्स में डालना गलत है, काउंटर पर देना ही सही है।",
+      "trap_quote": "Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.",
+      "yaad": "फ्रैंक्ड वस्तु प्लस लेटर बॉक्स निषेध",
+      "hint": "",
       "_clause_no": 7,
-      "auto_check": false,
-      "check_errors": [
-        "DUPLICATE: ye sawal is clause me pehle se hai"
-      ],
-      "repair_tries": 2
+      "auto_check": true,
+      "check_errors": [],
+      "repaired": true,
+      "repair_tries": 3,
+      "en": {
+        "question": "Where should machine franked articles not be posted?",
+        "a": "Letter box",
+        "b": "Post office counter",
+        "c": "Sorting hub",
+        "d": "RMS office",
+        "fact": "Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.",
+        "trap": "Posting in letter boxes is allowed, but rules prohibit it.",
+        "yaad": "Franked article + Letter box = Prohibited",
+        "ok": true
+      },
+      "published": "2026-09-25"
     }
   ],
   "clause_text_en": "7. Business done on Sundays and P.O. holidays \n \n (a) Except the Night Post Offices all post offices Mobile Post Offices are \ngenerally closed on Sundays and PO Holidays and no business transacted with the public.  \nThere is also no clearance of street letter post boxes delivery of mails on such days. \n \n (b) Facilities are provided for the posting of letters on which the prescribed late \nfee is paid during certain specific ho urs in the letter boxes at RMS offices and at selected \noffices.  Such postings can also, be made in the letter boxes of the mail vans of R.M.S. \nSections, Machine franked articles should not be posted either in the Post Office letter \nbox or the mail van letter box. \n \n (c) Registered newspapers and packets of registered news papers are accepted on \nSundays and PO holidays without payment of any late fee in Press Sorting Offices, \nR.M.S. offices and at Night Post Offices. \n \n (d) Generally, all RMS offices stamps a nd postal stationary and grant certificates \nof posting and book registered articles on payment of usual late fee during specified \nhours on Sundays and PO holidays. \n \nNOTE 1 :- Postage stamps, postcards, inland letters, and envelopes are also sold at \nthe telegraph branches of the combined post and telegraph offices the \nhours they are open to public."

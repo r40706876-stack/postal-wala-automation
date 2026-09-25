@@ -33,19 +33,19 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रविवार बंद + रात्रि डाकघर चालू
 **Hook:** रविवार को कौन से डाकघर खुले रहते हैं?
 
-## Part 3  [FAIL (2/4 sudhaar koshish): DUPLICATE: ye sawal is clause me pehle se hai]
-**Source (PO Guide):** Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.
+## Part 3  [PASS (sudhara gaya) | publish: 2026-09-25]
+**Source (PO Guide):** Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.
 
-**Niyam:** पंजीकृत समाचार पत्र रविवार और अवकाश के दिन प्रेस सॉर्टिंग, आरएमएस और रात्रि डाकघरों में स्वीकार होते हैं।
-**Sawal:** रविवार और अवकाश के दिन पंजीकृत समाचार पत्र बिना विलंब शुल्क के कहां स्वीकार किए जाते हैं?
-- A. केवल शाखा डाकघरों में
-- B. प्रेस सॉर्टिंग और आरएमएस कार्यालयों में  <- SAHI
-- C. केवल प्रधान डाकघरों में
-- D. मोबाइल पोस्ट ऑफिस में
-**Hint:** प्रेस सॉर्टिंग और आरएमएस कार्यालयों का नाम याद रखें।
-**Trap:** रविवार को समाचार पत्रों के लिए विलंब शुल्क अनिवार्य है।  (source: Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.)
-**Yaad:** पंजीकृत समाचार पत्र + निःशुल्क रविवार
-**Hook:** पंजीकृत समाचार पत्र रविवार को कहां स्वीकार होते हैं?
+**Niyam:** मशीन फ्रैंक्ड वस्तुएं डाकघर या मेल वैन के लेटर बॉक्स में नहीं डालनी चाहिए।
+**Sawal:** मशीन फ्रैंक्ड डाक वस्तुएं कहां पोस्ट नहीं करनी चाहिए?
+- A. लेटर बॉक्स में  <- SAHI
+- B. डाकघर काउंटर पर
+- C. सॉर्टिंग हब में
+- D. आरएमएस कार्यालय में
+**Hint:** 
+**Trap:** लेटर बॉक्स में डालना गलत है, काउंटर पर देना ही सही है।  (source: Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.)
+**Yaad:** फ्रैंक्ड वस्तु प्लस लेटर बॉक्स निषेध
+**Hook:** फ्रैंक्ड डाक कहां नहीं डालें?
 
 ---
 ## Poora clause (PDF se)
