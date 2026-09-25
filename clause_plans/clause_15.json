@@ -129,7 +129,7 @@
       "correct": "B",
       "fact": "डाकघर नाजुक वस्तुओं की सुरक्षा के लिए कोई विशेष सावधानी नहीं बरतता है।",
       "trap": "विशेष सावधानी बरतना मानना गलत है, कोई सावधानी नहीं बरती जाती।",
-      "yaad": "नाजुक वस्तु = कोई विशेष सावधानी नहीं",
+      "yaad": "नाजुक वस्तु → सुरक्षा → कोई विशेष सावधानी नहीं",
       "hook": "क्या डाकघर नाजुक सामान की विशेष देखभाल करता है?",
       "en": {
         "question": "What precaution does the post office take to secure the safety of fragile articles?",
@@ -163,11 +163,13 @@
       "trap_quote": "",
       "_clause_no": 15,
       "hook_v": {
-        "tries": 9
+        "tries": 2
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26",
+      "published": "2026-09-25"
     },
     {
       "basis": "notes",

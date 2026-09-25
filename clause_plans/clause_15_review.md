@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** बुकिंग और गंतव्य डाकघर
 **Hook:** वे दो डाकघर कौन से हैं जिनकी मोहर लगती है?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** The post office cannot take any special precautions to secure the safety of fragile articles.
 
 **Niyam:** डाकघर नाजुक वस्तुओं की सुरक्षा के लिए कोई विशेष सावधानी नहीं बरतता है।
@@ -44,7 +44,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. अतिरिक्त सुरक्षा देता है
 **Hint:** 
 **Trap:** विशेष सावधानी बरतना मानना गलत है, कोई सावधानी नहीं बरती जाती।
-**Yaad:** नाजुक वस्तु = कोई विशेष सावधानी नहीं
+**Yaad:** नाजुक वस्तु → सुरक्षा → कोई विशेष सावधानी नहीं
 **Hook:** क्या डाकघर नाजुक सामान की विशेष देखभाल करता है?
 
 ## Part 4  [PASS | publish baaki]
