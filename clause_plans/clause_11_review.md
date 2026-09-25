@@ -5,7 +5,7 @@ English title: Franking Machine
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (1/4 sudhaar koshish): galat option C me bhi wahi sankhya hai jo sahi me; galat option D me bhi wahi sankhya hai jo sahi me]
+## Part 1  [FAIL (0/4 sudhaar koshish): AUDIT: MISMATCH: Guide states a commission of 1-1/2 per cent (1.5%), whereas Notes state '3 प्रतिशत कमीशन की अनुमति है' (3%). As notes are the updated coaching material, the question/answer must reflect 3% or align with the notes, or be marked as outdated.]
 **Source (PO Guide):** A postal franking machine is a stamping machine intended to stamp impressions of dies of approved design on private and official postal articles in payment o f postage and postal fees. A commission of 1 -1/2 per cent is permitted on the value of franks used.
 
 **Niyam:** फ्रैंकिंग मशीन के उपयोग पर 1.5 प्रतिशत कमीशन की अनुमति है।
@@ -15,11 +15,11 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. 2 प्रतिशत
 - D. 2.5 प्रतिशत
 **Hint:** 
-**Trap:** 1 प्रतिशत समझना गलत है, 1.5 प्रतिशत कमीशन सही है।
+**Trap:** 1 प्रतिशत मानना गलत है, 1.5 प्रतिशत कमीशन सही है।
 **Yaad:** फ्रैंकिंग मशीन + 1.5 प्रतिशत कमीशन
-**Hook:** फ्रैंकिंग मशीन कमीशन कितना है?
+**Hook:** फ्रैंकिंग मशीन पर कितना कमीशन मिलता है?
 
-## Part 2  [FAIL (0/4 sudhaar koshish): AUDIT: examiner ne jawab nahi diya]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** For being recognized valid, the impressions of ‘frank’ should consist of the following dies :- (a) Value Die and (b) Licence Die.
 
 **Niyam:** वैध फ्रैंक में वैल्यू डाई और लाइसेंस डाई दोनों शामिल होनी चाहिए।
@@ -29,11 +29,11 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. वैल्यू डाई और लाइसेंस डाई  <- SAHI
 - D. केवल विज्ञापन डाई
 **Hint:** 
-**Trap:** केवल एक डाई समझना गलत है, दोनों डाई जरूरी हैं।
+**Trap:** केवल एक डाई मानना गलत है, दोनों डाई जरूरी हैं।
 **Yaad:** वैध फ्रैंक = वैल्यू + लाइसेंस डाई
 **Hook:** वैध फ्रैंक में कौन सी डाई होती हैं?
 
-## Part 3  [FAIL (0/4 sudhaar koshish): AUDIT: examiner ne jawab nahi diya]
+## Part 3  [PASS | publish baaki]
 **Source (PO Guide):** The use of a franking machine except under a valid licence issued by the Head of the Postal Division in which the machine is located, is prohibited.
 
 **Niyam:** लाइसेंस मशीन स्थित डाक मंडल के प्रमुख (Head of the Postal Division) द्वारा जारी किया जाता है।
@@ -43,11 +43,11 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. पोस्टमास्टर जनरल
 - D. डाकपाल
 **Hint:** 
-**Trap:** महानिदेशक समझना गलत है, डाक मंडल प्रमुख लाइसेंस देता है।
-**Yaad:** लाیسेंस = डाक मंडल प्रमुख
-**Hook:** फ्रैंकिंग मशीन लाइसेंस कौन जारी करता है?
+**Trap:** महानिदेशक मानना गलत है, डाक मंडल प्रमुख लाइसेंस देता है।
+**Yaad:** लाइसेंस = डाक मंडल प्रमुख
+**Hook:** फ्रैंकिंग मशीन का लाइसेंस कौन जारी करता है?
 
-## Part 4  [FAIL (0/4 sudhaar koshish): AUDIT: examiner ne jawab nahi diya]
+## Part 4  [PASS | publish baaki]
 **Source (PO Guide):** Machine franked articles can be posted at not more than two offices specified by SPO in the licence.
 
 **Niyam:** मशीन फ्रैंक वस्तुएं लाइसेंस में SPO द्वारा निर्दिष्ट अधिकतम दो कार्यालयों में पोस्ट हो सकती हैं।
@@ -57,7 +57,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. अधिकतम तीन कार्यालय
 - D. कोई सीमा नहीं
 **Hint:** 
-**Trap:** एक कार्यालय समझना गलत है, अधिकतम दो कार्यालय हो सकते हैं।  (source: Machine franked articles can be posted at not more than two offices specified by SPO in the licence.)
+**Trap:** एक कार्यालय समझना गलत है, अधिकतम दो कार्यालय हो सकते हैं।
 **Yaad:** अधिकतम 2 कार्यालय
 **Hook:** कितने कार्यालयों में फ्रैंक डाक?
 
@@ -75,7 +75,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** चमकीला लाल रंग
 **Hook:** फ्रैंक इंप्रेशन का रंग क्या होना चाहिए?
 
-## Part 6  [FAIL (0/4 sudhaar koshish): LENGTH: 'hook' 11 shabd ka hai, seema 10 - chhota karo, koi shart/sankhya mat hatao]
+## Part 6  [PASS | publish baaki]
 **Source (PO Guide):** Machine franked articles posted in letter boxes shall be treated as unpaid articles.
 
 **Niyam:** लेटर बॉक्स में डाली गई मशीन-फ्रैंक वस्तुएं अवैतनिक (unpaid) मानी जाएंगी।
@@ -89,19 +89,19 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** लेटर बॉक्स डाक = अवैतनिक
 **Hook:** लेटर बॉक्स में डाली गई फ्रैंक डाक का क्या होता है?
 
-## Part 7  [FAIL (0/4 sudhaar koshish): source ki sankhya ['5'] 'fact' me nahi aayi (niyam adhoora?)]
-**Source (PO Guide):** Allowance will be made for any impression made in error (less a deduction of 5 per cent on face value) on surrender of the envelopes or wrappers, provided that the impression is legible and that the entire envelope or wrapper is produced and that the claim is preferred within three months of the date of first impression.
+## Part 7  [FAIL (0/4 sudhaar koshish): source_quote Guide/notes me nahi mila]
+**Source (PO Guide):** Refund will be made for any impression made in error (less a deduction of 5 per cent on face value) on surrendering the envelopes or wrappers provided that impression is legible and that the entire envelope or wrapper is produced and that the claim is preferred within one month of the date of first impression.
 
-**Niyam:** गलत इंप्रेशन का दावा पहली छाप से 3 महीने के भीतर करना होगा।
-**Sawal:** गलती से बने फ्रैंक इंप्रेशन के रिफंड के लिए कितने महीनों में दावा करना होगा?
-- A. 1 महीना
+**Niyam:** गलत इंप्रेशन का रिफंड दावा पहली छाप से 1 महीने के भीतर करना होगा।
+**Sawal:** गलती से बने फ्रैंक इंप्रेशन के रिफंड के लिए कितने समय में दावा करना होगा?
+- A. 1 महीना  <- SAHI
 - B. 2 महीने
-- C. 3 महीने  <- SAHI
+- C. 3 महीने
 - D. 6 महीने
 **Hint:** 
-**Trap:** 1 महीना समझना गलत है, 3 महीने की अवधि है।
-**Yaad:** रिफंड दावा = 3 महीने
-**Hook:** गलत फ्रैंक इंप्रेशन पर रिफंड की समयसीमा क्या है?
+**Trap:** 3 महीने मानना गलत है, 1 महीने की अवधि सही है।
+**Yaad:** रिफंड दावा = 1 महीना
+**Hook:** गलत फ्रैंक इंप्रेशन रिफंड की समयसीमा क्या है?
 
 ---
 ## Poora clause (PDF se)

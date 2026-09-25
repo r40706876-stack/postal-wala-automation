@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** दो PO = बुकिंग + गंतव्य
 **Hook:** डाक पर कम से कम कितनी मोहरें लगनी चाहिए?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** बुटक ं ग डाकघर )Booking PO ( गंतव्य डाकघर (Destination PO (
 
 **Niyam:** तारीख मोहर लगाने वाले दो डाकघर बुकिंग डाकघर और गंतव्य डाकघर होते हैं।

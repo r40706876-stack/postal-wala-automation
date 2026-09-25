@@ -5,7 +5,7 @@ English title: Spoilt or defaced stamps
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (0/4 sudhaar koshish): source_quote PDF ke clause me nahi mila]
+## Part 1  [PASS | publish baaki]
 **Source (PO Guide):** Postage stamps (whether adhesive, embossed, or impressed) which have been obliterated, defaced, torn, cut or otherwise rendered imperfect... cannot be recognized in payment of postage.
 
 **Niyam:** कटी-फटी या विकृत डाक टिकटों को डाक भुगतान के लिए मान्यता नहीं दी जाती है।

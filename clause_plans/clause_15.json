@@ -115,7 +115,8 @@
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "published": "2026-09-25"
     },
     {
       "basis": "guide",
