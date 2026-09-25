@@ -54,17 +54,34 @@
       "c": "तत्काल डिलीवरी",
       "d": "रात की डिलीवरी",
       "correct": "A",
-      "fact": "अपूर्ण भुगतान वाली वस्तुएं केवल सामान्य डिलीवरी के लिए रोकी जाती हैं।",
-      "trap": "विशेष डिलीवरी में जारी होना गलत है, सामान्य डिलीवरी में ही जारी होती हैं।",
+      "fact": "अपूर्ण भुगतान वाली वस्तुएं सामान्य डिलीवरी के लिए रोकी जाती हैं।",
+      "trap": "विशेष डिलीवरी मानना गलत है, सामान्य डिलीवरी सही है।",
       "trap_quote": "The are, also, not issued along with the special deliveries intended only for unregistered mails but held over for the general deliveries for all classes of mail.",
       "yaad": "अपूर्ण डाक + सामान्य डिलीवरी",
       "hint": "",
       "_clause_no": 9,
-      "auto_check": false,
-      "check_errors": [
-        "LENGTH: 'trap' 15 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao"
-      ],
-      "repair_tries": 1
+      "auto_check": true,
+      "check_errors": [],
+      "repaired": true,
+      "repair_tries": 2,
+      "en": {
+        "question": "Under which delivery are insufficiently paid articles held over?",
+        "a": "general deliveries",
+        "b": "special deliveries",
+        "c": "immediate delivery",
+        "d": "night delivery",
+        "fact": "Such articles are held over for the general deliveries for all classes of mail.",
+        "trap": "Assuming special deliveries is wrong; general deliveries is correct.",
+        "yaad": "Unpaid articles = General deliveries",
+        "ok": true
+      },
+      "hook_v": {
+        "tries": 1
+      },
+      "beats": {
+        "tries": 1
+      },
+      "published": "2026-09-25"
     }
   ],
   "clause_text_en": "9.Desirability of prepayment of postage  – It is the endeavour of the Post Office \nto forward by the earliest possible mail and effect delivery as expeditiously as possible of \nall fully prepaid postal articles.  Unpaid articles or articles on which the postage is not \nfully prepaid are not afforded any greater security in transmission over other unregistered \nmail.  On the other hand, such articles are liable to detention for the purpose of taxing the \npostage due on them.  The are, also, not issued along with the special deliveries intended \nonly for unregistered mails but held over for the general deliveries for all classes of mail."

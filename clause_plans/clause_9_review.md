@@ -33,17 +33,17 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** अपूर्ण भुगतान + शुल्क हेतु रोक
 **Hook:** अपूर्ण भुगतान वाली डाक का नियम?
 
-## Part 3  [FAIL (1/4 sudhaar koshish): LENGTH: 'trap' 15 shabd ka hai, seema 14 - chhota karo, koi shart/sankhya mat hatao]
+## Part 3  [PASS (sudhara gaya) | publish: 2026-09-25]
 **Source (PO Guide):** The are, also, not issued along with the special deliveries intended only for unregistered mails but held over for the general deliveries for all classes of mail.
 
-**Niyam:** अपूर्ण भुगतान वाली वस्तुएं केवल सामान्य डिलीवरी के लिए रोकी जाती हैं।
+**Niyam:** अपूर्ण भुगतान वाली वस्तुएं सामान्य डिलीवरी के लिए रोकी जाती हैं।
 **Sawal:** अपूर्ण भुगतान वाली वस्तुएं किस डिलीवरी में जारी की जाती हैं?
 - A. सामान्य डिलीवरी  <- SAHI
 - B. विशेष डिलीवरी
 - C. तत्काल डिलीवरी
 - D. रात की डिलीवरी
 **Hint:** 
-**Trap:** विशेष डिलीवरी में जारी होना गलत है, सामान्य डिलीवरी में ही जारी होती हैं।  (source: The are, also, not issued along with the special deliveries intended only for unregistered mails but held over for the general deliveries for all classes of mail.)
+**Trap:** विशेष डिलीवरी मानना गलत है, सामान्य डिलीवरी सही है।  (source: The are, also, not issued along with the special deliveries intended only for unregistered mails but held over for the general deliveries for all classes of mail.)
 **Yaad:** अपूर्ण डाक + सामान्य डिलीवरी
 **Hook:** अपूर्ण भुगतान डाक कब वितरित होती है?
 
