@@ -1,11 +1,13 @@
-Har file sun ke sabse insaani awaaz chuniye, fir main.py me
-GEMINI_TTS_VOICE = "..." me uska VOICE naam/ID likhiye.
+Sab PURUSH (male) awaazein. Har file sun ke sabse insaani awaaz chuniye. Fir main.py me:
+  GEMINI_TTS_VOICE = "..."      <- us awaaz ka VOICE naam/ID
+  GEMINI_TTS_GENDER = "male"    <- us awaaz ka gender (Gemini fail ho to Swara hi aayegi)
 
-01. Digital Assistant 2  ->  VOICE = hi-in-assistant-2   (56-year-old Sibling from Uttar Pradesh, India. Speaks Awadhi Hindi. Currently at an appoin)
-02. Digital Assistant 6  ->  VOICE = hi-in-assistant-6   (52-year-old Friend from Haryana, India. Speaks Haryanvi Hindi. Currently on podcast. Voice)
-03. Digital Assistant 9  ->  VOICE = hi-in-assistant-9   (23-year-old Sibling from Bihar, India. Speaks Bhojpuri Hindi. Voice is natural and clear.)
-04. Podcaster 10  ->  VOICE = hi-in-podcaster-10   (36-year-old Podcast Interviewer from Madhya Pradesh, India. Speaks Bundeli Hindi. Currentl)
-05. Sulafat  ->  VOICE = Sulafat   (Warm)
-06. Achird  ->  VOICE = Achird   (Friendly)
-07. Aoede  ->  VOICE = Aoede   (Breezy)
-08. Kore  ->  VOICE = Kore   (Firm)
+01. Training Voiceover 1  ->  VOICE = hi-in-training-1   (PURUSH, Hindi library - 41-year-old Instructional Video Host from Delhi, India. Speaks Urdu. Voice is highly appro)
+02. Tutor 1  ->  VOICE = hi-in-tutor-1   (PURUSH, Hindi library - 56-year-old Librarian from Delhi, India. Speaks Urdu. Currently in a bookstore. Sounds con)
+03. Authoritative Advisor 11  ->  VOICE = hi-in-advisor-11   (PURUSH, Hindi library - 30-year-old Financial Advisor from Delhi, India. Speaks Urdu. Voice is relaxed.)
+04. Call Center Agent 11  ->  VOICE = hi-in-csagent-11   (PURUSH, Hindi library - 28-year-old Social Worker from Delhi, India. Speaks Urdu. Voice is crisp and eager.)
+05. Charon  ->  VOICE = Charon   (PURUSH, standard - Informative)
+06. Sadaltager  ->  VOICE = Sadaltager   (PURUSH, standard - Knowledgeable)
+07. Achird  ->  VOICE = Achird   (PURUSH, standard - Friendly)
+08. Iapetus  ->  VOICE = Iapetus   (PURUSH, standard - Clear)
+09. Puck  ->  VOICE = Puck   (PURUSH, standard - Upbeat)

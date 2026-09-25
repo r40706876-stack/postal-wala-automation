@@ -1,7 +1,40 @@
 {
   "clause_no": 10,
-  "current_part": 2,
+  "current_part": 3,
   "total_parts": 2,
   "hook_index": 3,
-  "day": 5
+  "day": 5,
+  "voice_rotation": [
+    {
+      "id": "hi-in-training-1",
+      "name": "Training Voiceover 1",
+      "gender": "male",
+      "desc": "41-year-old Instructional Video Host from Delhi, India. Speaks Urdu. Voice is hi"
+    },
+    {
+      "id": "hi-in-tutor-7",
+      "name": "Tutor 7",
+      "gender": "female",
+      "desc": "29-year-old Librarian from Delhi, India. Speaks Urdu. Voice is bright, breezy, a"
+    },
+    {
+      "id": "hi-in-tutor-1",
+      "name": "Tutor 1",
+      "gender": "male",
+      "desc": "56-year-old Librarian from Delhi, India. Speaks Urdu. Currently in a bookstore. "
+    },
+    {
+      "id": "hi-in-advisor-12",
+      "name": "Authoritative Advisor 12",
+      "gender": "female",
+      "desc": "54-year-old Financial Advisor from Delhi, India. Speaks Urdu. Currently sitting "
+    },
+    {
+      "id": "hi-in-advisor-11",
+      "name": "Authoritative Advisor 11",
+      "gender": "male",
+      "desc": "30-year-old Financial Advisor from Delhi, India. Speaks Urdu. Voice is relaxed."
+    }
+  ],
+  "voice_idx": 1
 }

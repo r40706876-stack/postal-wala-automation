@@ -42,7 +42,19 @@
       "hint": "",
       "_clause_no": 10,
       "auto_check": true,
-      "check_errors": []
+      "check_errors": [],
+      "en": {
+        "question": "Can revenue stamps be used for payment of postage?",
+        "a": "Yes, fully",
+        "b": "No, never",
+        "c": "Yes, up to half",
+        "d": "Only in special cases",
+        "fact": "These stamps cannot be used for payment of postage.",
+        "trap": "Revenue stamps pay postage, wrong; postage stamps only.",
+        "yaad": "Revenue stamps = no postage payment",
+        "ok": true
+      },
+      "published": "2026-09-25"
     },
     {
       "source_quote": "If the postage required on such embossed postal stationery is more than the value of the stamp printed on the article, the difference can be made good by affixing additional postage stamps of the requisite value.",

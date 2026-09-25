@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रविवार बंद + रात्रि डाकघर चालू
 **Hook:** रविवार को कौन से डाकघर खुले रहते हैं?
 
-## Part 3  [FAIL (1/4 sudhaar koshish): AUDIT(groq): Fact omits Night Post Offices – missing authority from clause (c); AUDIT(groq): Marked correct option (Press Sorting office) is not fully correct; RMS and Night Post Offices also accept; AUDIT(groq): Exception that Night Post Offices are open on Sundays is ignored in the fact]
+## Part 3  [FAIL (2/4 sudhaar koshish): DUPLICATE: ye sawal is clause me pehle se hai]
 **Source (PO Guide):** Registered newspapers and packets of registered news papers are accepted on Sundays and PO holidays without payment of any late fee in Press Sorting Offices, R.M.S. offices and at Night Post Offices.
 
 **Niyam:** पंजीकृत समाचार पत्र रविवार और अवकाश के दिन प्रेस सॉर्टिंग, आरएमएस और रात्रि डाकघरों में स्वीकार होते हैं।

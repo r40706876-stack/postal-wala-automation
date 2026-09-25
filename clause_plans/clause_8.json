@@ -24,9 +24,9 @@
       "_clause_no": 8,
       "auto_check": false,
       "check_errors": [
-        "'trap' me aisi sankhya hai jo source me nahi: ['11']"
+        "AUDIT(gemini): OUTDATED: The script uses '5 days' (5 दिन) as the correct answer based on the old clause, but the recent coaching notes state that 14 holidays are compulsory and only 3 holidays vary from circle to circle (3 छुट्टियां सर्किल से सर्किल में अलग-अलग होती हैं)."
       ],
-      "repair_tries": 1
+      "repair_tries": 2
     },
     {
       "source_quote": "Post offices Holidays – The following holidays are observed as Post Office holidays :- (1) Republic Day (26th January) (2) Independence Day (15th August) (3) Mahatma Gandhi’s Birthday (2nd October)",

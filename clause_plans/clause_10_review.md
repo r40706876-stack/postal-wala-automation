@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** डाक शुल्क = सामान्यतः डाक टिकट
 **Hook:** डाक शुल्क भुगतान का सामान्य तरीका क्या है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** Post Offices also, sell Revenue stamps issued by the Central Government. These stamps cannot be used for payment of postage.
 
 **Niyam:** राजस्व टिकटों का उपयोग डाक शुल्क के भुगतान के लिए नहीं किया जा सकता है।
