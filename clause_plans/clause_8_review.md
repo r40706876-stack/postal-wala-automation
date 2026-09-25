@@ -5,19 +5,19 @@ English title: Post offices Holidays
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (4/4 sudhaar koshish): AUDIT(gemini): OUTDATED: Recent coaching notes state that 3 holidays vary from circle to circle (with 14 compulsory holidays making 17 total), whereas the old clause states 5 holidays vary from circle to circle. The script uses the outdated value of 5.]
-**Source (PO Guide):** In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.
+## Part 1  [FAIL (0/4 sudhaar koshish): OUTDATED: chhuttiyan ab kul 17 (14 anivarya + 3 circle-wise); Guide (1985) ki 11 + 5 wali suchi purani]
+**Source (PO Guide):** In add ition the post offices observe post office holidays on 5 other days which vary from circle to circle.
 
-**Niyam:** डाकघर सर्किल दर सर्किल भिन्न होने वाले 5 अन्य दिनों पर भी अवकाश मनाते हैं।
-**Sawal:** डाकघरों में सर्किल से सर्किल वैरी करने वाले अतिरिक्त अवकाश कितने हैं?
-- A. 3 दिन
-- B. 4 दिन
-- C. 5 दिन  <- SAHI
-- D. 6 दिन
-**Hint:** सर्किल दर सर्किल भिन्न होने वाले दिन।
-**Trap:** इसे सभी सर्किल में एक समान मानना  (source: 5 other days which vary from circle to circle.)
-**Yaad:** सर्किल भिन्नता = 5 अतिरिक्त दिन
-**Hook:** सर्किल के अनुसार कितने अतिरिक्त अवकाश होते हैं?
+**Niyam:** डाकघरों में 5 अन्य दिन अवकाश होते हैं जो सर्किल से सर्किल में भिन्न होते हैं।
+**Sawal:** डाकघरों में सर्किल से सर्किल भिन्न होने वाले अतिरिक्त अवकाशों की संख्या कितनी है?
+- A. 3
+- B. 5  <- SAHI
+- C. 14
+- D. 17
+**Hint:** 
+**Trap:** इसे 3 मानना गलत है, सही संख्या 5 है।
+**Yaad:** सर्किल भिन्नता = 5 अतिरिक्त छुट्टियां
+**Hook:** सर्किल बदलते ही बदल जाती हैं कितनी छुट्टियां?
 
 ## Part 2  [PASS (sudhara gaya) | publish: 2026-09-25]
 **Source (PO Guide):** In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.

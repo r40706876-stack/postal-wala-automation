@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** नकली टिकट = धारा 263-A
 **Hook:** नकली डाक टिकट छापना कौन सी धारा में अपराध है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** लेटकन यह क े वल काले रंग में होनी चाटहए
 
 **Niyam:** डाक टिकटों के पुनरुत्पादन की अनुमति केवल काले रंग में होनी चाहिए।

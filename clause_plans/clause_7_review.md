@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** मशीन फ्रैंकित वस्तु + लेटर बॉक्स निषेध
 **Hook:** मशीन फ्रैंकित वस्तुएं कहां नहीं डाली जा सकतीं?
 
-## Part 2  [FAIL (4/4 sudhaar koshish): AUDIT(groq): Fact omits the clause’s condition that registration newspapers are accepted without late fee only at Press Sorting Offices, RMS offices and Night Post Offices (dropped location condition).]
+## Part 2  [FAIL (0/4 sudhaar koshish): AUDIT: examiner ne jawab nahi diya]
 **Source (PO Guide):** Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays and no business transacted with the public.
 
 **Niyam:** रात्रि डाकघरों को छोड़कर रविवार और डाकघर अवकाश के दिन सभी डाकघर बंद रहते हैं।
@@ -28,10 +28,10 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - B. रात्रि डाकघर  <- SAHI
 - C. मोबाइल डाकघर
 - D. सभी उप डाकघर
-**Hint:** रात में सेवा देने वाले विशेष डाकघर।
-**Trap:** मोबाइल डाकघर भी रविवार को खुले रहते हैं।  (source: Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays)
+**Hint:** 
+**Trap:** मोबाइल डाकघर खुले रहते हैं समझना गलत है, सही: रात्रि डाकघर खुले रहते हैं।
 **Yaad:** रविवार बंद + रात्रि डाकघर चालू
-**Hook:** रविवार को कौन से डाकघर खुले रहते हैं?
+**Hook:** रविवार को कौन सा डाकघर खुला रहता है?
 
 ## Part 3  [PASS (sudhara gaya) | publish: 2026-09-25]
 **Source (PO Guide):** Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.

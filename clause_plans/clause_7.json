@@ -27,25 +27,46 @@
       "published": "2026-09-24"
     },
     {
+      "basis": "guide",
       "source_quote": "Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays and no business transacted with the public.",
-      "hook": "रविवार को कौन से डाकघर खुले रहते हैं?",
       "question": "रविवार और डाकघर अवकाश के दिन कौन से डाकघर सामान्यतः खुले रहते हैं?",
       "a": "सभी मुख्य डाकघर",
       "b": "रात्रि डाकघर",
       "c": "मोबाइल डाकघर",
       "d": "सभी उप डाकघर",
-      "correct": "B",
-      "hint": "रात में सेवा देने वाले विशेष डाकघर।",
       "fact": "रात्रि डाकघरों को छोड़कर रविवार और डाकघर अवकाश के दिन सभी डाकघर बंद रहते हैं।",
-      "trap": "मोबाइल डाकघर भी रविवार को खुले रहते हैं।",
-      "trap_quote": "Except the Night Post Offices all post offices Mobile Post Offices are generally closed on Sundays and PO Holidays",
+      "trap": "मोबाइल डाकघर खुले रहते हैं समझना गलत है, सही: रात्रि डाकघर खुले रहते हैं।",
       "yaad": "रविवार बंद + रात्रि डाकघर चालू",
+      "correct": "B",
+      "id": 1,
+      "hook": "रविवार को कौन सा डाकघर खुला रहता है?",
+      "en": {
+        "question": "Which post offices are generally open on Sundays and PO holidays?",
+        "a": "All head post offices",
+        "b": "Night post offices",
+        "c": "Mobile post offices",
+        "d": "All sub post offices",
+        "fact": "Except the Night Post Offices all post offices are generally closed on Sundays and PO Holidays.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
       "_clause_no": 7,
+      "hook_v": {
+        "ok": true,
+        "text": "रविवार को कौन सा डाकघर खुला रहता है?"
+      },
       "auto_check": false,
       "check_errors": [
-        "AUDIT(groq): Fact omits the clause’s condition that registration newspapers are accepted without late fee only at Press Sorting Offices, RMS offices and Night Post Offices (dropped location condition)."
+        "AUDIT: examiner ne jawab nahi diya"
       ],
-      "repair_tries": 4
+      "simple": true,
+      "simple_rebuilds": 1
     },
     {
       "source_quote": "Machine franked articles should not be posted either in the Post Office letter box or the mail van letter box.",

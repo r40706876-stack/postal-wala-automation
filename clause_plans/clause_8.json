@@ -8,25 +8,46 @@
   "note": "Automatic. Sirf auto_check=true wale parts ki reel banti hai. FAIL wale kabhi publish nahi honge.",
   "parts": [
     {
-      "source_quote": "In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.",
-      "hook": "सर्किल के अनुसार कितने अतिरिक्त अवकाश होते हैं?",
-      "question": "डाकघरों में सर्किल से सर्किल वैरी करने वाले अतिरिक्त अवकाश कितने हैं?",
-      "a": "3 दिन",
-      "b": "4 दिन",
-      "c": "5 दिन",
-      "d": "6 दिन",
-      "correct": "C",
-      "hint": "सर्किल दर सर्किल भिन्न होने वाले दिन।",
-      "fact": "डाकघर सर्किल दर सर्किल भिन्न होने वाले 5 अन्य दिनों पर भी अवकाश मनाते हैं।",
-      "trap": "इसे सभी सर्किल में एक समान मानना",
-      "trap_quote": "5 other days which vary from circle to circle.",
-      "yaad": "सर्किल भिन्नता = 5 अतिरिक्त दिन",
+      "basis": "guide",
+      "source_quote": "In add ition the post offices observe post office holidays on 5 other days which vary from circle to circle.",
+      "question": "डाकघरों में सर्किल से सर्किल भिन्न होने वाले अतिरिक्त अवकाशों की संख्या कितनी है?",
+      "a": "3",
+      "b": "5",
+      "c": "14",
+      "d": "17",
+      "fact": "डाकघरों में 5 अन्य दिन अवकाश होते हैं जो सर्किल से सर्किल में भिन्न होते हैं।",
+      "trap": "इसे 3 मानना गलत है, सही संख्या 5 है।",
+      "yaad": "सर्किल भिन्नता = 5 अतिरिक्त छुट्टियां",
+      "correct": "B",
+      "id": 1,
+      "hook": "सर्किल बदलते ही बदल जाती हैं कितनी छुट्टियां?",
+      "en": {
+        "question": "How many other holidays vary from circle to circle in post offices?",
+        "a": "3",
+        "b": "5",
+        "c": "14",
+        "d": "17",
+        "fact": "Post offices observe holidays on 5 other days which vary from circle to circle.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
       "_clause_no": 8,
+      "hook_v": {
+        "ok": true,
+        "text": "सर्किल बदलते ही बदल जाती हैं कितनी छुट्टियां?"
+      },
       "auto_check": false,
       "check_errors": [
-        "AUDIT(gemini): OUTDATED: Recent coaching notes state that 3 holidays vary from circle to circle (with 14 compulsory holidays making 17 total), whereas the old clause states 5 holidays vary from circle to circle. The script uses the outdated value of 5."
+        "OUTDATED: chhuttiyan ab kul 17 (14 anivarya + 3 circle-wise); Guide (1985) ki 11 + 5 wali suchi purani"
       ],
-      "repair_tries": 4
+      "simple": true,
+      "simple_rebuilds": 1
     },
     {
       "source_quote": "In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.",
