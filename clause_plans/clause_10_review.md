@@ -5,7 +5,7 @@ English title: Postage Stamps and Stationery
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-25]
 **Source (PO Guide):** Payment of postage is normally to be effected by means of postage stamps issued by the Indian Post Office under the authority of the Govt. of India.
 
 **Niyam:** डाक शुल्क का भुगतान सामान्यतः भारत सरकार के तहत जारी डाक टिकटों द्वारा किया जाता है।

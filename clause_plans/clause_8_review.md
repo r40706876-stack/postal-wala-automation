@@ -5,7 +5,7 @@ English title: Post offices Holidays
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [FAIL (0/4 sudhaar koshish): TRAP: galat dharana ke saath sudhaar nahi (jaise 'X समझना गलत है, सही: Y') - akele padhne pe ulta niyam lagta hai]
+## Part 1  [FAIL (1/4 sudhaar koshish): 'trap' me aisi sankhya hai jo source me nahi: ['11']]
 **Source (PO Guide):** In addition the post offices observe post office holidays on 5 other days which vary from circle to circle.
 
 **Niyam:** डाकघर सर्किल दर सर्किल भिन्न होने वाले 5 अन्य दिनों पर भी अवकाश मनाते हैं।

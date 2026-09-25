@@ -64,8 +64,11 @@
       "_clause_no": 7,
       "auto_check": false,
       "check_errors": [
-        "LENGTH: 'question' 17 shabd ka hai, seema 16 - chhota karo, koi shart/sankhya mat hatao"
-      ]
+        "AUDIT(groq): Fact omits Night Post Offices – missing authority from clause (c)",
+        "AUDIT(groq): Marked correct option (Press Sorting office) is not fully correct; RMS and Night Post Offices also accept",
+        "AUDIT(groq): Exception that Night Post Offices are open on Sundays is ignored in the fact"
+      ],
+      "repair_tries": 1
     }
   ],
   "clause_text_en": "7. Business done on Sundays and P.O. holidays \n \n (a) Except the Night Post Offices all post offices Mobile Post Offices are \ngenerally closed on Sundays and PO Holidays and no business transacted with the public.  \nThere is also no clearance of street letter post boxes delivery of mails on such days. \n \n (b) Facilities are provided for the posting of letters on which the prescribed late \nfee is paid during certain specific ho urs in the letter boxes at RMS offices and at selected \noffices.  Such postings can also, be made in the letter boxes of the mail vans of R.M.S. \nSections, Machine franked articles should not be posted either in the Post Office letter \nbox or the mail van letter box. \n \n (c) Registered newspapers and packets of registered news papers are accepted on \nSundays and PO holidays without payment of any late fee in Press Sorting Offices, \nR.M.S. offices and at Night Post Offices. \n \n (d) Generally, all RMS offices stamps a nd postal stationary and grant certificates \nof posting and book registered articles on payment of usual late fee during specified \nhours on Sundays and PO holidays. \n \nNOTE 1 :- Postage stamps, postcards, inland letters, and envelopes are also sold at \nthe telegraph branches of the combined post and telegraph offices the \nhours they are open to public."

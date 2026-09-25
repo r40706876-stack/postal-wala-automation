@@ -24,9 +24,9 @@
       "_clause_no": 8,
       "auto_check": false,
       "check_errors": [
-        "TRAP: galat dharana ke saath sudhaar nahi (jaise 'X समझना गलत है, सही: Y') - akele padhne pe ulta niyam lagta hai"
+        "'trap' me aisi sankhya hai jo source me nahi: ['11']"
       ],
-      "repair_tries": 0
+      "repair_tries": 1
     },
     {
       "source_quote": "Post offices Holidays – The following holidays are observed as Post Office holidays :- (1) Republic Day (26th January) (2) Independence Day (15th August) (3) Mahatma Gandhi’s Birthday (2nd October)",
