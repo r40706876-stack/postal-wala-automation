@@ -70,24 +70,49 @@
       "correct": "A",
       "fact": "साधारण पंजीकृत पत्र मेल पर नकद शुल्क हेतु एक बार में न्यूनतम 50 वस्तुएं।",
       "trap": "500 वस्तुएं समझना गलत है, पंजीकृत के लिए न्यूनतम संख्या 50 है।",
-      "yaad": "पंजीकृत पत्र मेल + न्यूनतम 50",
+      "yaad": "पंजीकृत पत्र → नकद शुल्क → न्यूनतम 50",
       "hook": "पंजीकृत वस्तुओं पर नकद भुगतान के लिए न्यूनतम कितनी संख्या चाहिए?",
       "basis": "guide",
       "hint": "",
       "trap_quote": "",
       "en": {
-        "tries": 0
+        "question": "Minimum articles required at one time for cash payment on ordinary registered letter mail?",
+        "a": "50 articles",
+        "b": "500 articles",
+        "c": "250 articles",
+        "d": "100 articles",
+        "fact": "Minimum 50 articles required at one time for cash payment on ordinary registered letter mail.",
+        "trap": "Mistaking it as 500 articles is wrong; minimum for registered articles is 50.",
+        "yaad": "Registered letter mail in cash = Minimum 50",
+        "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "साधारण पंजीकृत पत्र मेल",
+            "mark": "key"
+          },
+          {
+            "text": "नकद शुल्क",
+            "mark": "yes"
+          },
+          {
+            "text": "न्यूनतम 50 वस्तुएं",
+            "mark": "yes"
+          }
+        ]
       },
       "_clause_no": 12,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "रजिस्ट्री का कैश पेमेंट करना है, कम से कम कितने पत्र लाएँ?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     },
     {
       "source_quote": "The facility of pre -payment of postage in cash is also available at selected Gazetted and H.s.G. Post Offices to Firms or business establishments who post not less than 500 articles at a time in re spect of letters (closed covers).  Inland Letter Cards, Post Cards and un-registered parcels.",

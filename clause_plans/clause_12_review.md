@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** बड़ा शहर → 500 पैकेट | छोटा शहर → 250 पैकेट
 **Hook:** बड़े शहरों में कितने बिना पंजीकृत पैकेट पर नकद भुगतान संभव है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** Certain post offices in Bombay, Calcutta, Madras, Nagpur and Delhi are also authorized by the Heads of the circle to realize the postage and registration fee on ordinary registered article s of letter mail in cash provided the sender uses special registered journals for bookinig of registered articles and the total number of articles of the same typr and weight to be registered at one time is not less than 50.
 
 **Niyam:** साधारण पंजीकृत पत्र मेल पर नकद शुल्क हेतु एक बार में न्यूनतम 50 वस्तुएं।
@@ -30,7 +30,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. 100 वस्तुएं
 **Hint:** 
 **Trap:** 500 वस्तुएं समझना गलत है, पंजीकृत के लिए न्यूनतम संख्या 50 है।
-**Yaad:** पंजीकृत पत्र मेल + न्यूनतम 50
+**Yaad:** पंजीकृत पत्र → नकद शुल्क → न्यूनतम 50
 **Hook:** पंजीकृत वस्तुओं पर नकद भुगतान के लिए न्यूनतम कितनी संख्या चाहिए?
 
 ## Part 3  [PASS | publish baaki]
