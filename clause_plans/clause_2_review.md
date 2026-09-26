@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** प्रथम श्रेणी डाकपाल = डाक अधीक्षक शक्तियाँ
 **Hook:** प्रथम श्रेणी प्रधान डाकपाल को किसकी शक्तियाँ मिलती हैं?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** Value-payable articles and money orders will not be booked to the address of Army Post Offices.
 
 **Niyam:** सेना डाकघर के पते पर वी.पी. वस्तुएँ और मनीऑर्डर बुक नहीं किए जा सकते।
