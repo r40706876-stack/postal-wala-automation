@@ -61,7 +61,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** फ्रैंक वस्तु → SPO निर्दिष्ट → अधिकतम दो कार्यालय
 **Hook:** कितने कार्यालयों में फ्रैंक डाक?
 
-## Part 5  [PASS | publish baaki]
+## Part 5  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** Impression should be of b right red colour, clear and distinct and should not overlap.
 
 **Niyam:** फ्रैंक का इंप्रेशन चमकीले लाल रंग का, स्पष्ट और अलग होना चाहिए।
@@ -72,7 +72,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. हरा
 **Hint:** 
 **Trap:** काला रंग समझना गलत है, चमकीला लाल रंग अनिवार्य है।
-**Yaad:** चमकीला लाल रंग
+**Yaad:** फ्रैंक का इंप्रेशन → चमकीला लाल
 **Hook:** फ्रैंक इंप्रेशन का रंग क्या होना चाहिए?
 
 ## Part 6  [PASS | publish baaki]

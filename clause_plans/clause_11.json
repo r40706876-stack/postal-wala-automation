@@ -225,7 +225,7 @@
       "fact": "फ्रैंक का इंप्रेशन चमकीले लाल रंग का, स्पष्ट और अलग होना चाहिए।",
       "trap": "काला रंग समझना गलत है, चमकीला लाल रंग अनिवार्य है।",
       "trap_quote": "",
-      "yaad": "चमकीला लाल रंग",
+      "yaad": "फ्रैंक का इंप्रेशन → चमकीला लाल",
       "hint": "",
       "_clause_no": 11,
       "auto_check": true,
@@ -233,14 +233,38 @@
       "basis": "guide",
       "hook_v": {
         "ok": true,
-        "text": "फ्रैंक इंप्रेशन का रंग क्या होना चाहिए?"
+        "text": "काउंटर पर फ्रैंकिंग लेटर आया, छाप किस रंग की हो?"
       },
       "en": {
-        "tries": 0
+        "question": "What colour should the impression of a franking machine be?",
+        "a": "Bright red",
+        "b": "Black",
+        "c": "Blue",
+        "d": "Green",
+        "fact": "Impression should be of bright red colour, clear and distinct and should not overlap.",
+        "trap": "Believing black is permitted is wrong; bright red colour is mandatory.",
+        "yaad": "Frank impression = Bright red colour",
+        "ok": true
       },
       "beats": {
-        "tries": 0
-      }
+        "ok": true,
+        "items": [
+          {
+            "text": "फ्रैंक का इंप्रेशन",
+            "mark": "key"
+          },
+          {
+            "text": "चमकीला लाल रंग",
+            "mark": "yes"
+          },
+          {
+            "text": "स्पष्ट और अलग",
+            "mark": "yes"
+          }
+        ]
+      },
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     },
     {
       "source_quote": "Machine franked articles posted in letter boxes shall be treated as unpaid articles.",
