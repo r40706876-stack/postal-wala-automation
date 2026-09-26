@@ -59,26 +59,50 @@
       "d": "केवल विज्ञापन डाई",
       "fact": "वैध फ्रैंक में वैल्यू डाई और लाइसेंस डाई दोनों शामिल होनी चाहिए।",
       "trap": "केवल एक डाई मानना गलत है, दोनों डाई जरूरी हैं।",
-      "yaad": "वैध फ्रैंक = वैल्यू + लाइसेंस डाई",
+      "yaad": "वैध फ्रैंक → वैल्यू डाई + लाइसेंस डाई",
       "correct": "C",
       "id": 2,
       "hook": "वैध फ्रैंक में कौन सी डाई होती हैं?",
       "en": {
-        "tries": 0
+        "question": "A valid frank impression must consist of which two dies?",
+        "a": "Value Die only",
+        "b": "Licence Die only",
+        "c": "Value Die and Licence Die",
+        "d": "Advertisement Die only",
+        "fact": "A valid frank impression must consist of both Value Die and Licence Die.",
+        "trap": "Believing only one die is enough is wrong; both dies are required.",
+        "yaad": "Valid Frank = Value Die + Licence Die",
+        "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "वैध फ्रैंक",
+            "mark": "key"
+          },
+          {
+            "text": "वैल्यू डाई",
+            "mark": "yes"
+          },
+          {
+            "text": "लाइसेंस डाई",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
       "_clause_no": 11,
       "hook_v": {
         "ok": true,
-        "text": "वैध फ्रैंक में कौन सी डाई होती हैं?"
+        "text": "मशीन से फ्रैंकिंग करते समय कौन सी दो डाई लगानी चाहिए?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     },
     {
       "basis": "guide",

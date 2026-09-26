@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** फ्रैंकिंग मशीन + 1.5 प्रतिशत कमीशन
 **Hook:** फ्रैंकिंग मशीन पर कितना कमीशन मिलता है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** For being recognized valid, the impressions of ‘frank’ should consist of the following dies :- (a) Value Die and (b) Licence Die.
 
 **Niyam:** वैध फ्रैंक में वैल्यू डाई और लाइसेंस डाई दोनों शामिल होनी चाहिए।
@@ -30,7 +30,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. केवल विज्ञापन डाई
 **Hint:** 
 **Trap:** केवल एक डाई मानना गलत है, दोनों डाई जरूरी हैं।
-**Yaad:** वैध फ्रैंक = वैल्यू + लाइसेंस डाई
+**Yaad:** वैध फ्रैंक → वैल्यू डाई + लाइसेंस डाई
 **Hook:** वैध फ्रैंक में कौन सी डाई होती हैं?
 
 ## Part 3  [PASS | publish baaki]
