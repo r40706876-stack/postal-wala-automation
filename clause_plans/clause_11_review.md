@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** फ्रैंकिंग मशीन लाइसेंस → डाक मंडल प्रमुख
 **Hook:** फ्रैंकिंग मशीन का लाइसेंस कौन जारी करता है?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** Machine franked articles can be posted at not more than two offices specified by SPO in the licence.
 
 **Niyam:** मशीन फ्रैंक वस्तुएं लाइसेंस में SPO द्वारा निर्दिष्ट अधिकतम दो कार्यालयों में पोस्ट हो सकती हैं।
@@ -58,7 +58,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. कोई सीमा नहीं
 **Hint:** 
 **Trap:** एक कार्यालय समझना गलत है, अधिकतम दो कार्यालय हो सकते हैं।
-**Yaad:** अधिकतम 2 कार्यालय
+**Yaad:** फ्रैंक वस्तु → SPO निर्दिष्ट → अधिकतम दो कार्यालय
 **Hook:** कितने कार्यालयों में फ्रैंक डाक?
 
 ## Part 5  [PASS | publish baaki]
