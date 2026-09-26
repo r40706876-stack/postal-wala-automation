@@ -1,0 +1,325 @@
+{
+  "clause_no": 2,
+  "title_en": "Types of Offices",
+  "title_hi": "डाकघर नियम: डाकघरों के प्रकार",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "guide",
+      "source_quote": "Post Offices are divided into three classes.",
+      "question": "डाकघरों को मुख्य रूप से कितने वर्गों में बाँटा गया है?",
+      "a": "दो वर्गों में",
+      "b": "तीन वर्गों में",
+      "c": "चार वर्गों में",
+      "d": "पाँच वर्गों में",
+      "correct": "B",
+      "fact": "डाकघरों को तीन वर्गों प्रधान डाकघर, उप डाकघर और शाखा डाकघर में बाँटा गया है।",
+      "trap": "चार वर्ग समझना गलत है, केवल तीन वर्ग हैं।",
+      "yaad": "डाकघर → 3 वर्ग = प्रधान + उप + शाखा",
+      "hook": "डाक प्रणाली में डाकघर कितने प्रकार के होते हैं?",
+      "en": {
+        "question": "Into how many classes are post offices primarily divided?",
+        "a": "In two classes",
+        "b": "In three classes",
+        "c": "In four classes",
+        "d": "In five classes",
+        "fact": "Post Offices are divided into three classes: Head Post Offices, Sub-Post Offices, and Branch Post Offices.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "डाकघर",
+            "mark": "key"
+          },
+          {
+            "text": "तीन वर्ग",
+            "mark": "yes"
+          },
+          {
+            "text": "प्रधान उप शाखा",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 2,
+      "hook_v": {
+        "ok": true,
+        "text": "हमारे विभाग में डाकघर कितने वर्गों में बँटे हैं?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "First Class Head Postmaster, exercise all the powers of a Superintendent of Post Offices in regard to their own offices.",
+      "question": "प्रथम श्रेणी प्रधान डाकपाल अपने कार्यालय हेतु किसकी शक्तियों का प्रयोग करते हैं?",
+      "a": "सर्किल प्रमुख की",
+      "b": "डाक अधीक्षक की",
+      "c": "महानिदेशक की",
+      "d": "निरीक्षक डाक की",
+      "correct": "B",
+      "fact": "प्रथम श्रेणी प्रधान डाकपाल अपने कार्यालय के लिए डाक अधीक्षक की शक्तियों का प्रयोग करते हैं।",
+      "trap": "सर्किल प्रमुख नहीं, डाक अधीक्षक की शक्तियाँ मिलती हैं।",
+      "yaad": "प्रथम श्रेणी डाकपाल = डाक अधीक्षक शक्तियाँ",
+      "hook": "प्रथम श्रेणी प्रधान डाकपाल को किसकी शक्तियाँ मिलती हैं?",
+      "en": {
+        "question": "Whose powers does a First Class Head Postmaster exercise regarding their own office?",
+        "a": "Head of Circle",
+        "b": "Superintendent of Post Offices",
+        "c": "Director General",
+        "d": "Inspector of Posts",
+        "fact": "A First Class Head Postmaster exercises all the powers of a Superintendent of Post Offices for their own office.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "प्रथम श्रेणी प्रधान डाकपाल",
+            "mark": "key"
+          },
+          {
+            "text": "डाक अधीक्षक शक्तियाँ",
+            "mark": "yes"
+          },
+          {
+            "text": "सर्किल प्रमुख शक्तियाँ",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 2,
+      "hook_v": {
+        "ok": true,
+        "text": "प्रथम श्रेणी प्रधान डाकपाल को किसकी शक्तियाँ मिलती हैं?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "Value-payable articles and money orders will not be booked to the address of Army Post Offices.",
+      "question": "सेना डाकघर के पते पर कौन सी वस्तुएँ बुक नहीं की जा सकतीं?",
+      "a": "केवल साधारण पत्र",
+      "b": "पंजीकृत पत्र और पार्सल",
+      "c": "वी.पी. वस्तुएँ और मनीऑर्डर",
+      "d": "स्पीड पोस्ट वस्तुएँ",
+      "correct": "C",
+      "fact": "सेना डाकघर के पते पर वी.पी. वस्तुएँ और मनीऑर्डर बुक नहीं किए जा सकते।",
+      "trap": "पंजीकृत पत्र नहीं, वी.पी. और मनीऑर्डर प्रतिबंधित हैं।",
+      "yaad": "सेना डाकघर = वी.पी. और मनीऑर्डर बंद",
+      "hook": "सेना डाकघर के पते पर क्या बुक नहीं कर सकते?",
+      "en": {
+        "question": "Which articles cannot be booked to the address of Army Post Offices?",
+        "a": "Only ordinary letters",
+        "b": "Registered letters and parcels",
+        "c": "V.P. articles and money orders",
+        "d": "Speed post articles",
+        "fact": "Value-payable articles and money orders will not be booked to the address of Army Post Offices.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "सेना डाकघर पता",
+            "mark": "key"
+          },
+          {
+            "text": "वी.पी. और मनीऑर्डर",
+            "mark": "no"
+          },
+          {
+            "text": "पंजीकृत पत्र बुकिंग",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 2,
+      "hook_v": {
+        "ok": true,
+        "text": "सेना डाकघर के पते पर क्या बुक नहीं कर सकते?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "d) अकधकतम काम के घोंटे: -- 5 घोंटे      \ne) न्यूनतम काम के घोंटे: - 4 घोंटे",
+      "question": "शाखा डाकघर के दैनिक कार्य के न्यूनतम और अधिकतम घंटे कितने हैं?",
+      "a": "3 और 5 घंटे",
+      "b": "4 और 5 घंटे",
+      "c": "4 और 7 घंटे",
+      "d": "5 और 8 घंटे",
+      "correct": "B",
+      "fact": "शाखा डाकघर के कार्य के न्यूनतम 4 घंटे और अधिकतम 5 घंटे होते हैं।",
+      "trap": "अधिकतम 8 घंटे नहीं, अधिकतम 5 घंटे ही हैं।",
+      "yaad": "शाखा डाकघर = न्यूनतम 4, अधिकतम 5 घंटे",
+      "hook": "शाखा डाकघर में रोजाना कितने घंटे काम होता है?",
+      "en": {
+        "question": "What are the minimum and maximum daily working hours of a Branch Post Office?",
+        "a": "3 and 5 hours",
+        "b": "4 and 5 hours",
+        "c": "4 and 7 hours",
+        "d": "5 and 8 hours",
+        "fact": "The working hours of a Branch Post Office are a minimum of 4 hours and a maximum of 5 hours.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 2,
+      "hook_v": {
+        "ok": true,
+        "text": "शाखा डाकघर में रोजाना कितने घंटे काम होता है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "जकसी नगर या उसक े उपर नगर ों में, िहाों प्रिान कायाालय \nभी ह , स्थथत उप डाकघर क  नगर उप डाकघर कहा िाता है.",
+      "question": "प्रधान डाकघर वाले नगर या उपनगर में स्थित उप डाकघर क्या कहलाता है?",
+      "a": "मुख्य उप डाकघर",
+      "b": "नगर उप डाकघर",
+      "c": "प्रथम श्रेणी डाकघर",
+      "d": "विभागीय उप डाकघर",
+      "correct": "B",
+      "fact": "प्रधान डाकघर वाले नगर या उपनगर का उप डाकघर नगर उप डाकघर कहलाता है।",
+      "trap": "मुख्य डाकघर नहीं, इसे नगर उप डाकघर कहते हैं।",
+      "yaad": "HO वाले नगर का SO = नगर उप डाकघर",
+      "hook": "HO वाले शहर का सब पोस्ट ऑफिस क्या कहलाएगा?",
+      "en": {
+        "question": "What is a Sub Post Office situated in a town or suburb having a Head Office called?",
+        "a": "Mukhya Sub Post Office",
+        "b": "Town Sub Post Office",
+        "c": "First Class Post Office",
+        "d": "Departmental Sub Post Office",
+        "fact": "A Sub Post Office situated in a town or its suburbs where a Head Office is also situated is called a Town Sub Office.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "HO वाले नगर का SO",
+            "mark": "key"
+          },
+          {
+            "text": "नगर उप डाकघर",
+            "mark": "yes"
+          },
+          {
+            "text": "मुख्य डाकघर",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 2,
+      "hook_v": {
+        "ok": true,
+        "text": "HO वाले शहर का सब पोस्ट ऑफिस क्या कहलाएगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "id": 1,
+      "basis": "notes",
+      "source_quote": "• र्गैर-कवतरण कायाालय क े वल काउोंटर लेन-देन करते हैं और उन्हें क ई अलर्ग कपन क ड नहीों कदया जाता है।",
+      "hook": "गैर-वितरण उप-डाकघर का पिन कोड क्या दर्ज करेंगे?",
+      "question": "गैर-वितरण डाकघर के लिए पिन कोड के संबंध में क्या नियम है?",
+      "a": "प्रधान डाकघर का स्पेशल पिन कोड दर्ज होता है",
+      "b": "संबंधित वितरण डाकघर का ही पिन कोड उपयोग होता है",
+      "c": "सर्किल प्रमुख द्वारा अलग पिन कोड जारी होता है",
+      "d": "आरएमएस नोडल कार्यालय का पिन कोड प्रयुक्त होता है",
+      "correct": "B",
+      "fact": "गैर-वितरण डाकघरों को कोई अलग पिन कोड नहीं दिया जाता; इनकी पहचान संबंधित वितरण डाकघर के पिन कोड से होती है।",
+      "trap": "सोचा अलग पिन कोड मिलेगा, पर वितरण डाकघर का ही लगता है।",
+      "yaad": "गैर-वितरण डाकघर = संबंधित वितरण PO का पिन कोड",
+      "en": {
+        "question": "What is the rule regarding the PIN code for a non-delivery post office?",
+        "a": "Special PIN code of the Head Post Office is entered",
+        "b": "PIN code of the concerned delivery post office is used",
+        "c": "A separate PIN code is issued by the Head of Circle",
+        "d": "PIN code of the RMS nodal office is used",
+        "fact": "Non-delivery post offices are not allotted a separate PIN code; they are identified by the PIN code of their concerned delivery post office.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "गैर-वितरण डाकघर पिन",
+            "mark": "key"
+          },
+          {
+            "text": "कोई अलग पिन नहीं",
+            "mark": "yes"
+          },
+          {
+            "text": "नया स्वतंत्र पिन",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 2,
+      "hook_v": {
+        "ok": true,
+        "text": "गैर-वितरण उप-डाकघर का पिन कोड क्या दर्ज करेंगे?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "2. Types of Offices –  Post Offices are divided into three classes. \n \n(a) Head Post Offices. \n(b) Sub-Post Offices including E.D. Sub-Offices, and  \n(c) E.D. Branch Post Offices. \n \nThe first two classes of offices normally transact all types of postal business.  \nFacilities are generally provided at Branch Post Offices for the main items of postal work \nlike delivery and dispatch of mail s, booking of registered articles and parcels accepting \nSB deposits and effecting SB withdrawals, and issue and payment of money orders, \nthough in a restricted manner. \n \nSo for as the public is concerned, there is generally no difference in the character \nof the service rendered by Sub -Post Offices and Head Post Offices except in regard to a \nfew P.O. Savings Bank transactions. \n \nCertain Post Offices do not undertake all types of postal business.  The \nrestrictions imposed will be found in the list of Post Offic es published as Part III of this \nGuide. \n \nNote:- The Head Offices in the more important cities are in the charge of \ngazetted officers and such Head Offices are referred to as First class \nHead Ofice, First Class Head Postmaster, exercise all the powers of a \nSuperintendent of Post Offices in regard to their own offices. \n \nNote:- Value-payable articles and money orders will not be booked to the \naddress of Army Post Offices."
+}
