@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** डाकघर → 3 वर्ग = प्रधान + उप + शाखा
 **Hook:** डाक प्रणाली में डाकघर कितने प्रकार के होते हैं?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** First Class Head Postmaster, exercise all the powers of a Superintendent of Post Offices in regard to their own offices.
 
 **Niyam:** प्रथम श्रेणी प्रधान डाकपाल अपने कार्यालय के लिए डाक अधीक्षक की शक्तियों का प्रयोग करते हैं।
