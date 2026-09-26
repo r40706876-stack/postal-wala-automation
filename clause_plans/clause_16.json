@@ -1,0 +1,119 @@
+{
+  "clause_no": 16,
+  "title_en": "Sealing",
+  "title_hi": "क्लॉज 16: सीलिंग नियम",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "guide",
+      "source_quote": "The public are advised not to use sealing wax for seals outside unregistered letters and packets, except when such seals are necessary for the protection of the articles to which they are applied.",
+      "question": "अपंजीकृत पत्रों या पैकेटों के बाहर सीलिंग वैक्स का प्रयोग कब किया जाना चाहिए?",
+      "a": "केवल सुरक्षा हेतु आवश्यक होने पर",
+      "b": "सभी साधारण डाक पर अनिवार्य",
+      "c": "किसी भी स्थिति में नहीं",
+      "d": "डाकपाल की विशेष अनुमति से",
+      "correct": "A",
+      "fact": "अपंजीकृत डाक पर वस्तु की सुरक्षा के लिए आवश्यक होने के सिवाय सीलिंग वैक्स न लगाएं।",
+      "trap": "हमेशा लगाना सही नहीं, केवल सुरक्षा के लिए ही छूट है।",
+      "yaad": "अपंजीकृत सील = केवल सुरक्षा में",
+      "hook": "ग्राहक साधारण लिफाफे पर सीलिंग वैक्स लगाए, तो क्या नियम है?",
+      "en": {
+        "question": "When should sealing wax be used outside unregistered letters and packets?",
+        "a": "Only when necessary for protection",
+        "b": "Compulsory on all unregistered mail",
+        "c": "Never under any circumstances",
+        "d": "With Postmaster special permission",
+        "fact": "Sealing wax should not be used on unregistered articles except when necessary for protection.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "अपंजीकृत डाक पर सीलिंग वैक्स",
+            "mark": "key"
+          },
+          {
+            "text": "सामान्यतः प्रयोग न करें",
+            "mark": "no"
+          },
+          {
+            "text": "सुरक्षा हेतु जरूरी होने पर",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 16,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक साधारण लिफाफे पर सीलिंग वैक्स लगाए, तो क्या नियम है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "When sealing wax is used for seals outside unregistere d letters and packets, a piece of tissue or other thin paper should be laid on the wax before the seal is applied",
+      "question": "अपंजीकृत डाक पर सील लगाने से पहले मोम के ऊपर क्या रखना चाहिए?",
+      "a": "टिशू या पतला कागज",
+      "b": "मोटा सूती कपड़ा",
+      "c": "प्लास्टिक की थैली",
+      "d": "अतिरिक्त लाख की परत",
+      "correct": "A",
+      "fact": "सील लगाने से पहले मोम पर टिशू या अन्य पतला कागज अवश्य रखना चाहिए।",
+      "trap": "कपड़ा या प्लास्टिक नहीं, केवल टिशू या पतला कागज लगाना है।",
+      "yaad": "मोम सील + पतला कागज",
+      "hook": "मोम की सील दूसरी डाक से न चिपके, तो क्या लगाएं?",
+      "en": {
+        "question": "What should be placed on sealing wax before the seal is applied on unregistered articles?",
+        "a": "Tissue or thin paper",
+        "b": "Thick cotton cloth",
+        "c": "Plastic sheet",
+        "d": "Extra sealing wax layer",
+        "fact": "A piece of tissue or thin paper should be laid on wax before seal is applied.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "मोम पर सील लगाना",
+            "mark": "key"
+          },
+          {
+            "text": "टिशू या पतला कागज",
+            "mark": "yes"
+          },
+          {
+            "text": "कपड़ा या प्लास्टिक शीट",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 16,
+      "hook_v": {
+        "ok": true,
+        "text": "मोम की सील दूसरी डाक से न चिपके, तो क्या लगाएं?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    }
+  ],
+  "clause_text_en": "16. Sealing -  The public are advised not to use sealing wax for seals outside unregistered \nletters and packets, except when such seals are necessary for the protection of the articles to which \nthey are applied.  When sealing wax is used for seals outside unregistere d letters and packets, a \npiece of tissue or other thin paper should be laid on the wax before the seal is applied, as otherwise \nboth the articles themselves and those with which they come in contract in transit are liable to \ninjury from the sealing wax adh ering to other articles.  The precaution recommended is specially \nnecessary in the case of articles for foreign countries, which have for several days to pass through \nvery hot climates."
+}
