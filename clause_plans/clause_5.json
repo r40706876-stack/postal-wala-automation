@@ -99,7 +99,7 @@
       "d": "शाम 4 बजे",
       "fact": "शनिवार को बचत बैंक लेनदेन आदि दोपहर 1 बजे समाप्त होकर 3 घंटे होते हैं।",
       "trap": "इसे दोपहर 3 बजे समझना गलत है, सही समय दोपहर 1 बजे है।",
-      "yaad": "शनिवार बचत बैंक = दोपहर 1 बजे बंद",
+      "yaad": "शनिवार → बचत बैंक लेनदेन → दोपहर 1 बजे",
       "correct": "A",
       "id": 1,
       "hook": "शनिवार को बचत बैंक लेनदेन कब बंद?",
@@ -115,18 +115,34 @@
         "ok": true
       },
       "beats": {
-        "tries": 9
+        "ok": true,
+        "items": [
+          {
+            "text": "शनिवार बचत बैंक लेनदेन",
+            "mark": "key"
+          },
+          {
+            "text": "दोपहर 1 बजे समाप्त",
+            "mark": "yes"
+          },
+          {
+            "text": "कुल अवधि 3 घंटे",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
       "_clause_no": 5,
       "hook_v": {
         "ok": true,
-        "text": "शनिवार को बचत बैंक लेनदेन कब बंद?"
+        "text": "शनिवार को HO में बचत बैंक काउंटर कब बंद होगा?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     }
   ],
   "clause_text_en": "5.Normal week days.- (i) At every Post Office and RMS Office, the hours during \nwhich business is transacted with the public and the times at which mails are delivered \nand dispatched are conspicuously notified.  The public business hours are fixed with \nregard to local convenience and the arrival and departure timings of the mails and all \nwork at the Post office counters is stopped precisely at the latest hours fixed.  The \nbusiness hours in the principal Post Offices are generally as indicated below on normal \nweek days, which are not post office holidays. \n \nFor Reference and enquiries, sale of the \npostage stamps and stationery and grant of \ncertificate of posting \n \nDuring the entire working hour of the office. \nFor booking of registered and insured articles, \nincluding value payable articles parcels and \ntelegraphic money orders. \n \nFor about six to seven hours (On Saturdays \nusually for five hours stopping at 3 pm) \nFor issue of money orders, sale and payment of \npostal orders, Savings Bank and Post Office \nCertificate transa ctions and payment of \ntelephone bills. Etc. \nFor about five hours (One Saturdays for three \nhours stopping at 1 p.m.) \n \n \n (ii) Post Offices in charge of extra-departmental agents are kept open for a \nmaximum period of five hours only. \n \nNOTE:- The delivery of registered, insured and V.P. articles, and payment of \nmoney orders at the window of the Post Office usually be attended to \n\n\nbetween the hours fixed for the booking of the respective classes of \narticles. \n \n  \n (iii) Arrangements have been made in most station ery RMS offices for the \nbooking of registered articles of letter mail, RD articles and the sale of postage stamps \nand stationery.  The hours during which these services will be available are notified at \neach office.  A list of R.M.S. Offices doing such Pos t Office work will be found in Part \nIII of this Guide. \n \n (iv) Facilities are provided at all important offices for the posting of \ncorrespondence and for the booking of registered letters for a limited period beyond the \nnormal scheduled hours on payment of a late fee.  The rates of late fee charged are \nindicated in the Appendix to this Part."
