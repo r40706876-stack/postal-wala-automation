@@ -17,24 +17,48 @@
       "correct": "A",
       "fact": "बड़े शहरों में न्यूनतम 500 और छोटे शहरों में 250 बिना पंजीकृत पैकेट।",
       "trap": "सभी जगह 500 मानना गलत है, छोटे शहरों के लिए 250 पैकेट तय हैं।",
-      "yaad": "बड़ा शहर 500 + छोटा शहर 250",
+      "yaad": "बड़ा शहर → 500 पैकेट | छोटा शहर → 250 पैकेट",
       "hook": "बड़े शहरों में कितने बिना पंजीकृत पैकेट पर नकद भुगतान संभव है?",
       "basis": "guide",
       "hint": "",
       "trap_quote": "",
       "en": {
-        "tries": 0
+        "question": "Minimum unregistered packets to realize postage charges in cash in big cities?",
+        "a": "500 packets",
+        "b": "250 packets",
+        "c": "1000 packets",
+        "d": "50 packets",
+        "fact": "Minimum limit is 500 unregistered packets in big cities and 250 in small towns.",
+        "trap": "Assuming 500 packets apply everywhere is wrong; small towns require only 250.",
+        "yaad": "Big city = 500, Small town = 250",
+        "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "बड़े शहर न्यूनतम 500 पैकेट",
+            "mark": "key"
+          },
+          {
+            "text": "छोटे शहर न्यूनतम 250 पैकेट",
+            "mark": "key"
+          },
+          {
+            "text": "बिना पंजीकृत पैकेट",
+            "mark": "yes"
+          }
+        ]
       },
       "_clause_no": 12,
       "hook_v": {
-        "tries": 0
+        "tries": 2
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     },
     {
       "source_quote": "Certain post offices in Bombay, Calcutta, Madras, Nagpur and Delhi are also authorized by the Heads of the circle to realize the postage and registration fee on ordinary registered article s of letter mail in cash provided the sender uses special registered journals for bookinig of registered articles and the total number of articles of the same typr and weight to be registered at one time is not less than 50.",

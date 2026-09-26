@@ -5,7 +5,7 @@ English title: Prepayment of postage in cash
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** Certain important post offices are authorized by the Head of the Circle to realize the postage charges in cash from firms or other persos who post a very large number of unregistered packets subject to a mini mum of 500 packets at a time in big cities and 250 in small towns.
 
 **Niyam:** बड़े शहरों में न्यूनतम 500 और छोटे शहरों में 250 बिना पंजीकृत पैकेट।
@@ -16,7 +16,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. 50 पैकेट
 **Hint:** 
 **Trap:** सभी जगह 500 मानना गलत है, छोटे शहरों के लिए 250 पैकेट तय हैं।
-**Yaad:** बड़ा शहर 500 + छोटा शहर 250
+**Yaad:** बड़ा शहर → 500 पैकेट | छोटा शहर → 250 पैकेट
 **Hook:** बड़े शहरों में कितने बिना पंजीकृत पैकेट पर नकद भुगतान संभव है?
 
 ## Part 2  [PASS | publish baaki]
