@@ -114,7 +114,7 @@
       "d": "डाकपाल",
       "fact": "लाइसेंस मशीन स्थित डाक मंडल के प्रमुख (Head of the Postal Division) द्वारा जारी किया जाता है।",
       "trap": "महानिदेशक मानना गलत है, डाक मंडल प्रमुख लाइसेंस देता है।",
-      "yaad": "लाइसेंस = डाक मंडल प्रमुख",
+      "yaad": "फ्रैंकिंग मशीन लाइसेंस → डाक मंडल प्रमुख",
       "correct": "A",
       "id": 3,
       "hook": "फ्रैंकिंग मशीन का लाइसेंस कौन जारी करता है?",
@@ -130,18 +130,34 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "फ्रैंकिंग मशीन लाइसेंस",
+            "mark": "key"
+          },
+          {
+            "text": "मशीन स्थित डाक मंडल",
+            "mark": "key"
+          },
+          {
+            "text": "मंडल प्रमुख द्वारा जारी",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
       "_clause_no": 11,
       "hook_v": {
         "ok": true,
-        "text": "फ्रैंकिंग मशीन का लाइसेंस कौन जारी करता है?"
+        "text": "ग्राहक फ्रैंकिंग मशीन लगवाना चाहे, लाइसेंस कौन देगा?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     },
     {
       "source_quote": "Machine franked articles can be posted at not more than two offices specified by SPO in the licence.",

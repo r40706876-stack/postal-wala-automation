@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** वैध फ्रैंक → वैल्यू डाई + लाइसेंस डाई
 **Hook:** वैध फ्रैंक में कौन सी डाई होती हैं?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** The use of a franking machine except under a valid licence issued by the Head of the Postal Division in which the machine is located, is prohibited.
 
 **Niyam:** लाइसेंस मशीन स्थित डाक मंडल के प्रमुख (Head of the Postal Division) द्वारा जारी किया जाता है।
@@ -44,7 +44,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. डाकपाल
 **Hint:** 
 **Trap:** महानिदेशक मानना गलत है, डाक मंडल प्रमुख लाइसेंस देता है।
-**Yaad:** लाइसेंस = डाक मंडल प्रमुख
+**Yaad:** फ्रैंकिंग मशीन लाइसेंस → डाक मंडल प्रमुख
 **Hook:** फ्रैंकिंग मशीन का लाइसेंस कौन जारी करता है?
 
 ## Part 4  [PASS | publish baaki]
