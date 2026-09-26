@@ -276,24 +276,45 @@
       "correct": "B",
       "fact": "लेटर बॉक्स में डाली गई मशीन-फ्रैंक वस्तुएं अवैतनिक (unpaid) मानी जाएंगी।",
       "trap": "सामान्य डाक समझना गलत है, इसे अवैतनिक माना जाता है।",
-      "yaad": "लेटर बॉक्स डाक = अवैतनिक",
+      "yaad": "लेटर बॉक्स → मशीन-फ्रैंक वस्तु → अवैतनिक",
       "hook": "लेटर बॉक्स में डाली गई फ्रैंक डाक का क्या होता है?",
       "basis": "guide",
       "hint": "",
       "trap_quote": "",
       "en": {
-        "tries": 0
+        "question": "How are machine franked articles posted in letter boxes treated?",
+        "a": "Paid articles",
+        "b": "Unpaid articles",
+        "c": "Registered articles",
+        "d": "Returned to sender",
+        "fact": "Machine franked articles posted in letter boxes shall be treated as unpaid articles.",
+        "trap": "Mistaking it as ordinary mail is wrong; it is treated as unpaid.",
+        "yaad": "Franked in letter box = Unpaid",
+        "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "लेटर बॉक्स में फ्रैंक वस्तुएं",
+            "mark": "key"
+          },
+          {
+            "text": "अवैतनिक (unpaid) मानी जाएंगी",
+            "mark": "yes"
+          }
+        ]
       },
       "_clause_no": 11,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "लेटर बॉक्स में मशीन-फ्रैंक डाक मिली, तो क्या मानेंगे?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     },
     {
       "basis": "notes",

@@ -1,0 +1,169 @@
+{
+  "clause_no": 17,
+  "title_en": "Posting of coints etc",
+  "title_hi": "डाक गाइड भाग-I नियम 17: मूल्यवान वस्तुओं की पोस्टिंग",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "इन्हें अंतदेशीय डाक द्वारा क े वल बीमा करवा कर िी भेजा जा सकता िै",
+      "question": "सिक्के, आभूषण या कीमती पत्थर को अंतर्देशीय डाक द्वारा कैसे भेजा जाना अनिवार्य है?",
+      "a": "केवल पंजीकृत",
+      "b": "केवल बीमाकृत",
+      "c": "साधारण पत्र",
+      "d": "बिना बीमा",
+      "correct": "B",
+      "fact": "सिक्के, आभूषण व कीमती पत्थर केवल बीमा करवाकर ही भेजे जा सकते हैं।",
+      "trap": "बिना बीमा के भेजना गलत है, बीमा अनिवार्य है।",
+      "yaad": "कीमती वस्तु + अनिवार्य बीमा",
+      "hook": "ग्राहक गहने या सिक्के पार्सल कराना चाहता है, कैसे बुक करेंगे?",
+      "en": {
+        "question": "How are coins, jewellery or precious stones mandatorily sent via Inland Post?",
+        "a": "Only Registered",
+        "b": "Only Insured",
+        "c": "Ordinary Mail",
+        "d": "Without Insurance",
+        "fact": "Coins and jewellery can only be sent by Inland Post if insured.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "कीमती वस्तुएं",
+            "mark": "key"
+          },
+          {
+            "text": "केवल बीमाकृत",
+            "mark": "yes"
+          },
+          {
+            "text": "साधारण डाक",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 17,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक गहने या सिक्के पार्सल कराना चाहता है, कैसे बुक करेंगे?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "notes",
+      "source_quote": "अतभव्यक्ति \" सोिे या चािंदी के लेख \" में ... िेतकन तसक्क े और इिेक्ट् र ो या अन्य प्लेिेड सामान शाटमल नहीं होगा",
+      "question": "नियम 17 के तहत 'सोने या चांदी के लेख' की परिभाषा में क्या शामिल नहीं है?",
+      "a": "सोने के गहने",
+      "b": "चांदी की वस्तुएं",
+      "c": "इलेक्ट्रो प्लेटेड सामान",
+      "d": "आंशिक सोने के लेख",
+      "correct": "C",
+      "fact": "सोने-चांदी के लेख में इलेक्ट्रो या अन्य प्लेटेड सामान शामिल नहीं है।",
+      "trap": "प्लेटेड सामान सोना नहीं है, इसे बीमा में न गिनें।",
+      "yaad": "प्लेटेड सामान = बाहर",
+      "hook": "काउंटर पर इलेक्ट्रो-प्लेटेड गहने आए, बीमा का नियम क्या होगा?",
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "इलेक्ट्रो प्लेटेड सामान",
+            "mark": "key"
+          },
+          {
+            "text": "शामिल नहीं",
+            "mark": "no"
+          },
+          {
+            "text": "असली सोना",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 17,
+      "hook_v": {
+        "ok": true,
+        "text": "काउंटर पर इलेक्ट्रो-प्लेटेड गहने आए, बीमा का नियम क्या होगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "अतभव्यक्ति \" आभूषण \" में िे घटड़यां शाटमल है टजनक े खोल पूरी तरह से या मुख्य रूप से सोने, चांदी या प्लैटिनम के बने हो",
+      "question": "किस प्रकार की घड़ियों को 'आभूषण' की श्रेणी में माना जाएगा?",
+      "a": "प्लास्टिक बॉडी घड़ियाँ",
+      "b": "लोहे की घड़ियाँ",
+      "c": "सोने या चांदी के खोल वाली घड़ियाँ",
+      "d": "सामान्य स्टील घड़ियाँ",
+      "correct": "C",
+      "fact": "सोने, चांदी या प्लैटिनम की केस वाली घड़ियाँ ही आभूषण में शामिल हैं।",
+      "trap": "सभी घड़ियाँ आभूषण नहीं, केवल कीमती खोल वाली हैं।",
+      "yaad": "कीमती केस = आभूषण",
+      "hook": "ग्राहक सोने के कवर वाली घड़ी लाया, क्या यह आभूषण माना जाएगा?",
+      "en": {
+        "question": "Which watches are classified under 'jewellery'?",
+        "a": "Plastic case watches",
+        "b": "Iron case watches",
+        "c": "Gold or silver case watches",
+        "d": "Steel case watches",
+        "fact": "Watches with cases entirely or mainly of gold, silver or platinum are jewellery.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "कीमती मेटल केस",
+            "mark": "key"
+          },
+          {
+            "text": "आभूषण",
+            "mark": "yes"
+          },
+          {
+            "text": "साधारण घड़ी",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 17,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक सोने के कवर वाली घड़ी लाया, क्या यह आभूषण माना जाएगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "17. Posting of coints etc.  –  Coin, bullion, precious stones, jewelle ry, articles of gold or \nsilver and currency or Bank Notes, can be sent by the Inland Post, only insured.  By sending \narticles of value in unregistered letters or unregistered parcels, the senders not only ran the risk of \nlosing their property but also expo se to temptation every person through whose hands the articles \npass. \n \nEXPLANATION :- In this rule, the expression “articles of gold or silver” includes articles made wholly or partly \nof gold or silver, but not coins and electro or other plated goods.  The expression “Com” does \nnot include cut counterfeit coins remitted on behalf of the Currency Departments and Mints.  \nThe expression “Currency Notes” does not include defaced notes (i.e. notes from which the \nsignature has been cut off after cancellation), rem itted on behalf of the Currency Department.  \nThe expression “jewellery” includes watches the cases of which are entirely or mainly \ncomposed of gold, silver or platinum."
+}

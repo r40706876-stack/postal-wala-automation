@@ -75,7 +75,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** फ्रैंक का इंप्रेशन → चमकीला लाल
 **Hook:** फ्रैंक इंप्रेशन का रंग क्या होना चाहिए?
 
-## Part 6  [PASS | publish baaki]
+## Part 6  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** Machine franked articles posted in letter boxes shall be treated as unpaid articles.
 
 **Niyam:** लेटर बॉक्स में डाली गई मशीन-फ्रैंक वस्तुएं अवैतनिक (unpaid) मानी जाएंगी।
@@ -86,7 +86,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. वापस की जाएगी
 **Hint:** 
 **Trap:** सामान्य डाक समझना गलत है, इसे अवैतनिक माना जाता है।
-**Yaad:** लेटर बॉक्स डाक = अवैतनिक
+**Yaad:** लेटर बॉक्स → मशीन-फ्रैंक वस्तु → अवैतनिक
 **Hook:** लेटर बॉक्स में डाली गई फ्रैंक डाक का क्या होता है?
 
 ## Part 7  [FAIL (0/4 sudhaar koshish): source_quote Guide/notes me nahi mila]
