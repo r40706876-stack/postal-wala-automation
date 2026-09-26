@@ -294,7 +294,7 @@
       "correct": "A",
       "fact": "प्रत्येक वस्तु को ऐसे पैक करें कि तीखे किनारे न हों जिससे अधिकारियों को चोट या क्षति पहुँचे।",
       "trap": "तीखे किनारे रखना स्वीकार्य नहीं है, अधिकारियों की सुरक्षा जरूरी है।",
-      "yaad": "तीखे किनारे = मना है",
+      "yaad": "पैकिंग → तीखे किनारे नहीं → चोट से बचाव",
       "hook": "पैकिंग से अधिकारियों को क्या नहीं होना चाहिए?",
       "en": {
         "question": "How should every letter or parcel be closed regarding its edges to prevent injuries?",
@@ -329,13 +329,15 @@
       "_clause_no": 15,
       "hook_v": {
         "ok": true,
-        "text": "पैकिंग से अधिकारियों को क्या नहीं होना चाहिए?"
+        "text": "पार्सल से चोट न लगे, पैकिंग में क्या देखें?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     }
   ],
   "clause_text_en": "15. Packing. –  (1) Every letter, packet or parcel has to be stamped with the date stamps of \nat least two post offices and is liable to a great deal of pressure and friction in the mail bags during \n\n\ntransit.  All articles, therefore, which are likely to suffer from stampling of pressure should be \npacked in strong covers.  The post office cannot take any special precautions to secure the safety of \nfragile articles.  When wax-cloth is used for the protection of a parcel, packet or letter, it should be \nused as an inside cover, or there should at least be sufficient strong paper securely fastened outside \nthe wax-cloth to receive the impression of the post office date-stamps, and any postage stamps \nwhich have to be affixed to the article. \n \n (2) Special rules regarding the packing of particular classes of articles are given in the \nclauses relating to those articles.  These rules are absolute rules, for the breach of which a  penalty \nis prescribed in each case.  However, every letter, packet or parcel should be closed in such a \nmanner that it does not give rise to sharp edges which may expose officials to injury, damage \ncorrespondence or hinder postal operations."
