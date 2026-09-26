@@ -195,7 +195,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "शाखा डाकघर कार्य समय",
+            "mark": "key"
+          },
+          {
+            "text": "न्यूनतम 4 घंटे",
+            "mark": "yes"
+          },
+          {
+            "text": "अधिकतम 5 घंटे",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -209,7 +223,8 @@
       "simple": true,
       "web_verdict": "unknown",
       "web_sources": [],
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "published": "2026-09-26"
     },
     {
       "basis": "notes",

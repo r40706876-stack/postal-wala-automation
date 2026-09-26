@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सेना डाकघर = वी.पी. और मनीऑर्डर बंद
 **Hook:** सेना डाकघर के पते पर क्या बुक नहीं कर सकते?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** d) अकधकतम काम के घोंटे: -- 5 घोंटे      
 e) न्यूनतम काम के घोंटे: - 4 घोंटे
 
