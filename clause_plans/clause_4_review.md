@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रविवार और डाक छुट्टी = मोबाइल डाकघर बंद
 **Hook:** क्या मोबाइल डाकघर रविवार को खुलते हैं?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-26]
 **Source (PO Guide):** The mobile Post Offices at Madras and Nagpur are also permitted to book money orders.
 
 **Niyam:** मद्रास और नागपुर के मोबाइल डाकघर मनीऑर्डर बुक कर सकते हैं।
@@ -44,7 +44,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. जयपुर और भिलाई
 **Hint:** 
 **Trap:** सभी मोबाइल डाकघर मनीऑर्डर बुक करते हैं, यह गलत है।
-**Yaad:** मनीऑर्डर = मद्रास और नागपुर मोबाइल डाकघर
+**Yaad:** मोबाइल डाकघर → मनीऑर्डर बुक → मद्रास और नागपुर
 **Hook:** किन शहरों के मोबाइल डाकघर मनीऑर्डर बुक कर सकते हैं?
 
 ---
