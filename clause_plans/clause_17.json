@@ -19,7 +19,7 @@
       "correct": "B",
       "fact": "सिक्के, आभूषण व कीमती पत्थर केवल बीमा करवाकर ही भेजे जा सकते हैं।",
       "trap": "बिना बीमा के भेजना गलत है, बीमा अनिवार्य है।",
-      "yaad": "कीमती वस्तु + अनिवार्य बीमा",
+      "yaad": "सिक्के + आभूषण + कीमती पत्थर → केवल बीमा",
       "hook": "ग्राहक गहने या सिक्के पार्सल कराना चाहता है, कैसे बुक करेंगे?",
       "en": {
         "question": "How are coins, jewellery or precious stones mandatorily sent via Inland Post?",
@@ -54,13 +54,15 @@
       "_clause_no": 17,
       "hook_v": {
         "ok": true,
-        "text": "ग्राहक गहने या सिक्के पार्सल कराना चाहता है, कैसे बुक करेंगे?"
+        "text": "ग्राहक सिक्के या गहने पोस्ट करने लाया, कैसे भेजें?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "published": "2026-09-27"
     },
     {
       "basis": "notes",
