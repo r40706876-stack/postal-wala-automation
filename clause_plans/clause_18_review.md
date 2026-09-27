@@ -5,7 +5,7 @@ English title: Letter Boxes
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-27]
 **Source (PO Guide):** Machine franked articles should not be posted in these letter boxes.’
 
 **Niyam:** मशीन फ्रैंक डाक वस्तुएं लेटर बॉक्स में नहीं डालनी चाहिए।
