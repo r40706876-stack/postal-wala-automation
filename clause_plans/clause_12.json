@@ -178,24 +178,45 @@
       "correct": "A",
       "fact": "डाक शुल्क के नकद अग्रिम भुगतान की सुविधा अन्य किसी भी श्रेणी की डाक पर उपलब्ध नहीं है।",
       "trap": "सभी प्रकार की डाक पर नकद भुगतान संभव है सोचना गलत है, यह केवल निर्दिष्ट डाक पर है।",
-      "yaad": "केवल निर्धारित डाक + अन्य पर पाबंदी",
+      "yaad": "नकद अग्रिम भुगतान → अन्य डाक → सुविधा नहीं",
       "hook": "क्या अन्य सभी प्रकार की डाक के लिए नकद भुगतान की सुविधा है?",
       "basis": "guide",
       "hint": "",
       "trap_quote": "",
       "en": {
-        "tries": 0
+        "question": "Prepayment of postage in cash is not available for which articles?",
+        "a": "Any other classes of postal articles",
+        "b": "Unregistered packets",
+        "c": "Registered letters",
+        "d": "Inland letter cards",
+        "fact": "Prepayment of postage charges in cash is not available for any other classes of postal articles.",
+        "trap": "Believing cash prepayment applies to all articles is wrong; it is only for specified articles.",
+        "yaad": "Cash prepayment = specified articles + not for other classes",
+        "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक शुल्क नकद अग्रिम भुगतान",
+            "mark": "key"
+          },
+          {
+            "text": "अन्य किसी श्रेणी की डाक",
+            "mark": "no"
+          }
+        ]
       },
       "_clause_no": 12,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "बाकी डाक पर नकद एडवांस पेमेंट चाहिए, तो क्या होगा?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-27"
     }
   ],
   "clause_text_en": "12. Prepayment of postage in cash  - (1) Certain important post offices are authorized by \nthe Head of the Circle to realize the postage charges in cash from firms or other persos who post a \nvery large number of unregistered packets subject to a mini mum of 500 packets at a time in big \ncities and 250 in small towns.  Certain post offices in Bombay, Calcutta, Madras, Nagpur and \nDelhi are also authorized by the Heads of the circle to realize the postage and registration fee on \nordinary registered article s of letter mail in cash provided the sender uses special registered \njournals for bookinig of registered articles and the total number of articles of the same typr and \nweight to be registered at one time is not less than 50.  Particulars of this facility can be ascertained \nfrom the nearest principal post office.  The facility of pre -payment of postage in cash is also \navailable at selected Gazetted and H.s.G. Post Offices to Firms or business establishments who \npost not less than 500 articles at a time in re spect of letters (closed covers).  Inland Letter Cards, \nPost Cards and un-registered parcels. \n \n (2) A similar procedure is extended in the case of registered newspapers, details of which \nwill be found in clause 143. \n \n (3) The facility of prepayment of post age charges in cash is not available for any other \nclasses of postal articles."

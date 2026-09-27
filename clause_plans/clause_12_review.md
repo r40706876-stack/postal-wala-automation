@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** एच.एस.जी. डाकघर → नकद भुगतान → न्यूनतम 500 लेख
 **Hook:** पत्रों और पोस्टकार्ड के लिए नकद भुगतान हेतु न्यूनतम कितने लेख होने चाहिए?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-09-27]
 **Source (PO Guide):** The facility of prepayment of post age charges in cash is not available for any other classes of postal articles.
 
 **Niyam:** डाक शुल्क के नकद अग्रिम भुगतान की सुविधा अन्य किसी भी श्रेणी की डाक पर उपलब्ध नहीं है।
@@ -58,7 +58,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. अंतर्देशीय पत्र कार्ड
 **Hint:** 
 **Trap:** सभी प्रकार की डाक पर नकद भुगतान संभव है सोचना गलत है, यह केवल निर्दिष्ट डाक पर है।
-**Yaad:** केवल निर्धारित डाक + अन्य पर पाबंदी
+**Yaad:** नकद अग्रिम भुगतान → अन्य डाक → सुविधा नहीं
 **Hook:** क्या अन्य सभी प्रकार की डाक के लिए नकद भुगतान की सुविधा है?
 
 ---
