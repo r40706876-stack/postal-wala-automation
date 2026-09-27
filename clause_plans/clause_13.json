@@ -17,25 +17,45 @@
       "correct": "A",
       "fact": "कटी-फटी या विकृत डाक टिकटों को डाक भुगतान के लिए मान्यता नहीं दी जाती है।",
       "trap": "सभी प्रकार की कटी टिकटें मान्य समझना गलत है, विकृत टिकटें अमान्य हैं।",
-      "yaad": "कटी-फटी टिकट + अमान्य",
+      "yaad": "कटी-फटी टिकट → डाक भुगतान → मान्यता नहीं",
       "hook": "कटी-फटी टिकट डाक भुगतान में चलेगी?",
       "basis": "guide",
       "hint": "",
       "trap_quote": "",
       "en": {
-        "tries": 0
+        "question": "Which postage stamps cannot be recognized in payment of postage?",
+        "a": "Obliterated, defaced, torn or cut",
+        "b": "Only plain stamps",
+        "c": "All new stamps",
+        "d": "Only colored stamps",
+        "fact": "Stamps that are obliterated, defaced, torn, cut or rendered imperfect cannot be recognized in payment of postage.",
+        "trap": "Thinking torn stamps are valid is wrong, imperfect stamps cannot be recognized.",
+        "yaad": "Imperfect stamp = Unrecognized",
+        "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "कटी-फटी या विकृत डाक टिकट",
+            "mark": "key"
+          },
+          {
+            "text": "डाक भुगतान में मान्यता",
+            "mark": "no"
+          }
+        ]
       },
       "_clause_no": 13,
       "hook_v": {
         "ok": true,
-        "text": "कटी-फटी टिकट डाक भुगतान में चलेगी?"
+        "text": "काउंटर पर टिकट कटी-फटी निकली, क्या करें?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-27"
     }
   ],
   "clause_text_en": "13.Spoilt or defaced stamps.  –  (1) Postage stamps (whether adhesive, embossed, or \nimpressed) which have been obliterated, defaced, torn, cut or otherwise rendered imperfect, o r \nwhich have any work, letter, figure, or design written printed or impressed upon them otherwise \nthan by the authority of the Central Government or which have been cut or otherwise separated \nfrom embossed envelopes, postcards, or wrapper, cannot be recogn ized in payment of postage.  \nThe special registration envelopes provided by the Post Office, cannot be used for the transmission \nof unregistered postal articles. \n \n NOTE –  The perforation of postage stamps with initials, or other identifying marks traced \nin minute holes is not prohibited, provided they do not render the indications regarding the country \nof origin and value of stamps illegible. \n \n (2) The using for the payment of postage or postal fees, with intent to cause loss to the \nCentral Government, of a  stamp that has already been used for that or any other purpose, is an \noffence under the Indian Penal Code."

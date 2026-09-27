@@ -15,3 +15,5 @@ Har line: Guide purana tha, notes ka niyam liya gaya. 'contradicted' = reel NAHI
 - 2026-09-26 | Clause 17 | web: **unknown** | abhi: सिक्के, आभूषण व कीमती पत्थर केवल बीमा करवाकर ही भेजे जा सकते हैं। | Guide(1985): - | strot: - 
 - 2026-09-26 | Clause 17 | web: **unknown** | abhi: सोने-चांदी के लेख में इलेक्ट्रो या अन्य प्लेटेड सामान शामिल नहीं है। | Guide(1985): - | strot: - 
 - 2026-09-26 | Clause 17 | web: **unknown** | abhi: सोने, चांदी या प्लैटिनम की केस वाली घड़ियाँ ही आभूषण में शामिल हैं। | Guide(1985): - | strot: - 
+- 2026-09-27 | Clause 19 | web: **unknown** | abhi: इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं। | Guide(1985): - | strot: - 
+- 2026-09-27 | Clause 19 | web: **unknown** | abhi: QMS लेखों पर गंतव्य शहर के नाम के ठीक नीचे PIN लिखना अनिवार्य है। | Guide(1985): - | strot: - 
