@@ -78,7 +78,15 @@
       "yaad": "प्लेटेड सामान = बाहर",
       "hook": "काउंटर पर इलेक्ट्रो-प्लेटेड गहने आए, बीमा का नियम क्या होगा?",
       "en": {
-        "tries": 0
+        "question": "Under Rule 17, what is excluded from 'articles of gold or silver'?",
+        "a": "Gold ornaments",
+        "b": "Silver articles",
+        "c": "Electroplated or other plated goods",
+        "d": "Partly gold articles",
+        "fact": "Articles of gold or silver do not include electroplated or other plated goods.",
+        "trap": "Plated goods are not real gold; do not count them in insurance.",
+        "yaad": "Plated goods = Excluded",
+        "ok": true
       },
       "beats": {
         "ok": true,
@@ -109,7 +117,8 @@
       "simple": true,
       "web_verdict": "unknown",
       "web_sources": [],
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "published": "2026-09-27"
     },
     {
       "basis": "notes",
