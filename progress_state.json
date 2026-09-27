@@ -1,6 +1,6 @@
 {
-  "clause_no": 13,
-  "current_part": 1,
+  "clause_no": 2,
+  "current_part": 3,
   "total_parts": 6,
   "hook_index": 3,
   "day": 4,
@@ -37,5 +37,5 @@
     }
   ],
   "voice_idx": 33,
-  "episode": 24
+  "episode": 10
 }
