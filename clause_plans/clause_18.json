@@ -1,0 +1,111 @@
+{
+  "clause_no": 18,
+  "title_en": "Letter Boxes",
+  "title_hi": "क्लॉज 18: लेटर बॉक्स नियम",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "guide",
+      "source_quote": "Machine franked articles should not be posted in these letter boxes.’",
+      "question": "मशीन फ्रेंक की गई डाक वस्तुओं को कहाँ नहीं डालना चाहिए?",
+      "a": "लेटर बॉक्स में",
+      "b": "डाकघर की खिड़की पर",
+      "c": "स्पीड पोस्ट काउंटर पर",
+      "d": "पार्सल बुकिंग काउंटर पर",
+      "correct": "A",
+      "fact": "मशीन फ्रैंक डाक वस्तुएं लेटर बॉक्स में नहीं डालनी चाहिए।",
+      "trap": "लेटर बॉक्स नहीं, इसे खिड़की पर प्रस्तुत करना चाहिए।",
+      "yaad": "फ्रैंक डाक = लेटर बॉक्स में वर्जित",
+      "hook": "ग्राहक की फ्रैंक डाक कहाँ नहीं डालनी चाहिए?",
+      "en": {
+        "question": "Where should machine franked articles not be posted?",
+        "a": "In letter boxes",
+        "b": "At post office window",
+        "c": "At speed post counter",
+        "d": "At parcel booking counter",
+        "fact": "Machine franked articles should not be posted in letter boxes.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "मशीन फ्रैंक डाक",
+            "mark": "key"
+          },
+          {
+            "text": "लेटर बॉक्स में डालना",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 18,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक की फ्रैंक डाक कहाँ नहीं डालनी चाहिए?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "Letters, postcards, inland letter cards & packets may be posted",
+      "question": "लेटर बॉक्स में कौन सी डाक वस्तुएं पोस्ट की जा सकती हैं?",
+      "a": "पत्र पोस्टकार्ड और पैकेट",
+      "b": "केवल बीमाकृत वस्तुएं",
+      "c": "केवल मूल्यदेय वस्तुएं",
+      "d": "मशीन फ्रैंक डाक",
+      "correct": "A",
+      "fact": "लेटर बॉक्स में पत्र, पोस्टकार्ड, इनलैंड कार्ड और पैकेट डाले जा सकते हैं।",
+      "trap": "पार्सल या वीपी नहीं, केवल पत्र-पैकेट मान्य हैं।",
+      "yaad": "लेटर बॉक्स = पत्र + कार्ड + पैकेट",
+      "hook": "लेटर बॉक्स में ग्राहक कौन सी डाक डाल सकता है?",
+      "en": {
+        "question": "Which postal articles may be posted in letter boxes?",
+        "a": "Letters postcards and packets",
+        "b": "Only insured articles",
+        "c": "Only VP articles",
+        "d": "Machine franked articles",
+        "fact": "Letters, postcards, inland letter cards and packets may be posted in letter boxes.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "लेटर बॉक्स में पोस्टिंग",
+            "mark": "key"
+          },
+          {
+            "text": "पत्र पोस्टकार्ड पैकेट",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 18,
+      "hook_v": {
+        "ok": true,
+        "text": "लेटर बॉक्स में ग्राहक कौन सी डाक डाल सकता है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "18. Letter Boxes –  Letters, postcards, inland letter cards & packets may be posted i n the \nletter-boxes in the post offices / mail offices, installed in public places, in mobile post offices and \nsteamers provided the postage due and late -fee prescribed for the purposes are fully prepaid.  \nMachine franked articles should not be posted in these letter boxes.’"
+}

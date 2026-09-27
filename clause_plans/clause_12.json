@@ -124,24 +124,49 @@
       "correct": "A",
       "fact": "चुनिंदा राजपत्रित और एच.एस.जी. डाकघरों में पत्रों व पार्सलों हेतु न्यूनतम 500 लेख।",
       "trap": "केवल 50 लेख समझना गलत है, चुनिंदा डाकघरों में न्यूनतम 500 लेख जरूरी हैं।",
-      "yaad": "राजपत्रित/एचएसजी + न्यूनतम 500 लेख",
+      "yaad": "एच.एस.जी. डाकघर → नकद भुगतान → न्यूनतम 500 लेख",
       "hook": "पत्रों और पोस्टकार्ड के लिए नकद भुगतान हेतु न्यूनतम कितने लेख होने चाहिए?",
       "basis": "guide",
       "hint": "",
       "trap_quote": "",
       "en": {
-        "tries": 0
+        "question": "Minimum articles for pre-payment of postage in cash at selected Gazetted/H.S.G. Post Offices?",
+        "a": "500 articles",
+        "b": "250 articles",
+        "c": "50 articles",
+        "d": "1000 articles",
+        "fact": "At selected Gazetted and H.S.G. Post Offices, minimum 500 articles (letters/parcels) at a time are required.",
+        "trap": "Thinking 50 articles is enough is wrong; minimum 500 articles at a time are required.",
+        "yaad": "Gazetted/H.S.G. Post Office + Pre-payment = 500 articles",
+        "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "चुनिंदा राजपत्रित और एच.एस.जी. डाकघर",
+            "mark": "key"
+          },
+          {
+            "text": "पत्रों व पार्सलों हेतु",
+            "mark": "key"
+          },
+          {
+            "text": "न्यूनतम 500 लेख",
+            "mark": "yes"
+          }
+        ]
       },
       "_clause_no": 12,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "एच.एस.जी. डाकघर में नकद भुगतान के लिए न्यूनतम कितने पत्र चाहिए?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-27"
     },
     {
       "source_quote": "The facility of prepayment of post age charges in cash is not available for any other classes of postal articles.",

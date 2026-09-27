@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पंजीकृत पत्र → नकद शुल्क → न्यूनतम 50
 **Hook:** पंजीकृत वस्तुओं पर नकद भुगतान के लिए न्यूनतम कितनी संख्या चाहिए?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-27]
 **Source (PO Guide):** The facility of pre -payment of postage in cash is also available at selected Gazetted and H.s.G. Post Offices to Firms or business establishments who post not less than 500 articles at a time in re spect of letters (closed covers).  Inland Letter Cards, Post Cards and un-registered parcels.
 
 **Niyam:** चुनिंदा राजपत्रित और एच.एस.जी. डाकघरों में पत्रों व पार्सलों हेतु न्यूनतम 500 लेख।
@@ -44,7 +44,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. 1000 लेख
 **Hint:** 
 **Trap:** केवल 50 लेख समझना गलत है, चुनिंदा डाकघरों में न्यूनतम 500 लेख जरूरी हैं।
-**Yaad:** राजपत्रित/एचएसजी + न्यूनतम 500 लेख
+**Yaad:** एच.एस.जी. डाकघर → नकद भुगतान → न्यूनतम 500 लेख
 **Hook:** पत्रों और पोस्टकार्ड के लिए नकद भुगतान हेतु न्यूनतम कितने लेख होने चाहिए?
 
 ## Part 4  [PASS | publish baaki]
