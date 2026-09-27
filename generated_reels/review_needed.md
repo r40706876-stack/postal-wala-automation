@@ -17,3 +17,5 @@ Har line: Guide purana tha, notes ka niyam liya gaya. 'contradicted' = reel NAHI
 - 2026-09-26 | Clause 17 | web: **unknown** | abhi: सोने, चांदी या प्लैटिनम की केस वाली घड़ियाँ ही आभूषण में शामिल हैं। | Guide(1985): - | strot: - 
 - 2026-09-27 | Clause 19 | web: **unknown** | abhi: इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं। | Guide(1985): - | strot: - 
 - 2026-09-27 | Clause 19 | web: **unknown** | abhi: QMS लेखों पर गंतव्य शहर के नाम के ठीक नीचे PIN लिखना अनिवार्य है। | Guide(1985): - | strot: - 
+- 2026-09-27 | Clause 20 | web: **unknown** | abhi: बड़े पत्र जो लेटर बॉक्स में नहीं आ सकते, वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे। | Guide(1985): - | strot: - 
+- 2026-09-27 | Clause 20 | web: **unknown** | abhi: थोक पत्रों के लिए डाक प्रभार और लेट फीस का पूरी तरह पूर्व भुगतान अनिवार्य है। | Guide(1985): - | strot: - 

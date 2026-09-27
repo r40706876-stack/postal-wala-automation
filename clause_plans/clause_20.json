@@ -1,0 +1,123 @@
+{
+  "clause_no": 20,
+  "title_en": "Presentation of large official and other letters in bulk at the window of the van or",
+  "title_hi": "डाकघर गाइड भाग 1 - क्लॉज 20 (थोक पत्र प्रस्तुत करना)",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "बड़े आकार के सरकारी या अन्य पत्र टजन के आकार के कारर् उनको पत्र पेटियों (Letter Boxes) में पोस्ट नहीं टकया जा सकता | वैन या डाक ल्कखड़की पर उन्हें हाथों-हाथ (By Hand) प्राप्त टकया जा सकता है |",
+      "question": "बड़े आकार के पत्र जो लेटर बॉक्स में नहीं आ सकते, वे कैसे स्वीकार किए जाएंगे?",
+      "a": "खिड़की पर हाथों-हाथ",
+      "b": "डाकघर के पीछे",
+      "c": "केवल डाकिया द्वारा",
+      "d": "कूरियर के माध्यम से",
+      "correct": "A",
+      "fact": "बड़े पत्र जो लेटर बॉक्स में नहीं आ सकते, वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे।",
+      "trap": "केवल पार्सल बॉक्स समझना गलत है, खिड़की पर देना सही है।",
+      "yaad": "बड़ा पत्र = खिड़की पर हाथों-हाथ",
+      "hook": "बड़ा लिफाफा लेटर बॉक्स में नहीं आ रहा, ग्राहक को क्या कहें?",
+      "en": {
+        "question": "How are large letters that cannot fit in letter boxes received?",
+        "a": "By hand at the window",
+        "b": "At the back of post office",
+        "c": "Only by postmen",
+        "d": "Through couriers",
+        "fact": "Large letters unfit for letter boxes are received by hand at the window of the van or office.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "बड़े सरकारी पत्र",
+            "mark": "key"
+          },
+          {
+            "text": "लेटर बॉक्स में डालना",
+            "mark": "no"
+          },
+          {
+            "text": "खिड़की पर हाथों-हाथ",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 20,
+      "hook_v": {
+        "ok": true,
+        "text": "बड़ा लिफाफा लेटर बॉक्स में नहीं आ रहा, ग्राहक को क्या कहें?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "वैन या कायाणलय ल्कखड़की पर उन्हें प्राप्त करने में कोई आपटि नहीं होगी | ❖ बशते प्रदान टकए गए पत्र या पैक े ि पर डाक प्रभार (postage) या लेि फीस, यटद कोई हो तो उसका पूरी तरह से पूवण भुगतान होना चाटहए ।",
+      "question": "वैन या खिड़की पर थोक में पत्र स्वीकार करने की अनिवार्य शर्त क्या है?",
+      "a": "पूरी तरह से पूर्व भुगतान",
+      "b": "बिना किसी भुगतान के",
+      "c": "आधा डाक शुल्क भुगतान",
+      "d": "केवल मौखिक अनुमति",
+      "correct": "A",
+      "fact": "थोक पत्रों के लिए डाक प्रभार और लेट फीस का पूरी तरह पूर्व भुगतान अनिवार्य है।",
+      "trap": "बिना लेट फीस स्वीकारना गलत है, पूर्ण भुगतान ही सही है।",
+      "yaad": "थोक पत्र = पूर्ण पूर्व भुगतान",
+      "hook": "ग्राहक थोक में बहुत सारे पत्र लाया, काउंटर पर क्या जांचेंगे?",
+      "en": {
+        "question": "What is the mandatory condition for accepting letters in bulk at the window?",
+        "a": "Fully prepaid postage and late fee",
+        "b": "Without any payment",
+        "c": "Half postage payment",
+        "d": "Only verbal permission",
+        "fact": "Letters in bulk are accepted at the window provided postage and late fee are fully prepaid.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "थोक पत्र पैकेट",
+            "mark": "key"
+          },
+          {
+            "text": "बिना डाक शुल्क",
+            "mark": "no"
+          },
+          {
+            "text": "पूर्ण पूर्व भुगतान",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 20,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक थोक में बहुत सारे पत्र लाया, काउंटर पर क्या जांचेंगे?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "20. Presentation of large official and other letters in bulk at the window of the van or \nPost Office -  Large official or other letters, which owing to their size, cannot be posted in the \nletter-boxes, may be received by hand at the window of the van or post office.  There is also no \nobjection to receiving at the window of the van or office, letters or packets posted in bulk \nprovided, the postage and the late fee, if any, are fully prepaid."
+}
