@@ -1,0 +1,154 @@
+{
+  "clause_no": 21,
+  "title_en": "Articles requiring special treatment",
+  "title_hi": "विशेष उपचार की आवश्यकता वाले लेख",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "ऐसे लेखों पर कवर के एड्रेस साइड के ऊपर स्पष्ट रूप से टिल्चिन्हत होना चाहिए",
+      "question": "पंजीकृत, बीमाकृत या मूल्य देय लेखों पर अंकन कवर के किस हिस्से पर होना चाहिए?",
+      "a": "ऊपर एड्रेस साइड पर",
+      "b": "नीचे बैक साइड पर",
+      "c": "किचन साइड कोने पर",
+      "d": "लिफाफे के अंदर",
+      "correct": "A",
+      "fact": "पंजीकृत, बीमाकृत या मूल्य देय लेखों पर अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।",
+      "trap": "पीछे की तरफ लिखना गलत है, एड्रेस साइड के ऊपर ही सही है।",
+      "yaad": "लेख अंकन + एड्रेस साइड ऊपर",
+      "hook": "रजिस्ट्री या वीपी पर मार्किंग लिफाफे के किस तरफ लगेगी?",
+      "en": {
+        "question": "Where should the marking on registered, insured or V.P. articles be placed on the cover?",
+        "a": "At top of address side",
+        "b": "At bottom of back side",
+        "c": "At side corner",
+        "d": "Inside the cover",
+        "fact": "Such articles should be clearly marked at the top of the address side of the cover.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "लेखों पर अंकन",
+            "mark": "key"
+          },
+          {
+            "text": "एड्रेस साइड के ऊपर",
+            "mark": "yes"
+          },
+          {
+            "text": "पीछे की तरफ",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 21,
+      "hook_v": {
+        "ok": true,
+        "text": "रजिस्ट्री या वीपी पर मार्किंग लिफाफे के किस तरफ लगेगी?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "notes",
+      "source_quote": "ज्यादा मूल्य के डाक टिकट लगे हों उनको आगे प्रेषित करने से पहले डाकघर में... विरुपति करना चाहिए",
+      "question": "ज्यादा मूल्य के डाक टिकट वाले हवाई डाक लेखों के साथ काउंटर पर क्या किया जाना चाहिए?",
+      "a": "वापस लौटाना",
+      "b": "स्टाम्प विरुपति करना",
+      "c": "अलग बैग में रखना",
+      "d": "सीधे भेजना",
+      "correct": "B",
+      "fact": "ज्यादा मूल्य के डाक टिकट वाले हवाई डाक लेखों के स्टाम्प प्रेषण से पूर्व विरुपति किए जाने चाहिए।",
+      "trap": "बिना विरुपति भेजे जाना गलत है, काउंटर पर विरुपति करना ही सही है।",
+      "yaad": "हवाई डाक टिकट + विरुपति करना",
+      "hook": "महंगे टिकट लगे एयरमेल आर्टिकल आए हैं, काउंटर पर क्या होगा?",
+      "en": {
+        "question": "What should be done at the counter with air mail articles bearing high value postage stamps?",
+        "a": "Return to sender",
+        "b": "Deface stamps before sending",
+        "c": "Keep in separate bag",
+        "d": "Dispatch directly",
+        "fact": "Air mail articles bearing high value postage stamps must have their stamps defaced before onward transmission.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "हवाई डाक लेख",
+            "mark": "key"
+          },
+          {
+            "text": "स्टाम्प विरुपति करना",
+            "mark": "yes"
+          },
+          {
+            "text": "सीधे आगे भेजना",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 21,
+      "hook_v": {
+        "ok": true,
+        "text": "महंगे टिकट लगे एयरमेल आर्टिकल आए हैं, काउंटर पर क्या होगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "notes",
+      "source_quote": "उन्हें डाकघर में, टजस डाक के माध्यम से भेजा जाना हो उस टनिाणररत डाक के बंद होने से कम से कम आिा घंिा पहले प्रस्तुत करना चाटहए।",
+      "question": "पंजीकृत, बीमाकृत या मूल्य देय लेखों को डाक बंद होने से कितने समय पहले प्रस्तुत करना चाहिए?",
+      "a": "15 मिनट पहले",
+      "b": "30 मिनट पहले",
+      "c": "45 मिनट पहले",
+      "d": "60 मिनट पहले",
+      "fact": "उन्हें डाकघर में, टजस डाक के माध्यम से भेजा जाना हो उस टनिाणररत डाक के बंद होने से कम से कम आिा घंिा पहले प्रस्तुत करना चाटहए।",
+      "trap": "15 मिनट पर्याप्त मानना गलत है, आधा घंटा जरूरी है।",
+      "yaad": "रजिस्टर, बीमा, वीपी + आधा घंटा पहले",
+      "correct": "B",
+      "id": 1,
+      "hook": "रजिस्ट्री और वीपी लेख कितने समय पहले दें?",
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 21,
+      "hook_v": {
+        "ok": true,
+        "text": "रजिस्ट्री और वीपी लेख कितने समय पहले दें?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "'b' ki sankhya source me nahi"
+      ],
+      "simple": true
+    }
+  ],
+  "clause_text_en": "21. Articles requiring special treatment.  –  (1) Letters or other articles intended to be \nregistered or insured, articles intended to be sent as “value -payable”, or with regard to which \n“certificates of posting” are required, must be presented at the post office at least half an hour \nbefore the time fixed for the closing of any particular mail, if it is intended that they should be \nforwarded by that mail.  Such articles should be clearly marked at “Registered” “insured for Rs \n___” “value -payable for Rs ……..” etc. at the top of the address side of the cover;  \n \n (2) Air Mail articles bearing high value adhes ive postage stamps may be presented at the \ncounters of Post Offices or Mail Offices for the stamps to be defaced in the presence of the person \npresenting the articles before the articles are sent for onward transmission."
+}
