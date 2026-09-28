@@ -134,7 +134,7 @@
       "correct": "C",
       "fact": "विशेष लेटर बॉक्स में अन्य श्रेणी की डाक डालने पर उसे रोका जा सकता है।",
       "trap": "सीधे रिजेक्ट करना गलत है, पहले रोकने का प्रावधान है।",
-      "yaad": "गलत डाक-रोकी जा सकती है",
+      "yaad": "विशेष लेटर बॉक्स → अन्य श्रेणी → रोका",
       "hook": "हवाई डाक वाले बॉक्स में साधारण पत्र मिला, अब क्या करें?",
       "en": {
         "question": "What happens if other articles are posted in special letter boxes?",
@@ -168,12 +168,13 @@
       "trap_quote": "",
       "_clause_no": 19,
       "hook_v": {
-        "ok": true,
-        "text": "हवाई डाक वाले बॉक्स में साधारण पत्र मिला, अब क्या करें?"
+        "tries": 2
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "published": "2026-09-28"
     }
   ],
   "clause_text_en": "19. Posting in Special Letter Boxes  – Letter Boxes marked ‘For letters only’ should be \nused for the posting only of letters and postcards.  Similarly, the special letter boxes provided in \nthe cities for posting of Air Mail Articles QMS  articles be used only for posting such classes of \narticles.  Other articles if posted in such special letter -boxes, are liable to detention.  QMS articles \nshould bear full PIN below the name of the town of destination."

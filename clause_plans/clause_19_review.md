@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** QMS लेख → PIN → शहर के नाम के नीचे
 **Hook:** QMS लेख सॉर्ट करते समय पता कहाँ चेक करना है?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-28]
 **Source (PO Guide):** Other articles if posted in such special letter -boxes, are liable to detention.
 
 **Niyam:** विशेष लेटर बॉक्स में अन्य श्रेणी की डाक डालने पर उसे रोका जा सकता है।
@@ -44,7 +44,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. जुर्माना लगाया जाएगा
 **Hint:** 
 **Trap:** सीधे रिजेक्ट करना गलत है, पहले रोकने का प्रावधान है।
-**Yaad:** गलत डाक-रोकी जा सकती है
+**Yaad:** विशेष लेटर बॉक्स → अन्य श्रेणी → रोका
 **Hook:** हवाई डाक वाले बॉक्स में साधारण पत्र मिला, अब क्या करें?
 
 ---
