@@ -19,7 +19,7 @@
       "correct": "B",
       "fact": "इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं।",
       "trap": "केवल पत्र समझना गलत है, पत्र व पोस्टकार्ड दोनों सही हैं।",
-      "yaad": "सिर्फ पत्र+कार्ड ही डालें",
+      "yaad": "'For letters only' बॉक्स → केवल पत्र और पोस्टकार्ड",
       "hook": "लेटर बॉक्स के ऊपर लिखा है 'केवल पत्र', क्या पोस्टकार्ड डाल सकते हैं?",
       "en": {
         "question": "Which items can be posted in a 'For letters only' letter box?",
@@ -57,13 +57,16 @@
       "trap_quote": "",
       "_clause_no": 19,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "'For letters only' लेटर बॉक्स में क्या पोस्ट होगा?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "published": "2026-09-28"
     },
     {
       "basis": "notes",
