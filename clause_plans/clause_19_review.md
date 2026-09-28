@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** 'For letters only' बॉक्स → केवल पत्र और पोस्टकार्ड
 **Hook:** लेटर बॉक्स के ऊपर लिखा है 'केवल पत्र', क्या पोस्टकार्ड डाल सकते हैं?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-28]
 **Source (PO Guide):** QMS िेख - इन पर गंतव्य शहर के नाम के नीचे पूरा PIN होना चाटहए
 
 **Niyam:** QMS लेखों पर गंतव्य शहर के नाम के ठीक नीचे PIN लिखना अनिवार्य है।
@@ -30,7 +30,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. लेख के पीछे की ओर
 **Hint:** 
 **Trap:** कहीं भी PIN लिखना गलत है, केवल शहर के नीचे सही है।
-**Yaad:** QMS-शहर-नीचे-PIN
+**Yaad:** QMS लेख → PIN → शहर के नाम के नीचे
 **Hook:** QMS लेख सॉर्ट करते समय पता कहाँ चेक करना है?
 
 ## Part 3  [PASS | publish baaki]

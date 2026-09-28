@@ -1,0 +1,208 @@
+{
+  "clause_no": 22,
+  "title_en": "Desirability of posting early-  If articles are posted just at the time the mails are due ",
+  "title_hi": "डाक को जल्दी पोस्ट करने के नियम",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "guide",
+      "source_quote": "there is heavy congestion in Post Offices and R.M.S. Offices",
+      "question": "डाक लेखों को अंतिम समय पर पोस्ट करने से क्या होता है?",
+      "a": "भीड़ बढ़ती है",
+      "b": "शुल्क घटता है",
+      "c": "डाक तेज़ होती है",
+      "d": "कोई असर नहीं",
+      "correct": "A",
+      "fact": "डाक लेखों को अंतिम समय पर पोस्ट करने से पोस्ट ऑफिस और आर.एम.एस. में भारी भीड़ होती है",
+      "trap": "भीड़ नहीं, केवल देर नहीं",
+      "yaad": "अंतिम समय = भीड़",
+      "hook": "ग्राहक ने लिफाफा आख़िरी मिनट में दिया, क्या होगा?",
+      "en": {
+        "question": "What happens if articles are posted at the last moment?",
+        "a": "Heavy congestion",
+        "b": "Reduced fee",
+        "c": "Faster mail",
+        "d": "No effect",
+        "fact": "Posting articles at the last moment causes heavy congestion in Post Offices and R.M.S. Offices",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 22,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक ने लिफाफा आख़िरी मिनट में दिया, क्या होगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "there is likelihood of detention and delay",
+      "question": "डाक लेखों को देर से पोस्ट करने पर क्या संभावना रहती है?",
+      "a": "रोक और देरी",
+      "b": "मुफ्त डिलीवरी",
+      "c": "तेज़ डिलीवरी",
+      "d": "कोई असर नहीं",
+      "correct": "A",
+      "fact": "डाक लेखों को देर से पोस्ट करने पर रोक और देरी की संभावना रहती है",
+      "trap": "रोक नहीं, केवल शुल्क",
+      "yaad": "देर = रोक",
+      "hook": "पार्सल देर से आया, क्या होगा?",
+      "en": {
+        "question": "What is likely if articles are posted late?",
+        "a": "Detention and delay",
+        "b": "Free delivery",
+        "c": "Faster delivery",
+        "d": "No effect",
+        "fact": "Posting articles late has a likelihood of detention and delay",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 22,
+      "hook_v": {
+        "ok": true,
+        "text": "पार्सल देर से आया, क्या होगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "The public are, therefore, advised to post their mails as and when they are ready without waiting for the last clearance of mails from the Post Office",
+      "question": "जनता को कब पोस्ट करना चाहिए?",
+      "a": "जब तैयार हों",
+      "b": "अंतिम क्लियरेंस के बाद",
+      "c": "अगले दिन",
+      "d": "सप्ताहांत में",
+      "correct": "A",
+      "fact": "जनता को तैयार होते ही पोस्ट करना चाहिए, अंतिम क्लियरेंस का इंतजार नहीं",
+      "trap": "केवल अंतिम क्लियरेंस पर",
+      "yaad": "तैयार = पोस्ट",
+      "hook": "काउंटर पर ग्राहक लिफाफा लाया, कब भेजें?",
+      "en": {
+        "question": "When should the public post their mail?",
+        "a": "When ready",
+        "b": "After last clearance",
+        "c": "Next day",
+        "d": "On weekends",
+        "fact": "The public should post as soon as the mail is ready without waiting for the last clearance",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 22,
+      "hook_v": {
+        "ok": true,
+        "text": "काउंटर पर ग्राहक लिफाफा लाया, कब भेजें?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "to endeavour to post as early in the day as possible",
+      "question": "डाक को दिन में कब पोस्ट करना बेहतर है?",
+      "a": "जितनी जल्दी हो सके",
+      "b": "दोपहर बाद",
+      "c": "शाम को",
+      "d": "रात में",
+      "correct": "A",
+      "fact": "डाक को दिन में जितनी जल्दी हो सके पोस्ट करना चाहिए",
+      "trap": "केवल दोपहर में",
+      "yaad": "जल्दी पोस्ट = बेहतर",
+      "hook": "सबेरे काउंटर पर लिफाफा आया, क्या करें?",
+      "en": {
+        "question": "When is it best to post mail during the day?",
+        "a": "As early as possible",
+        "b": "After noon",
+        "c": "In the evening",
+        "d": "At night",
+        "fact": "One should endeavour to post as early in the day as possible",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 22,
+      "hook_v": {
+        "ok": true,
+        "text": "सबेरे काउंटर पर लिफाफा आया, क्या करें?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "to endeavour to post as early in the day as possible",
+      "question": "डाक को जल्दी पोस्ट करने से क्या लाभ है?",
+      "a": "रोक कम",
+      "b": "शुल्क बढ़े",
+      "c": "देर बढ़े",
+      "d": "कोई फर्क नहीं",
+      "correct": "A",
+      "fact": "डाक को जल्दी पोस्ट करने से रोक और देरी कम होती है",
+      "trap": "रोक नहीं घटती",
+      "yaad": "जल्दी = कम रोक",
+      "hook": "पार्सल जल्दी भेजा, देर नहीं होगी?",
+      "en": {
+        "question": "What advantage does posting mail early give?",
+        "a": "Less detention",
+        "b": "Higher fee",
+        "c": "More delay",
+        "d": "No difference",
+        "fact": "Posting early reduces the likelihood of detention and delay",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 22,
+      "hook_v": {
+        "ok": true,
+        "text": "पार्सल जल्दी भेजा, देर नहीं होगी?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "22. Desirability of posting early-  If articles are posted just at the time the mails are due to \nbe dispatched there is heavy congestion in Post Offices and R.M.S. Offices and there is likelihood \nof detention and delay.  The public are, therefore, advised to post their mails as and when t hey are \nready without waiting for the last clearance of mails from the Post Office and to endeavour to post \nas early in the day as possible."
+}

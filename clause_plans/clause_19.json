@@ -79,7 +79,7 @@
       "correct": "C",
       "fact": "QMS लेखों पर गंतव्य शहर के नाम के ठीक नीचे PIN लिखना अनिवार्य है।",
       "trap": "कहीं भी PIN लिखना गलत है, केवल शहर के नीचे सही है।",
-      "yaad": "QMS-शहर-नीचे-PIN",
+      "yaad": "QMS लेख → PIN → शहर के नाम के नीचे",
       "hook": "QMS लेख सॉर्ट करते समय पता कहाँ चेक करना है?",
       "en": {
         "question": "Where should the PIN be written on QMS articles?",
@@ -113,14 +113,15 @@
       "trap_quote": "",
       "_clause_no": 19,
       "hook_v": {
-        "ok": true,
-        "text": "QMS लेख सॉर्ट करते समय पता कहाँ चेक करना है?"
+        "tries": 2
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "published": "2026-09-28"
     },
     {
       "basis": "guide",
