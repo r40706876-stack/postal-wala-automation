@@ -24,3 +24,5 @@ Har line: Guide purana tha, notes ka niyam liya gaya. 'contradicted' = reel NAHI
 - 2026-09-29 | Clause 24 | web: **unknown** | abhi: गैर-डाक टिकट, सील या लेबल डाक लेख के पता पक्ष पर नहीं चिपकाने चाहिए। | Guide(1985): - | strot: - 
 - 2026-09-29 | Clause 24 | web: **unknown** | abhi: पता पक्ष पर लेबल लगाने से पता पढ़ना और समझना मुश्किल हो जाता है। | Guide(1985): - | strot: - 
 - 2026-09-29 | Clause 24 | web: **unknown** | abhi: पता पक्ष पर गलत लेबल लगाने से डाक कर्मचारियों के कार्य में बाधा उत्पन्न होती है। | Guide(1985): - | strot: - 
+- 2026-09-29 | Clause 23 | web: **unknown** | abhi: डाक टिकट लेख के पते वाली साइड दाहिने हाथ के ऊपरी कोने में चिपकाने चाहिए। | Guide(1985): - | strot: - 
+- 2026-09-29 | Clause 23 | web: **unknown** | abhi: डाक टिकट लेख के साथ पूरी तरह से चिपके होने चाहिए, अलग लेबल पर नहीं। | Guide(1985): - | strot: - 

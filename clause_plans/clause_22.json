@@ -33,7 +33,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक लेखों की अंतिम पोस्टिंग",
+            "mark": "key"
+          },
+          {
+            "text": "पोस्ट ऑफिस में भारी भीड़",
+            "mark": "yes"
+          },
+          {
+            "text": "आर.एम.एस. में भारी भीड़",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -45,7 +59,8 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "published": "2026-09-29"
     },
     {
       "basis": "guide",
