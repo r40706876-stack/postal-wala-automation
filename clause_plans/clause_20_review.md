@@ -5,7 +5,7 @@ English title: Presentation of large official and other letters in bulk at the w
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-29]
 **Source (PO Guide):** बड़े आकार के सरकारी या अन्य पत्र टजन के आकार के कारर् उनको पत्र पेटियों (Letter Boxes) में पोस्ट नहीं टकया जा सकता | वैन या डाक ल्कखड़की पर उन्हें हाथों-हाथ (By Hand) प्राप्त टकया जा सकता है |
 
 **Niyam:** बड़े पत्र जो लेटर बॉक्स में नहीं आ सकते, वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे।
