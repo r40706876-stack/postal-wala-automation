@@ -5,7 +5,7 @@ English title: Articles requiring special treatment
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-29]
 **Source (PO Guide):** ऐसे लेखों पर कवर के एड्रेस साइड के ऊपर स्पष्ट रूप से टिल्चिन्हत होना चाहिए
 
 **Niyam:** पंजीकृत, बीमाकृत या मूल्य देय लेखों पर अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।
@@ -16,7 +16,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. लिफाफे के अंदर
 **Hint:** 
 **Trap:** पीछे की तरफ लिखना गलत है, एड्रेस साइड के ऊपर ही सही है।
-**Yaad:** लेख अंकन + एड्रेस साइड ऊपर
+**Yaad:** रजिस्ट्री / बीमा / VP → अंकन → एड्रेस साइड के ऊपर
 **Hook:** रजिस्ट्री या वीपी पर मार्किंग लिफाफे के किस तरफ लगेगी?
 
 ## Part 2  [PASS | publish baaki]

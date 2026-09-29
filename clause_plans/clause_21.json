@@ -19,7 +19,7 @@
       "correct": "A",
       "fact": "पंजीकृत, बीमाकृत या मूल्य देय लेखों पर अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।",
       "trap": "पीछे की तरफ लिखना गलत है, एड्रेस साइड के ऊपर ही सही है।",
-      "yaad": "लेख अंकन + एड्रेस साइड ऊपर",
+      "yaad": "रजिस्ट्री / बीमा / VP → अंकन → एड्रेस साइड के ऊपर",
       "hook": "रजिस्ट्री या वीपी पर मार्किंग लिफाफे के किस तरफ लगेगी?",
       "en": {
         "question": "Where should the marking on registered, insured or V.P. articles be placed on the cover?",
@@ -54,13 +54,15 @@
       "_clause_no": 21,
       "hook_v": {
         "ok": true,
-        "text": "रजिस्ट्री या वीपी पर मार्किंग लिफाफे के किस तरफ लगेगी?"
+        "text": "काउंटर पर रजिस्ट्री या बीमा आया, मार्किंग कहाँ करेंगे?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "published": "2026-09-29"
     },
     {
       "basis": "notes",
