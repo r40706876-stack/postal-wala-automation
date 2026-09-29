@@ -1,0 +1,215 @@
+{
+  "clause_no": 24,
+  "title_en": "Non-Postal Stamps charity Stamps, labels, seals, etc",
+  "title_hi": "पो गाइड भाग-1 क्लॉज 24 - गैर-डाक टिकट और सील",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "िेबि, स्टैंप, सील, अन्य तचह्न जो डाक तिकि नहीं हैं - उन्हें डाक लेख के पता पक्ष वाली साइड टचपकना नहीं चाटहए",
+      "question": "डाक लेख के किस पक्ष पर गैर-डाक टिकट, सील या लेबल नहीं चिपकाने चाहिए?",
+      "a": "पता पक्ष पर",
+      "b": "पिछले भाग पर",
+      "c": "दोनों तरफ",
+      "d": "कहीं भी नहीं",
+      "correct": "A",
+      "fact": "गैर-डाक टिकट, सील या लेबल डाक लेख के पता पक्ष पर नहीं चिपकाने चाहिए।",
+      "trap": "कहीं भी चिपकाना गलत है, केवल पता पक्ष वर्जित है।",
+      "yaad": "पता पक्ष + गैर-डाक टिकट = निषेध",
+      "hook": "काउंटर पर ग्राहक ने लिफाफे के पते वाली साइड चैरिटी का स्टीकर चिपकाया, क्या यह सही है?",
+      "en": {
+        "question": "On which side of a postal article should non-postal stamps, seals or labels not be attached?",
+        "a": "Address side",
+        "b": "Reverse side",
+        "c": "Both sides",
+        "d": "Anywhere",
+        "fact": "Non-postal stamps, seals or labels must not be attached to the address side of postal articles.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पता पक्ष",
+            "mark": "key"
+          },
+          {
+            "text": "गैर-डाक टिकट चिपकाना",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 24,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "पते को समझाना मुल्किल हो जाता है",
+      "question": "पता पक्ष पर लेबल या सील लगाने से क्या परेशानी हो सकती है?",
+      "a": "पता समझना मुश्किल होना",
+      "b": "वजन बढ़ जाना",
+      "c": "पैसे कम होना",
+      "d": "रंग बदलना",
+      "correct": "A",
+      "fact": "पता पक्ष पर लेबल लगाने से पता पढ़ना और समझना मुश्किल हो जाता है।",
+      "trap": "वजन बढ़ना गलत है, पते का स्पष्ट न दिखना मुख्य समस्या है।",
+      "yaad": "लेबल + पता छिपा = पढ़ना मुश्किल",
+      "hook": "চিঠি पर गलत लेबल लगने से पता नहीं पढ़ा जा रहा, अब क्या होगा?",
+      "en": {
+        "question": "What difficulty can arise by attaching labels or seals to the address side?",
+        "a": "Difficult to decipher address",
+        "b": "Weight increases",
+        "c": "Postage decreases",
+        "d": "Color changes",
+        "fact": "Attaching labels to the address side makes it difficult to decipher the address.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पता पक्ष पर लेबल",
+            "mark": "key"
+          },
+          {
+            "text": "पते को समझना मुश्किल",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 24,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "डाक कमणचाररयों के काम में बािा उत्पन्न होती है",
+      "question": "पता पक्ष पर अतिरिक्त लेबल या सील लगाने से डाक कर्मचारियों पर क्या असर पड़ता है?",
+      "a": "काम में बाधा उत्पन्न होना",
+      "b": "कोई असर नहीं",
+      "c": "काम जल्दी होना",
+      "d": "वेतन बढ़ना",
+      "correct": "A",
+      "fact": "पता पक्ष पर गलत लेबल लगाने से डाक कर्मचारियों के कार्य में बाधा उत्पन्न होती है।",
+      "trap": "काम जल्दी होना गलत है, कार्य में रुकावट आती है।",
+      "yaad": "अतिरिक्त लेबल = काम में बाधा",
+      "hook": "लिफाफे पर सील ऐसे लगाई कि सॉर्टिंग वाले भाई साहब को परेशानी हो रही है, क्यों?",
+      "en": {
+        "question": "What effect do improper labels on the address side have on postal staff?",
+        "a": "Hampers postal work",
+        "b": "No effect",
+        "c": "Speeds up work",
+        "d": "Increases salary",
+        "fact": "Improper labels on the address side hampers the work of postal officials.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पता पक्ष पर लेबल",
+            "mark": "key"
+          },
+          {
+            "text": "कर्मचारियों के काम में बाधा",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 24,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "फ्र ैं टक ं ग की छाप टजसक े गलत होने की संभावना हो उन्हें भी पिे वाली साइड नहीं लगाना चाटहए",
+      "question": "किस प्रकार की छाप को डाक लेख के पता पक्ष पर नहीं लगाना चाहिए?",
+      "a": "फ्रैंकिंग मशीन की छाप जैसी भ्रमित करने वाली छाप",
+      "b": "डाकघर की आधिकारिक तारीख मुहर",
+      "c": "पंजीकृत डाक का बारकोड लेबल",
+      "d": "रजिस्टर्ड आर्टिकल की लाल पट्टी",
+      "fact": "फ्रैंकिंग मशीन की छाप जैसी भ्रमित करने वाली छाप पता पक्ष पर नहीं लगानी चाहिए।",
+      "trap": "तारीख मुहर सही है, फ्रैंकिंग जैसी भ्रमित छाप वर्जित है।",
+      "yaad": "फ्रैंकिंग जैसी छाप + पता पक्ष = मना",
+      "correct": "A",
+      "id": 1,
+      "hook": "फ्रैंकिंग मशीन जैसी छाप लिफाफे पर लगाएं?",
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "फ्रैंकिंग जैसी छाप",
+            "mark": "key"
+          },
+          {
+            "text": "पता पक्ष पर लगाना",
+            "mark": "no"
+          }
+        ]
+      },
+      "en": {
+        "question": "Which type of impression should not be made on the address side of a postal article?",
+        "a": "Impressions likely to be mistaken for franking machine",
+        "b": "Official date stamp of the post office",
+        "c": "Registered article barcode label",
+        "d": "Insurance sealing wax impression",
+        "fact": "Impressions likely to be mistaken for impressions of postal franking machine must not be made on the address side.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 24,
+      "hook_v": {
+        "ok": true,
+        "text": "फ्रैंकिंग मशीन जैसी छाप लिफाफे पर लगाएं?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "OPTION LAMBA: A 7 shabd se zyada - chhota karo (arth wahi)"
+      ],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "24. Non-Postal Stamps charity Stamps, labels, seals, etc. -  Labels, stamps, seals or other \nmarkings which are not postage stamps but which are likely to be mistaken for postage stamps \nshould not be attached or impressed to the address side of postal article.  This prohibition applies \nequally in cases in wh ich any labels, stamps, or markings are attached or impressed to the address \nside of a postal article in such a manner that it becomes difficult to decipher the address, or \nhampers the work of the postal officials in any way.  Impressions which are likely to be mistaken \nfor impressions of postal franking machine must also not be made on the address side."
+}

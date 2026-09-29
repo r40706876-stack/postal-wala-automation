@@ -1,0 +1,187 @@
+{
+  "clause_no": 23,
+  "title_en": "Manner of affixing postage stamps",
+  "title_hi": "डाक टिकट लगाने का तरीका",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "डाक टिकि - लेख के पिे वाली साइड दाटहने हाथ के ऊपरी कोने में टचपकाने चाटहए |",
+      "question": "Which corner of the address side should postage stamps be affixed?",
+      "a": "Left hand top corner",
+      "b": "Right hand top corner",
+      "c": "Bottom left corner",
+      "d": "Center of the article",
+      "fact": "Stamps should be affixed to the right hand top corner of the address side.",
+      "trap": "Affixing on the left corner is wrong; right top corner is correct.",
+      "yaad": "Right top corner + postage stamp",
+      "correct": "B",
+      "id": 1,
+      "hook": "काउंटर पर खत आया, डाक टिकट कहाँ चिपकाऊँ?",
+      "problems": [
+        "examiner ne jawab nahi diya"
+      ],
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक टिकट",
+            "mark": "key"
+          },
+          {
+            "text": "दाहिने हाथ का ऊपरी कोना",
+            "mark": "yes"
+          },
+          {
+            "text": "बायाँ कोना",
+            "mark": "no"
+          }
+        ]
+      },
+      "en": {
+        "question": "In which corner should the postage stamp be affixed on an article?",
+        "a": "Top left corner",
+        "b": "Top right corner",
+        "c": "Bottom left corner",
+        "d": "Center portion",
+        "fact": "Postage stamps should be affixed to the right hand top corner of the address side.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 23,
+      "hook_v": {
+        "ok": true,
+        "text": "काउंटर पर खत आया, डाक टिकट कहाँ चिपकाऊँ?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "TRAP: galat dharana ke saath sudhaar nahi (jaise 'X समझना गलत है, सही: Y') - akele padhne pe ulta niyam lagta hai"
+      ],
+      "simple": true
+    },
+    {
+      "basis": "notes",
+      "source_quote": "पत्र या पैक े ि पर लगाए गए डाक टिकि लेख के साथ पूरी तरह से टचपक े होने चाटहए |",
+      "question": "How must the postage stamps affixed to a letter or package be attached?",
+      "a": "Partially pasted",
+      "b": "Tied with separate string",
+      "c": "Completely adherent to the article",
+      "d": "Attached to an extra slip",
+      "fact": "Stamps affixed to a letter or packet must be completely adherent to the article itself.",
+      "trap": "Tied separately is wrong; they must be completely adherent.",
+      "yaad": "Completely adherent + postage stamps",
+      "correct": "C",
+      "id": 2,
+      "hook": "पार्सल पर टिकट लगाया, क्या वह पूरी तरह चिपका है?",
+      "problems": [
+        "examiner ne jawab nahi diya"
+      ],
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक टिकट",
+            "mark": "key"
+          },
+          {
+            "text": "पूरी तरह चिपके",
+            "mark": "yes"
+          },
+          {
+            "text": "अलग लेबल",
+            "mark": "no"
+          }
+        ]
+      },
+      "en": {
+        "question": "How should the postage stamps be affixed on a letter or packet?",
+        "a": "Partially open",
+        "b": "Tied with separate thread",
+        "c": "Completely adherent",
+        "d": "Attached to separate label",
+        "fact": "Stamps affixed to a letter or packet must be completely adherent to the article itself.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 23,
+      "hook_v": {
+        "ok": true,
+        "text": "पार्सल पर टिकट लगाया, क्या वह पूरी तरह चिपका है?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "TRAP: galat dharana ke saath sudhaar nahi (jaise 'X समझना गलत है, सही: Y') - akele padhne pe ulta niyam lagta hai"
+      ],
+      "simple": true
+    },
+    {
+      "basis": "notes",
+      "source_quote": "यह लेख की सामग्री के टकसी टहस्से या अलग लेवल या अन्य उपकरर् से बँिे या जुड़े हुए नहीं होने चाटहए ।",
+      "question": "Postage stamps should not be tied or attached to which of the following?",
+      "a": "Any part of contents or separate label",
+      "b": "Only the envelope surface",
+      "c": "The destination address slip",
+      "d": "The registration receipt",
+      "fact": "Stamps must not be tied or attached to any part of contents or separate label.",
+      "trap": "Tying to contents is wrong; stamps must be on the article directly.",
+      "yaad": "No separate label + independent attachment",
+      "correct": "A",
+      "id": 3,
+      "hook": "ग्राहक ने टिकट धागे से बांधा, क्या यह नियम सही है?",
+      "problems": [
+        "examiner ne jawab nahi diya"
+      ],
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक टिकट",
+            "mark": "key"
+          },
+          {
+            "text": "अलग लेबल से जुड़े",
+            "mark": "no"
+          },
+          {
+            "text": "लेख पर सीधे चिपके",
+            "mark": "yes"
+          }
+        ]
+      },
+      "en": {
+        "question": "The stamps should not be tied or attached to what parts of the article?",
+        "a": "Contents or separate label",
+        "b": "Address slip",
+        "c": "Registration slip",
+        "d": "Outer wrapper only",
+        "fact": "Stamps must not be attached to any part of its contents or any separate label.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 23,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक ने टिकट धागे से बांधा, क्या यह नियम सही है?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "TRAP: galat dharana ke saath sudhaar nahi (jaise 'X समझना गलत है, सही: Y') - akele padhne pe ulta niyam lagta hai"
+      ],
+      "simple": true
+    }
+  ],
+  "clause_text_en": "23. Manner of affixing postage stamps  - Stamps affixed to a letter or packet must be \ncompletely adherent to the article itself and not to any part of its contents or any separate label or \nother device tied or attached to the article.  The stamps should be affixed to the right hand top \ncorner of the address side."
+}

@@ -75,7 +75,7 @@
       "correct": "B",
       "fact": "ज्यादा मूल्य के डाक टिकट वाले हवाई डाक लेखों के स्टाम्प प्रेषण से पूर्व विरुपति किए जाने चाहिए।",
       "trap": "बिना विरुपति भेजे जाना गलत है, काउंटर पर विरुपति करना ही सही है।",
-      "yaad": "हवाई डाक टिकट + विरुपति करना",
+      "yaad": "हवाई डाक लेख → प्रेषण से पूर्व → स्टाम्प विरुपति",
       "hook": "महंगे टिकट लगे एयरमेल आर्टिकल आए हैं, काउंटर पर क्या होगा?",
       "en": {
         "question": "What should be done at the counter with air mail articles bearing high value postage stamps?",
@@ -110,13 +110,15 @@
       "_clause_no": 21,
       "hook_v": {
         "ok": true,
-        "text": "महंगे टिकट लगे एयरमेल आर्टिकल आए हैं, काउंटर पर क्या होगा?"
+        "text": "महंगे टिकट वाला हवाई पत्र आया, काउंटर पर क्या करें?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "published": "2026-09-29"
     },
     {
       "basis": "notes",

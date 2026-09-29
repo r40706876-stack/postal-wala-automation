@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रजिस्ट्री / बीमा / VP → अंकन → एड्रेस साइड के ऊपर
 **Hook:** रजिस्ट्री या वीपी पर मार्किंग लिफाफे के किस तरफ लगेगी?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-29]
 **Source (PO Guide):** ज्यादा मूल्य के डाक टिकट लगे हों उनको आगे प्रेषित करने से पहले डाकघर में... विरुपति करना चाहिए
 
 **Niyam:** ज्यादा मूल्य के डाक टिकट वाले हवाई डाक लेखों के स्टाम्प प्रेषण से पूर्व विरुपति किए जाने चाहिए।
@@ -30,7 +30,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. सीधे भेजना
 **Hint:** 
 **Trap:** बिना विरुपति भेजे जाना गलत है, काउंटर पर विरुपति करना ही सही है।
-**Yaad:** हवाई डाक टिकट + विरुपति करना
+**Yaad:** हवाई डाक लेख → प्रेषण से पूर्व → स्टाम्प विरुपति
 **Hook:** महंगे टिकट लगे एयरमेल आर्टिकल आए हैं, काउंटर पर क्या होगा?
 
 ## Part 3  [FAIL (0/4 sudhaar koshish): 'b' ki sankhya source me nahi]
