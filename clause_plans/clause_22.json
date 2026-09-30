@@ -87,7 +87,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक लेखों की देर से पोस्टिंग",
+            "mark": "key"
+          },
+          {
+            "text": "रोक की संभावना",
+            "mark": "yes"
+          },
+          {
+            "text": "देरी की संभावना",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -99,7 +113,8 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "published": "2026-09-30"
     },
     {
       "basis": "guide",
