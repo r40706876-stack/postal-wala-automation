@@ -65,9 +65,61 @@
       "published_prev": "2026-09-27",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "do khaano ke chitra bilkul ek jaise - galat aur sahi chitra me farak dikhna chahiye; khaana option dohra raha: 'बिना बीमा के पार्सल काउंटर पर रखा' - galti ko kaam ke roop me dikhao",
-        "v": 3
+        "panels": [
+          {
+            "pics": [
+              {
+                "pic": "customer",
+                "label": "ग्राहक"
+              },
+              {
+                "pic": "parcel",
+                "label": "सिक्के और गहने"
+              }
+            ],
+            "arrows": true,
+            "text": "ग्राहक सिक्के या गहने लाया है",
+            "mark": "none"
+          },
+          {
+            "pics": [
+              {
+                "pic": "parcel",
+                "label": "साधारण पार्सल"
+              },
+              {
+                "pic": "cross_box",
+                "label": "अस्वीकृत"
+              }
+            ],
+            "arrows": false,
+            "text": "बिना बीमा भेजना नियम के खिलाफ",
+            "mark": "wrong"
+          },
+          {
+            "pics": [
+              {
+                "pic": "parcel",
+                "label": "बीमाकृत डाक"
+              },
+              {
+                "pic": "tick_box",
+                "label": "अनिवार्य बीमा"
+              }
+            ],
+            "arrows": false,
+            "text": "मूल्यवान वस्तुएं केवल बीमाकृत भेजें",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "ग्राहक सिक्के या गहने लाया है",
+          "बिना बीमा भेजना नियम के खिलाफ",
+          "मूल्यवान वस्तुएं केवल बीमाकृत भेजें"
+        ],
+        "kit": "scene",
+        "ok": true,
+        "v": 6
       }
     },
     {
