@@ -60,37 +60,58 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-26",
-      "published_round_prev": 1,
+      "published_prev": "2026-09-30",
+      "published_round_prev": 2,
       "chitra_v": {
         "steps": [
           {
-            "icon": "counter",
-            "text": "साधारण लिफाफे पर सीलिंग वैक्स लगाना",
+            "object": "envelope",
+            "items": [
+              {
+                "item": "wax_seal",
+                "place": "back",
+                "count": 2
+              }
+            ],
+            "text": "साधारण डाक पर सीलिंग वैक्स।",
             "mark": "none"
           },
           {
-            "icon": "letter",
-            "text": "बिना जरूरत हर जगह वैक्स लगाना",
+            "object": "envelope",
+            "items": [
+              {
+                "item": "wax_seal",
+                "place": "back",
+                "count": 4
+              }
+            ],
+            "text": "बिना सुरक्षा कारण वैक्स लगाना गलत।",
             "mark": "wrong"
           },
           {
-            "icon": "seal",
-            "text": "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं",
+            "object": "envelope",
+            "items": [
+              {
+                "item": "wax_seal",
+                "place": "back",
+                "count": 1
+              }
+            ],
+            "text": "केवल सुरक्षा के लिए ही वैक्स लगाएं।",
             "mark": "right"
           }
         ],
         "caps": [
-          "साधारण लिफाफे पर सीलिंग वैक्स लगाना",
-          "बिना जरूरत हर जगह वैक्स लगाना",
-          "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं"
+          "साधारण डाक पर सीलिंग वैक्स।",
+          "बिना सुरक्षा कारण वैक्स लगाना गलत।",
+          "केवल सुरक्षा के लिए ही वैक्स लगाएं।"
         ],
         "kit": "story",
         "ok": true,
-        "v": 2
+        "v": 3
       },
       "published": "2026-09-30",
-      "published_round": 2
+      "published_round": 3
     },
     {
       "basis": "guide",
@@ -147,31 +168,9 @@
       "published_prev": "2026-09-26",
       "published_round_prev": 1,
       "chitra_v": {
-        "steps": [
-          {
-            "icon": "letter",
-            "text": "अंजीकृत डाक पर मोम लगाया जा रहा है",
-            "mark": "none"
-          },
-          {
-            "icon": "seal",
-            "text": "बिना कागज मोम पर सीधे सील रख दी",
-            "mark": "wrong"
-          },
-          {
-            "icon": "seal",
-            "text": "मोम पर पतला कागज रखकर सील लगाएं",
-            "mark": "right"
-          }
-        ],
-        "caps": [
-          "अंजीकृत डाक पर मोम लगाया जा रहा है",
-          "बिना कागज मोम पर सीधे सील रख दी",
-          "मोम पर पतला कागज रखकर सील लगाएं"
-        ],
-        "kit": "story",
-        "ok": true,
-        "v": 2
+        "tries": 1,
+        "last_err": "do khaano ke chitra bilkul ek jaise - galat aur sahi chitra me farak dikhna chahiye; khaana sawal dohra raha: 'डाक पर मोम की सील लगाई जाती है' - kaam ka drishya likho, sawal nahi",
+        "v": 3
       }
     }
   ],

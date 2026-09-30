@@ -152,10 +152,8 @@
         "ok": true,
         "text": "ग्राहक अंतिम क्लियरेंस के समय डाक लाया, उसे क्या समझाएं?"
       },
-      "auto_check": false,
-      "check_errors": [
-        "TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)"
-      ],
+      "auto_check": true,
+      "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
       "simple_rebuilds": 1

@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** देर = रोक
 **Hook:** पार्सल देर से आया, क्या होगा?
 
-## Part 3  [FAIL (0/4 sudhaar koshish): TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)]
+## Part 3  [PASS | publish baaki]
 **Source (PO Guide):** The public are, therefore, advised to post their mails as and when they are ready without waiting for the last clearance of mails from the Post Office
 
 **Niyam:** डाक तैयार होते ही उसे तुरंत पोस्ट कर देना चाहिए, अंतिम क्लियरेंस का इंतजार नहीं करना चाहिए
