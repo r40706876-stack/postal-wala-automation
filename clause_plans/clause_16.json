@@ -61,7 +61,7 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 3,
+      "published_round_prev": 4,
       "chitra_v": {
         "steps": [
           {
@@ -105,7 +105,7 @@
         "v": 6
       },
       "published": "2026-09-30",
-      "published_round": 4
+      "published_round": 5
     },
     {
       "basis": "guide",
