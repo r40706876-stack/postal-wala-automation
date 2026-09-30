@@ -61,57 +61,12 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 2,
+      "published_round_prev": 3,
       "chitra_v": {
-        "steps": [
-          {
-            "object": "envelope",
-            "items": [
-              {
-                "item": "wax_seal",
-                "place": "back",
-                "count": 2
-              }
-            ],
-            "text": "साधारण डाक पर सीलिंग वैक्स।",
-            "mark": "none"
-          },
-          {
-            "object": "envelope",
-            "items": [
-              {
-                "item": "wax_seal",
-                "place": "back",
-                "count": 4
-              }
-            ],
-            "text": "बिना सुरक्षा कारण वैक्स लगाना गलत।",
-            "mark": "wrong"
-          },
-          {
-            "object": "envelope",
-            "items": [
-              {
-                "item": "wax_seal",
-                "place": "back",
-                "count": 1
-              }
-            ],
-            "text": "केवल सुरक्षा के लिए ही वैक्स लगाएं।",
-            "mark": "right"
-          }
-        ],
-        "caps": [
-          "साधारण डाक पर सीलिंग वैक्स।",
-          "बिना सुरक्षा कारण वैक्स लगाना गलत।",
-          "केवल सुरक्षा के लिए ही वैक्स लगाएं।"
-        ],
-        "kit": "story",
-        "ok": true,
-        "v": 3
-      },
-      "published": "2026-09-30",
-      "published_round": 3
+        "tries": 1,
+        "last_err": "do khaano ke chitra bilkul ek jaise - galat aur sahi chitra me farak dikhna chahiye",
+        "v": 4
+      }
     },
     {
       "basis": "guide",
@@ -165,12 +120,12 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-26",
-      "published_round_prev": 1,
+      "published_prev": "2026-09-30",
+      "published_round_prev": 3,
       "chitra_v": {
-        "tries": 2,
-        "last_err": "do khaano ke chitra bilkul ek jaise - galat aur sahi chitra me farak dikhna chahiye; khaana sawal dohra raha: 'डाक पर सील लगाने की तैयारी' - kaam ka drishya likho, sawal nahi",
-        "v": 3
+        "tries": 1,
+        "last_err": "captions 3 nahi / 7 shabd se lambe (chhota karo)",
+        "v": 4
       },
       "trap_old": "कपड़ा या प्लास्टिक नहीं, केवल टिशू या पतला कागज लगाना है।",
       "trap_v": {
@@ -179,9 +134,7 @@
       "kaam_v": {
         "ok": true,
         "text": "काउंटर पर सील लगाते समय मोम पर पतला कागज जरूर रखें"
-      },
-      "published": "2026-09-30",
-      "published_round": 3
+      }
     }
   ],
   "clause_text_en": "16. Sealing -  The public are advised not to use sealing wax for seals outside unregistered \nletters and packets, except when such seals are necessary for the protection of the articles to which \nthey are applied.  When sealing wax is used for seals outside unregistere d letters and packets, a \npiece of tissue or other thin paper should be laid on the wax before the seal is applied, as otherwise \nboth the articles themselves and those with which they come in contract in transit are liable to \ninjury from the sealing wax adh ering to other articles.  The precaution recommended is specially \nnecessary in the case of articles for foreign countries, which have for several days to pass through \nvery hot climates."
