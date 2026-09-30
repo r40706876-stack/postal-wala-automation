@@ -1,0 +1,422 @@
+{
+  "clause_no": 26,
+  "title_en": "Particulars to be furnished",
+  "title_hi": "डाक गाइड भाग-1 नियम 26 - पते के विवरण और नियम",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "guide",
+      "source_quote": "leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels",
+      "question": "डाक लेख के ऊपर डाक टिकटों और लेबल के लिए कितनी जगह छोड़नी चाहिए?",
+      "a": "कम से कम 3 सेमी",
+      "b": "कम से कम 2 सेमी",
+      "c": "कम से कम 5 सेमी",
+      "d": "कोई सीमा नहीं",
+      "correct": "A",
+      "fact": "डाक लेख के शीर्ष पर टिकटों व लेबलों हेतु कम से कम 3 सेंटीमीटर जगह छोड़ें।",
+      "trap": "2 सेमी समझना गलत है, 3 सेमी सही।",
+      "yaad": "शीर्ष मार्जिन = 3 सेंटीमीटर",
+      "hook": "काउंटर पर लिफाफा आया, टिकट के लिए ऊपर कितनी जगह छोड़नी होगी?",
+      "en": {
+        "question": "How much clear margin should be left at the top of a postal article for stamps?",
+        "a": "At least 3 cm",
+        "b": "At least 2 cm",
+        "c": "At least 5 cm",
+        "d": "No limit",
+        "fact": "A clear margin of at least 3 cm must be left at the top for stamps and labels.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "tries": 0
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "ok": true,
+        "text": "काउंटर पर लिफाफा आया, टिकट के लिए ऊपर कितनी जगह छोड़नी होगी?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "The Post town should be noted in block letter and according to the approved spelling... It should, also be underlined.",
+      "question": "पोस्‍ट टाउन का नाम किस प्रकार लिखा जाना चाहिए?",
+      "a": "बड़े अक्षरों में और रेखांकित",
+      "b": "छोटे अक्षरों में",
+      "c": "तिरछे अक्षरों में",
+      "d": "लाल स्याही से",
+      "correct": "A",
+      "fact": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।",
+      "trap": "सामान्य लिखना गलत है, बड़े अक्षर और रेखांकित सही।",
+      "yaad": "पोस्ट टाउन = बड़े अक्षर + रेखांकित",
+      "hook": "छंटाई करते समय पोस्ट टाउन का नाम कैसे लिखा होना चाहिए?",
+      "en": {
+        "question": "How should the Post town be noted in the address?",
+        "a": "In block letters and underlined",
+        "b": "In small letters only",
+        "c": "In italics",
+        "d": "In red ink",
+        "fact": "The Post town should be noted in block letters and underlined.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पोस्ट टाउन",
+            "mark": "key"
+          },
+          {
+            "text": "बड़े अक्षरों में",
+            "mark": "yes"
+          },
+          {
+            "text": "रेखांकित",
+            "mark": "yes"
+          },
+          {
+            "text": "छोटे अक्षर",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "ok": true,
+        "text": "छंटाई करते समय पोस्ट टाउन का नाम कैसे लिखा होना चाहिए?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "तालुका या तिसील का नाम ( यकि सिी PIN कोड कलखा िै तो इसकी आवश्यक निीां िै)",
+      "question": "ग्रामीण पते में तालुका या तहसील का नाम कब आवश्यक नहीं होता?",
+      "a": "सही पिन कोड लिखने पर",
+      "b": "राज्य का नाम लिखने पर",
+      "c": "जिला लिखने पर",
+      "d": "कभी आवश्यक नहीं",
+      "correct": "A",
+      "fact": "सही पिन कोड लिखे होने पर ग्रामीण पते में तालुका या तहसील आवश्यक नहीं।",
+      "trap": "हमेशा जरूरी समझना गलत है, सही पिन पर छूट है।",
+      "yaad": "सही पिन = तहसील अनावश्यक",
+      "hook": "ग्रामीण पार्सल पर सही पिन है, क्या तहसील लिखना जरूरी है?",
+      "en": {
+        "question": "When is the name of the Taluk or Tahsil not necessary in a rural address?",
+        "a": "If correct PIN is written",
+        "b": "If State name is written",
+        "c": "If District is written",
+        "d": "Never necessary",
+        "fact": "Name of the Taluk or Tahsil is not necessary if the correct PIN is written.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "तालुका या तहसील",
+            "mark": "key"
+          },
+          {
+            "text": "सही पिन कोड",
+            "mark": "yes"
+          },
+          {
+            "text": "अनिवार्य",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्रामीण पार्सल पर सही पिन है, क्या तहसील लिखना जरूरी है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "Indications of route like ‘via’ should not be given.",
+      "question": "पते में मार्ग संकेत के रूप में किस शब्द का प्रयोग नहीं करना चाहिए?",
+      "a": "via (वाया)",
+      "b": "Road (रोड)",
+      "c": "Marg (मार्ग)",
+      "d": "Lane (लेन)",
+      "correct": "A",
+      "fact": "पते में 'वाया' (via) जैसे मार्ग संकेत नहीं दिए जाने चाहिए।",
+      "trap": "वाया लिखना सही मानना गलत है, वर्जित है।",
+      "yaad": "वाया (via) संकेत वर्जित",
+      "hook": "ग्राहक पते में 'वाया स्टेशन' लिख रहा है, क्या यह सही है?",
+      "en": {
+        "question": "Which route indication should not be given in the postal address?",
+        "a": "Via",
+        "b": "Road",
+        "c": "Street",
+        "d": "Locality",
+        "fact": "Indications of route like 'via' should not be given.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "मार्ग संकेत",
+            "mark": "key"
+          },
+          {
+            "text": "वाया (via)",
+            "mark": "no"
+          },
+          {
+            "text": "अन्य शब्द",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "ok": true,
+        "text": "ग्राहक पते में 'वाया स्टेशन' लिख रहा है, क्या यह सही है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    },
+    {
+      "basis": "guide",
+      "source_quote": "In the case of articles addressed to foreign countries, the address should be written in Roman letters and in Arabic figures.",
+      "question": "विदेशी देशों को संबोधित लेखों पर पता किस लिपि और अंकों में होना चाहिए?",
+      "a": "रोमन अक्षर और अरबी अंक",
+      "b": "देवनागरी और भारतीय अंक",
+      "c": "केवल अंग्रेजी और रोमन अंक",
+      "d": "स्थानीय भाषा",
+      "correct": "A",
+      "fact": "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।",
+      "trap": "देवनागरी समझना गलत है, रोमन और अरबी सही।",
+      "yaad": "विदेश = रोमन अक्षर + अरबी अंक",
+      "hook": "विदेश जाने वाली डाक पर पता किस लिपि में लिखा जाएगा?",
+      "en": {
+        "question": "In what letters and figures should addresses to foreign countries be written?",
+        "a": "Roman letters and Arabic figures",
+        "b": "Devanagari letters",
+        "c": "Local script",
+        "d": "English only",
+        "fact": "Addresses to foreign countries should be written in Roman letters and Arabic figures.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "विदेशी लेख",
+            "mark": "key"
+          },
+          {
+            "text": "रोमन अक्षर",
+            "mark": "yes"
+          },
+          {
+            "text": "अरबी अंक",
+            "mark": "yes"
+          },
+          {
+            "text": "देवनागरी",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "ok": true,
+        "text": "विदेश जाने वाली डाक पर पता किस लिपि में लिखा जाएगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "It is desirable to note the sender’s address preferable in the lower left-hand corner on the address side",
+      "question": "प्रेषक का पता (Sender's address) सामान्यतः कहाँ लिखा जाना चाहिए?",
+      "a": "पते वाली साइड नीचे बाएं कोने में",
+      "b": "शीर्ष दाएं कोने में",
+      "c": "केवल लिफाफे के अंदर",
+      "d": "मध्य भाग में",
+      "correct": "A",
+      "fact": "प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।",
+      "trap": "दायां कोना समझना गलत है, बायां कोना सही।",
+      "yaad": "प्रेषक पता = नीचे बायां कोना",
+      "hook": "रजिस्टर पत्र पर भेजने वाले का पता कहाँ दर्ज करना है?",
+      "en": {
+        "question": "Where should the sender's address preferably be noted on the article?",
+        "a": "Lower left-hand corner on address side",
+        "b": "Top right-hand corner",
+        "c": "On the reverse only",
+        "d": "In the center",
+        "fact": "The sender's address should preferably be noted in the lower left-hand corner on the address side.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "प्रेषक का पता",
+            "mark": "key"
+          },
+          {
+            "text": "निचले बाएं कोने में",
+            "mark": "yes"
+          },
+          {
+            "text": "दाएं कोने में",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "ok": true,
+        "text": "रजिस्टर पत्र पर भेजने वाले का पता कहाँ दर्ज करना है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "The indication ‘Letter’ should be given on the address-side of bulky letter packets",
+      "question": "किन लेखों के पते वाली साइड पर 'Letter' (पत्र) संकेत देना अनिवार्य है?",
+      "a": "भारी और बड़े आकार के पत्र पैकेट",
+      "b": "सभी साधारण पत्र",
+      "c": "पार्सल",
+      "d": "रजिस्टर्ड पत्र",
+      "correct": "A",
+      "fact": "भारी पत्र पैकेटों के पते वाली साइड पर 'Letter' स्पष्ट लिखना चाहिए।",
+      "trap": "साधारण पत्र समझना गलत है, भारी पैकेट सही।",
+      "yaad": "भारी पैकेट = 'Letter' संकेत",
+      "hook": "मोटा लिफाफा पैकेट जैसा दिखता है, काउंटर पर क्या अंकित करना होगा?",
+      "en": {
+        "question": "On which articles should the indication 'Letter' be given on the address-side?",
+        "a": "Bulky letter packets",
+        "b": "All ordinary letters",
+        "c": "Parcels",
+        "d": "Book packets",
+        "fact": "The indication 'Letter' should be given on the address-side of bulky letter packets.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "Letter संकेत",
+            "mark": "key"
+          },
+          {
+            "text": "भारी पत्र पैकेट",
+            "mark": "yes"
+          },
+          {
+            "text": "साधारण पत्र",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "guide",
+      "source_quote": "Articles intended for delivery in camp to such officers should not be addressed to any Post Town but only to their camp as indicated in Clause 206.",
+      "question": "विशिष्ट उच्च अधिकारियों के कैंप के लिए आने वाली डाक का पता कैसे लिखा जाना चाहिए?",
+      "a": "केवल उनके कैंप के पते पर",
+      "b": "निकलटतम पोस्ट टाउन पर",
+      "c": "राजधानी के मुख्य डाकघर पर",
+      "d": "सर्किल कार्यालय पर",
+      "correct": "A",
+      "fact": "उच्च अधिकारियों के कैंप के लेखों पर पोस्ट टाउन के बजाय केवल कैंप का पता दें।",
+      "trap": "पोस्ट टाउन लिखना गलत है, केवल कैंप पता सही।",
+      "yaad": "उच्च अधिकारी = केवल कैंप पता",
+      "hook": "मंत्री जी दौरे पर कैंप में हैं, डाक किस पते पर भेजनी होगी?",
+      "en": {
+        "tries": 0
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "कैंप डाक",
+            "mark": "key"
+          },
+          {
+            "text": "केवल कैंप का पता",
+            "mark": "yes"
+          },
+          {
+            "text": "पोस्ट टाउन",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 26,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "26. Particulars to be furnished  –  (1) The prompt delivery of a postal article is greatly \nfacilitated if it is addressed in the correct manner.  Delay to correspondence and mistakes in \n\n\ndelivery often result from an incorrect or incomplete postal address.  The address should, \ntherefore, be complete and definite enough to ensure the easy transmission of the article and its \ndelivery at destination to the addressee without any el aborate enquiry.  The public can help the \nPost Office by keeping the following points in mind while addressing their correspondence: \n \n(a) The address should be written parallel to the length of the cover and in the lower half \nand towards the right-hand side of the front of the article, leaving a clear margin at least \n3 centimeter at the top for the postage stamps and labels, postmarks and other \nindications.  \n \n(b) The Post town should be noted in block letter and according to the approved spelling in \nthe List of Post Offices (Part III of this Guide).  It should, also be underlined.  The PIN \nCode of the post town should be noted below. \n \n(c) The following particulars should generally be furnished in the address and in the same \norder as noted below :- \n \nIn the case of articles for delivery in the urban \nareas \n \nIn the case of articles for delivery in the rural \nareas \n(i) Name of addressee \n \n(i) Name of addressee \n(ii) Profession, if any \n(iii)  \n(ii)Father’s or husbands’ name \n(iv) Number and/or name of the House, \nand name of the street or Road. \n(v)  \n(iii) Profession, if any \n(vi) Name of the locality or Mohall (iv) No. of house, if any along with the name \nof street if any. \n \n(v) Post Box No., if any. (v) Name of the village and Thana Firka, Hobli, \netc. \n \n(vi) Name of the Post Town and Pin -\nCode \n(vi) Name of the Post Office of delivery and the \nPIN-Code. \n \n(vii) Name of the District and State Pin -\nCode \n \n(vii) Name of the Taluk or Tahsil.  This is not \nnecessary if correct PIN is written. \n (viii) Name of the District and State  \n         This is not necessary if correct PIN is \nwritten. \n \n(d) It is particularly important to note the District in cases where there is more than one \nPost town bearing the same name and if PIN is not noted.  If the name of the district is \n\n\nthe same as that of the Post town, the name of the State should be noted.  I ndications of \nroute like ‘via’ should not be given. \n \n(e) In the case of articles addressed to foreign countries, the address should be written in \nRoman letters and in Arabic figures. \n \n(f) It is desirable to note the sender’s address preferable in the lower left -hand corner on \nthe address side or failing that on the reverse of the article.  There should be an \nindication from to obviate its being mistaken for the addressee’s particulars. \n \n(g) In the case of articles entitled to concessional rates of postage or to be tran smitted free \nof postage, the class of the articles, e.g., ‘Book -Post’, ‘Blind Literature’ should be \nclearly noted on the top of the address side of the article.  The indication ‘Letter’ should \nbe given on the address -side of bulky letter packets, which, on  account of their size or \nmake up, might be mistaken for other classes of packets. \n \n(h) The President, Prime Minister and other Ministers of the Government of India and \ncertain High government Officers are allowed the facility of delivery of their mails to \nthem wherever they may happen to be on tour within India.  A list of the high officers \nentitled to this privilege will be found in Clause 206.  Articles intended for delivery in \ncamp to such officers should not be addressed to any Post Town but only to their camp \nas indicated in Clause 206. \n \n \n(2)  A few examples of correct and complete addresses are given below :- \n \n(1)  ABC, \nEngineer, \nMandir Marg, \nGole Market, \nNew Delhi-110001. \n(2) Lakshmi, \nWife of Chikka Ramudu Dhobi, \nBukkapatnam Village, \nBUKKAPATNAM –  515144 \nPennukonda Taluq \nAnantpur District. \n \n(3)  Govindaswamy, \nSon of Kumaraswamy, \nHead Gangman \nQuarter No. T/23 \nKurumalai R.S., S.R., \nIdaiseval P.O., \nNallatinaputhur-627716. \n(Tirunelveli District) \nTamil Nadu. \n(4) Private Secretary to the Prime Minister of \nIndia, \nPrime Minister’s Camp"
+}
