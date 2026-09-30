@@ -155,14 +155,17 @@
       "trap_quote": "",
       "_clause_no": 24,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "डाक के पते वाली तरफ फालतू लेबल लगाने से क्या होगा?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
       "web_sources": [],
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "style_retry": true,
+      "published": "2026-09-30"
     },
     {
       "basis": "notes",
