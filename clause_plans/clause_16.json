@@ -61,7 +61,7 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 4,
+      "published_round_prev": 5,
       "chitra_v": {
         "steps": [
           {
@@ -104,8 +104,11 @@
         "ok": true,
         "v": 6
       },
+      "trap_v": {
+        "tries": 1
+      },
       "published": "2026-09-30",
-      "published_round": 5
+      "published_round": 6
     },
     {
       "basis": "guide",
@@ -160,7 +163,7 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 3,
+      "published_round_prev": 5,
       "chitra_v": {
         "steps": [
           {
@@ -215,9 +218,7 @@
       "kaam_v": {
         "ok": true,
         "text": "काउंटर पर सील लगाते समय मोम पर पतला कागज जरूर रखें"
-      },
-      "published": "2026-09-30",
-      "published_round": 5
+      }
     }
   ],
   "clause_text_en": "16. Sealing -  The public are advised not to use sealing wax for seals outside unregistered \nletters and packets, except when such seals are necessary for the protection of the articles to which \nthey are applied.  When sealing wax is used for seals outside unregistere d letters and packets, a \npiece of tissue or other thin paper should be laid on the wax before the seal is applied, as otherwise \nboth the articles themselves and those with which they come in contract in transit are liable to \ninjury from the sealing wax adh ering to other articles.  The precaution recommended is specially \nnecessary in the case of articles for foreign countries, which have for several days to pass through \nvery hot climates."
