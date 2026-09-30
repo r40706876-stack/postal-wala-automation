@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** अपंजीकृत सील = केवल सुरक्षा में
 **Hook:** ग्राहक साधारण लिफाफे पर सीलिंग वैक्स लगाए, तो क्या नियम है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-09-30]
 **Source (PO Guide):** When sealing wax is used for seals outside unregistere d letters and packets, a piece of tissue or other thin paper should be laid on the wax before the seal is applied
 
 **Niyam:** सील लगाने से पहले मोम पर टिशू या अन्य पतला कागज अवश्य रखना चाहिए।
@@ -29,7 +29,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. प्लास्टिक की थैली
 - D. अतिरिक्त लाख की परत
 **Hint:** 
-**Trap:** कपड़ा या प्लास्टिक नहीं, केवल टिशू या पतला कागज लगाना है।
+**Trap:** मोटा कपड़ा नहीं, गरम जलवायु वाले विदेशी लेखों हेतु यह सावधानी अनिवार्य है।  (source: The precaution recommended is specially necessary in the case of articles for foreign countries, which have for several days to pass through very hot climates.)
 **Yaad:** सील से पहले मोम → टिशू या पतला कागज
 **Hook:** मोम की सील दूसरी डाक से न चिपके, तो क्या लगाएं?
 
