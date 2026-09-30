@@ -1,0 +1,288 @@
+{
+  "clause_no": 25,
+  "title_en": "Use of the minimum number of postage stamps",
+  "title_hi": "न्यूनतम डाक टिकटों का प्रयोग",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "डाकघर कमणचाररयों का काम बढ़ जाता है",
+      "question": "बहुत सारे छोटे टिकट लगाने से डाकघर के कर्मचारियों पर क्या असर पड़ता है?",
+      "a": "काम बढ़ जाता है",
+      "b": "काम कम हो जाता है",
+      "c": "छुट्टी मिल जाती है",
+      "d": "वेतन घट जाता है",
+      "correct": "A",
+      "fact": "अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।",
+      "trap": "कर्मचारियों का काम घटता है सोचना गलत है, बढ़ता है।",
+      "yaad": "छोटे टिकट = कर्मचारियों का बढ़ा काम",
+      "hook": "आइटम पर दर्जनों छोटे टिकट लगे हैं, कर्मचारी को छांटने में क्या होगा?",
+      "en": {
+        "question": "How does the use of many low-value stamps affect Post Office staff?",
+        "a": "Increases their work",
+        "b": "Decreases their work",
+        "c": "Gets them leave",
+        "d": "Reduces their salary",
+        "fact": "It also increases the work of the Post Office staff.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "डाकघर कर्मचारी",
+            "mark": "key"
+          },
+          {
+            "text": "काम बढ़ना",
+            "mark": "yes"
+          },
+          {
+            "text": "काम कम होना",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 25,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "मूल्यवान स्टैंप पेपर बबाणद होता है और मुिर् शुल्क (printing charges) अटिक लगता है",
+      "question": "कम मूल्य के अधिक टिकटों के प्रयोग से क्या नुकसान होता है?",
+      "a": "मुद्रण शुल्क अधिक लगता है",
+      "b": "कागज की बचत होती है",
+      "c": "मुद्रण शुल्क घट जाता है",
+      "d": "स्टैंप पेपर सुरक्षित रहता है",
+      "correct": "A",
+      "fact": "कम मूल्य के अधिक टिकटों से स्टैंप पेपर बर्बाद होता है और मुद्रण शुल्क अधिक लगता है।",
+      "trap": "मुद्रण शुल्क घटता है मानना गलत है, अधिक लगता है।",
+      "yaad": "स्टैंप बर्बाद + मुद्रण शुल्क अधिक",
+      "hook": "छोटे टिकट ज्यादा छप रहे हैं, विभाग का खर्चा क्यों बढ़ेगा?",
+      "en": {
+        "question": "What is the result regarding printing charges when many low-value stamps are used?",
+        "a": "Printing charges increase",
+        "b": "Paper is saved",
+        "c": "Printing charges decrease",
+        "d": "Stamp paper remains safe",
+        "fact": "Entails waste of valuable stamp paper and printing charges.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "मूल्यवान स्टैंप पेपर",
+            "mark": "key"
+          },
+          {
+            "text": "मुद्रण शुल्क अधिक",
+            "mark": "yes"
+          },
+          {
+            "text": "कागज की बचत",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 25,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
+    },
+    {
+      "basis": "notes",
+      "source_quote": "जनता को उच्च मूल्य वगण के कम डाक टिकिों का प्रयोग करक े डाक शुल्क के भुगतान करने की सलाह दी जाती है",
+      "question": "डाक शुल्क चुकाने के लिए जनता को किस प्रकार के टिकटों का प्रयोग करना चाहिए?",
+      "a": "उच्च मूल्य के कम टिकट",
+      "b": "कम मूल्य के अधिक टिकट",
+      "c": "केवल एक पैसे के टिकट",
+      "d": "रंग-बिरंगे सभी टिकट",
+      "fact": "डाक शुल्क भुगतान हेतु उच्च मूल्य वर्ग के कम डाक टिकटों का प्रयोग करें।",
+      "trap": "छोटे टिकट लगाना सही समझना गलत है, कम टिकट सही।",
+      "yaad": "उच्च मूल्य + कम टिकट = सही",
+      "correct": "A",
+      "id": 1,
+      "hook": "बड़ा पार्सल आया है, डाक टिकट कैसे लगाएं?",
+      "en": {
+        "question": "What type of stamps should the public use to prepay postage?",
+        "a": "Fewer high-value stamps",
+        "b": "More low-value stamps",
+        "c": "Only one-paise stamps",
+        "d": "All colorful stamps",
+        "fact": "Use a minimum number of high-value stamps for prepayment.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "उच्च मूल्य",
+            "mark": "key"
+          },
+          {
+            "text": "कम टिकट प्रयोग",
+            "mark": "yes"
+          },
+          {
+            "text": "अधिक छोटे टिकट",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 25,
+      "hook_v": {
+        "ok": true,
+        "text": "बड़ा पार्सल आया है, डाक टिकट कैसे लगाएं?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "AUDIT: examiner ne jawab nahi diya"
+      ],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "लेख पर अनावश्यक जगह घेर लेता है",
+      "question": "बड़ी संख्या में कम मूल्य के डाक टिकट लगाने से लेख पर क्या प्रभाव पड़ता है?",
+      "a": "अनावश्यक जगह घिरती है",
+      "b": "लेख सुंदर दिखता है",
+      "c": "वजन बहुत कम होता है",
+      "d": "सुरक्षा बढ़ जाती है",
+      "fact": "कम मूल्य के अधिक टिकट लेख पर अनावश्यक जगह घेर लेते हैं।",
+      "trap": "टिकट से जगह बढ़ती है सोचना गलत है, जगह घिरती है।",
+      "yaad": "अधिक टिकट = जगह घिरे",
+      "correct": "A",
+      "id": 2,
+      "hook": "लेख पर बहुत सारे छोटे टिकट चिपका दिए, अब क्या दिक्कत होगी?",
+      "en": {
+        "question": "What happens to an article when a large number of low-value stamps are used?",
+        "a": "It takes up unnecessary space",
+        "b": "The article looks beautiful",
+        "c": "The weight is reduced",
+        "d": "Security is increased",
+        "fact": "Using many low-value stamps takes up unnecessary space on the article.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "कम मूल्य के टिकट",
+            "mark": "key"
+          },
+          {
+            "text": "अनावश्यक जगह घेरना",
+            "mark": "yes"
+          },
+          {
+            "text": "सुंदर दिखना",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 25,
+      "hook_v": {
+        "ok": true,
+        "text": "लेख पर बहुत सारे छोटे टिकट चिपका दिए, अब क्या दिक्कत होगी?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "AUDIT: examiner ne jawab nahi diya"
+      ],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "लेख पर पता टलखने और अन्य टनदेशों के टलए कम जगह बचती है",
+      "question": "कम मूल्य के अधिक टिकट लगाने से पते के लिए क्या होता है?",
+      "a": "कम जगह बचती है",
+      "b": "अधिक जगह मिलती है",
+      "c": "पता स्पष्ट दिखता है",
+      "d": "कोई असर नहीं होता",
+      "fact": "कम मूल्य के अधिक टिकटों से पता लिखने के लिए कम जगह बचती है।",
+      "trap": "पते के लिए जगह बढ़ती है मानना गलत है, कम बचती है।",
+      "yaad": "टिकट ज्यादा = पता लिखने की जगह कम",
+      "correct": "A",
+      "id": 3,
+      "hook": "पत्र पर छोटे टिकटों की लाइन लग गई, अब पता किधर लिखेंगे?",
+      "en": {
+        "question": "What is left for the address when using too many low-value stamps?",
+        "a": "Less room is left for the address",
+        "b": "More room is available",
+        "c": "The address is clearly visible",
+        "d": "No effect",
+        "fact": "It leaves less room for the address and other indications.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पता लिखने के लिए",
+            "mark": "key"
+          },
+          {
+            "text": "कम जगह",
+            "mark": "yes"
+          },
+          {
+            "text": "अधिक जगह",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 25,
+      "hook_v": {
+        "ok": true,
+        "text": "पत्र पर छोटे टिकटों की लाइन लग गई, अब पता किधर लिखेंगे?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "AUDIT: examiner ne jawab nahi diya"
+      ],
+      "simple": true,
+      "style_v": "2026-09-26c"
+    }
+  ],
+  "clause_text_en": "25. Use of the minimum number of postage stamps . –  The public are advised to use the \nminimum number of stamps while prepaying postage charges by using st amps of the appropriate \nhigher denominations.  The use of a large number of low -value stamps takes up unnecessary space \non the postal articles, leaving less room for the address and other indications.  It also, increases the \nwork of the Post Office staff and entails waste of valuable stamp paper and printing charges. \n \nMETHOD OF ADDRESS"
+}

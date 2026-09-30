@@ -26,3 +26,5 @@ Har line: Guide purana tha, notes ka niyam liya gaya. 'contradicted' = reel NAHI
 - 2026-09-29 | Clause 24 | web: **unknown** | abhi: पता पक्ष पर गलत लेबल लगाने से डाक कर्मचारियों के कार्य में बाधा उत्पन्न होती है। | Guide(1985): - | strot: - 
 - 2026-09-29 | Clause 23 | web: **unknown** | abhi: डाक टिकट लेख के पते वाली साइड दाहिने हाथ के ऊपरी कोने में चिपकाने चाहिए। | Guide(1985): - | strot: - 
 - 2026-09-29 | Clause 23 | web: **unknown** | abhi: डाक टिकट लेख के साथ पूरी तरह से चिपके होने चाहिए, अलग लेबल पर नहीं। | Guide(1985): - | strot: - 
+- 2026-09-30 | Clause 25 | web: **unknown** | abhi: अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है। | Guide(1985): - | strot: - 
+- 2026-09-30 | Clause 25 | web: **unknown** | abhi: कम मूल्य के अधिक टिकटों से स्टैंप पेपर बर्बाद होता है और मुद्रण शुल्क अधिक लगता है। | Guide(1985): - | strot: - 

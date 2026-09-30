@@ -225,28 +225,21 @@
       "published": "2026-09-30"
     },
     {
+      "id": 1,
       "basis": "guide",
       "source_quote": "to endeavour to post as early in the day as possible",
-      "question": "डाक को जल्दी पोस्ट करने से क्या लाभ है?",
-      "a": "रोक कम",
-      "b": "शुल्क बढ़े",
-      "c": "देर बढ़े",
-      "d": "कोई फर्क नहीं",
+      "hook": "अंतिम निकासी से पहले ही डाक जमा क्यों करनी चाहिए?",
+      "question": "डाक को दिन में जल्दी पोस्ट करने का क्या मुख्य लाभ है?",
+      "a": "डाक की रोक और देरी की संभावना कम होना",
+      "b": "डाक छंटाई पर विशेष छूट मिलना",
+      "c": "अंतिम निकासी पर अधिभार माफ होना",
+      "d": "डाक प्रेषण का समय बदल जाना",
       "correct": "A",
-      "fact": "डाक को जल्दी पोस्ट करने से रोक और देरी कम होती है",
-      "trap": "रोक नहीं घटती",
-      "yaad": "जल्दी = कम रोक",
-      "hook": "पार्सल जल्दी भेजा, देर नहीं होगी?",
+      "fact": "डाक को जल्दी पोस्ट करने से डाकघर में जमाव बचता है और रोक या देरी की संभावना कम होती है।",
+      "trap": "देरी वही रहेगी समझना गलत, जल्दी पोस्टिंग से रुकावट घटती है",
+      "yaad": "जल्दी डाक = कम रुकावट",
       "en": {
-        "question": "What advantage does posting mail early give?",
-        "a": "Less detention",
-        "b": "Higher fee",
-        "c": "More delay",
-        "d": "No difference",
-        "fact": "Posting early reduces the likelihood of detention and delay",
-        "trap": "",
-        "yaad": "",
-        "ok": true
+        "tries": 0
       },
       "beats": {
         "tries": 0
@@ -256,12 +249,15 @@
       "_clause_no": 22,
       "hook_v": {
         "ok": true,
-        "text": "पार्सल जल्दी भेजा, देर नहीं होगी?"
+        "text": "अंतिम निकासी से पहले ही डाक जमा क्यों करनी चाहिए?"
       },
-      "auto_check": true,
-      "check_errors": [],
+      "auto_check": false,
+      "check_errors": [
+        "OPTION LAMBA: A 7 shabd se zyada - chhota karo (arth wahi)"
+      ],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "simple_rebuilds": 1
     }
   ],
   "clause_text_en": "22. Desirability of posting early-  If articles are posted just at the time the mails are due to \nbe dispatched there is heavy congestion in Post Offices and R.M.S. Offices and there is likelihood \nof detention and delay.  The public are, therefore, advised to post their mails as and when t hey are \nready without waiting for the last clearance of mails from the Post Office and to endeavour to post \nas early in the day as possible."
