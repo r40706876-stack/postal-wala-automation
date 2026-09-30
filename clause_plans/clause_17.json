@@ -120,7 +120,9 @@
         "kit": "scene",
         "ok": true,
         "v": 6
-      }
+      },
+      "published": "2026-09-30",
+      "published_round": 5
     },
     {
       "basis": "notes",
@@ -177,7 +179,56 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-27",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "panels": [
+          {
+            "pics": [
+              {
+                "pic": "parcel",
+                "label": "सोना-चांदी लेख"
+              }
+            ],
+            "arrows": true,
+            "text": "काउंटर पर सोने-चांदी के लेख आए",
+            "mark": "none"
+          },
+          {
+            "pics": [
+              {
+                "pic": "parcel",
+                "label": "इलेक्ट्रो प्लेटेड सामान"
+              }
+            ],
+            "arrows": true,
+            "text": "इलेक्ट्रो प्लेटेड सामान शामिल नहीं है",
+            "mark": "wrong"
+          },
+          {
+            "pics": [
+              {
+                "pic": "parcel",
+                "label": "नियम लागू"
+              },
+              {
+                "pic": "receipt",
+                "label": "बीमा नियम"
+              }
+            ],
+            "arrows": false,
+            "text": "नियम के तहत परिभाषा स्पष्ट है",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "काउंटर पर सोने-चांदी के लेख आए",
+          "इलेक्ट्रो प्लेटेड सामान शामिल नहीं है",
+          "नियम के तहत परिभाषा स्पष्ट है"
+        ],
+        "kit": "scene",
+        "ok": true,
+        "v": 6
+      }
     },
     {
       "basis": "notes",
@@ -234,7 +285,64 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-27",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "panels": [
+          {
+            "pics": [
+              {
+                "pic": "customer",
+                "label": "ग्राहक"
+              },
+              {
+                "pic": "parcel",
+                "label": "घड़ी पार्सल"
+              }
+            ],
+            "arrows": true,
+            "text": "ग्राहक सोने की घड़ी पार्सल लाया",
+            "mark": "none"
+          },
+          {
+            "pics": [
+              {
+                "pic": "parcel",
+                "label": "साधारण घड़ी"
+              },
+              {
+                "pic": "cross_box",
+                "label": "नहीं"
+              }
+            ],
+            "arrows": true,
+            "text": "साधारण केस वाली घड़ी आभूषण नहीं",
+            "mark": "wrong"
+          },
+          {
+            "pics": [
+              {
+                "pic": "parcel",
+                "label": "सोने की केस"
+              },
+              {
+                "pic": "tick_box",
+                "label": "हाँ"
+              }
+            ],
+            "arrows": false,
+            "text": "सोने चांदी केस वाली घड़ी आभूषण",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "ग्राहक सोने की घड़ी पार्सल लाया",
+          "साधारण केस वाली घड़ी आभूषण नहीं",
+          "सोने चांदी केस वाली घड़ी आभूषण"
+        ],
+        "kit": "scene",
+        "ok": true,
+        "v": 6
+      }
     }
   ],
   "clause_text_en": "17. Posting of coints etc.  –  Coin, bullion, precious stones, jewelle ry, articles of gold or \nsilver and currency or Bank Notes, can be sent by the Inland Post, only insured.  By sending \narticles of value in unregistered letters or unregistered parcels, the senders not only ran the risk of \nlosing their property but also expo se to temptation every person through whose hands the articles \npass. \n \nEXPLANATION :- In this rule, the expression “articles of gold or silver” includes articles made wholly or partly \nof gold or silver, but not coins and electro or other plated goods.  The expression “Com” does \nnot include cut counterfeit coins remitted on behalf of the Currency Departments and Mints.  \nThe expression “Currency Notes” does not include defaced notes (i.e. notes from which the \nsignature has been cut off after cancellation), rem itted on behalf of the Currency Department.  \nThe expression “jewellery” includes watches the cases of which are entirely or mainly \ncomposed of gold, silver or platinum."
