@@ -114,7 +114,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "पोस्ट टाउन नाम",
+            "mark": "key"
+          },
+          {
+            "text": "बड़े अक्षर",
+            "mark": "yes"
+          },
+          {
+            "text": "रेखांकित किया जाना चाहिए",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -152,7 +166,8 @@
         ],
         "kit": "story",
         "ok": true
-      }
+      },
+      "published": "2026-09-30"
     },
     {
       "basis": "notes",
@@ -285,7 +300,33 @@
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "chitra_v": {
+        "steps": [
+          {
+            "icon": "customer",
+            "text": "ग्राहक पते में 'वाया स्टेशन' लिख रहा है।",
+            "mark": "none"
+          },
+          {
+            "icon": "letter",
+            "text": "पते में मार्ग संकेत लिखना नियम के विरुद्ध है।",
+            "mark": "wrong"
+          },
+          {
+            "icon": "counter",
+            "text": "पते में 'वाया' शब्द का प्रयोग न करें।",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "ग्राहक पते में 'वाया स्टेशन' लिख रहा है।",
+          "पते में मार्ग संकेत लिखना नियम के विरुद्ध है।",
+          "पते में 'वाया' शब्द का प्रयोग न करें।"
+        ],
+        "kit": "story",
+        "ok": true
+      }
     },
     {
       "basis": "guide",
@@ -325,7 +366,33 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "chitra_v": {
+        "steps": [
+          {
+            "icon": "letter",
+            "text": "विदेश जाने वाली दाक पर पता",
+            "mark": "none"
+          },
+          {
+            "icon": "letter",
+            "text": "पता अन्य लिपि में लिखना",
+            "mark": "wrong"
+          },
+          {
+            "icon": "letter",
+            "text": "रोमन अक्षर और अरबी अंकों में लिखें",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "विदेश जाने वाली दाक पर पता",
+          "पता अन्य लिपि में लिखना",
+          "रोमन अक्षर और अरबी अंकों में लिखें"
+        ],
+        "kit": "story",
+        "ok": true
+      }
     },
     {
       "basis": "guide",

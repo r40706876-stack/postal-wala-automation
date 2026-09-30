@@ -1,7 +1,7 @@
 {
   "clause_no": 27,
   "title_en": "Mails for Defence Services Personnel serving in the Army and Air Force",
-  "title_hi": "सेना और वायु सेना डाक सेवा नियम",
+  "title_hi": "सेना और वायु सेना डाक नियम (क्लॉज 27)",
   "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
   "approved": true,
   "build_tries": 1,
@@ -10,25 +10,25 @@
   "parts": [
     {
       "basis": "notes",
-      "source_quote": "✓ नांबर  \n✓ रैंक  \n✓ नाम  \n✓ यूदनि",
-      "question": "सेना डाक में पते पर क्या देना अनिवार्य है?",
-      "a": "केवल नाम",
-      "b": "नंबर, रैंक, नाम, यूनिट",
-      "c": "केवल यूनिट",
-      "d": "रैंक और नाम",
-      "fact": "सेना और वायु सेना की डाक में नंबर, रैंक, नाम और यूनिट देनी चाहिए।",
-      "trap": "केवल नाम नहीं, चारों विवरण देना अनिवार्य है।",
-      "yaad": "नंबर + रैंक + नाम + यूनिट",
-      "correct": "B",
-      "id": 1,
-      "hook": "काउंटर पर सैनिक का पत्र आया, पते में क्या देखना जरूरी है?",
+      "source_quote": "✓ नांबर \n✓ रैंक \n✓ नाम \n✓ यूदनि",
+      "question": "सेना और वायु सेना डाक के पते में क्या होना अनिवार्य है?",
+      "a": "केवल नाम और रैंक",
+      "b": "केवल नाम और यूनिट",
+      "c": "नंबर, रैंक, नाम, यूनिट",
+      "d": "केवल नंबर और यूनिट",
+      "correct": "C",
+      "fact": "सेना और वायु सेना कर्मियों की डाक में नंबर, रैंक, नाम और यूनिट अनिवार्य है।",
+      "trap": "पोस्ट टाउन नहीं, केवल APO पता लिखना चाहिए।",
+      "trap_quote": "",
+      "yaad": "नंबर + रैंक + नाम + यूनिट = सेना डाक",
+      "hook": "सेना के जवान को चिट्ठी भेजनी है, पते पर क्या लिखना जरूरी है?",
       "en": {
-        "question": "What particulars must be furnished in the address for Army mail?",
-        "a": "Name only",
-        "b": "No., Rank, Name, Unit",
-        "c": "Unit only",
-        "d": "Rank and Name",
-        "fact": "Mails for Army and Air Force should include No., Rank, Name, and Unit.",
+        "question": "What particulars must be furnished in the address of mails for Defence Services personnel?",
+        "a": "Only Name and Rank",
+        "b": "Only Name and Unit",
+        "c": "Number, Rank, Name, Unit",
+        "d": "Only Number and Unit",
+        "fact": "Address of Defence Services personnel must always contain Number, Rank, Name, and Unit.",
         "trap": "",
         "yaad": "",
         "ok": true
@@ -41,49 +41,47 @@
             "mark": "key"
           },
           {
-            "text": "नंबर रैंक नाम यूनिट",
+            "text": "नंबर रैंक नाम",
             "mark": "yes"
           },
           {
-            "text": "केवल नाम",
-            "mark": "no"
+            "text": "यूनिट विवरण",
+            "mark": "yes"
           }
         ]
       },
       "hint": "",
-      "trap_quote": "",
       "_clause_no": 27,
       "hook_v": {
-        "ok": true,
-        "text": "काउंटर पर सैनिक का पत्र आया, पते में क्या देखना जरूरी है?"
+        "tries": 0
       },
-      "auto_check": false,
-      "check_errors": [
-        "AUDIT: examiner ne jawab nahi diya"
-      ],
-      "simple": true
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": []
     },
     {
-      "basis": "guide",
-      "source_quote": "Such mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",
-      "question": "सेना डाक में पते के साथ क्या नहीं लिखना चाहिए?",
-      "a": "56 APO",
-      "b": "99 APO",
-      "c": "पोस्ट टाउन का नाम",
-      "d": "यूनिट का नाम",
-      "fact": "ऐसी डाक को बिना किसी पोस्ट टाउन के 56 APO या 99 APO संबोधित करें।",
-      "trap": "56 APO नहीं, इसे बिना पोस्ट टाउन के लिखते हैं।",
-      "yaad": "पोस्ट टाउन + नहीं + APO",
+      "basis": "notes",
+      "source_quote": "इन्हें दबना दकसी पोस्ट डाउन का नाम दिए 56 APO या 99 APO के लिए सांबोदधत करना चादहए",
+      "question": "सेना कर्मियों की डाक को कहाँ के लिए संबोधित करना चाहिए?",
+      "a": "गृह जिला पोस्ट ऑफिस",
+      "b": "वर्तमान पोस्टिंग शहर",
+      "c": "56 APO या 99 APO",
+      "d": "निकटतम रेलवे डाकघर",
       "correct": "C",
-      "id": 2,
-      "hook": "सैनिक की डाक पर पता लिख रहे हैं, क्या नहीं जोड़ना है?",
+      "fact": "सेना कर्मियों की डाक को बिना पोस्ट टाउन के 56 या 99 APO संबोधित करें।",
+      "trap": "शहर का नाम लिखना गलत है, क्योंकि APO पता ही पर्याप्त है।",
+      "trap_quote": "",
+      "yaad": "बिना पोस्ट टाउन = केवल APO पता",
+      "hook": "ग्राहक सेना के जवान को पत्र भेज रहा है, वह पता कहाँ का लिखेगा?",
       "en": {
-        "question": "What should not be added to the address of defence mails?",
-        "a": "56 A.P.O.",
-        "b": "99 A.P.O.",
-        "c": "Post town",
-        "d": "Unit",
-        "fact": "Such mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",
+        "question": "To which offices should mails for Army and Air Force personnel be addressed?",
+        "a": "Home Town Post Office",
+        "b": "Current Posting Town",
+        "c": "56 APO or 99 APO",
+        "d": "Nearest Railway Mail Office",
+        "fact": "Such mails must be addressed to 56 APO or 99 APO without adding any post town.",
         "trap": "",
         "yaad": "",
         "ok": true
@@ -92,32 +90,86 @@
         "ok": true,
         "items": [
           {
-            "text": "पोस्ट टाउन",
-            "mark": "no"
+            "text": "APO पता",
+            "mark": "key"
           },
           {
             "text": "56 या 99 APO",
             "mark": "yes"
           },
           {
-            "text": "सेना डाक पता",
-            "mark": "key"
+            "text": "पोस्ट टाउन लिखना",
+            "mark": "no"
           }
         ]
       },
       "hint": "",
-      "trap_quote": "",
       "_clause_no": 27,
       "hook_v": {
-        "ok": true,
-        "text": "सैनिक की डाक पर पता लिख रहे हैं, क्या नहीं जोड़ना है?"
+        "tries": 0
       },
-      "auto_check": false,
-      "check_errors": [
-        "TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)"
-      ],
-      "simple": true
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
+    },
+    {
+      "basis": "notes",
+      "source_quote": "जब भी भारत के भीतर िह िौरे पर होां उन्हें उनक े लेख िहीां दितररत करने की सुविधा मिलती है",
+      "question": "दौरे पर गए सेना के जवान को उसकी डाक कहाँ मिल सकती है?",
+      "a": "केवल गृह पते पर",
+      "b": "वर्तमान दौरे वाले स्थान पर",
+      "c": "केवल मुख्य रिकॉर्ड कार्यालय",
+      "d": "केवल 56 APO पर",
+      "correct": "B",
+      "fact": "भारत के भीतर दौरे पर होने पर लेख वहीं वितरित करने की सुविधा मिलती है।",
+      "trap": "केवल 56 APO नहीं, बल्कि दौरे वाले स्थान पर भी वितरण संभव है।",
+      "trap_quote": "",
+      "yaad": "भारत दौरा = वहीँ डाक वितरण",
+      "hook": "दौरे पर गए सेना के जवान को उसकी डाक कहाँ मिल सकती है?",
+      "en": {
+        "question": "Where can mails be delivered to Defence personnel when on tour within India?",
+        "a": "Only at Home Address",
+        "b": "At the place of tour",
+        "c": "Only at Head Record Office",
+        "d": "Only at 56 APO",
+        "fact": "Defence personnel on tour within India can get their mails delivered at the tour place.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "दौरे पर वितरण",
+            "mark": "key"
+          },
+          {
+            "text": "भारत के भीतर",
+            "mark": "yes"
+          },
+          {
+            "text": "दौरे वाले स्थान पर",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "_clause_no": 27,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true,
+      "web_verdict": "unknown",
+      "web_sources": [],
+      "style_v": "2026-09-26c"
     }
   ],
-  "clause_text_en": "27.Mails for Defence Services Personnel serving in the Army and Air Force  –  The \nfollowing particulars should always be furnished in the address in the case of mails for the \n\n\npersonnel of the Defence Services serving in the Army and Air Force, which are to be delivered \nthrough Army Post Offices: - \n \n No. \n \n Rank \n \n Name \n \n Unit \n \nSuch mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town."
+  "clause_text_en": "27.Mails for Defence Services Personnel serving in the Army and Air Force  –  The \nfollowing particulars should always be furnished in the address in the case of mails for the \n\n\npersonnel of the Defence Services serving in the Army and Air Force, which are to be delivered \nthrough Army Post Offices: - \n \n No. \n \n Rank \n \n Name \n \n Unit \n \nSuch mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",
+  "simple_rebuilds": 1
 }
