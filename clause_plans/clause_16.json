@@ -61,13 +61,13 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 5,
+      "published_round_prev": 6,
       "chitra_v": {
         "steps": [
           {
             "object": "envelope",
             "items": [],
-            "text": "साधारण पत्र पोस्ट करते समय",
+            "text": "ग्राहक साधारण लिफाफा काउंटर पर लाते हैं।",
             "mark": "none"
           },
           {
@@ -75,40 +75,35 @@
             "items": [
               {
                 "item": "wax_seal",
-                "place": "back",
-                "count": 2
+                "place": "address",
+                "count": 1
               }
             ],
-            "text": "बिना कारण सीलिंग वैक्स न लगाएं",
+            "text": "बिना जरूरत के सीलिंग वैक्स लगाना गलत है।",
             "mark": "wrong"
           },
           {
             "object": "envelope",
-            "items": [
-              {
-                "item": "wax_seal",
-                "place": "back",
-                "count": 1
-              }
-            ],
-            "text": "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं",
+            "items": [],
+            "text": "केवल सुरक्षा के लिए आवश्यक होने पर ही उपयोग करें।",
             "mark": "right"
           }
         ],
         "caps": [
-          "साधारण पत्र पोस्ट करते समय",
-          "बिना कारण सीलिंग वैक्स न लगाएं",
-          "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं"
+          "ग्राहक साधारण लिफाफा काउंटर पर लाते हैं।",
+          "बिना जरूरत के सीलिंग वैक्स लगाना गलत है।",
+          "केवल सुरक्षा के लिए आवश्यक होने पर ही उपयोग करें।"
         ],
         "kit": "story",
         "ok": true,
-        "v": 6
+        "v": 7
       },
       "trap_v": {
-        "tries": 1
+        "tries": 1,
+        "v": 2
       },
       "published": "2026-09-30",
-      "published_round": 6
+      "published_round": 8
     },
     {
       "basis": "guide",
@@ -163,53 +158,143 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 5,
+      "published_round_prev": 6,
       "chitra_v": {
-        "steps": [
+        "kit": "draw",
+        "panels": [
           {
-            "object": "envelope",
-            "items": [],
-            "text": "सीलिंग वैक्स से डाक सील करना",
+            "shapes": [
+              {
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "fill": "#FFFDD0"
+              },
+              {
+                "t": "sprite",
+                "name": "counter",
+                "x": 240,
+                "y": 200,
+                "w": 300
+              },
+              {
+                "t": "sprite",
+                "name": "envelope",
+                "x": 240,
+                "y": 120,
+                "w": 100
+              },
+              {
+                "t": "sprite",
+                "name": "wax_seal",
+                "x": 240,
+                "y": 120,
+                "w": 40
+              }
+            ],
+            "text": "अनपंजीकृत डाक पर सील",
+            "desc": "A wax seal is being prepared for an unregistered letter at the post office counter.",
             "mark": "none"
           },
           {
-            "object": "envelope",
-            "items": [
+            "shapes": [
               {
-                "item": "wax_seal",
-                "place": "back",
-                "count": 1
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "fill": "#FFFDD0"
+              },
+              {
+                "t": "sprite",
+                "name": "counter",
+                "x": 240,
+                "y": 200,
+                "w": 300
+              },
+              {
+                "t": "sprite",
+                "name": "envelope",
+                "x": 240,
+                "y": 120,
+                "w": 100
+              },
+              {
+                "t": "sprite",
+                "name": "thick_cloth",
+                "x": 240,
+                "y": 110,
+                "w": 60,
+                "fill": "#8B451388"
+              },
+              {
+                "t": "sprite",
+                "name": "wax_seal",
+                "x": 240,
+                "y": 100,
+                "w": 40
               }
             ],
-            "text": "बिना कागज के सीधे मोम पर मुहर",
+            "text": "मोटा कपड़ा न रखें",
+            "desc": "An incorrect method using thick cloth instead of thin paper before applying the wax seal.",
             "mark": "wrong"
           },
           {
-            "object": "envelope",
-            "items": [
+            "shapes": [
               {
-                "item": "tissue_paper",
-                "place": "back",
-                "count": 1
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "fill": "#FFFDD0"
               },
               {
-                "item": "wax_seal",
-                "place": "back",
-                "count": 1
+                "t": "sprite",
+                "name": "counter",
+                "x": 240,
+                "y": 200,
+                "w": 300
+              },
+              {
+                "t": "sprite",
+                "name": "envelope",
+                "x": 240,
+                "y": 120,
+                "w": 100
+              },
+              {
+                "t": "sprite",
+                "name": "tissue_paper",
+                "x": 240,
+                "y": 110,
+                "w": 60,
+                "fill": "#FFFFFF88"
+              },
+              {
+                "t": "sprite",
+                "name": "wax_seal",
+                "x": 240,
+                "y": 100,
+                "w": 40
               }
             ],
-            "text": "मोम पर पतला कागज या टिशू रखें",
+            "text": "टिशू या कागज रखें",
+            "desc": "The correct method showing a piece of thin tissue paper placed between the wax and the seal.",
             "mark": "right"
           }
         ],
         "caps": [
-          "सीलिंग वैक्स से डाक सील करना",
-          "बिना कागज के सीधे मोम पर मुहर",
-          "मोम पर पतला कागज या टिशू रखें"
+          "अनपंजीकृत डाक पर सील",
+          "मोटा कपड़ा न रखें",
+          "टिशू या कागज रखें"
         ],
-        "kit": "story",
+        "score": 8.0,
         "ok": true,
-        "v": 4
+        "v": 7
       },
       "trap_old": "कपड़ा या प्लास्टिक नहीं, केवल टिशू या पतला कागज लगाना है।",
       "trap_v": {
@@ -218,9 +303,7 @@
       "kaam_v": {
         "ok": true,
         "text": "काउंटर पर सील लगाते समय मोम पर पतला कागज जरूर रखें"
-      },
-      "published": "2026-09-30",
-      "published_round": 6
+      }
     }
   ],
   "clause_text_en": "16. Sealing -  The public are advised not to use sealing wax for seals outside unregistered \nletters and packets, except when such seals are necessary for the protection of the articles to which \nthey are applied.  When sealing wax is used for seals outside unregistere d letters and packets, a \npiece of tissue or other thin paper should be laid on the wax before the seal is applied, as otherwise \nboth the articles themselves and those with which they come in contract in transit are liable to \ninjury from the sealing wax adh ering to other articles.  The precaution recommended is specially \nnecessary in the case of articles for foreign countries, which have for several days to pass through \nvery hot climates."
