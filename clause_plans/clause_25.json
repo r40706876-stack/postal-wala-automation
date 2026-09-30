@@ -73,50 +73,39 @@
       "b": "कागज की बचत होती है",
       "c": "मुद्रण शुल्क घट जाता है",
       "d": "स्टैंप पेपर सुरक्षित रहता है",
-      "correct": "A",
       "fact": "कम मूल्य के अधिक टिकटों से स्टैंप पेपर बर्बाद होता है और मुद्रण शुल्क अधिक लगता है।",
-      "trap": "मुद्रण शुल्क घटता है मानना गलत है, अधिक लगता है।",
+      "trap": "कागज की बचत होती है गलत, मूल्यवान स्टैंप पेपर बर्बाद होता है।",
       "yaad": "स्टैंप बर्बाद + मुद्रण शुल्क अधिक",
+      "correct": "A",
+      "id": 1,
       "hook": "छोटे टिकट ज्यादा छप रहे हैं, विभाग का खर्चा क्यों बढ़ेगा?",
       "en": {
-        "question": "What is the result regarding printing charges when many low-value stamps are used?",
+        "question": "What is the disadvantage of using many low-value stamps?",
         "a": "Printing charges increase",
         "b": "Paper is saved",
         "c": "Printing charges decrease",
         "d": "Stamp paper remains safe",
-        "fact": "Entails waste of valuable stamp paper and printing charges.",
+        "fact": "Using many low-value stamps wastes stamp paper and increases printing charges.",
         "trap": "",
         "yaad": "",
         "ok": true
       },
       "beats": {
-        "ok": true,
-        "items": [
-          {
-            "text": "मूल्यवान स्टैंप पेपर",
-            "mark": "key"
-          },
-          {
-            "text": "मुद्रण शुल्क अधिक",
-            "mark": "yes"
-          },
-          {
-            "text": "कागज की बचत",
-            "mark": "no"
-          }
-        ]
+        "tries": 0
       },
       "hint": "",
       "trap_quote": "",
       "_clause_no": 25,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "छोटे टिकट ज्यादा छप रहे हैं, विभाग का खर्चा क्यों बढ़ेगा?"
       },
-      "auto_check": true,
-      "check_errors": [],
+      "auto_check": false,
+      "check_errors": [
+        "TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)"
+      ],
       "simple": true,
-      "web_verdict": "unknown",
-      "web_sources": []
+      "simple_rebuilds": 1
     },
     {
       "basis": "notes",

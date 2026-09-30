@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** छोटे टिकट → काम → बढ़ जाता है
 **Hook:** आइटम पर दर्जनों छोटे टिकट लगे हैं, कर्मचारी को छांटने में क्या होगा?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [FAIL (0/4 sudhaar koshish): TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)]
 **Source (PO Guide):** मूल्यवान स्टैंप पेपर बबाणद होता है और मुिर् शुल्क (printing charges) अटिक लगता है
 
 **Niyam:** कम मूल्य के अधिक टिकटों से स्टैंप पेपर बर्बाद होता है और मुद्रण शुल्क अधिक लगता है।
@@ -29,7 +29,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. मुद्रण शुल्क घट जाता है
 - D. स्टैंप पेपर सुरक्षित रहता है
 **Hint:** 
-**Trap:** मुद्रण शुल्क घटता है मानना गलत है, अधिक लगता है।
+**Trap:** कागज की बचत होती है गलत, मूल्यवान स्टैंप पेपर बर्बाद होता है।
 **Yaad:** स्टैंप बर्बाद + मुद्रण शुल्क अधिक
 **Hook:** छोटे टिकट ज्यादा छप रहे हैं, विभाग का खर्चा क्यों बढ़ेगा?
 

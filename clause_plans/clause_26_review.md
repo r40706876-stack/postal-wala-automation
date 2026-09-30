@@ -5,7 +5,7 @@ English title: Particulars to be furnished
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-30]
 **Source (PO Guide):** leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels
 
 **Niyam:** डाक लेख के शीर्ष पर टिकटों व लेबलों हेतु कम से कम 3 सेंटीमीटर जगह छोड़ें।
@@ -20,7 +20,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Hook:** काउंटर पर लिफाफा आया, टिकट के लिए ऊपर कितनी जगह छोड़नी होगी?
 
 ## Part 2  [PASS | publish baaki]
-**Source (PO Guide):** The Post town should be noted in block letter and according to the approved spelling... It should, also be underlined.
+**Source (PO Guide):** The Post town should be noted in block letter and according to the approved spelling in the List of Post Offices (Part III of this Guide). It should, also be underlined.
 
 **Niyam:** पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।
 **Sawal:** पोस्‍ट टाउन का नाम किस प्रकार लिखा जाना चाहिए?
@@ -29,7 +29,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. तिरछे अक्षरों में
 - D. लाल स्याही से
 **Hint:** 
-**Trap:** सामान्य लिखना गलत है, बड़े अक्षर और रेखांकित सही।
+**Trap:** छोटे अक्षर लिखना गलत, छोटे अक्षरों से छंटाई में भ्रम होता है।
 **Yaad:** पोस्ट टाउन = बड़े अक्षर + रेखांकित
 **Hook:** छंटाई करते समय पोस्ट टाउन का नाम कैसे लिखा होना चाहिए?
 
@@ -71,7 +71,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. केवल अंग्रेजी और रोमन अंक
 - D. स्थानीय भाषा
 **Hint:** 
-**Trap:** देवनागरी समझना गलत है, रोमन और अरबी सही।
+**Trap:** देवनागरी लिखना गलत, विदेशी डाक में केवल रोमन और अरबी मान्य हैं।
 **Yaad:** विदेश = रोमन अक्षर + अरबी अंक
 **Hook:** विदेश जाने वाली डाक पर पता किस लिपि में लिखा जाएगा?
 
@@ -89,8 +89,8 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** प्रेषक पता = नीचे बायां कोना
 **Hook:** रजिस्टर पत्र पर भेजने वाले का पता कहाँ दर्ज करना है?
 
-## Part 7  [PASS | publish baaki]
-**Source (PO Guide):** The indication ‘Letter’ should be given on the address-side of bulky letter packets
+## Part 7  [FAIL (0/4 sudhaar koshish): TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)]
+**Source (PO Guide):** The indication ‘Letter’ should be given on the address-side of bulky letter packets, which, on account of their size or make up, might be mistaken for other classes of packets.
 
 **Niyam:** भारी पत्र पैकेटों के पते वाली साइड पर 'Letter' स्पष्ट लिखना चाहिए।
 **Sawal:** किन लेखों के पते वाली साइड पर 'Letter' (पत्र) संकेत देना अनिवार्य है?
@@ -99,11 +99,11 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. पार्सल
 - D. रजिस्टर्ड पत्र
 **Hint:** 
-**Trap:** साधारण पत्र समझना गलत है, भारी पैकेट सही।
+**Trap:** पार्सल लिखना गलत, क्योंकि यह भारी पत्र पैकेटों के लिए है।
 **Yaad:** भारी पैकेट = 'Letter' संकेत
-**Hook:** मोटा लिफाफा पैकेट जैसा दिखता है, काउंटर पर क्या अंकित करना होगा?
+**Hook:** मोटे आकार के पत्र पैकेट पर कौन सा विशेष संकेत देना होगा?
 
-## Part 8  [PASS | publish baaki]
+## Part 8  [FAIL (0/4 sudhaar koshish): TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)]
 **Source (PO Guide):** Articles intended for delivery in camp to such officers should not be addressed to any Post Town but only to their camp as indicated in Clause 206.
 
 **Niyam:** उच्च अधिकारियों के कैंप के लेखों पर पोस्ट टाउन के बजाय केवल कैंप का पता दें।
@@ -113,9 +113,9 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. राजधानी के मुख्य डाकघर पर
 - D. सर्किल कार्यालय पर
 **Hint:** 
-**Trap:** पोस्ट टाउन लिखना गलत है, केवल कैंप पता सही।
+**Trap:** पोस्ट टाउन लिखना गलत, कैंप के लेखों पर केवल कैंप का नाम लिखें।
 **Yaad:** उच्च अधिकारी = केवल कैंप पता
-**Hook:** मंत्री जी दौरे पर कैंप में हैं, डाक किस पते पर भेजनी होगी?
+**Hook:** दौरे पर मौजूद वीवीआईपी अधिकारी को डाक सीधे कहाँ भेजी जाएगी?
 
 ---
 ## Poora clause (PDF se)

@@ -1,0 +1,123 @@
+{
+  "clause_no": 28,
+  "title_en": "Mails for Navy Personnel serving in INS Ships",
+  "title_hi": "नौसेना जहाज डाक नियम",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "notes",
+      "source_quote": "इन्हें c/o फ्लीि डाक कायाणलय मुांबई को सांबोदधत करना चादहए।",
+      "question": "नौसेना जहाजों पर तैनात कर्मियों की डाक किसे संबोधित होनी चाहिए?",
+      "a": "फ्लीट डाक कार्यालय मुंबई",
+      "b": "प्रधान डाकघर मुंबई",
+      "c": "संबद्ध नौसेना बेस",
+      "d": "क्षेत्रीय निदेशक मुंबई",
+      "fact": "नौसेना कर्मियों की डाक फ्लीट डाक कार्यालय मुंबई को संबोधित की जानी चाहिए।",
+      "trap": "प्रधान डाकघर मुंबई नहीं, फ्लीट डाक कार्यालय सही",
+      "yaad": "नौसेना डाक c/o फ्लीट डाक कार्यालय मुंबई",
+      "correct": "A",
+      "id": 1,
+      "hook": "नौसेना जहाज के कर्मी को डाक भेजनी है?",
+      "en": {
+        "question": "Mails for Navy personnel serving in INS ships should be addressed to whom?",
+        "a": "Fleet Mail Office Bombay",
+        "b": "Head Post Office Bombay",
+        "c": "Associated Naval Base",
+        "d": "Regional Director Bombay",
+        "fact": "Mails for Navy personnel should be addressed c/o the Fleet Mail Office Bombay.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "नौसेना कर्मियों की डाक",
+            "mark": "key"
+          },
+          {
+            "text": "फ्लीट डाक कार्यालय मुंबई",
+            "mark": "yes"
+          },
+          {
+            "text": "अन्य कार्यालय",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 28,
+      "hook_v": {
+        "ok": true,
+        "text": "नौसेना जहाज के कर्मी को डाक भेजनी है?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)"
+      ],
+      "simple": true
+    },
+    {
+      "basis": "notes",
+      "source_quote": "इसमें नांबर, रैंक, पाने िाले (प्राप्तकताण) के अन्य ब्यौरे तथा जहाज का नाम भी दलखना चाकिए",
+      "question": "नौसेना जहाज के कार्मिकों की डाक पर पते के साथ क्या लिखना अनिवार्य है?",
+      "a": "केवल जहाज का नाम",
+      "b": "नंबर, रैंक, अन्य ब्यौरे और जहाज का नाम",
+      "c": "केवल पाने वाले का नाम और पद",
+      "d": "जहाज का नाम और मोबाइल नंबर",
+      "fact": "नौसेना जहाज पर तैनात कर्मियों की डाक पर नंबर, रैंक, अन्य ब्यौरे और जहाज का नाम लिखना अनिवार्य है।",
+      "trap": "केवल जहाज का नाम गलत, मुंबई के फ्लीट डाक कार्यालय को संबोधित करना होगा।",
+      "yaad": "नंबर + रैंक + जहाज का नाम + एफएमओ",
+      "correct": "B",
+      "id": 1,
+      "hook": "जहाज वाले कर्मचारी को डाक भेजते समय पता कैसे लिखें?",
+      "en": {
+        "question": "What details must be indicated on mail for Navy personnel on INS ships?",
+        "a": "Only the ship name",
+        "b": "No., rank, other particulars and ship name",
+        "c": "Only addressee name",
+        "d": "Rank and mobile number",
+        "fact": "The No., rank and other particulars, as well as the name of the ship, should be indicated.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "नंबर रैंक और जहाज नाम",
+            "mark": "yes"
+          },
+          {
+            "text": "केवल जहाज का नाम",
+            "mark": "no"
+          },
+          {
+            "text": "नौसेना डाक विवरण",
+            "mark": "key"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 28,
+      "hook_v": {
+        "ok": true,
+        "text": "जहाज वाले कर्मचारी को डाक भेजते समय पता कैसे लिखें?"
+      },
+      "auto_check": false,
+      "check_errors": [
+        "OPTION LAMBA: B 7 shabd se zyada - chhota karo (arth wahi)"
+      ],
+      "simple": true
+    }
+  ],
+  "clause_text_en": "28. Mails for Navy Personnel serving in INS Ships  –  Mail for Navy Personnel on board \nI.N.S. ships should be addressed c/o the Fleet Mail Office, Bombay.  The No., rank and other \nparticulars of the addressee, as well as the name of the ship, should be indicated."
+}
