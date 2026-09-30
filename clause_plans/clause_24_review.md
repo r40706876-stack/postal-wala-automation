@@ -5,7 +5,7 @@ English title: Non-Postal Stamps charity Stamps, labels, seals, etc
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-30]
 **Source (PO Guide):** िेबि, स्टैंप, सील, अन्य तचह्न जो डाक तिकि नहीं हैं - उन्हें डाक लेख के पता पक्ष वाली साइड टचपकना नहीं चाटहए
 
 **Niyam:** गैर-डाक टिकट, सील या लेबल डाक लेख के पता पक्ष पर नहीं चिपकाने चाहिए।
@@ -16,7 +16,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. कहीं भी नहीं
 **Hint:** 
 **Trap:** कहीं भी चिपकाना गलत है, केवल पता पक्ष वर्जित है।
-**Yaad:** पता पक्ष + गैर-डाक टिकट = निषेध
+**Yaad:** गैर-डाक टिकट और सील → पता पक्ष → नहीं
 **Hook:** काउंटर पर ग्राहक ने लिफाफे के पते वाली साइड चैरिटी का स्टीकर चिपकाया, क्या यह सही है?
 
 ## Part 2  [PASS | publish baaki]
