@@ -195,7 +195,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक पोस्ट करना",
+            "mark": "key"
+          },
+          {
+            "text": "दिन में जितनी जल्दी",
+            "mark": "yes"
+          },
+          {
+            "text": "हो सके करें",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -207,7 +221,8 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "published": "2026-09-30"
     },
     {
       "basis": "guide",

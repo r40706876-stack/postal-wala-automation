@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** तैयार = पोस्ट
 **Hook:** काउंटर पर ग्राहक लिफाफा लाया, कब भेजें?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-09-30]
 **Source (PO Guide):** to endeavour to post as early in the day as possible
 
 **Niyam:** डाक को दिन में जितनी जल्दी हो सके पोस्ट करना चाहिए
