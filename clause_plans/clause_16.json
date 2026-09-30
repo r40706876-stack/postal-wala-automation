@@ -61,7 +61,7 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 6,
+      "published_round_prev": 8,
       "chitra_v": {
         "steps": [
           {
@@ -100,10 +100,10 @@
       },
       "trap_v": {
         "tries": 1,
-        "v": 2
+        "v": 3
       },
       "published": "2026-09-30",
-      "published_round": 8
+      "published_round": 9
     },
     {
       "basis": "guide",
