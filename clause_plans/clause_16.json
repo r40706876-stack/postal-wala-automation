@@ -63,10 +63,49 @@
       "published_prev": "2026-09-30",
       "published_round_prev": 3,
       "chitra_v": {
-        "tries": 2,
-        "last_err": "do khaano ke chitra bilkul ek jaise - galat aur sahi chitra me farak dikhna chahiye; captions 3 nahi / 7 shabd se lambe (chhota karo)",
-        "v": 4
-      }
+        "steps": [
+          {
+            "object": "envelope",
+            "items": [],
+            "text": "साधारण पत्र पोस्ट करते समय",
+            "mark": "none"
+          },
+          {
+            "object": "envelope",
+            "items": [
+              {
+                "item": "wax_seal",
+                "place": "back",
+                "count": 2
+              }
+            ],
+            "text": "बिना कारण सीलिंग वैक्स न लगाएं",
+            "mark": "wrong"
+          },
+          {
+            "object": "envelope",
+            "items": [
+              {
+                "item": "wax_seal",
+                "place": "back",
+                "count": 1
+              }
+            ],
+            "text": "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "साधारण पत्र पोस्ट करते समय",
+          "बिना कारण सीलिंग वैक्स न लगाएं",
+          "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं"
+        ],
+        "kit": "story",
+        "ok": true,
+        "v": 6
+      },
+      "published": "2026-09-30",
+      "published_round": 4
     },
     {
       "basis": "guide",
