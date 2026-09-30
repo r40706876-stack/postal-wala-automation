@@ -63,8 +63,8 @@
       "published_prev": "2026-09-30",
       "published_round_prev": 3,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "do khaano ke chitra bilkul ek jaise - galat aur sahi chitra me farak dikhna chahiye",
+        "tries": 2,
+        "last_err": "do khaano ke chitra bilkul ek jaise - galat aur sahi chitra me farak dikhna chahiye; captions 3 nahi / 7 shabd se lambe (chhota karo)",
         "v": 4
       }
     },
@@ -123,8 +123,50 @@
       "published_prev": "2026-09-30",
       "published_round_prev": 3,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "captions 3 nahi / 7 shabd se lambe (chhota karo)",
+        "steps": [
+          {
+            "object": "envelope",
+            "items": [],
+            "text": "सीलिंग वैक्स से डाक सील करना",
+            "mark": "none"
+          },
+          {
+            "object": "envelope",
+            "items": [
+              {
+                "item": "wax_seal",
+                "place": "back",
+                "count": 1
+              }
+            ],
+            "text": "बिना कागज के सीधे मोम पर मुहर",
+            "mark": "wrong"
+          },
+          {
+            "object": "envelope",
+            "items": [
+              {
+                "item": "tissue_paper",
+                "place": "back",
+                "count": 1
+              },
+              {
+                "item": "wax_seal",
+                "place": "back",
+                "count": 1
+              }
+            ],
+            "text": "मोम पर पतला कागज या टिशू रखें",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "सीलिंग वैक्स से डाक सील करना",
+          "बिना कागज के सीधे मोम पर मुहर",
+          "मोम पर पतला कागज या टिशू रखें"
+        ],
+        "kit": "story",
+        "ok": true,
         "v": 4
       },
       "trap_old": "कपड़ा या प्लास्टिक नहीं, केवल टिशू या पतला कागज लगाना है।",
