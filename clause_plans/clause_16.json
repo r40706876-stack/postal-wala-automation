@@ -60,7 +60,37 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published": "2026-09-26"
+      "published_prev": "2026-09-26",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "steps": [
+          {
+            "icon": "counter",
+            "text": "साधारण लिफाफे पर सीलिंग वैक्स लगाना",
+            "mark": "none"
+          },
+          {
+            "icon": "letter",
+            "text": "बिना जरूरत हर जगह वैक्स लगाना",
+            "mark": "wrong"
+          },
+          {
+            "icon": "seal",
+            "text": "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "साधारण लिफाफे पर सीलिंग वैक्स लगाना",
+          "बिना जरूरत हर जगह वैक्स लगाना",
+          "केवल सुरक्षा हेतु आवश्यक होने पर लगाएं"
+        ],
+        "kit": "story",
+        "ok": true,
+        "v": 2
+      },
+      "published": "2026-09-30",
+      "published_round": 2
     },
     {
       "basis": "guide",
@@ -114,7 +144,35 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published": "2026-09-26"
+      "published_prev": "2026-09-26",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "steps": [
+          {
+            "icon": "letter",
+            "text": "अंजीकृत डाक पर मोम लगाया जा रहा है",
+            "mark": "none"
+          },
+          {
+            "icon": "seal",
+            "text": "बिना कागज मोम पर सीधे सील रख दी",
+            "mark": "wrong"
+          },
+          {
+            "icon": "seal",
+            "text": "मोम पर पतला कागज रखकर सील लगाएं",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "अंजीकृत डाक पर मोम लगाया जा रहा है",
+          "बिना कागज मोम पर सीधे सील रख दी",
+          "मोम पर पतला कागज रखकर सील लगाएं"
+        ],
+        "kit": "story",
+        "ok": true,
+        "v": 2
+      }
     }
   ],
   "clause_text_en": "16. Sealing -  The public are advised not to use sealing wax for seals outside unregistered \nletters and packets, except when such seals are necessary for the protection of the articles to which \nthey are applied.  When sealing wax is used for seals outside unregistere d letters and packets, a \npiece of tissue or other thin paper should be laid on the wax before the seal is applied, as otherwise \nboth the articles themselves and those with which they come in contract in transit are liable to \ninjury from the sealing wax adh ering to other articles.  The precaution recommended is specially \nnecessary in the case of articles for foreign countries, which have for several days to pass through \nvery hot climates."

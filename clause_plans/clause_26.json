@@ -86,7 +86,8 @@
         "kit": "story",
         "ok": true
       },
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1
     },
     {
       "basis": "guide",
@@ -167,7 +168,8 @@
         "kit": "story",
         "ok": true
       },
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1
     },
     {
       "basis": "notes",
@@ -236,7 +238,8 @@
         "ok": true,
         "v": 2
       },
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1
     },
     {
       "basis": "guide",
@@ -450,10 +453,8 @@
         "ok": true,
         "text": "मोटे आकार के पत्र पैकेट पर कौन सा विशेष संकेत देना होगा?"
       },
-      "auto_check": false,
-      "check_errors": [
-        "TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)"
-      ],
+      "auto_check": true,
+      "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
       "simple_rebuilds": 1
@@ -493,10 +494,8 @@
         "ok": true,
         "text": "दौरे पर मौजूद वीवीआईपी अधिकारी को डाक सीधे कहाँ भेजी जाएगी?"
       },
-      "auto_check": false,
-      "check_errors": [
-        "TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)"
-      ],
+      "auto_check": true,
+      "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
       "simple_rebuilds": 1

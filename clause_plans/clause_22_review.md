@@ -5,7 +5,7 @@ English title: Desirability of posting early-  If articles are posted just at th
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish: 2026-09-29]
+## Part 1  [PASS | publish baaki]
 **Source (PO Guide):** there is heavy congestion in Post Offices and R.M.S. Offices
 
 **Niyam:** डाक लेखों को अंतिम समय पर पोस्ट करने से पोस्ट ऑफिस और आर.एम.एस. में भारी भीड़ होती है
@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** अंतिम समय = भीड़
 **Hook:** ग्राहक ने लिफाफा आख़िरी मिनट में दिया, क्या होगा?
 
-## Part 2  [PASS | publish: 2026-09-30]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** there is likelihood of detention and delay
 
 **Niyam:** डाक लेखों को देर से पोस्ट करने पर रोक और देरी की संभावना रहती है
@@ -33,33 +33,33 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** देर = रोक
 **Hook:** पार्सल देर से आया, क्या होगा?
 
-## Part 3  [PASS | publish: 2026-09-30]
+## Part 3  [FAIL (0/4 sudhaar koshish): TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)]
 **Source (PO Guide):** The public are, therefore, advised to post their mails as and when they are ready without waiting for the last clearance of mails from the Post Office
 
-**Niyam:** जनता को तैयार होते ही पोस्ट करना चाहिए, अंतिम क्लियरेंस का इंतजार नहीं
-**Sawal:** जनता को कब पोस्ट करना चाहिए?
-- A. जब तैयार हों  <- SAHI
-- B. अंतिम क्लियरेंस के बाद
-- C. अगले दिन
-- D. सप्ताहांत में
+**Niyam:** डाक तैयार होते ही उसे तुरंत पोस्ट कर देना चाहिए, अंतिम क्लियरेंस का इंतजार नहीं करना चाहिए
+**Sawal:** जनता को अपनी डाक कब पोस्ट करने की सलाह दी जाती है?
+- A. जैसे ही डाक तैयार हो जाए  <- SAHI
+- B. दिन की अंतिम क्लियरेंस के समय
+- C. डाकघर बंद होने के ठीक बाद
+- D. अगले कार्य दिवस की सुबह
 **Hint:** 
-**Trap:** केवल अंतिम क्लियरेंस पर
-**Yaad:** तैयार = पोस्ट
-**Hook:** काउंटर पर ग्राहक लिफाफा लाया, कब भेजें?
+**Trap:** अंतिम क्लियरेंस का इंतजार गलत, क्योंकि इससे डाक रुकने की संभावना होती है।
+**Yaad:** तैयार = तुरंत पोस्ट
+**Hook:** ग्राहक अंतिम क्लियरेंस के समय डाक लाया, उसे क्या समझाएं?
 
-## Part 4  [PASS | publish: 2026-09-30]
+## Part 4  [PASS | publish baaki]
 **Source (PO Guide):** to endeavour to post as early in the day as possible
 
-**Niyam:** डाक को दिन में जितनी जल्दी हो सके पोस्ट करना चाहिए
-**Sawal:** डाक को दिन में कब पोस्ट करना बेहतर है?
-- A. जितनी जल्दी हो सके  <- SAHI
-- B. दोपहर बाद
-- C. शाम को
-- D. रात में
+**Niyam:** डाक को दिन में जितना संभव हो सके उतनी जल्दी पोस्ट करने का प्रयास करना चाहिए
+**Sawal:** डाक को दिन में कब पोस्ट करने का प्रयास करना चाहिए?
+- A. दिन में जितनी जल्दी हो सके  <- SAHI
+- B. डाक प्रेषण के ठीक समय पर
+- C. दोपहर के विश्राम काल के बाद
+- D. शाम को खिड़की बंद होने के समय
 **Hint:** 
-**Trap:** केवल दोपहर में
-**Yaad:** जल्दी पोस्ट = बेहतर
-**Hook:** सबेरे काउंटर पर लिफाफा आया, क्या करें?
+**Trap:** प्रेषण समय पोस्ट करना गलत, क्योंकि इससे डाकघर में भारी भीड़ होती है।
+**Yaad:** जल्दी पोस्ट = नो कंजेशन
+**Hook:** शाम को काउंटर पर भारी भीड़ से बचने का क्या उपाय है?
 
 ## Part 5  [FAIL (0/4 sudhaar koshish): OPTION LAMBA: A 7 shabd se zyada - chhota karo (arth wahi)]
 **Source (PO Guide):** to endeavour to post as early in the day as possible

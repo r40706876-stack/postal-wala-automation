@@ -63,7 +63,8 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1
     },
     {
       "basis": "notes",
@@ -100,10 +101,8 @@
         "ok": true,
         "text": "छोटे टिकट ज्यादा छप रहे हैं, विभाग का खर्चा क्यों बढ़ेगा?"
       },
-      "auto_check": false,
-      "check_errors": [
-        "TRAP REPEAT: trap sirf niyam ke shabd dohra raha hai - nayi kaam ki baat do (apvaad, seema, kaun tay karta hai, ulta case, ya lalchane wala galat option kyon galat hai)"
-      ],
+      "auto_check": true,
+      "check_errors": [],
       "simple": true,
       "simple_rebuilds": 1
     },
