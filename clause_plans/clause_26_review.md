@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पोस्ट टाउन = बड़े अक्षर + रेखांकित
 **Hook:** छंटाई करते समय पोस्ट टाउन का नाम कैसे लिखा होना चाहिए?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-09-30]
 **Source (PO Guide):** तालुका या तिसील का नाम ( यकि सिी PIN कोड कलखा िै तो इसकी आवश्यक निीां िै)
 
 **Niyam:** सही पिन कोड लिखे होने पर ग्रामीण पते में तालुका या तहसील आवश्यक नहीं।
