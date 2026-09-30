@@ -19,7 +19,7 @@
       "correct": "A",
       "fact": "अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।",
       "trap": "कर्मचारियों का काम घटता है सोचना गलत है, बढ़ता है।",
-      "yaad": "छोटे टिकट = कर्मचारियों का बढ़ा काम",
+      "yaad": "छोटे टिकट → काम → बढ़ जाता है",
       "hook": "आइटम पर दर्जनों छोटे टिकट लगे हैं, कर्मचारी को छांटने में क्या होगा?",
       "en": {
         "question": "How does the use of many low-value stamps affect Post Office staff?",
@@ -53,14 +53,17 @@
       "trap_quote": "",
       "_clause_no": 25,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "काउंटर पर छोटे टिकटों की भरमार, कर्मचारियों पर क्या असर?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
       "web_sources": [],
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "style_retry": true,
+      "published": "2026-09-30"
     },
     {
       "basis": "notes",

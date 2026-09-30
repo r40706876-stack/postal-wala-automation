@@ -5,7 +5,7 @@ English title: Use of the minimum number of postage stamps
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-09-30]
 **Source (PO Guide):** डाकघर कमणचाररयों का काम बढ़ जाता है
 
 **Niyam:** अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।
@@ -16,7 +16,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. वेतन घट जाता है
 **Hint:** 
 **Trap:** कर्मचारियों का काम घटता है सोचना गलत है, बढ़ता है।
-**Yaad:** छोटे टिकट = कर्मचारियों का बढ़ा काम
+**Yaad:** छोटे टिकट → काम → बढ़ जाता है
 **Hook:** आइटम पर दर्जनों छोटे टिकट लगे हैं, कर्मचारी को छांटने में क्या होगा?
 
 ## Part 2  [PASS | publish baaki]
