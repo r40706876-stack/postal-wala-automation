@@ -133,7 +133,9 @@
       "trap_v": {
         "none": true,
         "v": 3
-      }
+      },
+      "published": "2026-10-01",
+      "published_round": 12
     },
     {
       "basis": "notes",
@@ -192,18 +194,10 @@
       "published_prev": "2026-10-01",
       "published_round_prev": 11,
       "chitra_v": {
-        "object": "parcel",
-        "item": "festive_seal",
-        "wrong_place": "address",
-        "right": "remove",
-        "caps": [
-          "काउंटर पर इलेक्ट्रो-प्लेटेड गहने आए, बीमा का नियम क्या होगा?",
-          "सोने-चांदी के लेख में इलेक्ट्रो या अन्य प्लेटेड सामान शामिल नहीं है",
-          "नियम के अनुसार इसे सूची से हटाना होगा"
-        ],
-        "kit": "article_mark",
-        "ok": true,
-        "v": 8
+        "tries": 1,
+        "last_err": "dekhne wale ne niyam theek nahi samjha: 'Electro-plated items do not qualify as gold or silver articles and should not be processed as such.' - chhoota: The item in the second picture is an abstract, unidentifiable metal shape, making it hard to compare with the jewelry in the other panels.; The thi",
+        "v": 9,
+        "kit_try": "photo3"
       },
       "trap_v": {
         "tries": 1,
@@ -267,9 +261,10 @@
       "published_prev": "2026-09-27",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 2,
-        "last_err": "icon-kahani band hai (kamzor chitra) - 'article_mark' ya 'address' hi",
-        "v": 8
+        "tries": 1,
+        "last_err": "panel 3 tag 1-3 Hindi shabd ka ho",
+        "v": 9,
+        "kit_try": "photo3"
       }
     }
   ],
