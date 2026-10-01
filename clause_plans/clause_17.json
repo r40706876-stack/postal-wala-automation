@@ -228,7 +228,13 @@
         "lesson": "Valuable items like jewelry and coins must always be sent through insured parcels.",
         "ok": true,
         "v": 8
-      }
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "published": "2026-10-01",
+      "published_round": 11
     },
     {
       "basis": "notes",
@@ -287,53 +293,18 @@
       "published_prev": "2026-09-27",
       "published_round_prev": 1,
       "chitra_v": {
-        "panels": [
-          {
-            "pics": [
-              {
-                "pic": "parcel",
-                "label": "सोना-चांदी लेख"
-              }
-            ],
-            "arrows": true,
-            "text": "काउंटर पर सोने-चांदी के लेख आए",
-            "mark": "none"
-          },
-          {
-            "pics": [
-              {
-                "pic": "parcel",
-                "label": "इलेक्ट्रो प्लेटेड सामान"
-              }
-            ],
-            "arrows": true,
-            "text": "इलेक्ट्रो प्लेटेड सामान शामिल नहीं है",
-            "mark": "wrong"
-          },
-          {
-            "pics": [
-              {
-                "pic": "parcel",
-                "label": "नियम लागू"
-              },
-              {
-                "pic": "receipt",
-                "label": "बीमा नियम"
-              }
-            ],
-            "arrows": false,
-            "text": "नियम के तहत परिभाषा स्पष्ट है",
-            "mark": "right"
-          }
-        ],
+        "object": "parcel",
+        "item": "festive_seal",
+        "wrong_place": "address",
+        "right": "remove",
         "caps": [
-          "काउंटर पर सोने-चांदी के लेख आए",
-          "इलेक्ट्रो प्लेटेड सामान शामिल नहीं है",
-          "नियम के तहत परिभाषा स्पष्ट है"
+          "काउंटर पर इलेक्ट्रो-प्लेटेड गहने आए, बीमा का नियम क्या होगा?",
+          "सोने-चांदी के लेख में इलेक्ट्रो या अन्य प्लेटेड सामान शामिल नहीं है",
+          "नियम के अनुसार इसे सूची से हटाना होगा"
         ],
-        "kit": "scene",
+        "kit": "article_mark",
         "ok": true,
-        "v": 6
+        "v": 8
       }
     },
     {
@@ -393,61 +364,9 @@
       "published_prev": "2026-09-27",
       "published_round_prev": 1,
       "chitra_v": {
-        "panels": [
-          {
-            "pics": [
-              {
-                "pic": "customer",
-                "label": "ग्राहक"
-              },
-              {
-                "pic": "parcel",
-                "label": "घड़ी पार्सल"
-              }
-            ],
-            "arrows": true,
-            "text": "ग्राहक सोने की घड़ी पार्सल लाया",
-            "mark": "none"
-          },
-          {
-            "pics": [
-              {
-                "pic": "parcel",
-                "label": "साधारण घड़ी"
-              },
-              {
-                "pic": "cross_box",
-                "label": "नहीं"
-              }
-            ],
-            "arrows": true,
-            "text": "साधारण केस वाली घड़ी आभूषण नहीं",
-            "mark": "wrong"
-          },
-          {
-            "pics": [
-              {
-                "pic": "parcel",
-                "label": "सोने की केस"
-              },
-              {
-                "pic": "tick_box",
-                "label": "हाँ"
-              }
-            ],
-            "arrows": false,
-            "text": "सोने चांदी केस वाली घड़ी आभूषण",
-            "mark": "right"
-          }
-        ],
-        "caps": [
-          "ग्राहक सोने की घड़ी पार्सल लाया",
-          "साधारण केस वाली घड़ी आभूषण नहीं",
-          "सोने चांदी केस वाली घड़ी आभूषण"
-        ],
-        "kit": "scene",
-        "ok": true,
-        "v": 6
+        "tries": 1,
+        "last_err": "icon-kahani band hai (kamzor chitra) - 'article_mark' ya 'address' hi",
+        "v": 8
       }
     }
   ],
