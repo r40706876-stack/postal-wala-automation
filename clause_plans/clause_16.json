@@ -61,49 +61,181 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 8,
+      "published_round_prev": 9,
       "chitra_v": {
-        "steps": [
+        "kit": "draw",
+        "panels": [
           {
-            "object": "envelope",
-            "items": [],
-            "text": "ग्राहक साधारण लिफाफा काउंटर पर लाते हैं।",
+            "shapes": [
+              {
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "r": 0,
+                "fill": "#FFFDD0",
+                "stroke": "#CCCCCC",
+                "sw": 1
+              },
+              {
+                "t": "sprite",
+                "name": "counter",
+                "x": 240,
+                "y": 240,
+                "w": 360,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "officer",
+                "x": 240,
+                "y": 140,
+                "w": 100,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "envelope",
+                "x": 160,
+                "y": 190,
+                "w": 70,
+                "rot": 0
+              },
+              {
+                "t": "label",
+                "text": "अंजीकृत डाक काउंटर",
+                "x": 240,
+                "y": 30,
+                "color": "dark"
+              }
+            ],
+            "text": "अंजीकृत डाक काउंटर",
+            "desc": "GDS officer at the post office counter inspecting daily ordinary mail.",
             "mark": "none"
           },
           {
-            "object": "envelope",
-            "items": [
+            "shapes": [
               {
-                "item": "wax_seal",
-                "place": "address",
-                "count": 1
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "r": 0,
+                "fill": "#FFFDD0",
+                "stroke": "#CCCCCC",
+                "sw": 1
+              },
+              {
+                "t": "sprite",
+                "name": "counter",
+                "x": 240,
+                "y": 240,
+                "w": 360,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "envelope",
+                "x": 240,
+                "y": 180,
+                "w": 90,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "wax_seal",
+                "x": 240,
+                "y": 175,
+                "w": 50,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "wax_seal",
+                "x": 200,
+                "y": 165,
+                "w": 40,
+                "rot": 0
+              },
+              {
+                "t": "label",
+                "text": "सभी साधारण डाक",
+                "x": 240,
+                "y": 30,
+                "color": "red"
               }
             ],
-            "text": "बिना जरूरत के सीलिंग वैक्स लगाना गलत है।",
+            "text": "सभी साधारण डाक",
+            "desc": "An ordinary unregistered envelope unnecessarily covered entirely with red sealing wax.",
             "mark": "wrong"
           },
           {
-            "object": "envelope",
-            "items": [],
-            "text": "केवल सुरक्षा के लिए आवश्यक होने पर ही उपयोग करें।",
+            "shapes": [
+              {
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "r": 0,
+                "fill": "#FFFDD0",
+                "stroke": "#CCCCCC",
+                "sw": 1
+              },
+              {
+                "t": "sprite",
+                "name": "counter",
+                "x": 240,
+                "y": 240,
+                "w": 360,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "parcel",
+                "x": 240,
+                "y": 180,
+                "w": 110,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "wax_seal",
+                "x": 240,
+                "y": 170,
+                "w": 55,
+                "rot": 0
+              },
+              {
+                "t": "label",
+                "text": "सुरक्षा हेतु आवश्यक",
+                "x": 240,
+                "y": 30,
+                "color": "green"
+              }
+            ],
+            "text": "सुरक्षा हेतु आवश्यक",
+            "desc": "A bulky unregistered article needing sealing wax strictly for protection.",
             "mark": "right"
           }
         ],
         "caps": [
-          "ग्राहक साधारण लिफाफा काउंटर पर लाते हैं।",
-          "बिना जरूरत के सीलिंग वैक्स लगाना गलत है।",
-          "केवल सुरक्षा के लिए आवश्यक होने पर ही उपयोग करें।"
+          "अंजीकृत डाक काउंटर",
+          "सभी साधारण डाक",
+          "सुरक्षा हेतु आवश्यक"
         ],
-        "kit": "story",
+        "score": 9.0,
         "ok": true,
         "v": 7
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
       },
-      "published": "2026-09-30",
-      "published_round": 9
+      "published": "2026-10-01",
+      "published_round": 10
     },
     {
       "basis": "guide",
