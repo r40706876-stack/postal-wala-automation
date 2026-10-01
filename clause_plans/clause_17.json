@@ -65,10 +65,66 @@
       "published_prev": "2026-10-01",
       "published_round_prev": 11,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): Fix gibberish text on the sign.; Fix gibberish text on the sign.",
-        "v": 9,
-        "kit_try": "photo2"
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A customer places shiny gold coins and a jeweled ring on a plain wooden counter in front of a postal clerk.",
+            "target": "the gold coins and ring on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "सिक्के और आभूषण भेजने के लिए बीमा ज़रूरी है।",
+            "desc": "A customer shows gold coins and jewellery on a plain wooden counter.",
+            "mark": "none",
+            "img": "clause_plans/chitra_img/f69f3cd977_31930082_1.jpg",
+            "box": [
+              0.29,
+              0.558,
+              0.628,
+              0.716
+            ]
+          },
+          {
+            "prompt": "A postal clerk places gold coins inside a small cardboard parcel on the plain wooden counter.",
+            "target": "the small cardboard parcel",
+            "tag": "केवल पंजीकृत",
+            "tag_color": "red",
+            "text": "केवल पंजीकृत डाक से आभूषण भेजना गलत है।",
+            "desc": "A parcel with gold coins tagged 'केवल पंजीकृत' shown as an incorrect choice.",
+            "mark": "wrong",
+            "img": "clause_plans/chitra_img/f69f3cd977_31930082_2.jpg",
+            "box": [
+              0.412,
+              0.602,
+              0.612,
+              0.771
+            ]
+          },
+          {
+            "prompt": "A postal clerk seals a cardboard parcel containing gold coins carefully on the plain wooden counter.",
+            "target": "the cardboard parcel",
+            "tag": "केवल बीमाकृत",
+            "tag_color": "green",
+            "text": "सिक्के और आभूषण केवल बीमा करवाकर ही भेजें।",
+            "desc": "A parcel tagged 'केवल बीमाकृत' shown as the correct way to send valuables.",
+            "mark": "right",
+            "img": "clause_plans/chitra_img/f69f3cd977_31930082_3.jpg",
+            "box": [
+              0.38,
+              0.573,
+              0.597,
+              0.762
+            ]
+          }
+        ],
+        "caps": [
+          "सिक्के और आभूषण भेजने के लिए बीमा ज़रूरी है।",
+          "केवल पंजीकृत डाक से आभूषण भेजना गलत है।",
+          "सिक्के और आभूषण केवल बीमा करवाकर ही भेजें।"
+        ],
+        "score": 8.0,
+        "lesson": "Insurance is mandatory when sending coins and jewelry.",
+        "ok": true,
+        "v": 9
       },
       "trap_v": {
         "none": true,
