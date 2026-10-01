@@ -62,67 +62,13 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-27",
-      "published_round_prev": 1,
+      "published_prev": "2026-09-30",
+      "published_round_prev": 5,
       "chitra_v": {
-        "panels": [
-          {
-            "pics": [
-              {
-                "pic": "customer",
-                "label": "ग्राहक"
-              },
-              {
-                "pic": "parcel",
-                "label": "सिक्के और गहने"
-              }
-            ],
-            "arrows": true,
-            "text": "ग्राहक सिक्के या गहने लाया है",
-            "mark": "none"
-          },
-          {
-            "pics": [
-              {
-                "pic": "parcel",
-                "label": "साधारण पार्सल"
-              },
-              {
-                "pic": "cross_box",
-                "label": "अस्वीकृत"
-              }
-            ],
-            "arrows": false,
-            "text": "बिना बीमा भेजना नियम के खिलाफ",
-            "mark": "wrong"
-          },
-          {
-            "pics": [
-              {
-                "pic": "parcel",
-                "label": "बीमाकृत डाक"
-              },
-              {
-                "pic": "tick_box",
-                "label": "अनिवार्य बीमा"
-              }
-            ],
-            "arrows": false,
-            "text": "मूल्यवान वस्तुएं केवल बीमाकृत भेजें",
-            "mark": "right"
-          }
-        ],
-        "caps": [
-          "ग्राहक सिक्के या गहने लाया है",
-          "बिना बीमा भेजना नियम के खिलाफ",
-          "मूल्यवान वस्तुएं केवल बीमाकृत भेजें"
-        ],
-        "kit": "scene",
-        "ok": true,
-        "v": 6
-      },
-      "published": "2026-09-30",
-      "published_round": 5
+        "tries": 1,
+        "last_err": "icon-kahani band hai (kamzor chitra) - 'article_mark' ya 'address' hi",
+        "v": 8
+      }
     },
     {
       "basis": "notes",
