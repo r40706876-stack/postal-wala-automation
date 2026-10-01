@@ -5,7 +5,7 @@ English title: Posting of coints etc
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish: 2026-10-01]
+## Part 1  [PASS | publish baaki]
 **Source (PO Guide):** इन्हें अंतदेशीय डाक द्वारा क े वल बीमा करवा कर िी भेजा जा सकता िै
 
 **Niyam:** सिक्के, आभूषण व कीमती पत्थर केवल बीमा करवाकर ही भेजे जा सकते हैं।
@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सिक्के + आभूषण + कीमती पत्थर → केवल बीमा
 **Hook:** ग्राहक गहने या सिक्के पार्सल कराना चाहता है, कैसे बुक करेंगे?
 
-## Part 2  [PASS | publish: 2026-10-01]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** अतभव्यक्ति " सोिे या चािंदी के लेख " में ... िेतकन तसक्क े और इिेक्ट् र ो या अन्य प्लेिेड सामान शाटमल नहीं होगा
 
 **Niyam:** सोने-चांदी के लेख में इलेक्ट्रो या अन्य प्लेटेड सामान शामिल नहीं है।
