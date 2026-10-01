@@ -65,8 +65,168 @@
       "published_prev": "2026-09-30",
       "published_round_prev": 5,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "icon-kahani band hai (kamzor chitra) - 'article_mark' ya 'address' hi",
+        "kit": "draw",
+        "panels": [
+          {
+            "shapes": [
+              {
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "r": 0,
+                "fill": "#FFFDD0",
+                "stroke": "",
+                "sw": 0
+              },
+              {
+                "t": "sprite",
+                "name": "counter",
+                "x": 240,
+                "y": 230,
+                "w": 380,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "customer",
+                "x": 100,
+                "y": 170,
+                "w": 90,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "officer",
+                "x": 380,
+                "y": 170,
+                "w": 90,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "parcel",
+                "x": 240,
+                "y": 160,
+                "w": 120,
+                "rot": 0
+              },
+              {
+                "t": "label",
+                "text": "आभूषण पारسل",
+                "x": 240,
+                "y": 95,
+                "color": "dark"
+              }
+            ],
+            "text": "ग्राहक आभूषण और सिक्के से भरा पार्सल लाया है।",
+            "desc": "Customer brings a parcel containing jewelry and coins to the post office counter.",
+            "mark": "none"
+          },
+          {
+            "shapes": [
+              {
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "r": 0,
+                "fill": "#FFFDD0",
+                "stroke": "",
+                "sw": 0
+              },
+              {
+                "t": "sprite",
+                "name": "parcel",
+                "x": 240,
+                "y": 160,
+                "w": 230,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "cross_box",
+                "x": 240,
+                "y": 160,
+                "w": 120,
+                "rot": 0
+              },
+              {
+                "t": "label",
+                "text": "बिना बीमा भेजना",
+                "x": 240,
+                "y": 55,
+                "color": "red"
+              }
+            ],
+            "text": "बिना बीमा पार्सल भेजना गलत और नियम के विरुद्ध है।",
+            "desc": "Big close-up of a standard parcel without insurance marked as wrong.",
+            "mark": "wrong"
+          },
+          {
+            "shapes": [
+              {
+                "t": "rect",
+                "x": 0,
+                "y": 0,
+                "w": 480,
+                "h": 300,
+                "r": 0,
+                "fill": "#FFFDD0",
+                "stroke": "",
+                "sw": 0
+              },
+              {
+                "t": "sprite",
+                "name": "parcel",
+                "x": 240,
+                "y": 160,
+                "w": 230,
+                "rot": 0
+              },
+              {
+                "t": "sprite",
+                "name": "register",
+                "x": 240,
+                "y": 160,
+                "w": 100,
+                "rot": 0
+              },
+              {
+                "t": "arrow",
+                "from": [
+                  350,
+                  110
+                ],
+                "to": [
+                  290,
+                  140
+                ],
+                "color": "#008000"
+              },
+              {
+                "t": "label",
+                "text": "केवल बीमा",
+                "x": 240,
+                "y": 55,
+                "color": "green"
+              }
+            ],
+            "text": "कीमती वस्तुएं केवल बीमा करवाकर ही भेजना अनिवार्य है।",
+            "desc": "Big close-up of a parcel with an insurance receipt pointed out as the mandatory correct way.",
+            "mark": "right"
+          }
+        ],
+        "caps": [
+          "ग्राहक आभूषण और सिक्के से भरा पार्सल लाया है।",
+          "बिना बीमा पार्सल भेजना गलत और नियम के विरुद्ध है।",
+          "कीमती वस्तुएं केवल बीमा करवाकर ही भेजना अनिवार्य है।"
+        ],
+        "score": 8.0,
+        "lesson": "Valuable items like jewelry and coins must always be sent through insured parcels.",
+        "ok": true,
         "v": 8
       }
     },
