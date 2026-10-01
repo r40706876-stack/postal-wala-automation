@@ -65,10 +65,10 @@
       "published_prev": "2026-10-01",
       "published_round_prev": 11,
       "chitra_v": {
-        "tries": 2,
-        "last_err": "caption 2,3: 4-11 shabd ka poora vaakya chahiye",
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): Fix gibberish text on the sign.; Fix gibberish text on the sign.",
         "v": 9,
-        "kit_try": "photo"
+        "kit_try": "photo2"
       },
       "trap_v": {
         "none": true,
