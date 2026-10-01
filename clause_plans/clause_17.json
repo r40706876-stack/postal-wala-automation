@@ -65,10 +65,70 @@
       "published_prev": "2026-10-01",
       "published_round_prev": 11,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "dekhne wale ne galat niyam samjha: 'Jewelry and precious stones must be sent via insured post rather than just registered post.' - chhoota: The viewer missed coins (स सिक्के) and focused only on jewelry and precious stones.",
-        "v": 9,
-        "kit_try": "photo3"
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A medium waist-up shot of a curious male customer showing gold coins and a shiny necklace to a GDS clerk across a plain wooden counter.",
+            "target": "the gold coins and necklace on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक सिक्के और आभूषण डाक द्वारा भेजना चाहता है।",
+            "desc": "A customer shows gold coins and a necklace to a postal clerk across a plain wooden counter.",
+            "mark": "none",
+            "img": "clause_plans/chitra_img/f69f3cd977_74108120_1.jpg",
+            "box": [
+              0.388,
+              0.55,
+              0.668,
+              0.735
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The GDS clerk looks worried and shakes his head at a plain paper envelope holding the coins on the counter.",
+            "target": "the plain envelope on the counter",
+            "tag": "केवल पंजीकृत",
+            "tag_color": "red",
+            "text": "सिक्के और आभूषण केवल पंजीकृत भेजना गलत है।",
+            "desc": "The clerk rejects a plain envelope containing coins, highlighted with a red tag 'केवल पंजीकृत'.",
+            "mark": "wrong",
+            "img": "clause_plans/chitra_img/f69f3cd977_74108120_2.jpg",
+            "box": [
+              0.417,
+              0.576,
+              0.606,
+              0.729
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The relieved customer smiles as the GDS clerk places a prominent red wax seal on a secure parcel box containing the valuables.",
+            "target": "the sealed parcel on the counter",
+            "tag": "केवल बीमाकृत",
+            "tag_color": "green",
+            "text": "सिक्के, आभूषण व कीमती पत्थर केवल बीमा करवाकर भेजें।",
+            "desc": "The clerk securely seals the insured parcel with red wax, highlighted with a green tag 'केवल बीमाकृत'.",
+            "mark": "right",
+            "img": "clause_plans/chitra_img/f69f3cd977_74108120_3.jpg",
+            "box": [
+              0.368,
+              0.544,
+              0.649,
+              0.741
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "ग्राहक सिक्के और आभूषण डाक द्वारा भेजना चाहता है।",
+          "सिक्के और आभूषण केवल पंजीकृत भेजना गलत है।",
+          "सिक्के, आभूषण व कीमती पत्थर केवल बीमा करवाकर भेजें।"
+        ],
+        "score": 8.0,
+        "lesson": "Coins, jewelry, and precious stones must be sent with insurance rather than just registered mail.",
+        "pv": 2,
+        "ok": true,
+        "v": 9
       },
       "trap_v": {
         "none": true,
