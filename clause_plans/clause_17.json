@@ -65,8 +65,8 @@
       "published_prev": "2026-10-01",
       "published_round_prev": 11,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "photo nahi bana: Cloudflare chitra nahi aaya: Cloudflare 400: {\"errors\":[{\"message\":\"AiError: Bad input: Error: Additional or unevaluated properties '/seed' at '/' not allowed (",
+        "tries": 2,
+        "last_err": "caption 2,3: 4-11 shabd ka poora vaakya chahiye",
         "v": 9,
         "kit_try": "photo"
       },
