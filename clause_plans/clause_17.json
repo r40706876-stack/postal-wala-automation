@@ -305,7 +305,13 @@
         "kit": "article_mark",
         "ok": true,
         "v": 8
-      }
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-01",
+      "published_round": 11
     },
     {
       "basis": "notes",
@@ -364,7 +370,7 @@
       "published_prev": "2026-09-27",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 1,
+        "tries": 2,
         "last_err": "icon-kahani band hai (kamzor chitra) - 'article_mark' ya 'address' hi",
         "v": 8
       }
