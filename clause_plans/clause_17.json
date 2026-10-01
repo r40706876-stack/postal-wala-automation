@@ -194,13 +194,13 @@
       "published_prev": "2026-10-01",
       "published_round_prev": 11,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "dekhne wale ne niyam theek nahi samjha: 'Electro-plated items do not qualify as gold or silver articles and should not be processed as such.' - chhoota: The item in the second picture is an abstract, unidentifiable metal shape, making it hard to compare with the jewelry in the other panels.; The thi",
+        "tries": 2,
+        "last_err": "chitra saaf nahi bana (khaana 2): The clerk is pointing at nothing; the peeling gold trinket is missing from the image.",
         "v": 9,
         "kit_try": "photo3"
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
       }
     },
@@ -261,10 +261,70 @@
       "published_prev": "2026-09-27",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "panel 3 tag 1-3 Hindi shabd ka ho",
-        "v": 9,
-        "kit_try": "photo3"
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk and a customer looking at three different watches lying on a plain counter, showing curiosity.",
+            "target": "the three watches on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "क्या सामान्य घड़ियाँ आभूषण की श्रेणी में आती हैं?",
+            "desc": "A GDS clerk and customer look at three different types of watches on a plain counter.",
+            "mark": "none",
+            "img": "clause_plans/chitra_img/ec60be8fc6_43560431_1.jpg",
+            "box": [
+              0.303,
+              0.709,
+              0.686,
+              0.822
+            ],
+            "bg_text": true
+          },
+          {
+            "prompt": "The GDS clerk holds a plain steel-cased watch, shaking their head with a concerned expression as the customer looks on.",
+            "target": "the steel watch in clerk hand",
+            "tag": "आभूषण नहीं",
+            "tag_color": "red",
+            "text": "स्टील या प्लास्टिक बॉडी वाली घड़ियाँ आभूषण नहीं होतीं।",
+            "desc": "The GDS clerk shows a steel-cased watch marked with a red tag stating it is not jewelry.",
+            "mark": "wrong",
+            "img": "clause_plans/chitra_img/ec60be8fc6_43560431_2.jpg",
+            "box": [
+              0.412,
+              0.398,
+              0.606,
+              0.672
+            ],
+            "bg_text": true
+          },
+          {
+            "prompt": "The GDS clerk smiles while holding a luxury watch with a bright, reflective gold-colored casing, showing it to the customer.",
+            "target": "the gold casing watch",
+            "tag": "आभूषण श्रेणी",
+            "tag_color": "green",
+            "text": "सोने या चांदी के खोल वाली घड़ियाँ आभूषण हैं।",
+            "desc": "The GDS clerk displays a gold-cased watch marked with a green tag confirming it is categorized as jewelry.",
+            "mark": "right",
+            "img": "clause_plans/chitra_img/ec60be8fc6_43560431_3.jpg",
+            "box": [
+              0.459,
+              0.486,
+              0.606,
+              0.75
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "क्या सामान्य घड़ियाँ आभूषण की श्रेणी में आती हैं?",
+          "स्टील या प्लास्टिक बॉडी वाली घड़ियाँ आभूषण नहीं होतीं।",
+          "सोने या चांदी के खोल वाली घड़ियाँ आभूषण हैं।"
+        ],
+        "score": 8.0,
+        "lesson": "Only wristwatches with gold or silver casings are classified as jewelry for postal purposes, while those made of steel or plastic are not.",
+        "pv": 2,
+        "ok": true,
+        "v": 9
       }
     }
   ],
