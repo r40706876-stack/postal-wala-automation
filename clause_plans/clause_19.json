@@ -66,7 +66,80 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-28"
+      "published_prev": "2026-09-28",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS postal clerk wearing a khaki uniform and a male customer standing face to face across a clean wooden counter top, both looking curiously down at an open mail bag containing various items, medium shot from waist up with clear facial expressions.",
+            "target": "the open mail bag on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "लेटर बॉक्स में डालने के लिए सही वस्तु चुननी है।",
+            "desc": "A GDS postal clerk and a customer look down at the open mail bag on the counter.",
+            "mark": "none",
+            "img": "clause_plans/chitra_img/16e541b44b_35658908_1.jpg",
+            "box": [
+              0.342,
+              0.527,
+              0.706,
+              0.843
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The same GDS clerk looking worried and confused while shaking his head, while the customer places a heavy parcel box on the plain counter top between them.",
+            "target": "the heavy parcel box on the counter",
+            "tag": "सभी प्रकार की डाक",
+            "tag_color": "red",
+            "text": "सभी प्रकार की डाक इस लेटर बॉक्स में नहीं डाली जा सकती।",
+            "desc": "The GDS clerk looks worried as the customer places a heavy parcel box tagged सभी प्रकार की डाक on the counter.",
+            "mark": "wrong",
+            "img": "clause_plans/chitra_img/16e541b44b_35658908_2.jpg",
+            "box": [
+              0.345,
+              0.545,
+              0.679,
+              0.866
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The same GDS clerk smiling with a relieved expression and nodding, while the customer happily holds up a paper letter and a postcard on the plain counter top.",
+            "target": "the paper letter and postcard",
+            "tag": "पत्र और पोस्टकार्ड",
+            "tag_color": "green",
+            "text": "इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं।",
+            "desc": "The GDS clerk smiles with relief as the customer holds up the paper letter and postcard tagged पत्र और पोस्टकार्ड.",
+            "mark": "right",
+            "img": "clause_plans/chitra_img/16e541b44b_35658908_3.jpg",
+            "box": [
+              0.381,
+              0.542,
+              0.619,
+              0.786
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "लेटर बॉक्स में डालने के लिए सही वस्तु चुननी है।",
+          "सभी प्रकार की डाक इस लेटर बॉक्स में नहीं डाली जा सकती।",
+          "इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं।"
+        ],
+        "score": 8.0,
+        "lesson": "Only letters and postcards should be placed in the letter box, not all types of mail.",
+        "pv": 2,
+        "ok": true,
+        "v": 9
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-02",
+      "published_round": 12
     },
     {
       "basis": "notes",
@@ -121,7 +194,14 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-28"
+      "published_prev": "2026-09-28",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "tries": 1,
+        "last_err": "panel 2 tag 'लिफाफे के ऊपरी कोने पर' 1-4 Hindi shabd ka ho; panel 3 tag 'शहर के नाम के नीचे' 1-4 Hindi shabd ka ho",
+        "v": 9,
+        "kit_try": "photo3"
+      }
     },
     {
       "basis": "guide",
@@ -174,7 +254,14 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published": "2026-09-28"
+      "published_prev": "2026-09-28",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "tries": 1,
+        "last_err": "caption 3 'विशेष लेटर बॉक्स में अन्य श्रेणी की डाक डालने पर डाक रोकी जा सकती है।' me 15 shabd hain - 5 se 11 shabd ka ek poora vaakya likho; panel 3 tag 'डाक रोकी जा सकती है' 1-4 Hindi shabd ka ho",
+        "v": 9,
+        "kit_try": "photo3"
+      }
     }
   ],
   "clause_text_en": "19. Posting in Special Letter Boxes  – Letter Boxes marked ‘For letters only’ should be \nused for the posting only of letters and postcards.  Similarly, the special letter boxes provided in \nthe cities for posting of Air Mail Articles QMS  articles be used only for posting such classes of \narticles.  Other articles if posted in such special letter -boxes, are liable to detention.  QMS articles \nshould bear full PIN below the name of the town of destination."
