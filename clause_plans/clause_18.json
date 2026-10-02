@@ -123,7 +123,13 @@
         "pv": 2,
         "ok": true,
         "v": 9
-      }
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "published": "2026-10-02",
+      "published_round": 12
     },
     {
       "basis": "guide",
@@ -174,7 +180,13 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-28",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 2): saaf nahi",
+        "v": 9,
+        "kit_try": "photo3"
+      }
     }
   ],
   "clause_text_en": "18. Letter Boxes –  Letters, postcards, inland letter cards & packets may be posted i n the \nletter-boxes in the post offices / mail offices, installed in public places, in mobile post offices and \nsteamers provided the postage due and late -fee prescribed for the purposes are fully prepaid.  \nMachine franked articles should not be posted in these letter boxes.’"
