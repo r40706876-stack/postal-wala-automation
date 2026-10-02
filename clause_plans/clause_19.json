@@ -198,14 +198,14 @@
       "published_prev": "2026-09-28",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 2,
-        "last_err": "panel 2 tag 'लिफाफे के ऊपरी कोने पर' 1-4 Hindi shabd ka ho; panel 3 tag 'शहर के नाम के नीचे' 1-4 Hindi shabd ka ho",
+        "tries": 3,
+        "last_err": "chitra saaf nahi bana (khaana 3): The customer should be nodding in relief as requested, but currently looks worried/sad.",
         "v": 9,
         "kit_try": "photo3"
       },
       "style_retry": true,
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
       }
     },
