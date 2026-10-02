@@ -30,7 +30,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. लेख के पीछे की ओर
 **Hint:** 
 **Trap:** कहीं भी PIN लिखना गलत है, केवल शहर के नीचे सही है।
-**Yaad:** QMS लेख → PIN → शहर के नाम के नीचे
+**Yaad:** QMS लेख → PIN कोड → शहर के नाम के नीचे
 **Hook:** QMS लेख सॉर्ट करते समय पता कहाँ चेक करना है?
 
 ## Part 3  [PASS | publish baaki]

@@ -152,7 +152,7 @@
       "correct": "C",
       "fact": "QMS लेखों पर गंतव्य शहर के नाम के ठीक नीचे PIN लिखना अनिवार्य है।",
       "trap": "कहीं भी PIN लिखना गलत है, केवल शहर के नीचे सही है।",
-      "yaad": "QMS लेख → PIN → शहर के नाम के नीचे",
+      "yaad": "QMS लेख → PIN कोड → शहर के नाम के नीचे",
       "hook": "QMS लेख सॉर्ट करते समय पता कहाँ चेक करना है?",
       "en": {
         "question": "Where should the PIN be written on QMS articles?",
@@ -186,7 +186,8 @@
       "trap_quote": "",
       "_clause_no": 19,
       "hook_v": {
-        "tries": 2
+        "ok": true,
+        "text": "QMS डाक पर पिन कोड कहाँ लिखा होना चाहिए?"
       },
       "auto_check": true,
       "check_errors": [],
@@ -197,10 +198,15 @@
       "published_prev": "2026-09-28",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 1,
+        "tries": 2,
         "last_err": "panel 2 tag 'लिफाफे के ऊपरी कोने पर' 1-4 Hindi shabd ka ho; panel 3 tag 'शहर के नाम के नीचे' 1-4 Hindi shabd ka ho",
         "v": 9,
         "kit_try": "photo3"
+      },
+      "style_retry": true,
+      "trap_v": {
+        "tries": 1,
+        "v": 3
       }
     },
     {
