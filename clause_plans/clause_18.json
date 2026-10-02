@@ -56,7 +56,74 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published": "2026-09-27"
+      "published_prev": "2026-09-27",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A male customer holding a paper envelope with a red square impression looks puzzled, asking a khaki-uniformed postal clerk beside a wooden counter.",
+            "target": "the envelope in customer hand",
+            "tag": "मशीन फ्रैंक डाक",
+            "tag_color": "dark",
+            "text": "मशीन फ्रैंक की गई डाक को कहाँ डालना चाहिए?",
+            "desc": "A customer holds a franked envelope tagged 'मशीन फ्रैंक डाक' while asking the postal clerk.",
+            "mark": "none",
+            "img": "clause_plans/chitra_img/21a41174c4_55163567_1.jpg",
+            "box": [
+              0.477,
+              0.368,
+              0.68,
+              0.488
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The customer attempts to drop the franked envelope into the slot of a red pillar letter box, while the clerk looks shocked and gestures with raised hand to stop him.",
+            "target": "the red letter box slot",
+            "tag": "लेटर बॉक्स में नहीं",
+            "tag_color": "red",
+            "text": "मशीन फ्रैंक डाक वस्तुएं लेटर बॉक्स में नहीं डालनी चाहिए।",
+            "desc": "The customer tries to post the envelope into the letter box tagged 'लेटर बॉक्स में नहीं' as the clerk intervenes.",
+            "mark": "wrong",
+            "img": "clause_plans/chitra_img/21a41174c4_55163567_2.jpg",
+            "box": [
+              0.417,
+              0.515,
+              0.58,
+              0.638
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The customer smilingly hands the franked envelope directly across the wooden counter into the hands of the pleased postal clerk.",
+            "target": "the envelope handed over counter",
+            "tag": "डाकघर काउंटर पर",
+            "tag_color": "green",
+            "text": "फ्रैंक की गई डाक हमेशा डाकघर खिड़की पर सौंपें।",
+            "desc": "The customer safely hands the envelope tagged 'डाकघर काउंटर पर' directly to the smiling clerk.",
+            "mark": "right",
+            "img": "clause_plans/chitra_img/21a41174c4_55163567_3.jpg",
+            "box": [
+              0.428,
+              0.462,
+              0.718,
+              0.63
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "मशीन फ्रैंक की गई डाक को कहाँ डालना चाहिए?",
+          "मशीन फ्रैंक डाक वस्तुएं लेटर बॉक्स में नहीं डालनी चाहिए।",
+          "फ्रैंक की गई डाक हमेशा डाकघर खिड़की पर सौंपें।"
+        ],
+        "score": 9.0,
+        "lesson": "Do not drop machine-franked mail into the letter box; instead, always hand it over at the post office counter.",
+        "pv": 2,
+        "ok": true,
+        "v": 9
+      }
     },
     {
       "basis": "guide",
@@ -106,7 +173,8 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published": "2026-09-28"
+      "published_prev": "2026-09-28",
+      "published_round_prev": 1
     }
   ],
   "clause_text_en": "18. Letter Boxes –  Letters, postcards, inland letter cards & packets may be posted i n the \nletter-boxes in the post offices / mail offices, installed in public places, in mobile post offices and \nsteamers provided the postage due and late -fee prescribed for the purposes are fully prepaid.  \nMachine franked articles should not be posted in these letter boxes.’"
