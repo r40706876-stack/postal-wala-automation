@@ -194,15 +194,77 @@
       "published_prev": "2026-10-01",
       "published_round_prev": 11,
       "chitra_v": {
-        "tries": 2,
-        "last_err": "chitra saaf nahi bana (khaana 2): The clerk is pointing at nothing; the peeling gold trinket is missing from the image.",
-        "v": 9,
-        "kit_try": "photo3"
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk and a customer standing across a counter, looking at a shiny gold necklace laid flat on the table, with curious and neutral expressions.",
+            "target": "the shiny gold necklace on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "काउंटर पर सोने के गहने भेजने के लिए एक ग्राहक आया है।",
+            "desc": "A GDS clerk and a customer looking at a shiny gold necklace on the plain counter.",
+            "mark": "none",
+            "img": "clause_plans/chitra_img/f1d57cad3a_32304702_1.jpg",
+            "box": [
+              0.398,
+              0.69,
+              0.618,
+              0.777
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The same GDS clerk and customer looking worried as the customer tries to book a shiny metallic wrist watch instead of gold, with a confused expression.",
+            "target": "the shiny metallic wrist watch on the counter",
+            "tag": "इलेक्ट्रो प्लेटेड सामान",
+            "tag_color": "red",
+            "text": "इलेक्ट्रो प्लेटेड सामान को सोने या चांदी का लेख नहीं मान सकते।",
+            "desc": "A GDS clerk and customer looking at a shiny metallic wrist watch on the counter with a red tag reading इलेक्ट्रो प्लेटेड सामान.",
+            "mark": "wrong",
+            "img": "clause_plans/chitra_img/f1d57cad3a_32304702_2.jpg",
+            "box": [
+              0.407,
+              0.678,
+              0.601,
+              0.794
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The same GDS clerk and smiling customer pointing at a solid pure gold brick ornament placed on the counter, with happy relieved expressions.",
+            "target": "the solid pure gold brick ornament on the counter",
+            "tag": "शुद्ध सोने का लेख",
+            "tag_color": "green",
+            "text": "नियम के तहत केवल असली सोने-चांदी के लेख ही स्वीकार किए जाते हैं।",
+            "desc": "A GDS clerk and smiling customer looking at the solid pure gold brick ornament on the counter with a green tag reading शुद्ध सोने का लेख.",
+            "mark": "right",
+            "img": "clause_plans/chitra_img/f1d57cad3a_32304702_3.jpg",
+            "box": [
+              0.418,
+              0.658,
+              0.589,
+              0.783
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "काउंटर पर सोने के गहने भेजने के लिए एक ग्राहक आया है।",
+          "इलेक्ट्रो प्लेटेड सामान को सोने या चांदी का लेख नहीं मान सकते।",
+          "नियम के तहत केवल असली सोने-चांदी के लेख ही स्वीकार किए जाते हैं।"
+        ],
+        "score": 9.0,
+        "lesson": "Only accept genuine gold or silver articles at the post office counter, while rejecting electroplated items.",
+        "pv": 2,
+        "ok": true,
+        "v": 9
       },
       "trap_v": {
         "tries": 2,
         "v": 3
-      }
+      },
+      "published": "2026-10-02",
+      "published_round": 12
     },
     {
       "basis": "notes",
