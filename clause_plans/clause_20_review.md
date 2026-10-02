@@ -29,7 +29,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. आधा डाक शुल्क भुगतान
 - D. केवल मौखिक अनुमति
 **Hint:** 
-**Trap:** बिना लेट फीस स्वीकारना गलत है, पूर्ण भुगतान ही सही है।
+**Trap:** पत्र-पेटी में डाले जा सकने वाले पत्र वैन पर वर्जित  (source: Large official or other letters, which owing to their size, cannot be posted in the letter-boxes, may be received by hand at the window of the van or post office.)
 **Yaad:** थोक पत्र = पूर्ण पूर्व भुगतान
 **Hook:** ग्राहक थोक में बहुत सारे पत्र लाया, काउंटर पर क्या जांचेंगे?
 

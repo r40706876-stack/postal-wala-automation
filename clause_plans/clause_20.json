@@ -151,7 +151,7 @@
       "d": "केवल मौखिक अनुमति",
       "correct": "A",
       "fact": "थोक पत्रों के लिए डाक प्रभार और लेट फीस का पूरी तरह पूर्व भुगतान अनिवार्य है।",
-      "trap": "बिना लेट फीस स्वीकारना गलत है, पूर्ण भुगतान ही सही है।",
+      "trap": "पत्र-पेटी में डाले जा सकने वाले पत्र वैन पर वर्जित",
       "yaad": "थोक पत्र = पूर्ण पूर्व भुगतान",
       "hook": "ग्राहक थोक में बहुत सारे पत्र लाया, काउंटर पर क्या जांचेंगे?",
       "en": {
@@ -183,7 +183,7 @@
         ]
       },
       "hint": "",
-      "trap_quote": "",
+      "trap_quote": "Large official or other letters, which owing to their size, cannot be posted in the letter-boxes, may be received by hand at the window of the van or post office.",
       "_clause_no": 20,
       "hook_v": {
         "ok": true,
@@ -196,7 +196,12 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-29",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "trap_old": "बिना लेट फीस स्वीकारना गलत है, पूर्ण भुगतान ही सही है।",
+      "trap_v": {
+        "ok": true,
+        "v": 3
+      }
     }
   ],
   "clause_text_en": "20. Presentation of large official and other letters in bulk at the window of the van or \nPost Office -  Large official or other letters, which owing to their size, cannot be posted in the \nletter-boxes, may be received by hand at the window of the van or post office.  There is also no \nobjection to receiving at the window of the van or office, letters or packets posted in bulk \nprovided, the postage and the late fee, if any, are fully prepaid."
