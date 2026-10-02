@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** फ्रैंक डाक = लेटर बॉक्स में वर्जित
 **Hook:** ग्राहक की फ्रैंक डाक कहाँ नहीं डालनी चाहिए?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-10-02]
 **Source (PO Guide):** Letters, postcards, inland letter cards & packets may be posted
 
 **Niyam:** लेटर बॉक्स में पत्र, पोस्टकार्ड, इनलैंड कार्ड और पैकेट डाले जा सकते हैं।

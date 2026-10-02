@@ -182,11 +182,77 @@
       "published_prev": "2026-09-28",
       "published_round_prev": 1,
       "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A young male customer in a blue shirt looks curious while holding simple paper mail, asking a middle-aged GDS postman in a khaki shirt standing beside a bright red letter box.",
+            "target": "the red pillar letter box",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "लेटर बॉक्स में कौन सी डाक वस्तुएं डाल सकते हैं?",
+            "desc": "A customer asking a postman next to a red letter box which mail items can be dropped inside.",
+            "mark": "none",
+            "img": "clause_plans/chitra_img/5775986982_92449261_1.jpg",
+            "box": [
+              0.333,
+              0.321,
+              0.609,
+              0.969
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The customer looks worried and confused while trying to push a thick parcel box with heavy red wax seals into the thin slot of the red letter box, while the postman gestures to stop him.",
+            "target": "the wax sealed box",
+            "tag": "केवल बीमाकृत वस्तु",
+            "tag_color": "red",
+            "text": "केवल बीमाकृत वस्तुएं लेटर बॉक्स में नहीं डालते।",
+            "desc": "A customer attempting to force an insured parcel box with red tag into a letter box, marked as wrong.",
+            "mark": "wrong",
+            "img": "clause_plans/chitra_img/5775986982_92449261_2.jpg",
+            "box": [
+              0.34,
+              0.447,
+              0.676,
+              0.808
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The customer smiles with relief as he smoothly drops a standard white paper letter, a postcard, and a small paper packet into the narrow slot of the red letter box while the postman smiles approvingly.",
+            "target": "the paper envelope and postcard",
+            "tag": "पत्र पोस्टकार्ड और पैकेट",
+            "tag_color": "green",
+            "text": "लेटर बॉक्स में पत्र पोस्टकार्ड और पैकेट डाले जाते हैं।",
+            "desc": "A smiling customer inserting a letter and postcard with green tag into the letter box, marked as correct.",
+            "mark": "right",
+            "img": "clause_plans/chitra_img/5775986982_92449261_3.jpg",
+            "box": [
+              0.455,
+              0.544,
+              0.608,
+              0.772
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "लेटर बॉक्स में कौन सी डाक वस्तुएं डाल सकते हैं?",
+          "केवल बीमाकृत वस्तुएं लेटर बॉक्स में नहीं डालते।",
+          "लेटर बॉक्स में पत्र पोस्टकार्ड और पैकेट डाले जाते हैं।"
+        ],
+        "score": 9.0,
+        "lesson": "Do not post insured articles in the letter box; instead, only letters, postcards, and packets should be put inside.",
+        "pv": 2,
+        "ok": true,
+        "v": 9
+      },
+      "trap_v": {
         "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 2): saaf nahi",
-        "v": 9,
-        "kit_try": "photo3"
-      }
+        "v": 3
+      },
+      "published": "2026-10-02",
+      "published_round": 12
     }
   ],
   "clause_text_en": "18. Letter Boxes –  Letters, postcards, inland letter cards & packets may be posted i n the \nletter-boxes in the post offices / mail offices, installed in public places, in mobile post offices and \nsteamers provided the postage due and late -fee prescribed for the purposes are fully prepaid.  \nMachine franked articles should not be posted in these letter boxes.’"
