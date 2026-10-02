@@ -62,7 +62,78 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-29"
+      "published_prev": "2026-09-29",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS postal worker and a customer stand by a plain counter top, looking at a very large flat brown envelope that cannot fit into a small letter box slot.",
+            "target": "the large brown envelope",
+            "tag": "बड़े पत्र",
+            "tag_color": "dark",
+            "text": "बड़े पत्र जो लेटर बॉक्स में नहीं आ सकते",
+            "desc": "A GDS worker and a customer look at a large brown envelope on the counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/ad979ebd25_27773073_1.jpg",
+            "box": [
+              0.335,
+              0.463,
+              0.672,
+              0.708
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A customer looks worried while trying to force a large flat brown envelope into the small narrow slot of a small red letter box placed on the counter.",
+            "target": "the red letter box slot",
+            "tag": "लेटर बॉक्स",
+            "tag_color": "red",
+            "text": "बड़े पत्र लेटर बॉक्स में नहीं डाले जा सकते",
+            "desc": "A customer struggles to push a large envelope into a red letter box slot with a red warning tag.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/ad979ebd25_27773073_2.jpg",
+            "box": [
+              0.377,
+              0.476,
+              0.642,
+              0.744
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A smiling customer happily hands over a large flat brown envelope directly by hand across the plain counter to the GDS postal worker.",
+            "target": "the large brown envelope",
+            "tag": "हाथों-हाथ",
+            "tag_color": "green",
+            "text": "वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे",
+            "desc": "A customer hands the large envelope directly by hand across the counter to the worker with a green tag.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/ad979ebd25_27773073_3.jpg",
+            "box": [
+              0.345,
+              0.475,
+              0.676,
+              0.719
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "बड़े पत्र जो लेटर बॉक्स में नहीं आ सकते",
+          "बड़े पत्र लेटर बॉक्स में नहीं डाले जा सकते",
+          "वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे"
+        ],
+        "score": 8.0,
+        "lesson": "Large letters that do not fit in the letter box must be handed over by hand at the van or postal counter instead of being dropped into the letter box.",
+        "pv": 2,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      }
     },
     {
       "basis": "notes",
@@ -118,7 +189,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-29"
+      "published_prev": "2026-09-29",
+      "published_round_prev": 1
     }
   ],
   "clause_text_en": "20. Presentation of large official and other letters in bulk at the window of the van or \nPost Office -  Large official or other letters, which owing to their size, cannot be posted in the \nletter-boxes, may be received by hand at the window of the van or post office.  There is also no \nobjection to receiving at the window of the van or office, letters or packets posted in bulk \nprovided, the postage and the late fee, if any, are fully prepaid."

@@ -312,7 +312,7 @@
       "correct": "C",
       "fact": "विशेष लेटर बॉक्स में अन्य श्रेणी की डाक डालने पर उसे रोका जा सकता है।",
       "trap": "सीधे रिजेक्ट करना गलत है, पहले रोकने का प्रावधान है।",
-      "yaad": "विशेष लेटर बॉक्स → अन्य श्रेणी → रोका",
+      "yaad": "विशेष लेटर बॉक्स → गलत डाक → रोकी जा सकती है",
       "hook": "हवाई डाक वाले बॉक्स में साधारण पत्र मिला, अब क्या करें?",
       "en": {
         "question": "What happens if other articles are posted in special letter boxes?",
@@ -346,7 +346,8 @@
       "trap_quote": "",
       "_clause_no": 19,
       "hook_v": {
-        "tries": 2
+        "ok": true,
+        "text": "विशेष लेटर बॉक्स में गलत डाक गिरे, तो क्या करें?"
       },
       "auto_check": true,
       "check_errors": [],
@@ -355,11 +356,82 @@
       "published_prev": "2026-09-28",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "caption 3 'विशेष लेटर बॉक्स में अन्य श्रेणी की डाक डालने पर डाक रोकी जा सकती है।' me 15 shabd hain - 5 se 11 shabd ka ek poora vaakya likho; panel 3 tag 'डाक रोकी जा सकती है' 1-4 Hindi shabd ka ho",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk and a customer are standing by a red pillar letter box, with the customer holding a large heavy parcel and looking confused at the clerk.",
+            "target": "the large heavy parcel",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "क्या मैं इस भारी पार्सल को विशेष लेटर बॉक्स में डाल सकता हूँ?",
+            "desc": "The clerk and customer look at a large parcel near a red pillar letter box.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/6d6dd58c70_56833397_1.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The customer is frustratedly shoving the large parcel into the narrow slit of the red pillar letter box while the clerk watches with a concerned expression.",
+            "target": "the large heavy parcel",
+            "tag": "गलत श्रेणी की डाक",
+            "tag_color": "red",
+            "text": "गलत श्रेणी की डाक डालने से आपकी डाक रोकी जा सकती है।",
+            "desc": "The customer tries to force a large parcel into the small letter box slot.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/6d6dd58c70_56833397_2.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The customer is smiling and holding a standard envelope, about to drop it into the red pillar letter box slot as the clerk nods in approval.",
+            "target": "the standard letter envelope",
+            "tag": "सही श्रेणी की डाक",
+            "tag_color": "green",
+            "text": "सही डाक डालने से ही आपका पत्र सुरक्षित रूप से वितरित होगा।",
+            "desc": "The customer prepares to drop a standard envelope into the letter box.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/6d6dd58c70_56833397_3.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "क्या मैं इस भारी पार्सल को विशेष लेटर बॉक्स में डाल सकता हूँ?",
+          "गलत श्रेणी की डाक डालने से आपकी डाक रोकी जा सकती है।",
+          "सही डाक डालने से ही आपका पत्र सुरक्षित रूप से वितरित होगा।"
+        ],
+        "score": 9.0,
+        "lesson": "Do not put heavy parcels into letter boxes, only put letters so they can be safely delivered.",
+        "pv": 2,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
-      }
+        "attempt": 2
+      },
+      "style_retry": true,
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-02",
+      "published_round": 12
     }
   ],
   "clause_text_en": "19. Posting in Special Letter Boxes  – Letter Boxes marked ‘For letters only’ should be \nused for the posting only of letters and postcards.  Similarly, the special letter boxes provided in \nthe cities for posting of Air Mail Articles QMS  articles be used only for posting such classes of \narticles.  Other articles if posted in such special letter -boxes, are liable to detention.  QMS articles \nshould bear full PIN below the name of the town of destination."
