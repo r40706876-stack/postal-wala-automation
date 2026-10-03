@@ -5,7 +5,7 @@ English title: Posting in Special Letter Boxes
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-10-03]
 **Source (PO Guide):** लेिर बॉक्स टजनक े ऊपर “क े िि ित्रों के तिए" “for letters only” टचल्कन्हत है उन्हें क े वल: - ित्र , िोस्टकाडा
 
 **Niyam:** इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं।
