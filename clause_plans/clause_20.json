@@ -201,7 +201,79 @@
       "trap_v": {
         "ok": true,
         "v": 3
-      }
+      },
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A young Indian man in a blue shirt stands at a plain wooden counter, presenting a very large stack of white paper envelopes tied with a string. A female Indian postal clerk in a green saree behind the counter looks at the stack with a curious expression.",
+            "target": "the large stack of white envelopes",
+            "tag": "थोक पत्र",
+            "tag_color": "dark",
+            "text": "ग्राहक डाकघर में थोक पत्र भेजने के लिए लाया।",
+            "desc": "A young Indian man presents a large stack of envelopes labeled 'थोक पत्र' to a female clerk at a plain counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/d9575fc830_72759706_1.jpg",
+            "box": [
+              0.311,
+              0.524,
+              0.762,
+              0.807
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "At the plain wooden counter, a young Indian man in a blue shirt places a few tiny coins next to the very large stack of white paper envelopes. The female Indian postal clerk in a green saree looks worried, refusing the tiny payment.",
+            "target": "the small coins on the counter",
+            "tag": "अधूरा भुगतान",
+            "tag_color": "red",
+            "text": "बिना पूरी फीस दिए थोक पत्र स्वीकार नहीं होंगे।",
+            "desc": "A young Indian man offers only a few coins labeled 'अधूरा भुगतान' next to a large stack of envelopes, while the clerk looks worried.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/d9575fc830_72759706_2.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "At the plain wooden counter, a young Indian man in a blue shirt places a stack of Indian rupee currency notes and many coins next to the very large stack of white paper envelopes. The female Indian postal clerk in a green saree is smiling and relieved.",
+            "target": "the stack of currency notes and coins on the counter",
+            "tag": "पूरी तरह से पूर्व भुगतान",
+            "tag_color": "green",
+            "text": "थोक पत्रों के लिए पूरी तरह पूर्व भुगतान अनिवार्य है।",
+            "desc": "A young Indian man offers a large stack of cash and coins labeled 'पूरी तरह से पूर्व भुगतान' next to a large stack of envelopes, and the clerk is smiling.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/d9575fc830_72759706_3.jpg",
+            "box": [
+              0.214,
+              0.708,
+              0.492,
+              0.825
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "ग्राहक डाकघर में थोक पत्र भेजने के लिए लाया।",
+          "बिना पूरी फीस दिए थोक पत्र स्वीकार नहीं होंगे।",
+          "थोक पत्रों के लिए पूरी तरह पूर्व भुगतान अनिवार्य है।"
+        ],
+        "score": 9.0,
+        "lesson": "Bulk letters must not be accepted at the post office without complete prepayment of fees, as full prepayment is strictly mandatory for them.",
+        "pv": 2,
+        "ok": true,
+        "v": 9,
+        "attempt": 2
+      },
+      "published": "2026-10-03",
+      "published_round": 12
     }
   ],
   "clause_text_en": "20. Presentation of large official and other letters in bulk at the window of the van or \nPost Office -  Large official or other letters, which owing to their size, cannot be posted in the \nletter-boxes, may be received by hand at the window of the van or post office.  There is also no \nobjection to receiving at the window of the van or office, letters or packets posted in bulk \nprovided, the postage and the late fee, if any, are fully prepaid."

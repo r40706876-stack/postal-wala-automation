@@ -5,7 +5,7 @@ English title: Articles requiring special treatment
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish: 2026-09-29]
+## Part 1  [PASS | publish baaki]
 **Source (PO Guide):** ऐसे लेखों पर कवर के एड्रेस साइड के ऊपर स्पष्ट रूप से टिल्चिन्हत होना चाहिए
 
 **Niyam:** पंजीकृत, बीमाकृत या मूल्य देय लेखों पर अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।
@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** रजिस्ट्री / बीमा / VP → अंकन → एड्रेस साइड के ऊपर
 **Hook:** रजिस्ट्री या वीपी पर मार्किंग लिफाफे के किस तरफ लगेगी?
 
-## Part 2  [PASS | publish: 2026-09-29]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** ज्यादा मूल्य के डाक टिकट लगे हों उनको आगे प्रेषित करने से पहले डाकघर में... विरुपति करना चाहिए
 
 **Niyam:** ज्यादा मूल्य के डाक टिकट वाले हवाई डाक लेखों के स्टाम्प प्रेषण से पूर्व विरुपति किए जाने चाहिए।

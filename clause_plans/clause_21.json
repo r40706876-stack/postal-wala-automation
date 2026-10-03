@@ -62,7 +62,96 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-29"
+      "published_prev": "2026-09-29",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A medium shot of a young female GDS clerk and a male customer at a wooden counter. The customer is handing over a plain white envelope to the clerk. Both have natural, curious expressions.",
+            "target": "the plain white envelope",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "पंजीकृत, बीमाकृत या मूल्य देय लेखों को कैसे भेजें?",
+            "desc": "The customer hands a plain white envelope to the female clerk across the counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/84ab2cbb58_97372198_1.jpg",
+            "box": [
+              0.38,
+              0.461,
+              0.583,
+              0.551
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The young female clerk looks confused and worried, pointing at the bottom of the white envelope held by the male customer.",
+            "target": "the bottom of the white envelope",
+            "tag": "गलत स्थान",
+            "tag_color": "red",
+            "text": "इन पर गलत स्थान पर अंकन करना गलत है।",
+            "desc": "The clerk points at the bottom of the envelope where the marking is wrongly placed, showing a red tag 'गलत स्थान'.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "To,",
+                "Shri Ram Kumar",
+                "Patna, PIN 800001",
+                "REGISTERED"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "img": "clause_plans/chitra_img/84ab2cbb58_97372198_2.jpg",
+            "box": [
+              0.381,
+              0.453,
+              0.646,
+              0.552
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The young female clerk is smiling happily, holding the white envelope correctly facing forward, pointing to its top edge.",
+            "target": "the top of the envelope",
+            "tag": "ऊपर एड्रेस साइड",
+            "tag_color": "green",
+            "text": "अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।",
+            "desc": "The smiling clerk points to the top of the address side of the envelope where 'REGISTERED' is clearly marked, with a green tag 'ऊपर एड्रेस साइड पर'.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "REGISTERED",
+                "To,",
+                "Shri Ram Kumar",
+                "Patna, PIN 800001"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "img": "clause_plans/chitra_img/84ab2cbb58_97372198_3.jpg",
+            "box": [
+              0.373,
+              0.383,
+              0.648,
+              0.563
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "पंजीकृत, बीमाकृत या मूल्य देय लेखों को कैसे भेजें?",
+          "इन पर गलत स्थान पर अंकन करना गलत है।",
+          "अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।"
+        ],
+        "score": 8.0,
+        "lesson": "When sending registered, insured, or value-payable articles, the registration or category marking must be placed at the top of the address side of the cover rather than at the bottom.",
+        "pv": 2,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      }
     },
     {
       "basis": "notes",
@@ -118,7 +207,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-29"
+      "published_prev": "2026-09-29",
+      "published_round_prev": 1
     },
     {
       "basis": "notes",
