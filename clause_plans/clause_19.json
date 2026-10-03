@@ -66,8 +66,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-28",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-02",
+      "published_round_prev": 12,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -135,11 +135,9 @@
         "v": 9
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
-      },
-      "published": "2026-10-02",
-      "published_round": 12
+      }
     },
     {
       "basis": "notes",
@@ -195,8 +193,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-28",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-02",
+      "published_round_prev": 12,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -297,9 +295,7 @@
       "trap_v": {
         "tries": 2,
         "v": 3
-      },
-      "published": "2026-10-02",
-      "published_round": 12
+      }
     },
     {
       "basis": "guide",
@@ -353,8 +349,8 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-28",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-02",
+      "published_round_prev": 12,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -429,9 +425,7 @@
       "trap_v": {
         "tries": 1,
         "v": 3
-      },
-      "published": "2026-10-02",
-      "published_round": 12
+      }
     }
   ],
   "clause_text_en": "19. Posting in Special Letter Boxes  – Letter Boxes marked ‘For letters only’ should be \nused for the posting only of letters and postcards.  Similarly, the special letter boxes provided in \nthe cities for posting of Air Mail Articles QMS  articles be used only for posting such classes of \narticles.  Other articles if posted in such special letter -boxes, are liable to detention.  QMS articles \nshould bear full PIN below the name of the town of destination."
