@@ -151,7 +151,13 @@
         "ok": true,
         "v": 9,
         "attempt": 1
-      }
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-03",
+      "published_round": 12
     },
     {
       "basis": "notes",
