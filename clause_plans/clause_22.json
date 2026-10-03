@@ -60,7 +60,77 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-29",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS postal employee stands at a plain wooden counter looking at a customer who is holding a bundle of letters, with a curious and neutral expression.",
+            "target": "the bundle of letters",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक डाक लेख पोस्ट ऑफिस लेकर काउंटर पर आया है।",
+            "desc": "A GDS clerk stands behind a counter facing a customer holding a bundle of letters on the plain wooden counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/040f672031_95679754_1.jpg",
+            "box": [
+              0.396,
+              0.643,
+              0.792,
+              0.858
+            ],
+            "bg_text": true
+          },
+          {
+            "prompt": "A GDS postal employee looks stressed and overwhelmed while standing behind a counter cluttered with a huge chaotic pile of large mail bags and loose letters.",
+            "target": "the huge pile of mail bags",
+            "tag": "अंतिम समय पर भारी भीड़",
+            "tag_color": "red",
+            "text": "डाक लेखों को अंतिम समय पर पोस्ट करने से भीड़ होती है।",
+            "desc": "A GDS clerk stands behind a counter cluttered with a huge pile of mail bags tagged as अंतिम समय पर भारी भीड़, showing a worried expression.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/040f672031_95679754_2.jpg",
+            "box": [
+              0.0,
+              0.35,
+              0.893,
+              1.0
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A GDS postal employee smiles and hands over a receipt across a clean counter with only a few orderly mail bags, showing a relieved expression.",
+            "target": "the orderly mail bags",
+            "tag": "समय पर पोस्ट",
+            "tag_color": "green",
+            "text": "डाक लेखों को समय पर पोस्ट करने से भारी भीड़ नहीं होती।",
+            "desc": "A GDS clerk smiles behind a clean counter with orderly mail bags tagged as समय पर पोस्ट, handing a receipt to the customer.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/040f672031_95679754_3.jpg",
+            "box": [
+              0.642,
+              0.582,
+              0.907,
+              0.73
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "ग्राहक डाक लेख पोस्ट ऑफिस लेकर काउंटर पर आया है।",
+          "डाक लेखों को अंतिम समय पर पोस्ट करने से भीड़ होती है।",
+          "डाक लेखों को समय पर पोस्ट करने से भारी भीड़ नहीं होती।"
+        ],
+        "score": 8.0,
+        "lesson": "Post your mail articles on time to avoid heavy crowds and delays at the post office counter.",
+        "pv": 2,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      }
     },
     {
       "basis": "guide",

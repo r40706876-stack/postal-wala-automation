@@ -214,7 +214,83 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-29",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "The customer hands a white envelope with large, bright colorful postage stamps to the GDS clerk. Both look at the envelope at the center of the counter with curious expressions.",
+            "target": "the white envelope with large colorful stamps",
+            "tag": "ज्यादा मूल्य के स्टाम्प",
+            "tag_color": "dark",
+            "text": "क्या ज्यादा मूल्य वाले हवाई डाक लेख सीधे भेजने चाहिए?",
+            "desc": "The GDS clerk and customer look at a white envelope with bright stamps on the counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/3af340318e_33755649_1.jpg",
+            "box": [
+              0.332,
+              0.462,
+              0.632,
+              0.63
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The GDS clerk, looking worried, holds the envelope with clean, uncancelled postage stamps over an open mailbag, preparing to drop it directly inside. The customer looks confused.",
+            "target": "the envelope with uncancelled stamps",
+            "tag": "बिना विरुपति सीधे भेजना",
+            "tag_color": "red",
+            "text": "बिना विरुपति किए हवाई डाक सीधे आगे नहीं भेजें।",
+            "desc": "The clerk is about to drop the clean-stamped envelope directly into a mailbag without cancelling the stamps.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/3af340318e_33755649_2.jpg",
+            "box": [
+              0.332,
+              0.458,
+              0.668,
+              0.693
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The GDS clerk, smiling and relieved, presses a wooden cancellation stamp tool onto the colorful postage stamps of the envelope on the counter. The customer looks happy.",
+            "target": "the stamp tool pressing on the envelope",
+            "tag": "स्टाम्प विरुपति करना",
+            "tag_color": "green",
+            "text": "प्रेषण से पूर्व हवाई डाक लेखों के स्टाम्प विरुपति करें।",
+            "desc": "The smiling clerk uses a hand stamp to deface the postage stamps on the envelope before transmission.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/3af340318e_33755649_3.jpg",
+            "box": [
+              0.332,
+              0.45,
+              0.66,
+              0.65
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "क्या ज्यादा मूल्य वाले हवाई डाक लेख सीधे भेजने चाहिए?",
+          "बिना विरुपति किए हवाई डाक सीधे आगे नहीं भेजें।",
+          "प्रेषण से पूर्व हवाई डाक लेखों के स्टाम्प विरुपति करें।"
+        ],
+        "score": 8.0,
+        "lesson": "Cancel the stamps on mail articles with high value before dispatching them.",
+        "pv": 2,
+        "ok": true,
+        "v": 9,
+        "attempt": 2
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "published": "2026-10-03",
+      "published_round": 12
     },
     {
       "basis": "notes",
