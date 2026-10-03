@@ -202,100 +202,10 @@
       "published_prev": "2026-10-02",
       "published_round_prev": 12,
       "chitra_v": {
-        "kit": "photo",
-        "panels": [
-          {
-            "prompt": "A GDS postal clerk in a khaki uniform holds a white envelope while a customer looks at it curiously across a plain wooden counter.",
-            "target": "the white envelope in hands",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "क्यूएमएस लेख पर पिन कोड कहाँ अंकित होना चाहिए?",
-            "desc": "A GDS clerk holding a blank white envelope at the counter.",
-            "mark": "none",
-            "card": {
-              "lines": [
-                "श्री राहुल कुमार",
-                "एमजी रोड",
-                "दिल्ली",
-                "PIN 110001"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "img": "clause_plans/chitra_img/9a64efecfc_10230117_1.jpg",
-            "box": [
-              0.347,
-              0.495,
-              0.591,
-              0.663
-            ],
-            "bg_text": false
-          },
-          {
-            "prompt": "A worried customer at the counter looks at an envelope with a concerned facial expression while the GDS clerk points at the wrong corner.",
-            "target": "the white envelope on the counter",
-            "tag": "लिफाफे के ऊपरी कोने पर",
-            "tag_color": "red",
-            "text": "पिन कोड लिफाफे के ऊपरी कोने पर लिखना गलत है।",
-            "desc": "A worried customer looking at an envelope with the PIN code marked at the wrong top-right corner in red.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री राहुल कुमार",
-                "एमजी रोड",
-                "दिल्ली"
-              ],
-              "corner": "PIN 110001",
-              "hl": -2
-            },
-            "img": "clause_plans/chitra_img/9a64efecfc_10230117_2.jpg",
-            "box": [
-              0.36,
-              0.525,
-              0.597,
-              0.693
-            ],
-            "bg_text": false
-          },
-          {
-            "prompt": "A smiling, relieved customer nods in satisfaction as the GDS clerk points to the correct PIN placement on the envelope.",
-            "target": "the white envelope on the counter",
-            "tag": "शहर के नाम के नीचे",
-            "tag_color": "green",
-            "text": "शहर के नाम के ठीक नीचे पिन लिखना अनिवार्य है।",
-            "desc": "A relieved customer smiling and nodding while looking at the envelope with the PIN written correctly below the city name in green.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "श्री राहुल कुमार",
-                "एमजी रोड",
-                "दिल्ली",
-                "PIN 110001"
-              ],
-              "corner": "",
-              "hl": 3
-            },
-            "img": "clause_plans/chitra_img/9a64efecfc_10230117_3.jpg",
-            "box": [
-              0.361,
-              0.552,
-              0.599,
-              0.718
-            ],
-            "bg_text": false
-          }
-        ],
-        "caps": [
-          "क्यूएमएस लेख पर पिन कोड कहाँ अंकित होना चाहिए?",
-          "पिन कोड लिफाफे के ऊपरी कोने पर लिखना गलत है।",
-          "शहर के नाम के ठीक नीचे पिन लिखना अनिवार्य है।"
-        ],
-        "score": 9.0,
-        "lesson": "The PIN code must be written directly below the city name on a postal article.",
-        "pv": 2,
-        "ok": true,
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 3): saaf nahi",
         "v": 9,
-        "attempt": 1
+        "kit_try": "photo3"
       },
       "style_retry": true,
       "trap_v": {
