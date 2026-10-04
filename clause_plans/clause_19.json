@@ -202,16 +202,99 @@
       "published_prev": "2026-10-02",
       "published_round_prev": 12,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 3): saaf nahi",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A young Indian male postal clerk in khaki uniform and a male customer standing at a plain wooden counter, customer handing over a blank white envelope with a questioning expression.",
+            "target": "the white envelope in customer hand",
+            "tag": "QMS लेख",
+            "tag_color": "dark",
+            "text": "ग्राहक ने डाकिए को QMS पत्र दिया।",
+            "desc": "The customer hands a white envelope marked QMS लेख to the clerk over the counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/9a64efecfc_46887773_1.jpg",
+            "box": [
+              0.365,
+              0.519,
+              0.642,
+              0.609
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The postal clerk looks puzzled while holding the blank white envelope and pointing his finger at the top upper corner of the envelope in front of the customer.",
+            "target": "the white envelope held by the clerk",
+            "tag": "कोने में PIN",
+            "tag_color": "red",
+            "text": "PIN कोने में लिखना बिल्कुल गलत है।",
+            "desc": "The clerk points at the envelope corner with a card showing PIN written in the top-right corner tagged कोने में PIN.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राहुल वर्मा",
+                "मकान 10, मुख्य मार्ग",
+                "जयपुर"
+              ],
+              "corner": "PIN 302001",
+              "hl": -2
+            },
+            "img": "clause_plans/chitra_img/9a64efecfc_46887773_2.jpg",
+            "box": [
+              0.439,
+              0.449,
+              0.655,
+              0.645
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The postal clerk smiles warmly while holding a pen and pointing it at the bottom line of the blank white envelope lying on the wooden counter.",
+            "target": "the white envelope lying on the counter",
+            "tag": "शहर के नीचे PIN",
+            "tag_color": "green",
+            "text": "PIN शहर के नाम के नीचे लिखें।",
+            "desc": "The clerk points to the envelope with a card showing PIN written directly below the city name Jaipur tagged शहर के नीचे PIN.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राहुल वर्मा",
+                "मकान 10, मुख्य मार्ग",
+                "जयपुर",
+                "PIN 302001"
+              ],
+              "corner": "",
+              "hl": 3
+            },
+            "img": "clause_plans/chitra_img/9a64efecfc_46887773_3.jpg",
+            "box": [
+              0.409,
+              0.583,
+              0.603,
+              0.729
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "ग्राहक ने डाकिए को QMS पत्र दिया।",
+          "PIN कोने में लिखना बिल्कुल गलत है।",
+          "PIN शहर के नाम के नीचे लिखें।"
+        ],
+        "score": 9.0,
+        "lesson": "When receiving or addressing a QMS letter, the PIN code must be written directly below the city name instead of in the top right corner of the address block.",
+        "pv": 2,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 1
       },
       "style_retry": true,
       "trap_v": {
         "tries": 2,
         "v": 3
-      }
+      },
+      "published": "2026-10-04",
+      "published_round": 13
     },
     {
       "basis": "guide",
@@ -271,71 +354,71 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS clerk and a customer are standing by a red pillar letter box, with the customer holding a large heavy parcel and looking confused at the clerk.",
-            "target": "the large heavy parcel",
+            "prompt": "A GDS clerk and a customer standing at a counter looking at a bright red special letter box placed on the table.",
+            "target": "the red letter box on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "क्या मैं इस भारी पार्सल को विशेष लेटर बॉक्स में डाल सकता हूँ?",
-            "desc": "The clerk and customer look at a large parcel near a red pillar letter box.",
+            "text": "विशेष लेटर बॉक्स में अन्य श्रेणी की डाक न डालें।",
+            "desc": "A GDS clerk and a customer standing at a counter looking at a red letter box.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/6d6dd58c70_56833397_1.jpg",
+            "img": "clause_plans/chitra_img/6d6dd58c70_81738287_1.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.401,
+              0.435,
+              0.625,
+              0.705
             ],
             "bg_text": false
           },
           {
-            "prompt": "The customer is frustratedly shoving the large parcel into the narrow slit of the red pillar letter box while the clerk watches with a concerned expression.",
-            "target": "the large heavy parcel",
-            "tag": "गलत श्रेणी की डाक",
+            "prompt": "A worried customer holding an ordinary plain white envelope and dropping it into the slot of the red special letter box.",
+            "target": "the ordinary white envelope",
+            "tag": "अन्य श्रेणी की डाक",
             "tag_color": "red",
-            "text": "गलत श्रेणी की डाक डालने से आपकी डाक रोकी जा सकती है।",
-            "desc": "The customer tries to force a large parcel into the small letter box slot.",
+            "text": "अन्य श्रेणी की डाक डालने पर उसे रोका जा सकता है।",
+            "desc": "A worried customer dropping an ordinary white envelope into the red special letter box with a red tag marking other category mail.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/6d6dd58c70_56833397_2.jpg",
+            "img": "clause_plans/chitra_img/6d6dd58c70_81738287_2.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.47,
+              0.465,
+              0.645,
+              0.646
             ],
             "bg_text": false
           },
           {
-            "prompt": "The customer is smiling and holding a standard envelope, about to drop it into the red pillar letter box slot as the clerk nods in approval.",
-            "target": "the standard letter envelope",
-            "tag": "सही श्रेणी की डाक",
+            "prompt": "A smiling customer dropping a correct special mail envelope into the slot of the red special letter box while the clerk looks on approvingly.",
+            "target": "the special mail envelope",
+            "tag": "विशेष श्रेणी की डाक",
             "tag_color": "green",
-            "text": "सही डाक डालने से ही आपका पत्र सुरक्षित रूप से वितरित होगा।",
-            "desc": "The customer prepares to drop a standard envelope into the letter box.",
+            "text": "विशेष लेटर बॉक्स में केवल विशेष श्रेणी की डाक डालें।",
+            "desc": "A smiling customer posting the correct special category mail into the red letter box with a green tag.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/6d6dd58c70_56833397_3.jpg",
+            "img": "clause_plans/chitra_img/6d6dd58c70_81738287_3.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.359,
+              0.521,
+              0.517,
+              0.66
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "क्या मैं इस भारी पार्सल को विशेष लेटर बॉक्स में डाल सकता हूँ?",
-          "गलत श्रेणी की डाक डालने से आपकी डाक रोकी जा सकती है।",
-          "सही डाक डालने से ही आपका पत्र सुरक्षित रूप से वितरित होगा।"
+          "विशेष लेटर बॉक्स में अन्य श्रेणी की डाक न डालें।",
+          "अन्य श्रेणी की डाक डालने पर उसे रोका जा सकता है।",
+          "विशेष लेटर बॉक्स में केवल विशेष श्रेणी की डाक डालें।"
         ],
-        "score": 9.0,
-        "lesson": "Do not put heavy parcels into letter boxes, only put letters so they can be safely delivered.",
+        "score": 8.0,
+        "lesson": "Put only special category mail into the special letter box, and avoid inserting other categories of mail.",
         "pv": 2,
         "ok": true,
         "v": 9,
-        "attempt": 2
+        "attempt": 4
       },
       "style_retry": true,
       "trap_v": {
