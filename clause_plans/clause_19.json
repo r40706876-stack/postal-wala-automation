@@ -422,9 +422,11 @@
       },
       "style_retry": true,
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
-      }
+      },
+      "published": "2026-10-04",
+      "published_round": 15
     }
   ],
   "clause_text_en": "19. Posting in Special Letter Boxes  – Letter Boxes marked ‘For letters only’ should be \nused for the posting only of letters and postcards.  Similarly, the special letter boxes provided in \nthe cities for posting of Air Mail Articles QMS  articles be used only for posting such classes of \narticles.  Other articles if posted in such special letter -boxes, are liable to detention.  QMS articles \nshould bear full PIN below the name of the town of destination."
