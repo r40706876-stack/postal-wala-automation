@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** QMS लेख → PIN कोड → शहर के नाम के नीचे
 **Hook:** QMS लेख सॉर्ट करते समय पता कहाँ चेक करना है?
 
-## Part 3  [PASS | publish: 2026-10-04]
+## Part 3  [PASS | publish baaki]
 **Source (PO Guide):** Other articles if posted in such special letter -boxes, are liable to detention.
 
 **Niyam:** विशेष लेटर बॉक्स में अन्य श्रेणी की डाक डालने पर उसे रोका जा सकता है।
