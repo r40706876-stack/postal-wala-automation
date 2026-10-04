@@ -185,7 +185,13 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "tries": 1,
+        "last_err": "dekhne wale ne niyam theek nahi samjha: 'Posting postal articles on time ensures safe delivery, whereas delaying them causes blockades and delays.' - chhoota: The central items change completely across the three panels (a briefcase-like bag in image 1, a tied mail sack with a clock in image 2, and a",
+        "v": 9,
+        "kit_try": "photo3"
+      }
     },
     {
       "basis": "guide",

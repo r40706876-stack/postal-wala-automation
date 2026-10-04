@@ -1,8 +1,4 @@
 [
- "dekhne wale ne niyam theek nahi samjha: 'Special letters must be posted in the correct letter box to avoid being withheld, as placing them in the wrong category can lead to stoppag",
- "chitra saaf nahi bana (khaana 2, 3): The large stack of letters next to the coins is missing.; The stack of currency notes is missing, only a stack of white paper is shown.",
- "chitra saaf nahi bana (khaana 2): The clerk is holding the envelope with another person instead of dropping it into a mail bag.",
- "chitra saaf nahi bana (khaana 2): The customer is holding the envelope instead of pointing at its top corner.",
  "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
  "photo nahi bana: Cloudflare chitra nahi aaya: HTTPSConnectionPool(host='api.cloudflare.com', port=443): Read timed out. (read timeout=150)",
  "dekhne wale ne niyam theek nahi samjha: 'Do not mix wrong categories of mail because it might be withheld or delayed.' - chhoota: The character's expressions and poses are nearly i",
@@ -10,5 +6,9 @@
  "dekhne wale ne niyam theek nahi samjha: 'Ordinary letters must be posted in the general letter box and not in special letter boxes to avoid restrictions.' - chhoota: Picture 1 feat",
  "dekhne wale ne niyam theek nahi samjha: 'Do not put wrong categories of mail into a special letter box, as incorrect posting can lead to action or stoppage of mail.' - chhoota: The",
  "dekhne wale ne niyam theek nahi samjha: 'Put the correct category of mail into the special letter box to avoid any action against wrong mail.' - chhoota: The letter box changes col",
- "chitra saaf nahi bana (khaana 2): The customer is not inserting the envelope; the clerk is holding a separate small envelope near the slot."
+ "chitra saaf nahi bana (khaana 2): The customer is not inserting the envelope; the clerk is holding a separate small envelope near the slot.",
+ "dekhne wale ne niyam theek nahi samjha: 'Posting mail late results in blockages and delays rather than fast delivery.' - chhoota: The character drawings are almost identical across",
+ "pehla chitra saaf nahi bana: saaf nahi",
+ "dekhne wale ne niyam theek nahi samjha: 'Post postal articles on time because posting them late leads to restrictions and delays.' - chhoota: The captions contradict the visual cue",
+ "dekhne wale ne niyam theek nahi samjha: 'Posting postal articles on time ensures safe delivery, whereas delaying them causes blockades and delays.' - chhoota: The central items cha"
 ]
