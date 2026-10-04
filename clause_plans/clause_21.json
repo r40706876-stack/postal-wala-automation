@@ -68,85 +68,67 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A medium shot of a young female GDS clerk and a male customer at a wooden counter. The customer is handing over a plain white envelope to the clerk. Both have natural, curious expressions.",
-            "target": "the plain white envelope",
-            "tag": "",
+            "prompt": "The customer hands a blank white rectangular envelope to the postal clerk across the counter, both looking curious.",
+            "target": "the white envelope on the counter",
+            "tag": "पंजीकृत लेख",
             "tag_color": "dark",
-            "text": "पंजीकृत, बीमाकृत या मूल्य देय लेखों को कैसे भेजें?",
-            "desc": "The customer hands a plain white envelope to the female clerk across the counter.",
+            "text": "पंजीकृत लेख पर अंकन कहाँ होना चाहिए?",
+            "desc": "The customer hands a white envelope tagged पंजीकृत लेख to the clerk.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/84ab2cbb58_97372198_1.jpg",
+            "img": "clause_plans/chitra_img/84ab2cbb58_30250404_1.jpg",
             "box": [
-              0.38,
-              0.461,
-              0.583,
-              0.551
+              0.278,
+              0.565,
+              0.67,
+              0.69
             ],
             "bg_text": false
           },
           {
-            "prompt": "The young female clerk looks confused and worried, pointing at the bottom of the white envelope held by the male customer.",
-            "target": "the bottom of the white envelope",
-            "tag": "गलत स्थान",
+            "prompt": "The postal clerk turns the white envelope over to show its triangular flap on the back, pointing at it with a worried expression.",
+            "target": "the back of the white envelope",
+            "tag": "गलत: बैक साइड",
             "tag_color": "red",
-            "text": "इन पर गलत स्थान पर अंकन करना गलत है।",
-            "desc": "The clerk points at the bottom of the envelope where the marking is wrongly placed, showing a red tag 'गलत स्थान'.",
+            "text": "बैक साइड पर अंकन करना गलत है।",
+            "desc": "The clerk points at the back flap of the envelope tagged गलत: बैक साइड with worry.",
             "mark": "wrong",
-            "card": {
-              "lines": [
-                "To,",
-                "Shri Ram Kumar",
-                "Patna, PIN 800001",
-                "REGISTERED"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "img": "clause_plans/chitra_img/84ab2cbb58_97372198_2.jpg",
+            "card": null,
+            "img": "clause_plans/chitra_img/84ab2cbb58_30250404_2.jpg",
             "box": [
-              0.381,
-              0.453,
-              0.646,
-              0.552
+              0.285,
+              0.536,
+              0.684,
+              0.708
             ],
             "bg_text": false
           },
           {
-            "prompt": "The young female clerk is smiling happily, holding the white envelope correctly facing forward, pointing to its top edge.",
+            "prompt": "The clerk places the envelope flat with its smooth front side up, smiling and pointing toward the upper area.",
             "target": "the top of the envelope",
             "tag": "ऊपर एड्रेस साइड",
             "tag_color": "green",
-            "text": "अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।",
-            "desc": "The smiling clerk points to the top of the address side of the envelope where 'REGISTERED' is clearly marked, with a green tag 'ऊपर एड्रेस साइड पर'.",
+            "text": "अंकन हमेशा कवर के एड्रेस साइड ऊपर करें।",
+            "desc": "The clerk happily points to the top front of the envelope tagged ऊपर एड्रेस साइड.",
             "mark": "right",
-            "card": {
-              "lines": [
-                "REGISTERED",
-                "To,",
-                "Shri Ram Kumar",
-                "Patna, PIN 800001"
-              ],
-              "corner": "",
-              "hl": 0
-            },
-            "img": "clause_plans/chitra_img/84ab2cbb58_97372198_3.jpg",
+            "card": null,
+            "img": "clause_plans/chitra_img/84ab2cbb58_30250404_3.jpg",
             "box": [
-              0.373,
-              0.383,
-              0.648,
-              0.563
+              0.28,
+              0.458,
+              0.68,
+              0.725
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "पंजीकृत, बीमाकृत या मूल्य देय लेखों को कैसे भेजें?",
-          "इन पर गलत स्थान पर अंकन करना गलत है।",
-          "अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।"
+          "पंजीकृत लेख पर अंकन कहाँ होना चाहिए?",
+          "बैक साइड पर अंकन करना गलत है।",
+          "अंकन हमेशा कवर के एड्रेस साइड ऊपर करें।"
         ],
         "score": 8.0,
-        "lesson": "When sending registered, insured, or value-payable articles, the registration or category marking must be placed at the top of the address side of the cover rather than at the bottom.",
+        "lesson": "When handling a registered article, you must always make the necessary markings on the address side of the cover rather than on the back side.",
         "pv": 2,
         "ok": true,
         "v": 9,
@@ -155,7 +137,9 @@
       "trap_v": {
         "tries": 2,
         "v": 3
-      }
+      },
+      "published": "2026-10-04",
+      "published_round": 16
     },
     {
       "basis": "notes",
