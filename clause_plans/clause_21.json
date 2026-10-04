@@ -62,8 +62,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-29",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-03",
+      "published_round_prev": 12,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -153,11 +153,9 @@
         "attempt": 1
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
-      },
-      "published": "2026-10-03",
-      "published_round": 12
+      }
     },
     {
       "basis": "notes",
@@ -213,8 +211,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-29",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-03",
+      "published_round_prev": 12,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -288,9 +286,7 @@
       "trap_v": {
         "none": true,
         "v": 3
-      },
-      "published": "2026-10-03",
-      "published_round": 12
+      }
     },
     {
       "basis": "notes",
