@@ -66,73 +66,73 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-03",
-      "published_round_prev": 13,
+      "published_prev": "2026-10-04",
+      "published_round_prev": 14,
       "chitra_v": {
         "kit": "photo",
         "panels": [
           {
-            "prompt": "Medium shot of a young Indian male customer and a female Indian postal clerk standing by a plain counter beside a red pillar letter box, the customer looking curious and pointing towards the letter box.",
-            "target": "the red pillar letter box",
-            "tag": "लेटर बॉक्स",
+            "prompt": "A GDS employee and a customer stand at a plain wooden counter, looking at a small red letter box placed between them with a curious expression.",
+            "target": "the small red letter box on the counter",
+            "tag": "",
             "tag_color": "dark",
-            "text": "इस लेटर बॉक्स में क्या डाल सकते हैं?",
-            "desc": "A customer asks the postal clerk about the red letter box, tagged 'लेटर बॉक्स'.",
+            "text": "लेटर बॉक्स में कौन सी वस्तुएं डाली जा सकती हैं?",
+            "desc": "A GDS employee and a customer looking at a small red letter box on the plain counter.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/16e541b44b_73607565_1.jpg",
+            "img": "clause_plans/chitra_img/16e541b44b_14812578_1.jpg",
             "box": [
-              0.398,
-              0.169,
-              0.65,
-              0.966
+              0.22,
+              0.3,
+              0.78,
+              0.86
             ],
             "bg_text": false
           },
           {
-            "prompt": "Medium shot of the young Indian male customer holding a brown parcel above the slot of the red pillar letter box, while the female postal clerk looks worried and raises her open palm in a stopping gesture.",
-            "target": "the brown parcel",
+            "prompt": "A worried customer tries to drop a heavy parcel into the narrow slot of the small red letter box on the counter, while the GDS employee watches with concern.",
+            "target": "the heavy parcel near the letter box slot",
             "tag": "सभी प्रकार की डाक",
             "tag_color": "red",
-            "text": "इसमें सभी प्रकार की डाक नहीं डाल सकते।",
-            "desc": "The customer tries to post a brown parcel tagged 'सभी प्रकार की डाक', but the postal clerk stops him.",
+            "text": "इस लेटर बॉक्स में सभी प्रकार की डाक नहीं डालनी चाहिए।",
+            "desc": "A worried customer trying to drop a heavy parcel into the small red letter box with a red tag reading सभी प्रकार की डाक.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/16e541b44b_73607565_2.jpg",
+            "img": "clause_plans/chitra_img/16e541b44b_14812578_2.jpg",
             "box": [
-              0.439,
-              0.311,
-              0.575,
-              0.482
+              0.323,
+              0.39,
+              0.719,
+              0.761
             ],
             "bg_text": false
           },
           {
-            "prompt": "Medium shot of the young Indian male customer sliding a white paper envelope and a yellow postcard together into the slot of the red pillar letter box, while the female postal clerk smiles happily and gives a thumbs-up.",
-            "target": "the envelope and postcard",
+            "prompt": "A smiling customer easily drops a plain letter and a postcard into the slot of the small red letter box, while the GDS employee nods approvingly.",
+            "target": "the letter and postcard near the letter box slot",
             "tag": "पत्र और पोस्टकार्ड",
             "tag_color": "green",
-            "text": "इसमें केवल पत्र और पोस्टकार्ड ही डालें।",
-            "desc": "The customer posts a white envelope and a yellow postcard tagged 'पत्र और पोस्टकार्ड' as the clerk approves.",
+            "text": "इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं।",
+            "desc": "A smiling customer dropping a plain letter and postcard into the small red letter box with a green tag reading पत्र और पोस्टकार्ड.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/16e541b44b_73607565_3.jpg",
+            "img": "clause_plans/chitra_img/16e541b44b_14812578_3.jpg",
             "box": [
-              0.424,
-              0.397,
-              0.572,
-              0.534
+              0.403,
+              0.48,
+              0.634,
+              0.808
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "इस लेटर बॉक्स में क्या डाल सकते हैं?",
-          "इसमें सभी प्रकार की डाक नहीं डाल सकते।",
-          "इसमें केवल पत्र और पोस्टकार्ड ही डालें।"
+          "लेटर बॉक्स में कौन सी वस्तुएं डाली जा सकती हैं?",
+          "इस लेटर बॉक्स में सभी प्रकार की डाक नहीं डालनी चाहिए।",
+          "इस लेटर बॉक्स में केवल पत्र और पोस्टकार्ड ही डाले जा सकते हैं।"
         ],
-        "score": 8.0,
-        "lesson": "Only post letters and postcards into the letter box, rather than dropping all general types of mail or parcels.",
+        "score": 9.0,
+        "lesson": "Only letters and postcards should be posted in the letter box, never oversized packages.",
         "pv": 2,
         "ok": true,
         "v": 9,
@@ -143,7 +143,7 @@
         "v": 3
       },
       "published": "2026-10-04",
-      "published_round": 14
+      "published_round": 15
     },
     {
       "basis": "notes",
