@@ -1,6 +1,6 @@
 {
   "clause_no": 22,
-  "current_part": 2,
+  "current_part": 3,
   "total_parts": 6,
   "hook_index": 3,
   "day": 4,
@@ -36,8 +36,8 @@
       "desc": "30-year-old Financial Advisor from Delhi, India. Speaks Urdu. Voice is relaxed."
     }
   ],
-  "voice_idx": 100,
-  "episode": 77,
+  "voice_idx": 101,
+  "episode": 78,
   "s2_start": 30,
   "round": 16
 }

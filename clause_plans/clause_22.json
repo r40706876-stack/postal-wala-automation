@@ -263,7 +263,13 @@
         "ok": true,
         "v": 9,
         "attempt": 5
-      }
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-05",
+      "published_round": 16
     },
     {
       "basis": "guide",
