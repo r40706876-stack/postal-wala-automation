@@ -62,39 +62,39 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-02",
-      "published_round_prev": 12,
+      "published_prev": "2026-10-04",
+      "published_round_prev": 16,
       "chitra_v": {
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS clerk and a customer standing at a wooden counter, looking at a large oversized paper envelope lying flat on the table, both showing curious expressions.",
-            "target": "the oversized paper envelope on the counter",
-            "tag": "",
+            "prompt": "A customer holding a large thick envelope in both hands, looking confused at the postal counter while the clerk looks at it.",
+            "target": "the large thick envelope",
+            "tag": "बड़ा पत्र",
             "tag_color": "dark",
-            "text": "बड़ा पत्र लेटर बॉक्स में नहीं आ सकता है।",
-            "desc": "A GDS clerk and a customer looking at an oversized envelope on the counter.",
+            "text": "यह बड़ा पत्र लेटर बॉक्स के लिए उपयुक्त नहीं है।",
+            "desc": "A customer standing at the counter holding a large thick envelope with a neutral expression.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/ad979ebd25_85023658_1.jpg",
+            "img": "clause_plans/chitra_img/ad979ebd25_8602086_1.jpg",
             "box": [
-              0.241,
-              0.569,
-              0.775,
-              0.773
+              0.349,
+              0.454,
+              0.587,
+              0.642
             ],
             "bg_text": false
           },
           {
-            "prompt": "A customer trying to forcefully push a large oversized letter into a small red letter box slot on the counter, looking worried and frustrated.",
-            "target": "the red letter box slot",
-            "tag": "लेटर बॉक्स में नहीं आएगा",
+            "prompt": "The customer is forcefully trying to jam and bend the oversized large envelope into the narrow metal slot of a letter box.",
+            "target": "the bent envelope in the slot",
+            "tag": "लेटर बॉक्स में गलत पोस्ट",
             "tag_color": "red",
-            "text": "बड़े पत्र लेटर बॉक्स में नहीं डाले जा सकते।",
-            "desc": "A customer looking worried while trying to put a large letter into a letter box with a red tag 'लेटर बॉक्स में नहीं आएगा'.",
+            "text": "बड़े पत्र को लेटर बॉक्स में जबरदस्ती डालना गलत है।",
+            "desc": "A customer bending and jamming a large envelope into the narrow letter box slot incorrectly.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/ad979ebd25_85023658_2.jpg",
+            "img": "clause_plans/chitra_img/ad979ebd25_8602086_2.jpg",
             "box": [
               0.22,
               0.3,
@@ -104,32 +104,32 @@
             "bg_text": false
           },
           {
-            "prompt": "The GDS clerk happily accepting the large oversized letter directly by hand across the counter from the smiling customer.",
-            "target": "the large letter handed over",
+            "prompt": "The GDS clerk at the postal counter is taking the large envelope directly by hand from the customer to accept it.",
+            "target": "the large envelope handed over",
             "tag": "खिड़की पर हाथों-हाथ",
             "tag_color": "green",
             "text": "बड़े पत्र वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे।",
-            "desc": "The GDS clerk accepting the large letter by hand with a green tag 'खिड़की पर हाथों-हाथ' while smiling.",
+            "desc": "The GDS clerk accepting the large envelope by hand directly across the postal counter correctly.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/ad979ebd25_85023658_3.jpg",
+            "img": "clause_plans/chitra_img/ad979ebd25_8602086_3.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.359,
+              0.464,
+              0.594,
+              0.655
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "बड़ा पत्र लेटर बॉक्स में नहीं आ सकता है।",
-          "बड़े पत्र लेटर बॉक्स में नहीं डाले जा सकते।",
+          "यह बड़ा पत्र लेटर बॉक्स के लिए उपयुक्त नहीं है।",
+          "बड़े पत्र को लेटर बॉक्स में जबरदस्ती डालना गलत है।",
           "बड़े पत्र वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे।"
         ],
-        "score": 8.0,
-        "lesson": "Large letters should not be put into letter boxes, but instead handled by hand at the counter or van.",
-        "pv": 2,
+        "score": 9.0,
+        "lesson": "Large letters should not be forced into a letter box, but instead should be handed over directly at the post office window or van.",
+        "pv": 3,
         "ok": true,
         "v": 9,
         "attempt": 2
@@ -138,8 +138,13 @@
         "tries": 2,
         "v": 3
       },
-      "published": "2026-10-04",
-      "published_round": 16
+      "opt_pics": {
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/ad979ebd25_8602086_1.jpg",
+        "err": "option-chitra jaanch fail: B"
+      },
+      "published": "2026-10-05",
+      "published_round": 17
     },
     {
       "basis": "notes",
@@ -195,8 +200,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-03",
-      "published_round_prev": 12,
+      "published_prev": "2026-10-04",
+      "published_round_prev": 16,
       "trap_old": "बिना लेट फीस स्वीकारना गलत है, पूर्ण भुगतान ही सही है।",
       "trap_v": {
         "ok": true,
@@ -206,74 +211,91 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS postal clerk and a customer standing at a clean wooden counter top, looking at a large stack of letters together with curious expressions.",
-            "target": "the large stack of letters on the counter",
+            "prompt": "A GDS clerk and a customer standing across a plain wooden counter, looking at a large stack of letters together.",
+            "target": "the stack of letters on the counter",
             "tag": "थोक पत्र",
             "tag_color": "dark",
-            "text": "थोक पत्रों के लिए क्या नियम है?",
-            "desc": "A GDS clerk and a customer looking at a large stack of letters on the counter.",
+            "text": "वैन या खिड़की पर थोक पत्र स्वीकार होते हैं।",
+            "desc": "A GDS clerk and a customer looking at a stack of bulk letters on the counter with the tag थोक पत्र.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/d9575fc830_79356548_1.jpg",
+            "img": "clause_plans/chitra_img/d9575fc830_12746835_1.jpg",
             "box": [
-              0.296,
-              0.515,
-              0.725,
-              0.767
+              0.368,
+              0.573,
+              0.64,
+              0.76
             ],
             "bg_text": false
           },
           {
-            "prompt": "A GDS postal clerk and a worried customer standing at the counter with a large stack of letters, while the customer holds a small amount of coins showing partial payment.",
-            "target": "the small amount of coins on the counter",
-            "tag": "अधूरा भुगतान",
+            "prompt": "A customer handing over a stack of bulk letters to the GDS clerk without any payment or coins on the counter.",
+            "target": "the letters handed over",
+            "tag": "बिना भुगतान",
             "tag_color": "red",
-            "text": "अधूरा भुगतान करना बिलकुल गलत है।",
-            "desc": "A GDS clerk and a worried customer with a large stack of letters and coins marked as आधा डाक शुल्क भुगतान.",
+            "text": "बिना भुगतान के थोक पत्र स्वीकार नहीं होते।",
+            "desc": "A customer handing over bulk letters without any payment with the red tag बिना किसी भुगतान के.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/d9575fc830_79356548_2.jpg",
+            "img": "clause_plans/chitra_img/d9575fc830_12746835_2.jpg",
             "box": [
-              0.663,
-              0.634,
-              0.761,
-              0.777
+              0.365,
+              0.58,
+              0.642,
+              0.771
             ],
-            "bg_text": true
+            "bg_text": false
           },
           {
-            "prompt": "A GDS postal clerk and a smiling customer standing at the counter, with the customer placing a complete stack of currency notes next to a large stack of letters.",
-            "target": "the complete stack of currency notes",
-            "tag": "पूर्व भुगतान",
+            "prompt": "A customer placing a stack of bulk letters on the counter with only some coins representing partial payment.",
+            "target": "the partial coins and letters",
+            "tag": "अधूरा भुगतान",
+            "tag_color": "red",
+            "text": "अधूरा भुगतान करने पर पत्र स्वीकार नहीं होते।",
+            "desc": "A customer placing letters with partial coins on the counter with the red tag आधा डाक शुल्क भुगतान.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/d9575fc830_12746835_3.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A customer handing over bulk letters along with complete advance payment currency notes on the counter, with the clerk smiling.",
+            "target": "the currency notes and letters",
+            "tag": "पूर्व भुगतान अनिवार्य",
             "tag_color": "green",
-            "text": "डाक प्रभार और लेट फीस का पूरी तरह पूर्व भुगतान अनिवार्य है।",
-            "desc": "A GDS clerk and a smiling customer with a large stack of letters and currency notes marked as पूरी तरह से पूर्व भुगतान.",
+            "text": "थोक पत्रों हेतु पूर्व भुगतान अनिवार्य है।",
+            "desc": "A customer paying the full advance amount for bulk letters with the green tag पूरी तरह से पूर्व भुगतान.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/d9575fc830_79356548_3.jpg",
+            "img": "clause_plans/chitra_img/d9575fc830_12746835_4.jpg",
             "box": [
-              0.318,
-              0.528,
-              0.72,
+              0.417,
+              0.679,
+              0.634,
               0.786
             ],
-            "bg_text": true
+            "bg_text": false
           }
         ],
         "caps": [
-          "थोक पत्रों के लिए क्या नियम है?",
-          "अधूरा भुगतान करना बिलकुल गलत है।",
-          "डाक प्रभार और लेट फीस का पूरी तरह पूर्व भुगतान अनिवार्य है।"
+          "वैन या खिड़की पर थोक पत्र स्वीकार होते हैं।",
+          "बिना भुगतान के थोक पत्र स्वीकार नहीं होते।",
+          "अधूरा भुगतान करने पर पत्र स्वीकार नहीं होते।",
+          "थोक पत्रों हेतु पूर्व भुगतान अनिवार्य है।"
         ],
         "score": 9.0,
-        "lesson": "Postage and late fees for bulk mail (thok patra) must be fully prepaid.",
-        "pv": 2,
+        "lesson": "Bulk letters (थोक पत्र) are accepted at the van or window only when full advance payment is made beforehand.",
+        "pv": 3,
         "ok": true,
         "v": 9,
         "attempt": 1
-      },
-      "published": "2026-10-04",
-      "published_round": 16
+      }
     }
   ],
   "clause_text_en": "20. Presentation of large official and other letters in bulk at the window of the van or \nPost Office -  Large official or other letters, which owing to their size, cannot be posted in the \nletter-boxes, may be received by hand at the window of the van or post office.  There is also no \nobjection to receiving at the window of the van or office, letters or packets posted in bulk \nprovided, the postage and the late fee, if any, are fully prepaid."
