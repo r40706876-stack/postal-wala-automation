@@ -19,7 +19,7 @@
       "correct": "A",
       "fact": "डाक लेखों को अंतिम समय पर पोस्ट करने से पोस्ट ऑफिस और आर.एम.एस. में भारी भीड़ होती है",
       "trap": "भीड़ नहीं, केवल देर नहीं",
-      "yaad": "अंतिम समय = भीड़",
+      "yaad": "अंतिम समय → डाक → भारी भीड़",
       "hook": "ग्राहक ने लिफाफा आख़िरी मिनट में दिया, क्या होगा?",
       "en": {
         "question": "What happens if articles are posted at the last moment?",
@@ -53,7 +53,8 @@
       "trap_quote": "",
       "_clause_no": 22,
       "hook_v": {
-        "tries": 2
+        "ok": true,
+        "text": "अंतिम समय पर डाक आने से क्या होता है?"
       },
       "auto_check": true,
       "check_errors": [],
@@ -130,7 +131,14 @@
         "ok": true,
         "v": 9,
         "attempt": 1
-      }
+      },
+      "style_retry": true,
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-05",
+      "published_round": 16
     },
     {
       "basis": "guide",
@@ -187,10 +195,74 @@
       "published_prev": "2026-09-30",
       "published_round_prev": 1,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "dekhne wale ne niyam theek nahi samjha: 'Posting postal articles on time ensures safe delivery, whereas delaying them causes blockades and delays.' - chhoota: The central items change completely across the three panels (a briefcase-like bag in image 1, a tied mail sack with a clock in image 2, and a",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk in a light uniform and a customer stand at a plain post office counter, looking at a stack of letters and parcels between them.",
+            "target": "the stack of letters on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "डाक लेखों को देर से पोस्ट करने पर क्या संभावना रहती है?",
+            "desc": "A GDS clerk and a customer look at a stack of letters on the counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/49db712012_54168395_1.jpg",
+            "box": [
+              0.401,
+              0.475,
+              0.631,
+              0.649
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A worried customer and the GDS clerk look at loose letters lying abandoned on the counter past closing time with no mail bag in sight.",
+            "target": "the loose letters on the counter",
+            "tag": "रोक और देरी",
+            "tag_color": "red",
+            "text": "लेट पोस्ट करने से डाक लेखों में रोक और देरी होती है।",
+            "desc": "A worried customer and the clerk look at loose letters on the counter tagged with rok aur deri.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/49db712012_54168395_2.jpg",
+            "box": [
+              0.053,
+              0.593,
+              0.668,
+              0.786
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A smiling GDS clerk and the customer place sorted letters directly into a wide open postal mail bag resting on the counter.",
+            "target": "the open postal mail bag",
+            "tag": "समय पर पोस्ट",
+            "tag_color": "green",
+            "text": "समय पर पोस्ट करने से डाक सुरक्षित और समय पर पहुँचती है।",
+            "desc": "A smiling clerk and customer place letters into an open postal mail bag tagged with samay par post.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/49db712012_54168395_3.jpg",
+            "box": [
+              0.347,
+              0.549,
+              0.63,
+              0.955
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "डाक लेखों को देर से पोस्ट करने पर क्या संभावना रहती है?",
+          "लेट पोस्ट करने से डाक लेखों में रोक और देरी होती है।",
+          "समय पर पोस्ट करने से डाक सुरक्षित और समय पर पहुँचती है।"
+        ],
+        "score": 8.0,
+        "lesson": "Post postal articles on time to ensure they are handled safely and delivered promptly without delays.",
+        "pv": 2,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 5
       }
     },
     {
@@ -232,7 +304,77 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "simple_rebuilds": 1
+      "simple_rebuilds": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk and a customer stand across a plain wooden counter looking at a brown cardboard parcel resting between them.",
+            "target": "the brown parcel on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "जनता को अपनी डाक कब पोस्ट करने की सलाह दी जाती है?",
+            "desc": "A GDS clerk and a customer stand across a counter looking at a brown parcel.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/9e3979d785_17515281_1.jpg",
+            "box": [
+              0.331,
+              0.542,
+              0.644,
+              0.779
+            ],
+            "bg_text": true
+          },
+          {
+            "prompt": "A worried customer and a GDS clerk stand by a counter with a brown parcel, while a large wall clock showing late evening hours hangs in the background.",
+            "target": "the brown parcel near the clock",
+            "tag": "अंतिम क्लियरेंस का इंतजार",
+            "tag_color": "red",
+            "text": "अंतिम क्लियरेंस के समय डाक पोस्ट करना गलत है।",
+            "desc": "A worried customer and clerk stand by a counter with a brown parcel next to a clock showing late hours, tagged with अंतिम क्लियरेंस का इंतजार in red.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/9e3979d785_17515281_2.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A smiling customer hands a ready brown parcel directly over the counter to the GDS clerk who holds an open canvas mail bag.",
+            "target": "the brown parcel",
+            "tag": "जैसे ही डाक तैयार हो जाए",
+            "tag_color": "green",
+            "text": "जैसे ही डाक तैयार हो जाए, उसे तुरंत पोस्ट कर देना चाहिए।",
+            "desc": "A smiling customer hands a brown parcel to the clerk holding an open mail bag, tagged with जैसे ही डाक तैयार हो जाए in green.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/9e3979d785_17515281_3.jpg",
+            "box": [
+              0.334,
+              0.538,
+              0.646,
+              0.773
+            ],
+            "bg_text": true
+          }
+        ],
+        "caps": [
+          "जनता को अपनी डाक कब पोस्ट करने की सलाह दी जाती है?",
+          "अंतिम क्लियरेंस के समय डाक पोस्ट करना गलत है।",
+          "जैसे ही डाक तैयार हो जाए, उसे तुरंत पोस्ट कर देना चाहिए।"
+        ],
+        "score": 8.0,
+        "lesson": "Mail articles should be posted immediately as soon as they are ready rather than waiting until the final clearance.",
+        "pv": 2,
+        "ok": true,
+        "v": 9,
+        "attempt": 2
+      }
     },
     {
       "basis": "guide",
