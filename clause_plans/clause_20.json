@@ -62,39 +62,39 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-04",
-      "published_round_prev": 16,
+      "published_prev": "2026-10-05",
+      "published_round_prev": 17,
       "chitra_v": {
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A customer holding a large thick envelope in both hands, looking confused at the postal counter while the clerk looks at it.",
-            "target": "the large thick envelope",
+            "prompt": "A customer with a curious expression holding a large oversized letter packet near a postal counter, with the clerk looking at it in medium close-up.",
+            "target": "the large letter packet",
             "tag": "बड़ा पत्र",
             "tag_color": "dark",
-            "text": "यह बड़ा पत्र लेटर बॉक्स के लिए उपयुक्त नहीं है।",
-            "desc": "A customer standing at the counter holding a large thick envelope with a neutral expression.",
+            "text": "बड़े आकार का यह पत्र लेटर बॉक्स में नहीं आ सकता।",
+            "desc": "A customer holding a large letter packet at the counter.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/ad979ebd25_8602086_1.jpg",
+            "img": "clause_plans/chitra_img/ad979ebd25_49510543_1.jpg",
             "box": [
-              0.349,
-              0.454,
-              0.587,
-              0.642
+              0.388,
+              0.476,
+              0.658,
+              0.715
             ],
             "bg_text": false
           },
           {
-            "prompt": "The customer is forcefully trying to jam and bend the oversized large envelope into the narrow metal slot of a letter box.",
-            "target": "the bent envelope in the slot",
-            "tag": "लेटर बॉक्स में गलत पोस्ट",
+            "prompt": "A customer looking worried and confused while trying to push a large oversized letter packet into a small postal letter box slot where it gets stuck.",
+            "target": "the letter box slot",
+            "tag": "लेटर बॉक्स",
             "tag_color": "red",
-            "text": "बड़े पत्र को लेटर बॉक्स में जबरदस्ती डालना गलत है।",
-            "desc": "A customer bending and jamming a large envelope into the narrow letter box slot incorrectly.",
+            "text": "इसे लेटर बॉक्स में डालने की कोशिश करना गलत है।",
+            "desc": "A customer trying to push the large letter into the letter box slot.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/ad979ebd25_8602086_2.jpg",
+            "img": "clause_plans/chitra_img/ad979ebd25_49510543_2.jpg",
             "box": [
               0.22,
               0.3,
@@ -104,35 +104,35 @@
             "bg_text": false
           },
           {
-            "prompt": "The GDS clerk at the postal counter is taking the large envelope directly by hand from the customer to accept it.",
-            "target": "the large envelope handed over",
+            "prompt": "A customer and a postal clerk smiling with relief as the large letter packet is handed over directly across the open counter top.",
+            "target": "the large letter packet",
             "tag": "खिड़की पर हाथों-हाथ",
             "tag_color": "green",
             "text": "बड़े पत्र वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे।",
-            "desc": "The GDS clerk accepting the large envelope by hand directly across the postal counter correctly.",
+            "desc": "The large letter packet being handed over directly at the postal counter.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/ad979ebd25_8602086_3.jpg",
+            "img": "clause_plans/chitra_img/ad979ebd25_49510543_3.jpg",
             "box": [
-              0.359,
-              0.464,
-              0.594,
-              0.655
+              0.386,
+              0.479,
+              0.655,
+              0.712
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "यह बड़ा पत्र लेटर बॉक्स के लिए उपयुक्त नहीं है।",
-          "बड़े पत्र को लेटर बॉक्स में जबरदस्ती डालना गलत है।",
+          "बड़े आकार का यह पत्र लेटर बॉक्स में नहीं आ सकता।",
+          "इसे लेटर बॉक्स में डालने की कोशिश करना गलत है।",
           "बड़े पत्र वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे।"
         ],
-        "score": 9.0,
-        "lesson": "Large letters should not be forced into a letter box, but instead should be handed over directly at the post office window or van.",
+        "score": 8.0,
+        "lesson": "Large letters that cannot fit into a letter box must be handed over in person at the post office window or van instead of being forced into a letter box.",
         "pv": 3,
         "ok": true,
         "v": 9,
-        "attempt": 2
+        "attempt": 3
       },
       "trap_v": {
         "tries": 2,
@@ -144,7 +144,7 @@
         "err": "option-chitra jaanch fail: B"
       },
       "published": "2026-10-05",
-      "published_round": 17
+      "published_round": 18
     },
     {
       "basis": "notes",
