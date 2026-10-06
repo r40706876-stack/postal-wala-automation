@@ -176,7 +176,13 @@
       "trap_v": {
         "tries": 2,
         "v": 3
-      }
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/84ab2cbb58_22920875_1.jpg"
+      },
+      "published": "2026-10-06",
+      "published_round": 18
     },
     {
       "basis": "notes",
@@ -238,71 +244,71 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A medium shot of an Indian customer handing a blue airmail envelope with several colorful postage stamps to a postal clerk across a plain wooden counter. Both look attentive and engaged.",
-            "target": "the blue airmail envelope",
-            "tag": "हवाई डाक लेख",
+            "prompt": "A young Indian postal clerk holds a white envelope with distinct red and blue diagonal striped borders and several colorful stamps, looking at it thoughtfully. A senior male colleague stands beside him, looking curious.",
+            "target": "the white envelope with striped borders",
+            "tag": "ज्यादा मूल्य के टिकट",
             "tag_color": "dark",
-            "text": "यह ज्यादा मूल्य के डाक टिकट वाला हवाई डाक लेख है।",
-            "desc": "The customer hands the blue airmail envelope with stamps to the clerk with the tag हवाई डाक लेख.",
+            "text": "काउंटर पर ज्यादा मूल्य के टिकट वाला हवाई डाक लेख आया।",
+            "desc": "The first picture shows the clerk inspecting the air mail envelope with high value stamps on the clean counter.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/3af340318e_22144221_1.jpg",
+            "img": "clause_plans/chitra_img/3af340318e_64032422_1.jpg",
             "box": [
-              0.348,
-              0.499,
-              0.68,
-              0.642
+              0.265,
+              0.513,
+              0.723,
+              0.716
             ],
             "bg_text": false
           },
           {
-            "prompt": "The postal clerk, looking careless and distracted, drops the uncancelled blue envelope directly into a mail bag on the counter. The customer looks worried and shocked.",
-            "target": "the mail bag on the counter",
-            "tag": "सीधे भेजना",
+            "prompt": "The young clerk directly slides the uncancelled striped envelope into a large canvas mailbag on the floor. The senior colleague looks worried and raises his hand in warning.",
+            "target": "the canvas mailbag",
+            "tag": "बिना विरुपति सीधे भेजना",
             "tag_color": "red",
-            "text": "इसे बिना स्टाम्प विरुपति किए सीधे भेजना गलत है।",
-            "desc": "The clerk drops the uncancelled envelope straight into a mail bag marked with a red tag सीधे भेजना.",
+            "text": "इसे बिना विरुपति किए सीधे भेजना सर्वथा गलत है।",
+            "desc": "The second picture shows the wrong way where the clerk is directly putting the uncancelled air mail letter into the dispatch bag, with a red tag pointing to the bag.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/3af340318e_22144221_2.jpg",
+            "img": "clause_plans/chitra_img/3af340318e_64032422_2.jpg",
             "box": [
-              0.395,
-              0.536,
-              0.599,
-              0.75
+              0.281,
+              0.572,
+              0.696,
+              0.946
             ],
             "bg_text": false
           },
           {
-            "prompt": "The smiling postal clerk firmly presses a round hand stamper down on the postage stamps of the envelope on the counter. The customer smiles in relief and approval.",
-            "target": "the blue envelope on the counter",
+            "prompt": "The young clerk firmly presses a black postmark hand stamp onto the postage stamps of the striped envelope lying flat on the wooden counter. The senior colleague smiles and nods in approval.",
+            "target": "the black hand stamp on the envelope",
             "tag": "स्टाम्प विरुपति करना",
             "tag_color": "green",
-            "text": "प्रेषण से पूर्व इसके स्टाम्प विरुपति किए जाने चाहिए।",
-            "desc": "The clerk cancels the postage stamps using a round stamp with a green tag स्टाम्प विरुपति करना.",
+            "text": "हवाई डाक भेजने से पहले स्टाम्प विरुपति करना आवश्यक है।",
+            "desc": "The final picture shows the correct way where the clerk cancels the stamps using a hand stamp, with a green tag highlighting the stamp cancellation.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/3af340318e_22144221_3.jpg",
+            "img": "clause_plans/chitra_img/3af340318e_64032422_3.jpg",
             "box": [
-              0.418,
-              0.513,
-              0.627,
-              0.652
+              0.343,
+              0.56,
+              0.582,
+              0.831
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "यह ज्यादा मूल्य के डाक टिकट वाला हवाई डाक लेख है।",
-          "इसे बिना स्टाम्प विरुपति किए सीधे भेजना गलत है।",
-          "प्रेषण से पूर्व इसके स्टाम्प विरुपति किए जाने चाहिए।"
+          "काउंटर पर ज्यादा मूल्य के टिकट वाला हवाई डाक लेख आया।",
+          "इसे बिना विरुपति किए सीधे भेजना सर्वथा गलत है।",
+          "हवाई डाक भेजने से पहले स्टाम्प विरुपति करना आवश्यक है।"
         ],
-        "score": 8.0,
-        "lesson": "High-value airmail articles must have their postage stamps cancelled (defaced) with a date stamp prior to dispatch instead of being bagged and sent directly.",
-        "pv": 2,
+        "score": 9.0,
+        "lesson": "When an airmail article with high-value stamps is received at the counter, the stamps must be cancelled or defaced using a postmark stamp before dispatching the article in the mailbag.",
+        "pv": 3,
         "ok": true,
         "v": 9,
-        "attempt": 1
+        "attempt": 2
       },
       "trap_v": {
         "none": true,

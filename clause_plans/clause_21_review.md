@@ -5,7 +5,7 @@ English title: Articles requiring special treatment
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-10-06]
 **Source (PO Guide):** ऐसे लेखों पर कवर के एड्रेस साइड के ऊपर स्पष्ट रूप से टिल्चिन्हत होना चाहिए
 
 **Niyam:** पंजीकृत, बीमाकृत या मूल्य देय लेखों पर अंकन कवर के एड्रेस साइड के ऊपर होना चाहिए।
