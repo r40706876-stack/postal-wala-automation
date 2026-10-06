@@ -295,7 +295,13 @@
         "ok": true,
         "v": 9,
         "attempt": 1
-      }
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/d9575fc830_12746835_1.jpg"
+      },
+      "published": "2026-10-06",
+      "published_round": 18
     }
   ],
   "clause_text_en": "20. Presentation of large official and other letters in bulk at the window of the van or \nPost Office -  Large official or other letters, which owing to their size, cannot be posted in the \nletter-boxes, may be received by hand at the window of the van or post office.  There is also no \nobjection to receiving at the window of the van or office, letters or packets posted in bulk \nprovided, the postage and the late fee, if any, are fully prepaid."

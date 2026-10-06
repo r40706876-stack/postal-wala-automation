@@ -62,74 +62,113 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-03",
-      "published_round_prev": 12,
+      "published_prev": "2026-10-04",
+      "published_round_prev": 16,
       "chitra_v": {
         "kit": "photo",
         "panels": [
           {
-            "prompt": "The customer hands a blank white rectangular envelope to the postal clerk across the counter, both looking curious.",
-            "target": "the white envelope on the counter",
-            "tag": "पंजीकृत लेख",
+            "prompt": "A medium shot of a male postal clerk and a female customer at a wooden counter. The clerk is holding a plain blank white envelope, looking at it thoughtfully. Warm lighting, simple background.",
+            "target": "the plain white envelope in the clerk's hands",
+            "tag": "पंजीकृत पत्र",
             "tag_color": "dark",
-            "text": "पंजीकृत लेख पर अंकन कहाँ होना चाहिए?",
-            "desc": "The customer hands a white envelope tagged पंजीकृत लेख to the clerk.",
+            "text": "इस पंजीकृत पत्र पर अंकन कहाँ होना चाहिए?",
+            "desc": "The clerk holds a registered letter, looking at it with a thoughtful expression.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/84ab2cbb58_30250404_1.jpg",
+            "img": "clause_plans/chitra_img/84ab2cbb58_22920875_1.jpg",
             "box": [
-              0.278,
-              0.565,
-              0.67,
-              0.69
+              0.332,
+              0.481,
+              0.611,
+              0.698
             ],
             "bg_text": false
           },
           {
-            "prompt": "The postal clerk turns the white envelope over to show its triangular flap on the back, pointing at it with a worried expression.",
-            "target": "the back of the white envelope",
-            "tag": "गलत: बैक साइड",
+            "prompt": "The clerk flips the envelope and points to a red sticker placed on the blank back side of the envelope. The customer looks confused and shakes her head.",
+            "target": "the red sticker on the back side of the envelope",
+            "tag": "गलत: पीछे की तरफ अंकन",
             "tag_color": "red",
-            "text": "बैक साइड पर अंकन करना गलत है।",
-            "desc": "The clerk points at the back flap of the envelope tagged गलत: बैक साइड with worry.",
+            "text": "बैक साइड पर अंकन करना पूरी तरह गलत है।",
+            "desc": "The clerk shows the back side of the envelope with a red marking sticker labeled 'गलत: पीछे की तरफ अंकन'.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/84ab2cbb58_30250404_2.jpg",
+            "img": "clause_plans/chitra_img/84ab2cbb58_22920875_2.jpg",
             "box": [
-              0.285,
-              0.536,
-              0.684,
-              0.708
+              0.22,
+              0.3,
+              0.78,
+              0.86
             ],
             "bg_text": false
           },
           {
-            "prompt": "The clerk places the envelope flat with its smooth front side up, smiling and pointing toward the upper area.",
-            "target": "the top of the envelope",
-            "tag": "ऊपर एड्रेस साइड",
-            "tag_color": "green",
-            "text": "अंकन हमेशा कवर के एड्रेस साइड ऊपर करें।",
-            "desc": "The clerk happily points to the top front of the envelope tagged ऊपर एड्रेस साइड.",
-            "mark": "right",
-            "card": null,
-            "img": "clause_plans/chitra_img/84ab2cbb58_30250404_3.jpg",
+            "prompt": "The clerk holds the envelope showing the address side, pointing to a red sticker placed at the very bottom, below the address area. The customer looks unsatisfied.",
+            "target": "the red sticker at the bottom of the envelope",
+            "tag": "गलत: नीचे की तरफ अंकन",
+            "tag_color": "red",
+            "text": "एड्रेस साइड के नीचे अंकन करना भी गलत है।",
+            "desc": "The envelope shows the address side with the marking at the bottom, marked with a red tag 'गलत: नीचे की तरफ अंकन'.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "सेवा में,",
+                "श्री राम कुमार,",
+                "गांधी नगर, पटना,",
+                "PIN 800001",
+                "पंजीकृत"
+              ],
+              "corner": "",
+              "hl": 4
+            },
+            "img": "clause_plans/chitra_img/84ab2cbb58_22920875_3.jpg",
             "box": [
-              0.28,
-              0.458,
-              0.68,
-              0.725
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The clerk smiles and holds the envelope showing the address side, pointing to a green sticker placed clearly at the top above the address lines. The customer smiles in agreement.",
+            "target": "the green sticker at the top of the envelope",
+            "tag": "सही: एड्रेस साइड के ऊपर अंकन",
+            "tag_color": "green",
+            "text": "अंकन हमेशा एड्रेस साइड के ऊपर ही होना चाहिए।",
+            "desc": "The envelope shows the address side with the marking clearly at the top, marked with a green tag 'सही: एड्रेस साइड के ऊपर अंकन'.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "पंजीकृत",
+                "सेवा में,",
+                "श्री राम कुमार,",
+                "गांधी नगर, पटना,",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "img": "clause_plans/chitra_img/84ab2cbb58_22920875_4.jpg",
+            "box": [
+              0.407,
+              0.485,
+              0.55,
+              0.555
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "पंजीकृत लेख पर अंकन कहाँ होना चाहिए?",
-          "बैक साइड पर अंकन करना गलत है।",
-          "अंकन हमेशा कवर के एड्रेस साइड ऊपर करें।"
+          "इस पंजीकृत पत्र पर अंकन कहाँ होना चाहिए?",
+          "बैक साइड पर अंकन करना पूरी तरह गलत है।",
+          "एड्रेस साइड के नीचे अंकन करना भी गलत है।",
+          "अंकन हमेशा एड्रेस साइड के ऊपर ही होना चाहिए।"
         ],
-        "score": 8.0,
-        "lesson": "When handling a registered article, you must always make the necessary markings on the address side of the cover rather than on the back side.",
-        "pv": 2,
+        "score": 9.0,
+        "lesson": "Ankan (marking or stamping) on a registered letter must always be placed on the upper part of the address side.",
+        "pv": 3,
         "ok": true,
         "v": 9,
         "attempt": 1
@@ -137,9 +176,7 @@
       "trap_v": {
         "tries": 2,
         "v": 3
-      },
-      "published": "2026-10-04",
-      "published_round": 16
+      }
     },
     {
       "basis": "notes",
@@ -195,8 +232,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-03",
-      "published_round_prev": 12,
+      "published_prev": "2026-10-04",
+      "published_round_prev": 16,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -270,9 +307,7 @@
       "trap_v": {
         "none": true,
         "v": 3
-      },
-      "published": "2026-10-04",
-      "published_round": 16
+      }
     },
     {
       "basis": "notes",
