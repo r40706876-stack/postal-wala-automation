@@ -313,7 +313,13 @@
       "trap_v": {
         "none": true,
         "v": 3
-      }
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/3af340318e_64032422_1.jpg"
+      },
+      "published": "2026-10-06",
+      "published_round": 18
     },
     {
       "basis": "notes",

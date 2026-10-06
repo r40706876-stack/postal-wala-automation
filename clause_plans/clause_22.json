@@ -60,74 +60,74 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-29",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-05",
+      "published_round_prev": 16,
       "chitra_v": {
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS postal employee stands at a plain wooden counter looking at a customer who is holding a bundle of letters, with a curious and neutral expression.",
-            "target": "the bundle of letters",
-            "tag": "",
+            "prompt": "A GDS clerk and a customer stand at a plain counter holding a bundle of letters with a calm expression under warm light.",
+            "target": "the bundle of letters on the counter",
+            "tag": "डाक लेख",
             "tag_color": "dark",
-            "text": "ग्राहक डाक लेख पोस्ट ऑफिस लेकर काउंटर पर आया है।",
-            "desc": "A GDS clerk stands behind a counter facing a customer holding a bundle of letters on the plain wooden counter.",
+            "text": "डाक लेखों को काउंटर पर दिया जा रहा है।",
+            "desc": "A GDS clerk and a customer stand at a plain counter with a bundle of letters marked as डाक लेख.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/040f672031_95679754_1.jpg",
+            "img": "clause_plans/chitra_img/040f672031_77457295_1.jpg",
             "box": [
-              0.396,
-              0.643,
-              0.792,
-              0.858
-            ],
-            "bg_text": true
-          },
-          {
-            "prompt": "A GDS postal employee looks stressed and overwhelmed while standing behind a counter cluttered with a huge chaotic pile of large mail bags and loose letters.",
-            "target": "the huge pile of mail bags",
-            "tag": "अंतिम समय पर भारी भीड़",
-            "tag_color": "red",
-            "text": "डाक लेखों को अंतिम समय पर पोस्ट करने से भीड़ होती है।",
-            "desc": "A GDS clerk stands behind a counter cluttered with a huge pile of mail bags tagged as अंतिम समय पर भारी भीड़, showing a worried expression.",
-            "mark": "wrong",
-            "card": null,
-            "img": "clause_plans/chitra_img/040f672031_95679754_2.jpg",
-            "box": [
-              0.0,
-              0.35,
-              0.893,
-              1.0
+              0.519,
+              0.502,
+              0.698,
+              0.663
             ],
             "bg_text": false
           },
           {
-            "prompt": "A GDS postal employee smiles and hands over a receipt across a clean counter with only a few orderly mail bags, showing a relieved expression.",
-            "target": "the orderly mail bags",
+            "prompt": "A customer forcefully jams and crams a large stack of letters into a small red letter box slot at the last minute with a worried expression.",
+            "target": "the stack of letters jammed in the letter box slot",
+            "tag": "अंतिम समय पर पोस्ट",
+            "tag_color": "red",
+            "text": "अंतिम समय पर पोस्ट करने से भारी भीड़ होती है।",
+            "desc": "A customer crams a large stack of letters into the letter box slot marked as अंतिम समय पर पोस्ट in red.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/040f672031_77457295_2.jpg",
+            "box": [
+              0.329,
+              0.49,
+              0.607,
+              0.675
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A GDS clerk smilingly places neatly organized letters into an open mail bag on the counter ahead of time with a relieved expression.",
+            "target": "the open mail bag on the counter",
             "tag": "समय पर पोस्ट",
             "tag_color": "green",
-            "text": "डाक लेखों को समय पर पोस्ट करने से भारी भीड़ नहीं होती।",
-            "desc": "A GDS clerk smiles behind a clean counter with orderly mail bags tagged as समय पर पोस्ट, handing a receipt to the customer.",
+            "text": "समय पर पोस्ट करने से भारी भीड़ नहीं होती है।",
+            "desc": "A GDS clerk smilingly places neatly organized letters into an open mail bag marked as समय पर पोस्ट in green.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/040f672031_95679754_3.jpg",
+            "img": "clause_plans/chitra_img/040f672031_77457295_3.jpg",
             "box": [
-              0.642,
-              0.582,
-              0.907,
-              0.73
+              0.386,
+              0.541,
+              0.68,
+              0.827
             ],
             "bg_text": false
           }
         ],
         "caps": [
-          "ग्राहक डाक लेख पोस्ट ऑफिस लेकर काउंटर पर आया है।",
-          "डाक लेखों को अंतिम समय पर पोस्ट करने से भीड़ होती है।",
-          "डाक लेखों को समय पर पोस्ट करने से भारी भीड़ नहीं होती।"
+          "डाक लेखों को काउंटर पर दिया जा रहा है।",
+          "अंतिम समय पर पोस्ट करने से भारी भीड़ होती है।",
+          "समय पर पोस्ट करने से भारी भीड़ नहीं होती है।"
         ],
         "score": 8.0,
-        "lesson": "Post your mail articles on time to avoid heavy crowds and delays at the post office counter.",
-        "pv": 2,
+        "lesson": "Submit postal articles at the counter on time rather than waiting until the last minute.",
+        "pv": 3,
         "ok": true,
         "v": 9,
         "attempt": 1
@@ -136,9 +136,7 @@
       "trap_v": {
         "tries": 1,
         "v": 3
-      },
-      "published": "2026-10-05",
-      "published_round": 16
+      }
     },
     {
       "basis": "guide",
@@ -192,8 +190,8 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published_prev": "2026-09-30",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-05",
+      "published_round_prev": 16,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -267,9 +265,7 @@
       "trap_v": {
         "tries": 1,
         "v": 3
-      },
-      "published": "2026-10-05",
-      "published_round": 16
+      }
     },
     {
       "basis": "guide",
