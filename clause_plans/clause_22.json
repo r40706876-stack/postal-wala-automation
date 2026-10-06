@@ -301,7 +301,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक तैयार होते ही",
+            "mark": "key"
+          },
+          {
+            "text": "तुरंत पोस्ट करें",
+            "mark": "yes"
+          },
+          {
+            "text": "अंतिम क्लियरेंस इंतजार",
+            "mark": "no"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -319,72 +333,83 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS clerk and a customer stand across a plain wooden counter looking at a brown cardboard parcel resting between them.",
-            "target": "the brown parcel on the counter",
+            "prompt": "A GDS clerk and a customer looking at a sealed mail envelope on a plain wooden counter, medium shot with warm lighting.",
+            "target": "the sealed mail envelope on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "जनता को अपनी डाक कब पोस्ट करने की सलाह दी जाती है?",
-            "desc": "A GDS clerk and a customer stand across a counter looking at a brown parcel.",
+            "text": "तैयार डाक को पोस्ट करने के लिए कब दें?",
+            "desc": "A GDS clerk and a customer looking at a sealed mail envelope on a plain wooden counter.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/9e3979d785_17515281_1.jpg",
+            "img": "clause_plans/chitra_img/9e3979d785_48468898_1.jpg",
             "box": [
-              0.331,
-              0.542,
-              0.644,
-              0.779
-            ],
-            "bg_text": true
-          },
-          {
-            "prompt": "A worried customer and a GDS clerk stand by a counter with a brown parcel, while a large wall clock showing late evening hours hangs in the background.",
-            "target": "the brown parcel near the clock",
-            "tag": "अंतिम क्लियरेंस का इंतजार",
-            "tag_color": "red",
-            "text": "अंतिम क्लियरेंस के समय डाक पोस्ट करना गलत है।",
-            "desc": "A worried customer and clerk stand by a counter with a brown parcel next to a clock showing late hours, tagged with अंतिम क्लियरेंस का इंतजार in red.",
-            "mark": "wrong",
-            "card": null,
-            "img": "clause_plans/chitra_img/9e3979d785_17515281_2.jpg",
-            "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.368,
+              0.548,
+              0.626,
+              0.752
             ],
             "bg_text": false
           },
           {
-            "prompt": "A smiling customer hands a ready brown parcel directly over the counter to the GDS clerk who holds an open canvas mail bag.",
-            "target": "the brown parcel",
+            "prompt": "A GDS clerk and a customer holding back a prepared letter on the counter, waiting near a clock on the wall, medium shot.",
+            "target": "the letter held back on the counter",
+            "tag": "दिन की अंतिम क्लियरेंस",
+            "tag_color": "red",
+            "text": "दिन की अंतिम क्लियरेंस के समय डाक न रोकें।",
+            "desc": "A GDS clerk and a customer holding back a prepared letter waiting for the last clearance.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/9e3979d785_48468898_2.jpg",
+            "box": [
+              0.381,
+              0.561,
+              0.638,
+              0.762
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A GDS clerk smiling while receiving the mail envelope instantly across the plain wooden counter, medium shot, warm light.",
+            "target": "the mail envelope on the counter",
             "tag": "जैसे ही डाक तैयार हो जाए",
             "tag_color": "green",
-            "text": "जैसे ही डाक तैयार हो जाए, उसे तुरंत पोस्ट कर देना चाहिए।",
-            "desc": "A smiling customer hands a brown parcel to the clerk holding an open mail bag, tagged with जैसे ही डाक तैयार हो जाए in green.",
+            "text": "जैसे ही डाक तैयार हो जाए तुरंत पोस्ट करें।",
+            "desc": "A GDS clerk smiling while receiving the mail envelope instantly across the plain wooden counter.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/9e3979d785_17515281_3.jpg",
+            "img": "clause_plans/chitra_img/9e3979d785_48468898_3.jpg",
             "box": [
-              0.334,
-              0.538,
-              0.646,
-              0.773
+              0.332,
+              0.45,
+              0.698,
+              0.775
             ],
-            "bg_text": true
+            "bg_text": false
           }
         ],
         "caps": [
-          "जनता को अपनी डाक कब पोस्ट करने की सलाह दी जाती है?",
-          "अंतिम क्लियरेंस के समय डाक पोस्ट करना गलत है।",
-          "जैसे ही डाक तैयार हो जाए, उसे तुरंत पोस्ट कर देना चाहिए।"
+          "तैयार डाक को पोस्ट करने के लिए कब दें?",
+          "दिन की अंतिम क्लियरेंस के समय डाक न रोकें।",
+          "जैसे ही डाक तैयार हो जाए तुरंत पोस्ट करें।"
         ],
         "score": 8.0,
-        "lesson": "Mail articles should be posted immediately as soon as they are ready rather than waiting until the final clearance.",
-        "pv": 2,
+        "lesson": "Post prepared mail immediately as soon as it is ready, and do not hold it back until the final clearance of the day.",
+        "pv": 3,
         "ok": true,
         "v": 9,
-        "attempt": 2
-      }
+        "attempt": 1
+      },
+      "opt_pics": {
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/9e3979d785_48468898_1.jpg",
+        "err": "option-chitra jaanch fail: B, C"
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-06",
+      "published_round": 18
     },
     {
       "basis": "guide",
@@ -423,7 +448,77 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk and a customer standing at a counter with a bundle of mail letters on the table, warm daylight, medium shot.",
+            "target": "the bundle of mail letters",
+            "tag": "डाक पोस्ट करना",
+            "tag_color": "dark",
+            "text": "हमें आज डाक पोस्ट करने के लिए सही समय चुनना है।",
+            "desc": "The GDS clerk and customer look at the bundle of letters placed on the counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/2ec6ecdf28_49499428_1.jpg",
+            "box": [
+              0.464,
+              0.618,
+              0.73,
+              0.745
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The GDS clerk and customer standing at the counter in the evening as the sun sets outside, the counter is dark and empty, the clerk looks stressed.",
+            "target": "the bundle of mail letters",
+            "tag": "शाम को पोस्ट करना",
+            "tag_color": "red",
+            "text": "शाम के समय डाक पोस्ट करने से देरी हो सकती है।",
+            "desc": "The customer attempts to hand over the letters at sunset while the office is closing.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/2ec6ecdf28_49499428_2.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "The GDS clerk and customer at the counter in the bright morning sunlight, both smiling as the clerk accepts the letters early.",
+            "target": "the bundle of mail letters",
+            "tag": "दिन में जल्दी पोस्ट करना",
+            "tag_color": "green",
+            "text": "दिन में जितनी जल्दी हो सके डाक पोस्ट करनी चाहिए।",
+            "desc": "The GDS clerk accepts the letters from the customer early in the morning under bright light.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/2ec6ecdf28_49499428_3.jpg",
+            "box": [
+              0.383,
+              0.571,
+              0.715,
+              0.781
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "हमें आज डाक पोस्ट करने के लिए सही समय चुनना है।",
+          "शाम के समय डाक पोस्ट करने से देरी हो सकती है।",
+          "दिन में जितनी जल्दी हो सके डाक पोस्ट करनी चाहिए।"
+        ],
+        "score": 10.0,
+        "lesson": "Post your mail as early as possible during the day to avoid delays caused by posting in the evening.",
+        "pv": 3,
+        "ok": true,
+        "v": 9,
+        "attempt": 2
+      }
     },
     {
       "id": 1,
