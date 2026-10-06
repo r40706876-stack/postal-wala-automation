@@ -269,9 +269,11 @@
         "attempt": 5
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
-      }
+      },
+      "published": "2026-10-06",
+      "published_round": 18
     },
     {
       "basis": "guide",
