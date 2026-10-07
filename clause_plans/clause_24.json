@@ -18,7 +18,7 @@
       "d": "कहीं भी नहीं",
       "correct": "A",
       "fact": "गैर-डाक टिकट, सील या लेबल डाक लेख के पता पक्ष पर नहीं चिपकाने चाहिए।",
-      "trap": "कहीं भी चिपकाना गलत है, केवल पता पक्ष वर्जित है।",
+      "trap": "डाक कर्मचारियों के काम में बाधा डालने वाले निशान भी वर्जित हैं।",
       "yaad": "गैर-डाक टिकट और सील → पता पक्ष → नहीं",
       "hook": "काउंटर पर ग्राहक ने लिफाफे के पते वाली साइड चैरिटी का स्टीकर चिपकाया, क्या यह सही है?",
       "en": {
@@ -46,7 +46,7 @@
         ]
       },
       "hint": "",
-      "trap_quote": "",
+      "trap_quote": "This prohibition applies equally in cases in wh ich any labels, stamps, or markings are attached or impressed to the address side of a postal article in such a manner that it becomes difficult to decipher the address, or hampers the work of the postal officials in any way.",
       "_clause_no": 24,
       "hook_v": {
         "ok": true,
@@ -59,7 +59,13 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1,
+      "trap_old": "कहीं भी चिपकाना गलत है, केवल पता पक्ष वर्जित है।",
+      "trap_v": {
+        "ok": true,
+        "v": 3
+      }
     },
     {
       "basis": "notes",
@@ -112,7 +118,8 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1
     },
     {
       "basis": "notes",
@@ -165,7 +172,8 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1
     },
     {
       "basis": "notes",
