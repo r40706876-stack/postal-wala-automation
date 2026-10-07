@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** तैयार = तुरंत पोस्ट
 **Hook:** ग्राहक अंतिम क्लियरेंस के समय डाक लाया, उसे क्या समझाएं?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-10-07]
 **Source (PO Guide):** to endeavour to post as early in the day as possible
 
 **Niyam:** डाक को दिन में जितना संभव हो सके उतनी जल्दी पोस्ट करने का प्रयास करना चाहिए
@@ -58,7 +58,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. शाम को खिड़की बंद होने के समय
 **Hint:** 
 **Trap:** प्रेषण समय पोस्ट करना गलत, क्योंकि इससे डाकघर में भारी भीड़ होती है।
-**Yaad:** जल्दी पोस्ट = नो कंजेशन
+**Yaad:** डाक → दिन में → जितनी जल्दी हो सके
 **Hook:** शाम को काउंटर पर भारी भीड़ से बचने का क्या उपाय है?
 
 ## Part 5  [FAIL (0/4 sudhaar koshish): OPTION LAMBA: A 7 shabd se zyada - chhota karo (arth wahi)]

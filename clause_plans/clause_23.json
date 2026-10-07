@@ -62,7 +62,102 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk and a customer standing at a counter, both looking at a white envelope held between them.",
+            "target": "the white envelope on the counter",
+            "tag": "साधारण पत्र",
+            "tag_color": "dark",
+            "text": "ग्राहक काउंटर पर एक सादा लिफाफा लेकर खड़ा है।",
+            "desc": "A GDS clerk and a customer looking at a plain white envelope on the counter.",
+            "mark": "none",
+            "card": {
+              "lines": [
+                "श्री अमित कुमार",
+                "मकान 45, एम जी रोड",
+                "नई दिल्ली"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "img": "clause_plans/chitra_img/fa78f6d2a3_57352581_1.jpg",
+            "box": [
+              0.363,
+              0.522,
+              0.638,
+              0.693
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A customer looking worried as they mistakenly place a postage stamp on the top-left corner of the envelope on the counter.",
+            "target": "the misplaced postage stamp",
+            "tag": "बाएँ ऊपरी कोने में",
+            "tag_color": "red",
+            "text": "टिकट को पते वाली साइड बाएँ ऊपरी कोने में नहीं चिपकाना चाहिए।",
+            "desc": "A worried customer placing the postage stamp on the top-left corner of the envelope.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री अमित कुमार",
+                "मकान 45, एम जी रोड",
+                "नई दिल्ली"
+              ],
+              "corner": "टिकट",
+              "hl": -2
+            },
+            "img": "clause_plans/chitra_img/fa78f6d2a3_57352581_2.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A GDS clerk and a customer smiling with relief as the postage stamp is correctly placed on the top-right corner of the envelope.",
+            "target": "the correctly placed postage stamp",
+            "tag": "दाहिने ऊपरी कोने में",
+            "tag_color": "green",
+            "text": "डाक टिकट हमेशा पते वाली साइड दाहिने ऊपरी कोने में चिपकाने चाहिए।",
+            "desc": "A relieved customer and clerk with the postage stamp correctly placed on the top-right corner of the envelope.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री अमित कुमार",
+                "मकान 45, एम जी रोड",
+                "नई दिल्ली"
+              ],
+              "corner": "टिकट",
+              "hl": -2
+            },
+            "img": "clause_plans/chitra_img/fa78f6d2a3_57352581_3.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "ग्राहक काउंटर पर एक सादा लिफाफा लेकर खड़ा है।",
+          "टिकट को पते वाली साइड बाएँ ऊपरी कोने में नहीं चिपकाना चाहिए।",
+          "डाक टिकट हमेशा पते वाली साइड दाहिने ऊपरी कोने में चिपकाने चाहिए।"
+        ],
+        "score": 10.0,
+        "lesson": "Postage stamps must always be affixed on the top right corner of the addressed side of an envelope.",
+        "pv": 3,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      }
     },
     {
       "basis": "notes",
@@ -118,7 +213,8 @@
       "web_verdict": "unknown",
       "web_sources": [],
       "style_v": "2026-09-26c",
-      "published": "2026-09-30"
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1
     }
   ],
   "clause_text_en": "23. Manner of affixing postage stamps  - Stamps affixed to a letter or packet must be \ncompletely adherent to the article itself and not to any part of its contents or any separate label or \nother device tied or attached to the article.  The stamps should be affixed to the right hand top \ncorner of the address side.",

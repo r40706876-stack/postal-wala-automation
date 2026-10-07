@@ -421,7 +421,7 @@
       "d": "शाम को खिड़की बंद होने के समय",
       "fact": "डाक को दिन में जितना संभव हो सके उतनी जल्दी पोस्ट करने का प्रयास करना चाहिए",
       "trap": "प्रेषण समय पोस्ट करना गलत, क्योंकि इससे डाकघर में भारी भीड़ होती है।",
-      "yaad": "जल्दी पोस्ट = नो कंजेशन",
+      "yaad": "डाक → दिन में → जितनी जल्दी हो सके",
       "correct": "A",
       "id": 2,
       "hook": "शाम को काउंटर पर भारी भीड़ से बचने का क्या उपाय है?",
@@ -437,13 +437,24 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "डाक पोस्ट",
+            "mark": "key"
+          },
+          {
+            "text": "दिन में जितनी जल्दी",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
       "_clause_no": 22,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "आज की डाक बैग में कब डालनी चाहिए?"
       },
       "auto_check": true,
       "check_errors": [],
@@ -518,7 +529,19 @@
         "ok": true,
         "v": 9,
         "attempt": 2
-      }
+      },
+      "style_retry": true,
+      "opt_pics": {
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/2ec6ecdf28_49499428_1.jpg",
+        "err": "option-chitra jaanch fail: B"
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "published": "2026-10-07",
+      "published_round": 18
     },
     {
       "id": 1,
