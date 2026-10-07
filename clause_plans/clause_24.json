@@ -65,7 +65,124 @@
       "trap_v": {
         "ok": true,
         "v": 3
-      }
+      },
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "The postman and the customer stand at the post office counter looking at a brown parcel with a curious expression, warm indoor lighting.",
+            "target": "the brown parcel on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक डाक लेख पर कुछ चिपकाने की तैयारी कर रहा है।",
+            "desc": "The customer is preparing to paste something on the parcel.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, क्या इस पर कुछ और लगा दूँ?"
+            },
+            "img": "clause_plans/chitra_img/a81f6fd443_87294026_1.jpg",
+            "box": [
+              0.376,
+              0.563,
+              0.642,
+              0.744
+            ],
+            "bg_text": true,
+            "badge": [
+              0.357,
+              0.464,
+              0.419,
+              0.508
+            ],
+            "face": [
+              0.241,
+              0.184,
+              0.415,
+              0.344
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "The customer is holding a colourful sticker and attempting to paste it directly on the front address side of the letter envelope, looking worried.",
+            "target": "the sticker on the address side",
+            "tag": "पता पक्ष पर गैर-डाक टिकट",
+            "tag_color": "red",
+            "text": "गैर-डाक टिकट या लेबल डाक लेख के पता पक्ष पर नहीं चिपकाने चाहिए।",
+            "desc": "Non-postal stamps or labels should not be pasted on the address side of a mail article.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "रुको भाई! पता पक्ष पर इसे मत चिपकाओ।"
+            },
+            "img": "clause_plans/chitra_img/a81f6fd443_87294026_2.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": true
+          },
+          {
+            "prompt": "The postman gently points to the correct side of the envelope while the customer smiles with relief, bright natural light.",
+            "target": "the blank backside of the envelope",
+            "tag": "सही तरीका",
+            "tag_color": "green",
+            "text": "हमेशा नियमों का पालन करके ही डाक लेख सुरक्षित भेजें।",
+            "desc": "Always follow postal rules properly to ensure articles are sent safely.",
+            "mark": "right",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "इसे हमेशा सही जगह पर ही लगाना चाहिए।"
+            },
+            "img": "clause_plans/chitra_img/a81f6fd443_87294026_3.jpg",
+            "box": [
+              0.377,
+              0.531,
+              0.638,
+              0.755
+            ],
+            "bg_text": true,
+            "badge": [
+              0.372,
+              0.478,
+              0.434,
+              0.523
+            ],
+            "face": [
+              0.305,
+              0.195,
+              0.429,
+              0.353
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/a81f6fd443_87294026_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "ग्राहक डाक लेख पर कुछ चिपकाने की तैयारी कर रहा है।",
+          "गैर-डाक टिकट या लेबल डाक लेख के पता पक्ष पर नहीं चिपकाने चाहिए।",
+          "हमेशा नियमों का पालन करके ही डाक लेख सुरक्षित भेजें।"
+        ],
+        "score": 9.0,
+        "lesson": "Do not affix non-postal stamps or labels on the address side of any postal article to ensure safe and compliant delivery.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 2
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/a81f6fd443_87294026_1.jpg"
+      },
+      "published": "2026-10-07",
+      "published_round": 18
     },
     {
       "basis": "notes",
