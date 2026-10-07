@@ -300,7 +300,18 @@
         "ok": true,
         "v": 9,
         "attempt": 3
-      }
+      },
+      "opt_pics": {
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/93bdf4014c_51917846_1.jpg",
+        "err": "option-chitra jaanch fail: A, B, C, D"
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-07",
+      "published_round": 18
     }
   ],
   "clause_text_en": "23. Manner of affixing postage stamps  - Stamps affixed to a letter or packet must be \ncompletely adherent to the article itself and not to any part of its contents or any separate label or \nother device tied or attached to the article.  The stamps should be affixed to the right hand top \ncorner of the address side.",

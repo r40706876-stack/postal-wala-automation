@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** डाक टिकट = दाहिना ऊपरी कोना
 **Hook:** ग्राहक लिफाफे पर टिकट किस कोने में चिपकाए?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-10-07]
 **Source (PO Guide):** 2) पत्र या पैक े ि पर लगाए गए डाक टिकि लेख के साथ पूरी तरह से टचपक े होने चाटहए |
 
 **Niyam:** डाक टिकट लेख के साथ पूरी तरह से चिपके होने चाहिए, अलग लेबल पर नहीं।
