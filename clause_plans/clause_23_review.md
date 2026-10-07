@@ -5,7 +5,7 @@ English title: Manner of affixing postage stamps
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-10-07]
 **Source (PO Guide):** 1) डाक टिकि - लेख के पिे वाली साइड दाटहने हाथ के ऊपरी कोने में टचपकाने चाटहए |
 
 **Niyam:** डाक टिकट लेख के पते वाली साइड दाहिने हाथ के ऊपरी कोने में चिपकाने चाहिए।

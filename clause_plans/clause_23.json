@@ -157,7 +157,23 @@
         "ok": true,
         "v": 9,
         "attempt": 1
-      }
+      },
+      "opt_pics": {
+        "ok": true,
+        "ref": "clause_plans/chitra_img/fa78f6d2a3_57352581_1.jpg",
+        "pics": {
+          "पते वाली साइड दाहिने ऊपरी कोने में": "clause_plans/chitra_img/fa78f6d2a3_optA_935044.jpg",
+          "पते वाली साइड बाएँ ऊपरी कोने में": "clause_plans/chitra_img/fa78f6d2a3_optB_835342.jpg",
+          "लेख के पीछे मध्य में": "clause_plans/chitra_img/fa78f6d2a3_optC_816134.jpg",
+          "लेख के नीचे बाएँ कोने में": "clause_plans/chitra_img/fa78f6d2a3_optD_521778.jpg"
+        }
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "published": "2026-10-07",
+      "published_round": 18
     },
     {
       "basis": "notes",
@@ -214,7 +230,77 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "published_prev": "2026-09-30",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A GDS clerk and a customer standing at a plain wooden postal counter, looking curiously at a blank white envelope held between them. Warm indoor light, medium shot from the waist up.",
+            "target": "the blank white envelope on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "पत्र पर डाक टिकट कैसे लगाया जाना चाहिए?",
+            "desc": "A GDS clerk and a customer standing at a plain wooden postal counter looking curiously at a blank white envelope on the counter.",
+            "mark": "none",
+            "card": null,
+            "img": "clause_plans/chitra_img/93bdf4014c_51917846_1.jpg",
+            "box": [
+              0.388,
+              0.481,
+              0.608,
+              0.638
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A GDS clerk and a customer standing at a plain wooden postal counter, looking at a white envelope where a postage stamp is attached on a separate hanging paper label next to the letter. Warm indoor light, medium shot from the waist up.",
+            "target": "the separate hanging paper label",
+            "tag": "अलग लेबल पर चिपके हुए",
+            "tag_color": "red",
+            "text": "टिकट को कभी भी अलग लेबल पर न चिपकाएं।",
+            "desc": "A GDS clerk and a customer looking at a white envelope where the postage stamp is attached on a separate hanging paper label next to the letter tagged अलग लेबल पर चिपके हुए.",
+            "mark": "wrong",
+            "card": null,
+            "img": "clause_plans/chitra_img/93bdf4014c_51917846_2.jpg",
+            "box": [
+              0.492,
+              0.239,
+              0.616,
+              0.399
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "A GDS clerk and a customer smiling at a plain wooden postal counter, looking at a white envelope where the postage stamp is fully and neatly pasted directly onto the article. Warm indoor light, medium shot from the waist up.",
+            "target": "the white envelope with the stamp",
+            "tag": "लेख से पूरी तरह चिपके हुए",
+            "tag_color": "green",
+            "text": "डाक टिकट लेख के साथ पूरी तरह से चिपके होने चाहिए।",
+            "desc": "A GDS clerk and a customer smiling at a plain wooden postal counter, looking at the white envelope with the stamp tagged लेख से पूरी तरह चिपके हुए.",
+            "mark": "right",
+            "card": null,
+            "img": "clause_plans/chitra_img/93bdf4014c_51917846_3.jpg",
+            "box": [
+              0.385,
+              0.488,
+              0.608,
+              0.645
+            ],
+            "bg_text": false
+          }
+        ],
+        "caps": [
+          "पत्र पर डाक टिकट कैसे लगाया जाना चाहिए?",
+          "टिकट को कभी भी अलग लेबल पर न चिपकाएं।",
+          "डाक टिकट लेख के साथ पूरी तरह से चिपके होने चाहिए।"
+        ],
+        "score": 9.0,
+        "lesson": "Postage stamps must be affixed directly and completely onto the postal article itself rather than on a separate label.",
+        "pv": 3,
+        "ok": true,
+        "v": 9,
+        "attempt": 3
+      }
     }
   ],
   "clause_text_en": "23. Manner of affixing postage stamps  - Stamps affixed to a letter or packet must be \ncompletely adherent to the article itself and not to any part of its contents or any separate label or \nother device tied or attached to the article.  The stamps should be affixed to the right hand top \ncorner of the address side.",
