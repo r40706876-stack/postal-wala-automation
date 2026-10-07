@@ -1,0 +1,71 @@
+[
+ {
+  "prompt": "The postman stands next to a bright red pillar letter box with a narrow slot, holding up a very large thick brown envelope that is clearly much bigger than the slot. He looks straight at the camera with a curious raised eyebrow, as if asking the viewer a question.",
+  "target": "the very large brown envelope",
+  "tag": "बड़ा पत्र",
+  "tag_color": "dark",
+  "text": "यह बड़ा पत्र लेटर बॉक्स के लिए बहुत बड़ा है।",
+  "mark": "none",
+  "desc": "The postman stands next to a bright red pillar letter box with a narrow slot, holding up a very large thick brown envelope that is clearly much bigger than the slot. He looks straight at the camera with a curious raised eyebrow, as if asking the viewer a question.",
+  "img": "/home/runner/work/postal-wala-automation/postal-wala-automation/demo_out/img/p1.jpg",
+  "box": [
+   0.17,
+   0.386,
+   0.804,
+   0.871
+  ],
+  "face": [
+   0.372,
+   0.055,
+   0.663,
+   0.431
+  ]
+ },
+ {
+  "prompt": "The very large brown envelope is bent and crumpled, stuck halfway in the narrow slot of the bright red pillar letter box. The young customer looks frustrated; the postman holds his forehead, shocked.",
+  "target": "the crumpled envelope stuck in the slot",
+  "tag": "लेटर बॉक्स में ठूँसना",
+  "tag_color": "red",
+  "text": "बड़े पत्र को लेटर बॉक्स में जबरदस्ती डालना गलत है।",
+  "mark": "wrong",
+  "desc": "The very large brown envelope is bent and crumpled, stuck halfway in the narrow slot of the bright red pillar letter box. The young customer looks frustrated; the postman holds his forehead, shocked.",
+  "img": "/home/runner/work/postal-wala-automation/postal-wala-automation/demo_out/img/p2.jpg",
+  "box": [
+   0.3,
+   0.32,
+   0.7,
+   0.72
+  ],
+  "face": [
+   0.365,
+   0.055,
+   0.663,
+   0.432
+  ],
+  "frames": [
+   "/home/runner/work/postal-wala-automation/postal-wala-automation/demo_out/img/p2a.jpg"
+  ]
+ },
+ {
+  "prompt": "At the post office counter window, the smiling postman happily takes the very large brown envelope by hand from the relieved young customer in a blue shirt. Warm friendly moment, the envelope held between their hands.",
+  "target": "the large envelope being handed over",
+  "tag": "खिड़की पर हाथों-हाथ",
+  "tag_color": "green",
+  "text": "बड़े पत्र वैन या डाक खिड़की पर हाथों-हाथ लिए जाएंगे।",
+  "mark": "right",
+  "desc": "At the post office counter window, the smiling postman happily takes the very large brown envelope by hand from the relieved young customer in a blue shirt. Warm friendly moment, the envelope held between their hands.",
+  "img": "/home/runner/work/postal-wala-automation/postal-wala-automation/demo_out/img/p3.jpg",
+  "box": [
+   0.3,
+   0.32,
+   0.7,
+   0.72
+  ],
+  "face": [
+   0.357,
+   0.062,
+   0.65,
+   0.435
+  ]
+ }
+]
