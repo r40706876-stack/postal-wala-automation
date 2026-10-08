@@ -5528,8 +5528,7 @@ def _build_scene_specs(data):
             # kaam wala drishya ho to awaaz sirf wahi bolti hai (sawal screen pe bada likha) -> ~2.5s bachat
             {"name": "hook", "mood": "red", "tail": 0.25,
              "min": (3.6 if data.get("scene_line") else 2.6) if STORY_HOOK else (3.4 if data.get("scene_line") else 2.2),
-             "segs": [("hk", (("रुको! " + hook_line(data)) if (STORY_HOOK and (data.get("chitra") or {}).get("kit") == "photo")
-                              else hook_line(data)))] + ([] if data.get("scene_line") else [("q", data["question"])])},
+             "segs": [("hk", hook_voice_line(data))] + ([] if data.get("scene_line") else [("q", data["question"])])},
             {"name": "question", "mood": "blue", "tail": 0.0, "min": 0, "segs": [("lock", "जवाब कमेंट करो!")]},
             {"name": "verdict", "mood": "green", "tail": 0.3, "min": 1.9, "delay": 0.5,
              "segs": [("rev", f"सही जवाब, {data['correct']}!")]},
@@ -9081,6 +9080,14 @@ def hook_line(data):
     return HOOK_TEMPLATES_NOTOPIC[i]
 
 
+def hook_voice_line(data):
+    """v20: awaaz wahi bole jo pehle frame pe likha (punch line); har reel 'रुको!' se shuru nahi."""
+    pv_ = data.get("punch_v") if isinstance(data.get("punch_v"), dict) else {}
+    if pv_.get("ok") and pv_.get("text"):
+        return pv_["text"]
+    return hook_line(data)
+
+
 def hook_q_size(question):
     """Pehle frame ka headline: asli sawal, jitna bada ho sake (3 line tak)."""
     for sz in (80, 76, 72, 68, 64, 60, 56, 52, 48):
@@ -9097,8 +9104,8 @@ VHOOK_HOLD = 2.15              # itni der poori screen pe asli chitra (galti wal
 VHOOK_END = 2.45              # yahan tak dheere-dheere sawal wali screen me badal jaata hai
 
 
-STORY_HOOK = os.getenv("STORY_HOOK", "1") != "0"   # naya: pehle GHATNA (chitra), fir "रुको!", fir sawal
-SH_CUT = 0.8                  # yahan tak ghatna (khaana 1, kaam hota hua); fir jhatke se galti (khaana 2) + "रुको!"
+STORY_HOOK = os.getenv("STORY_HOOK", "1") != "0"   # pehle pal ka poori-screen chitra (visual hook) chalu
+SH_CUT = float(os.getenv("SH_CUT", "0"))   # v20: 0 = frame 0 se hi GALTI wala chitra (pehle shaant drishya scroll nahi rokta tha; purana 0.8)
 
 
 _HOOK_BG = {}
@@ -9121,6 +9128,19 @@ def hook_bg(path):
         dark.putalpha(g.resize((W, H)))
         im.alpha_composite(dark)
         _HOOK_BG[path] = im
+    return im
+
+
+_HOOK_CLEAN = {}
+
+
+def hook_clean_still(pn, size):
+    """Hook ke liye galti wala chitra BINA parchi/card/ghere: dikhe ki kuch galat hai, par kya - wo sawal se pata chale."""
+    key = (pn["img"], size, tuple(pn.get("box") or ()))
+    im = _HOOK_CLEAN.get(key)
+    if im is None:
+        im = photo_frame(pn, size, 0.0, 0.0, 0.0)
+        _HOOK_CLEAN[key] = im
     return im
 
 
@@ -9147,7 +9167,7 @@ def visual_hook(cv, data, t):
         z, col = 1.0 + 0.03 * zk, CYAN
     else:
         t2 = t - (SH_CUT if STORY_HOOK else 0.0)
-        pic = _round_mask(photo_still(pn, S), 34)
+        pic = _round_mask(hook_clean_still(pn, S), 34)     # v20: parchi/card/ghera nahi - jawab hook me na khule
         z, col = 1.0 + 0.03 * clamp(t2 / 1.2) + 0.12 * (1 - ease_out_cubic(clamp(t2 / 0.3))), RED
         place(lay, glow_sprite(600, RED, 70), W / 2, cy)
     place(lay, pic, W / 2, cy, scale=z)
@@ -9158,32 +9178,35 @@ def visual_hook(cv, data, t):
         t2 = t - (SH_CUT if STORY_HOOK else 0.0)
         kx = ease_out_back(prog(t2, 0.05, 0.25))
         place(lay, x_mark_sprite(200), W / 2 + S * z / 2 - 70, cy - S * z / 2 + 70, scale=max(0.05, 1.6 - 0.6 * kx))
-    # --- text: frame 0 se poora (pop nahi - pehla frame hi thumbnail jaisa) ---
-    place(lay, pill_sprite("GDS से MTS | POSTMAN | PA  परीक्षा", 40, (30, 20, 0), YELLOW, ORANGE), W / 2, 110)
-    place(lay, pill_sprite("रुको!", 100, WHITE, RED, (255, 140, 140)), W / 2, 238,
-          scale=1.0 + 0.05 * math.sin(t * 9), angle=-4)
+    # --- text (v20): har reel me same "पीली पट्टी + रुको!" nahi (83 reel baad aankh use pehchaan ke skip karti thi).
+    #     Upar sirf 3-6 shabd ki badi line (har reel alag) + chhota "GDS → MTS" tag; baaki screen = chitra.
+    place(lay, pill_sprite("GDS → MTS / POSTMAN", 34, (30, 20, 0), YELLOW, ORANGE), W / 2, 92)
     pv_ = data.get("punch_v") if isinstance(data.get("punch_v"), dict) else {}
     if pv_.get("ok") and pv_.get("text"):                # 3-6 shabd, bade akshar - 1 pal me padh jaaye
-        f, s_, lines = fit_lines(pv_["text"], 1000, 1, 96, 64)
-        d.text((W / 2, 385), " ".join(lines[0]) if lines else pv_["text"], font=f, fill=YELLOW, anchor="mm",
-               stroke_width=9, stroke_fill=(5, 10, 22))
+        f, s_, lines = fit_lines(pv_["text"], 1010, 2, 112, 70)
+        lh = int(s_ * 1.15)
+        y0 = 300 - (len(lines[:2]) - 1) * lh / 2
+        for k_, ln in enumerate(lines[:2]):
+            d.text((W / 2, y0 + k_ * lh), " ".join(ln), font=f, fill=YELLOW, anchor="mm",
+                   stroke_width=10, stroke_fill=(5, 10, 22))
     else:
         hl = data.get("hook_line") or hook_line(data)
-        f, s_, lines = fit_lines(hl, 1000, 2, 66, 46)
-        lh = int(s_ * 1.2)
+        f, s_, lines = fit_lines(hl, 1000, 2, 84, 52)
+        lh = int(s_ * 1.18)
+        y0 = 300 - (len(lines[:2]) - 1) * lh / 2
         for k_, ln in enumerate(lines[:2]):
-            d.text((W / 2, 360 + k_ * lh), " ".join(ln), font=f, fill=WHITE if k_ else YELLOW, anchor="mm",
-                   stroke_width=7, stroke_fill=(5, 10, 22))
-    if host_ready():                                     # Bhaiya khud poochhte (frame 0 se poora)
-        host_bubble(lay, "आप होते तो क्या करते? कमेंट में बताओ!", t + 5.0, 0.0, 1690,
-                    "sochta" if t < SH_CUT else "chauka")
-    else:
-        kq = 1.0 + 0.04 * math.sin(t * 7)
-        place(lay, pill_sprite("आप क्या करेंगे?", 58, (30, 20, 0), YELLOW, ORANGE), W / 2, 1680, scale=kq)
+            d.text((W / 2, y0 + k_ * lh), " ".join(ln), font=f, fill=WHITE if k_ else YELLOW, anchor="mm",
+                   stroke_width=8, stroke_fill=(5, 10, 22))
+    if t >= 1.0:                                         # pehle 1s screen saaf: sirf chitra + line
+        if host_ready():
+            host_bubble(lay, "आप होते तो क्या करते? कमेंट में बताओ!", t + 4.0, 0.0, 1690, "chauka")
+        else:
+            place(lay, pill_sprite("आप क्या करेंगे?", 58, (30, 20, 0), YELLOW, ORANGE), W / 2, 1680,
+                  scale=max(0.05, ease_out_back(clamp((t - 1.0) / 0.25))))
     lay.putalpha(255)                                   # poori parat thos (neeche ka header kabhi na jhalke)
     off = (1 - ease_in_out(a)) * H
     place(cv, lay, W / 2, H / 2 - off)
-    if STORY_HOOK and not stage1 and t - SH_CUT < 0.12:          # cut pe safed chamak
+    if STORY_HOOK and SH_CUT > 0 and not stage1 and t - SH_CUT < 0.12:          # cut pe safed chamak (frame 0 pe nahi)
         place(cv, Image.new("RGBA", (W, H), (255, 255, 255, int(190 * (1 - (t - SH_CUT) / 0.12)))), W / 2, H / 2)
 
 
@@ -9620,7 +9643,7 @@ USE_DRAW = os.getenv("USE_DRAW", "0") != "0"   # AI-aakaron wali drawing (kamzor
 USE_ICON_KITS = os.getenv("USE_ICON_KITS", "0") != "0"   # purani icon-kahani (kamzor) - band; sirf drawing/lifaafa/pata       # har niyam ka apna AI-drawn chitra (aankh-jaanch ke saath)
 SHOW_COURSE_PROGRESS = False   # "PO Guide पूरा कोर्स: Clause X / N" (user ne hataya)
 REQUIRE_CHITRA = os.getenv("REQUIRE_CHITRA", "1") != "0"   # 1 = sahi chitra ke bina reel NAHI (5 koshish/run, har baar galti sudhaar)
-ENGINE_VERSION = "v19-chhoti-reel (2026-10-08): ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
+ENGINE_VERSION = "v20-hook-saaf (2026-10-08): hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
 
 
 def place_flip(canvas, front, back, cx, cy, p, scale=1.0):
