@@ -1,8 +1,8 @@
 """
 PAKKE 5  (Format 3 - subah 9 baje wali reel)
 =============================================
-Ek reel = 5 tez sawal-jawab: sawal -> 1 pal sochne ka (tick-tick) -> jawab hare card me.
-Aakhir me: "SAVE karo" + "kitne sahi? _/5 comment karo".
+Ek reel = 5 tez sawal (4 option ke saath) + sochne ka timer. JAWAB REEL ME NAHI - sirf PIN comment me
+(caption file ke neeche "PIN comment" taiyar milta hai). Aakhir me: "apne jawab comment karo: 1-B 2-A ...".
 
 Content KABHI naya nahi gadha jaata: sirf clause_plans ke wo parts jo pehle se jaanch (auto_check)
 pass kar chuke hain - wahi sawal, wahi sahi jawab. Isliye galat niyam ka khatra nahi.
@@ -31,7 +31,7 @@ OUT_DIR = os.path.join(M.OUTPUT_DIR, "pakke5")
 STATE = os.path.join(OUT_DIR, "state.json")
 EXP_LOG = os.path.join(OUT_DIR, "experiments.csv")
 N_ITEMS = int(os.getenv("PAKKE5_ITEMS", "5"))
-THINK = 0.9            # sawal ke baad sochne ka pal (tick-tick), fir jawab
+THINK = 2.0            # sawal bolne ke baad options padhne + sochne ka samay (timer ring)
 A_HOLD = 0.45          # jawab ke baad thehrav
 HOOK_HOLD = 0.25
 END_MIN = 2.6
@@ -40,12 +40,12 @@ IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 
 # Hook variant (sach hi bolte hain - koi nakli daava nahi). Har reel agla variant.
 HOOKS = [
-    {"id": "A", "big": "ये {n} जवाब पक्के हैं?", "small": "परीक्षा से पहले खुद को जाँचो",
-     "voice": "परीक्षा से पहले, ये {n} जवाब पक्के कर लो!"},
+    {"id": "A", "big": "ये {n} सवाल हल करो!", "small": "जवाब पिन कमेंट में मिलेंगे",
+     "voice": "ये {n} सवाल हल करो, जवाब पिन कमेंट में!"},
     {"id": "B", "big": "{n} सवाल, आपका स्कोर?", "small": "{n} में से कितने आते हैं?",
      "voice": "{n} सवाल. देखते हैं आपके कितने सही होते हैं!"},
-    {"id": "C", "big": "GDS से MTS: {n} पक्के जवाब", "small": "PO Guide से, सीधे परीक्षा के लिए",
-     "voice": "GDS से MTS परीक्षा के, {n} पक्के जवाब!"},
+    {"id": "C", "big": "GDS से MTS: {n} सवाल", "small": "PO Guide से, सीधे परीक्षा के लिए",
+     "voice": "GDS से MTS परीक्षा के, {n} सवाल. तैयार?"},
 ]
 
 
@@ -86,10 +86,11 @@ def pool():
                 continue                                  # sirf jaanch-pass (sahi) parts
             c = M.norm_correct(p.get("correct")).lower()
             q, a = clean(p.get("question")), clean(p.get(c) if c else "")
-            if not (q and a) or len(q.split()) > 18 or len(a.split()) > 10:
+            opts = [clean(p.get(k)) for k in "abcd"]
+            if not (q and a and all(opts)) or len(q.split()) > 18 or max(len(o.split()) for o in opts) > 7:
                 continue                                  # bahut lamba - tez format me nahi
             out.append({"key": f"{num}:{i}", "clause": num, "title": title, "q": q, "a": a,
-                        "published": bool(p.get("published"))})
+                        "opts": opts, "correct": c.upper(), "published": bool(p.get("published"))})
     return out
 
 
@@ -104,7 +105,20 @@ def pick_items(st):
         st["round"] = int(st.get("round", 1)) + 1
         fresh = pl
     fresh.sort(key=lambda x: (not x["published"], x["clause"]))   # padhaye ja chuke pehle (kram wahi)
-    return fresh[:N_ITEMS]
+    return [shuffle_opts(x) for x in fresh[:N_ITEMS]]
+
+
+def shuffle_opts(it):
+    """Options ka kram badlo (sahi jawab wahi, akshar naya) - warna ek set me sab 'B' ho sakta hai.
+    Kram key se tay (har baar same), sahi jawab ka text milaake naya akshar."""
+    import random
+    rnd = random.Random(it["key"])
+    opts = list(it["opts"])
+    rnd.shuffle(opts)
+    if it["a"] not in opts:
+        return it
+    out = dict(it, opts=opts, correct="ABCD"[opts.index(it["a"])])
+    return out
 
 
 def topic_of(items):
@@ -122,9 +136,7 @@ def make_specs(items, hk):
     specs = [{"name": "hook", "segs": [("hk", hk["voice"].format(n=n))]}]
     for i, it in enumerate(items):
         specs.append({"name": f"q{i}", "segs": [("q", it["q"])]})
-        specs.append({"name": f"a{i}", "segs": [("a", it["a"])]})
-    specs.append({"name": "end", "segs": [("e", "सेव कर लो, और कमेंट में बताओ, पाँच में से कितने सही हुए?"
-                                           if n == 5 else f"सेव कर लो, और कमेंट में बताओ, {n} में से कितने सही हुए?")]})
+    specs.append({"name": "end", "segs": [("e", "अपने जवाब कमेंट में लिखो. सही जवाब, पिन कमेंट में है!")]})
     return specs
 
 
@@ -140,8 +152,6 @@ def timeline(specs, voices):
             d = max(1.6, vd + HOOK_HOLD)
         elif sp["name"].startswith("q"):
             d = vd + THINK
-        elif sp["name"].startswith("a"):
-            d = max(1.1, vd + A_HOLD)
         else:
             d = max(END_MIN, vd + 0.6)
         tl.append({"name": sp["name"], "start": t, "dur": d, "vdur": vd})
@@ -181,8 +191,6 @@ def build_audio(voices, tl, total, path):
             while k < sc["dur"] - 0.1:                         # sochne ka tick-tick
                 M.add_at(buf, M.sfx_tick(0.3), s + k)
                 k += 0.3
-        elif nm.startswith("a"):
-            M.add_at(buf, M.sfx_ding(0.5), s)
         elif nm == "end":
             M.add_at(buf, M.sfx_pop(0.45), s)
     buf += vt
@@ -216,7 +224,7 @@ def dots(cv, n, cur, done_upto, y):
         x = x0 + i * gap
         r = 42 if i == cur else 32
         if i < done_upto:
-            col, fg = M.GREEN, M.WHITE
+            col, fg = (120, 140, 175), M.WHITE              # ho chuka (sahi/galat ka ishaara nahi)
         elif i == cur:
             col, fg = M.YELLOW, (30, 20, 0)
         else:
@@ -270,30 +278,43 @@ def frame_hook(data, t):
     return cv
 
 
-def frame_item(data, i, t_in_q, a_on, t_in_a):
-    """i = sawal number. a_on = jawab dikh raha hai? t_in_a = jawab aaye kitni der hui."""
+def opt_tile(letter, text, w=480, h=190):
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=30, fill=(28, 44, 82, 255), outline=(90, 130, 210, 255), width=4)
+    d.ellipse((18, h / 2 - 34, 86, h / 2 + 34), fill=M.YELLOW + (255,))
+    d.text((52, h / 2), letter, font=M.get_font(42), fill=(30, 20, 0), anchor="mm")
+    f, s_, lines = M.fit_lines(text, w - 130, 2, 50, 32)
+    lh = int(s_ * 1.22)
+    y0 = h / 2 - (len(lines) - 1) * lh / 2
+    for k, ln in enumerate(lines):
+        d.text((100 + (w - 110) / 2, y0 + k * lh), " ".join(ln), font=f, fill=M.WHITE, anchor="mm")
+    return im
+
+
+def frame_item(data, i, t_in_q):
+    """Sawal + 4 option. Jawab KABHI nahi dikhta (pin comment me)."""
     n = len(data["items"])
     it = data["items"][i]
-    cv = M.bg_frame("blue" if not a_on else "green", data["_gt"]).convert("RGB")
+    sc = data["_q_sc"]
+    cv = M.bg_frame("blue", data["_gt"]).convert("RGB")
     M.place(cv, M.pill_sprite(f"सवाल {i + 1}/{n}", 46, (30, 20, 0), M.YELLOW, M.ORANGE), M.W / 2, 150)
-    dots(cv, n, i, i + (1 if a_on else 0), 290)
-    # sawal: aate hi upar se halka khisak ke
-    k = M.ease_out_cubic(M.clamp(t_in_q / 0.25)) if not a_on else 1.0
-    lay = Image.new("RGBA", (M.W, 760), (0, 0, 0, 0))
-    text_block(lay, it["q"], 380, 980, 88, 54, M.WHITE, 5, stroke=7)
-    M.place(cv, lay, M.W / 2, 700 - 40 * (1 - k), alpha=k)
-    if not a_on:
-        q_sc = data["_q_sc"]
-        think_k = M.clamp((t_in_q - q_sc["vdur"]) / THINK) if t_in_q > q_sc["vdur"] else 0.0
-        think_ring(cv, M.W / 2, 1200, think_k)
-        if t_in_q > q_sc["vdur"]:
-            d = ImageDraw.Draw(cv)
-            d.text((M.W / 2, 1335), "सोचो...", font=M.get_font(52), fill=(255, 225, 150), anchor="mm")
-    else:
-        kb = M.ease_out_back(M.clamp(t_in_a / 0.3))
-        M.place(cv, answer_card(it["a"]), M.W / 2, 1220, scale=max(0.05, 0.7 + 0.3 * kb), alpha=M.clamp(t_in_a / 0.12))
-        if t_in_a < 0.15:                                   # jawab aate hi halki chamak
-            M.place(cv, M.glow_sprite(520, M.GREEN, int(140 * (1 - t_in_a / 0.15))), M.W / 2, 1220)
+    dots(cv, n, i, i, 290)
+    k = M.ease_out_cubic(M.clamp(t_in_q / 0.25))
+    lay = Image.new("RGBA", (M.W, 620), (0, 0, 0, 0))
+    text_block(lay, it["q"], 310, 980, 84, 52, M.WHITE, 4, stroke=7)
+    M.place(cv, lay, M.W / 2, 640 - 40 * (1 - k), alpha=k)
+    for j, (L, o) in enumerate(zip("ABCD", it["opts"])):
+        kj = M.ease_out_back(M.clamp((t_in_q - 0.15 - 0.08 * j) / 0.3))
+        x = M.W / 2 + (-255 if j % 2 == 0 else 255)
+        y = 1080 + (j // 2) * 220
+        M.place(cv, opt_tile(L, o), x, y, scale=max(0.05, 0.85 + 0.15 * kj), alpha=M.clamp(kj * 1.5))
+    left = sc["dur"] - t_in_q
+    think_k = 1.0 - M.clamp(left / sc["dur"])
+    think_ring(cv, M.W / 2, 1560, think_k)
+    if left < 1.2:
+        ImageDraw.Draw(cv).text((M.W / 2, 1690), "अपना जवाब चुनो!", font=M.get_font(50), fill=(255, 225, 150),
+                                anchor="mm")
     src = f"PO Guide Part I, Clause {it['clause']}"
     ImageDraw.Draw(cv).text((M.W / 2, 1830), src, font=M.get_font(32), fill=(150, 165, 195), anchor="mm")
     return cv
@@ -304,15 +325,18 @@ def frame_end(data, t):
     cv = M.bg_frame("purple", data["_gt"]).convert("RGB")
     dots(cv, n, -1, n, 260)
     k = M.ease_out_back(M.clamp(t / 0.3))
-    M.place(cv, M.pill_sprite("SAVE करो", 110, (30, 20, 0), M.YELLOW, M.ORANGE), M.W / 2, 560,
+    M.place(cv, M.pill_sprite("जवाब कमेंट करो!", 96, (30, 20, 0), M.YELLOW, M.ORANGE), M.W / 2, 520,
             scale=max(0.05, k), angle=-3)
-    text_block(cv, "परीक्षा से पहले एक बार दोहराना", 720, 960, 58, 42, M.WHITE, 2, stroke=6)
-    k2 = M.ease_out_back(M.clamp((t - 0.35) / 0.3))
-    M.place(cv, M.pill_sprite(f"आपके कितने सही?  __ / {n}", 70, M.WHITE, M.RED, (255, 150, 150)), M.W / 2, 980,
-            scale=max(0.05, k2))
-    text_block(cv, "कमेंट में स्कोर लिखो", 1110, 900, 54, 40, (255, 225, 150), 1, stroke=5)
+    eg = "  ".join(f"{j + 1}-?" for j in range(n))
+    k2 = M.ease_out_back(M.clamp((t - 0.3) / 0.3))
+    M.place(cv, M.pill_sprite(eg, 66, M.WHITE, (40, 56, 96), (110, 140, 200)), M.W / 2, 700, scale=max(0.05, k2))
+    text_block(cv, "ऐसे लिखो: 1-B  2-A  3-D ...", 830, 960, 50, 38, (255, 225, 150), 1, stroke=5)
+    k3 = M.ease_out_back(M.clamp((t - 0.6) / 0.3))
+    M.place(cv, M.pill_sprite("सही जवाब: पिन कमेंट में", 70, M.WHITE, M.RED, (255, 150, 150)), M.W / 2, 1020,
+            scale=max(0.05, k3))
+    text_block(cv, "SAVE करो, परीक्षा से पहले दोहराना", 1160, 960, 50, 38, M.WHITE, 1, stroke=5)
     if M.host_ready():
-        M.host_bubble(cv, "रोज़ सुबह 9 बजे नए 5 सवाल!", t, 0.6, 1560, "shabaash")
+        M.host_bubble(cv, "रोज़ सुबह 9 बजे नए 5 सवाल!", t, 0.8, 1560, "batata")
     else:
         text_block(cv, "रोज़ सुबह 9 बजे नए 5 सवाल!", 1560, 900, 52, 40, M.WHITE, 1)
     return cv
@@ -330,11 +354,8 @@ def render(data, tl, total, gt):
         return frame_hook(data, t)
     if nm == "end":
         return frame_end(data, t)
-    i = int(nm[1:])
-    if nm.startswith("q"):
-        data["_q_sc"] = sc
-        return frame_item(data, i, t, False, 0.0)
-    return frame_item(data, i, 9.0, True, t)
+    data["_q_sc"] = sc
+    return frame_item(data, int(nm[1:]), t)
 
 
 def build_video(data, out):
@@ -382,14 +403,12 @@ def build_video(data, out):
 def write_caption(data, path):
     n, items = len(data["items"]), data["items"]
     cls = ", ".join(str(c) for c in data["clauses"])
-    qs = [f"{k + 1}. {it['q']}" for k, it in enumerate(items)]
+    pin = "  ".join(f"{k + 1}-{it['correct']}" for k, it in enumerate(items))
     lines = [
-        f"GDS to MTS / Postman / PA परीक्षा | {data['topic']} के {n} पक्के सवाल-जवाब | PO Guide Part I",
+        f"GDS to MTS / Postman / PA परीक्षा | {data['topic']} के {n} सवाल | PO Guide Part I",
         "",
-        f"{n} सवाल, हर एक के बाद 1 सेकंड सोचो, फिर जवाब देखो 👀",
-        "आपके कितने सही हुए? कमेंट में लिखो: __/" + str(n),
-        "",
-        *qs,
+        f"{n} सवाल, अपने जवाब कमेंट में लिखो (जैसे 1-B 2-A ...)",
+        "सही जवाब पिन कमेंट में 📌",
         "",
         f"📘 स्रोत: PO Guide Part I, Clause {cls}",
         "🔖 SAVE करो - परीक्षा से पहले एक बार दोहराना",
@@ -397,6 +416,11 @@ def write_caption(data, path):
         "🔔 रोज़ सुबह 9 बजे नए 5 सवाल | शाम को PO Guide का एक नियम विस्तार से",
         "",
         M.HASHTAGS + " #gdsexam #postalexam",
+        "",
+        "----- PIN करने वाला पहला कमेंट (reel डालने के 1 घंटे बाद पिन करें) -----",
+        f"✅ सही जवाब: {pin}",
+        *[f"{k + 1}. {it['q']} → {it['correct']}) {it['a']}" for k, it in enumerate(items)],
+        f"आपके कितने सही हुए? __/{n} लिखो 👇",
     ]
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
