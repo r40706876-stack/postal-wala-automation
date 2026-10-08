@@ -241,7 +241,151 @@
       "trap_v": {
         "ok": true,
         "v": 3
-      }
+      },
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "Medium shot of the customer handing a plain white envelope to the postman across the wooden counter. The postman is looking at the envelope with a curious expression.",
+            "target": "the white envelope in the customer's hand",
+            "tag": "पता पक्ष",
+            "tag_color": "dark",
+            "text": "ग्राहक एक पत्र भेजने के लिए खिड़की पर लाया है।",
+            "desc": "The customer is presenting a plain white envelope showing the address side to the postman.",
+            "mark": "none",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": {
+              "who": "customer",
+              "text": "भैया, ये पत्र भेजना है।"
+            },
+            "img": "clause_plans/chitra_img/555684a9e6_55845894_1.jpg",
+            "box": [
+              0.385,
+              0.586,
+              0.558,
+              0.718
+            ],
+            "bg_text": true,
+            "badge": [
+              0.718,
+              0.521,
+              0.804,
+              0.573
+            ],
+            "face": [
+              0.556,
+              0.143,
+              0.775,
+              0.401
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Close-up of the envelope on the counter. A large, blank red sticker label is pasted directly over the address text. The postman is pointing at the sticker with a confused and worried expression.",
+            "target": "the blank red sticker label over the address",
+            "tag": "पता पक्ष पर लेबल",
+            "tag_color": "red",
+            "text": "पता पक्ष पर लेबल लगाने से पता पढ़ना मुश्किल होता है।",
+            "desc": "A large blank red label is pasted directly over the address on the white envelope, making it unreadable.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राम LABEL",
+                "मकान 12 LABEL",
+                "पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "अरे भाई! पता कहाँ छुप गया?"
+            },
+            "img": "clause_plans/chitra_img/555684a9e6_55845894_2.jpg",
+            "box": [
+              0.429,
+              0.563,
+              0.563,
+              0.671
+            ],
+            "bg_text": false,
+            "frames": [
+              "clause_plans/chitra_img/555684a9e6_55845894_2f1.jpg",
+              "clause_plans/chitra_img/555684a9e6_55845894_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "Medium shot of the postman smiling and pointing to a clean envelope with no labels on the address side. The customer looks relieved and is nodding in agreement.",
+            "target": "the clean front of the envelope",
+            "tag": "साफ़ पता पक्ष",
+            "tag_color": "green",
+            "text": "पता पक्ष हमेशा साफ़ और स्पष्ट होना चाहिए।",
+            "desc": "The envelope address side is clean and clearly legible, without any labels pasted on it.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": {
+              "who": "postman",
+              "text": "हाँ, अब पता आसानी से पढ़ सकते हैं!"
+            },
+            "img": "clause_plans/chitra_img/555684a9e6_55845894_3.jpg",
+            "box": [
+              0.372,
+              0.588,
+              0.57,
+              0.722
+            ],
+            "bg_text": true,
+            "badge": [
+              0.72,
+              0.531,
+              0.804,
+              0.582
+            ],
+            "face": [
+              0.206,
+              0.232,
+              0.372,
+              0.407
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/555684a9e6_55845894_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "ग्राहक एक पत्र भेजने के लिए खिड़की पर लाया है।",
+          "पता पक्ष पर लेबल लगाने से पता पढ़ना मुश्किल होता है।",
+          "पता पक्ष हमेशा साफ़ और स्पष्ट होना चाहिए।"
+        ],
+        "score": 9.0,
+        "lesson": "When accepting a letter at the post office window, the address side of the envelope must always be kept clean and clear, and labels must not be pasted on it as they make the address details difficult to read.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      },
+      "published": "2026-10-08",
+      "published_round": 18
     },
     {
       "basis": "notes",
