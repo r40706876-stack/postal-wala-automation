@@ -232,17 +232,114 @@ def pill(text, size, fg, bg, outline=None, padx=26, pady=12, reg=False):
     return im
 
 
+# ---------------- POSTAL WALA ki pehchaan: dak-ticket logo, airmail dhaari, daak-muhar, Bhaiya ----------------
+POST_RED = (200, 30, 45)
+AIR_BLUE = (24, 54, 140)
+
+
+def stamp_logo(size=104):
+    """Dak-ticket jaisa logo: kinaare kate (perforation), andar Bhaiya ka chehra (na ho to PW)."""
+    key = ("stamp", size)
+    if key in _C:
+        return _C[key]
+    S = size + 24
+    im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rectangle((4, 4, S - 5, S - 5), fill=(255, 255, 255, 255))
+    step = 13
+    for x in range(4, S - 4, step):                       # perforation: kinaaron pe chhote gol kataav
+        for y_ in (4, S - 5):
+            d.ellipse((x - 4, y_ - 4, x + 4, y_ + 4), fill=(0, 0, 0, 0))
+    for y in range(4, S - 4, step):
+        for x_ in (4, S - 5):
+            d.ellipse((x_ - 4, y - 4, x_ + 4, y + 4), fill=(0, 0, 0, 0))
+    d.rectangle((14, 14, S - 15, S - 15), fill=POST_RED + (255,))
+    inner = S - 36
+    face = None
+    try:
+        if M.host_ready():
+            f_ = Image.open(M.host_img(None)).convert("RGB")
+            w_, h_ = f_.size
+            side = int(min(w_, h_) * 0.55)
+            x0, y0 = (w_ - side) // 2, int(h_ * 0.04)
+            face = f_.crop((x0, y0, x0 + side, y0 + side)).resize((inner, inner), Image.LANCZOS).convert("RGBA")
+    except Exception:
+        face = None
+    if face is not None:
+        im.alpha_composite(face, (18, 18))
+        d.rectangle((18, S - 40, S - 19, S - 19), fill=POST_RED + (230,))
+        d.text((S / 2, S - 30), "POSTAL WALA", font=M.get_font(13), fill=(255, 255, 255), anchor="mm")
+    else:
+        d.text((S / 2, S / 2), "PW", font=M.get_font(44), fill=(255, 255, 255), anchor="mm")
+    _C[key] = im
+    return im
+
+
+def airmail_stripe(cv, y=0, h=12):
+    """Airmail lifaafe jaisi laal-neeli tirchhi dhaariyaan."""
+    d = ImageDraw.Draw(cv)
+    w_ = 34
+    for k, x in enumerate(range(-h * 2, W + w_, w_)):
+        col = POST_RED if k % 2 == 0 else AIR_BLUE
+        d.polygon([(x, y + h), (x + w_ * 0.55, y), (x + w_ * 0.55 + w_ * 0.45, y), (x + w_ * 0.45, y + h)], fill=col)
+
+
+def postmark(date_txt, size=210):
+    """Gol daak-muhar: POSTAL WALA · PYQ + tareekh (asli dak ki tarah, halki syahi)."""
+    key = ("pm", date_txt, size)
+    if key in _C:
+        return _C[key]
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    ink = (40, 56, 120, 150)
+    c = size / 2
+    d.ellipse((6, 6, size - 6, size - 6), outline=ink, width=5)
+    d.ellipse((30, 30, size - 30, size - 30), outline=ink, width=3)
+    f = M.get_font(20)
+    txt = "POSTAL WALA • PYQ • "
+    r = c - 18
+    for i, ch in enumerate(txt * 2):                    # gol ghoomta naam
+        ang = -math.pi / 2 + 2 * math.pi * i / (len(txt) * 2)
+        x, y = c + r * math.cos(ang), c + r * math.sin(ang)
+        g = Image.new("RGBA", (30, 30), (0, 0, 0, 0))
+        ImageDraw.Draw(g).text((15, 15), ch, font=f, fill=ink, anchor="mm")
+        g = g.rotate(-math.degrees(ang) - 90, resample=Image.BICUBIC)
+        im.alpha_composite(g, (int(x - 15), int(y - 15)))
+    d.text((c, c - 10), date_txt, font=M.get_font(30), fill=ink, anchor="mm")
+    d.text((c, c + 24), "GDS → MTS", font=M.get_font(20), fill=ink, anchor="mm")
+    for k in range(4):                                  # muhar ki lehron wali rekhayein
+        yy = c - 30 + k * 20
+        d.line((size - 4, yy, size + 200, yy), fill=ink, width=3)
+    _C[key] = im
+    return im
+
+
+def bhaiya_says(cv, text, x, y, t, expr="sochta", instant=False):
+    """Postal Wala Bhaiya ka chhota chehra + gubbara (har reel ki pehchaan)."""
+    if not M.host_ready():
+        return
+    key = ("face", expr)
+    if key not in _C:
+        try:
+            _C[key] = M._host_face(M.host_img(expr), 120)
+        except Exception:
+            _C[key] = M._host_face(M.host_img(None), 120)
+    bob = 5 * math.sin(t * 5)
+    M.place(cv, _C[key], x, y + bob)
+    b = pill(text, 36, NAVY, (255, 255, 255), LINEC, padx=24, pady=12)
+    k = 1.0 if instant else M.ease_out_back(M.clamp(t / 0.25))
+    M.place(cv, b, x + 90 + b.width / 2, y - 30, scale=max(0.05, k))
+
+
 def header(cv, k_cur, cur, n):
     """Brand patti + upar ki line + 3 khaanon ki progress (abhi wala bharta hua)."""
     d = ImageDraw.Draw(cv, "RGBA")
     d.rectangle((0, 0, W, 236), fill=(255, 255, 255, 255))
     d.line((0, 236, W, 236), fill=LINEC, width=2)
-    d.rectangle((0, 0, W, 8), fill=GOLD)
-    d.ellipse((48, 46, 140, 138), fill=NAVY)
-    d.ellipse((54, 52, 134, 132), outline=GOLD, width=3)
-    d.text((94, 92), "PW", font=M.get_font(40), fill=GOLD_L, anchor="mm")
-    d.text((162, 74), "POSTAL WALA", font=M.get_font(44), fill=NAVY, anchor="lm")
-    d.text((164, 120), "PYQ टेस्ट सीरीज़ · GDS → MTS / Postman", font=M.get_font_reg(30), fill=GREYT, anchor="lm")
+    airmail_stripe(cv, 0, 12)
+    M.place(cv, stamp_logo(104), 104, 100, angle=-4)
+    d.text((178, 78), "POSTAL WALA", font=M.get_font(44), fill=NAVY, anchor="lm")
+    d.text((180, 124), "PYQ टेस्ट सीरीज़ · GDS → MTS / Postman", font=M.get_font_reg(30), fill=GREYT, anchor="lm")
     M.place(cv, pill("असली पेपर", 30, NAVY, GOLD_L, GOLD), W - 150, 92)
     f, s_, ls = M.fit_lines(TOP_LINE, 1000, 1, 36, 26)
     d.text((W / 2, 196), " ".join(ls[0]) if ls else TOP_LINE, font=f, fill=NAVY2, anchor="mm")
@@ -317,6 +414,8 @@ def scene_q(data, i, t, sc):
     card = q_card(it, i, n)
     cy = 330 + card.height / 2 - 30
     M.place(cv, card, W / 2, cy + 40 * (1 - kq), alpha=kq)
+    pm = postmark(data.get("pm_date", ""))
+    M.place(cv, pm, W - 92, cy + card.height / 2 - 52, scale=0.85, angle=-12, alpha=0.85 * kq)   # kone par, shabdon se door
     oy = cy + card.height / 2 + 40
     for j, (L, o) in enumerate(zip("ABCD", it["opts"])):
         kj = 1.0 if first else M.ease_out_cubic(M.clamp((t - 0.06 - 0.05 * j) / 0.2))
@@ -330,8 +429,10 @@ def scene_q(data, i, t, sc):
     if k > 0:
         d.rounded_rectangle((90, ty - 9, 90 + (W - 180) * k, ty + 9), radius=9, fill=col)
     if not timeup:
-        M.place(cv, pill(f"{left:0.1f} s", 40, (255, 255, 255), col), W / 2, ty + 62)
-        d.text((W / 2, ty + 132), "अपना जवाब सोचो", font=M.get_font_reg(36), fill=GREYT, anchor="mm")
+        M.place(cv, pill(f"{left:0.1f} s", 40, (255, 255, 255), col), W / 2 + 260, ty + 70)
+        lines_ = ["सोचो, जवाब क्या है?", "ये कई बार आ चुका है!", "आखिरी सवाल!"]
+        say = lines_[2] if i == n - 1 else (lines_[1] if len(it.get("exams") or []) >= 2 else lines_[0])
+        bhaiya_says(cv, say, 140, ty + 90, t, "sochta" if left > 1.0 else "chauka", instant=first)
     else:
         k5 = M.ease_out_back(M.clamp((t - tend) / 0.14))
         M.place(cv, pill("समय समाप्त", 52, (255, 255, 255), RED), W / 2, ty + 70,
@@ -489,7 +590,9 @@ def run(force=False):
               "(Claude se agla batch banwa lijiye). Aaj PYQ reel nahi.")
         return
     hook = HOOK_VOICES[int(st.get("n", 0)) % len(HOOK_VOICES)]
-    data = {"items": items, "hook": hook, "post_date": pdate}
+    mon = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+    dd = datetime.date.fromisoformat(pdate)
+    data = {"items": items, "hook": hook, "post_date": pdate, "pm_date": f"{dd.day:02d} {mon[dd.month - 1]} {dd.year % 100:02d}"}
     print(f"PYQ {pdate} | awaaz {hook['id']} | sawal: {[x['id'] for x in items]}")
     out = os.path.join(OUT_DIR, f"pyq_{pdate}.mp4")
     k = 2
