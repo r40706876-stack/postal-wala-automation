@@ -3082,64 +3082,155 @@ def _panel_mark(v, i, n):
     return v if v in ("wrong", "right") else "wrong"
 
 
+KEEP_MAX_REUSE = 2            # rakhi hui kahani itni baar dobara; fir bhi wahi khaana na bane to nayi kahani
+CF_PART_BUDGET = int(os.getenv("CF_PART_BUDGET", "18"))   # ek part par ek run me max itne chitra (poora quota ek part na kha jaaye)
+_KEEP_MEM = {}
+
+
+def _keep_put(part, scene, panels, imgs, boxes, seed0, bad):
+    """Kahani + aankh-PASS chitra sambhal ke (memory + repo file): agli koshish/agli run me sirf bigde khaane bane."""
+    key = _photo_key(part)
+    old = part.get("chitra_keep") if isinstance(part.get("chitra_keep"), dict) else {}
+    os.makedirs(PHOTO_DIR, exist_ok=True)
+    files, bx, ex, bg = {}, {}, {}, {}
+    for i, b_ in enumerate(imgs):
+        if i in bad or b_ is None or boxes[i] is None:
+            continue
+        ext = ".jpg" if b_[:2] == b"\xff\xd8" else ".png"
+        path = os.path.join(PHOTO_DIR, f"{key}_keep_{seed0}_{i + 1}{ext}").replace("\\", "/")
+        if not os.path.exists(path):
+            with open(path, "wb") as f:
+                f.write(b_)
+        files[str(i)], bx[str(i)] = path, boxes[i]
+        ex[str(i)], bg[str(i)] = _EXTRA.get(i) or {}, bool(_BG_TEXT.get(i, False))
+    for k_, pth in (old.get("files") or {}).items():     # pichhle rakhe hue jo ab kaam ke nahi
+        if pth not in files.values():
+            try:
+                os.remove(pth)
+            except OSError:
+                pass
+    if "0" not in files:
+        part.pop("chitra_keep", None)
+        _KEEP_MEM.pop(key, None)
+        return
+    part["chitra_keep"] = {"scene": scene, "seed0": seed0, "files": files, "boxes": bx, "extra": ex, "bgt": bg,
+                           "fixes": {str(i): _FIXES.get(i, "") for i in bad if _FIXES.get(i)},
+                           "panels": [{k: v for k, v in p_.items() if k not in ("img", "box", "bg_text", "badge", "face")}
+                                      for p_ in panels],
+                           "reuse_n": int(old.get("reuse_n", 0)) if old.get("seed0") == seed0 else 0}
+    _KEEP_MEM[key] = True
+    print(f"  Chitra (photo): {len(files)} sahi chitra sambhale (khaana {', '.join(str(int(k) + 1) for k in files)})")
+
+
+def _keep_get(part):
+    pk = part.get("chitra_keep") if isinstance(part.get("chitra_keep"), dict) else None
+    if not pk:
+        return None
+    if int(pk.get("reuse_n", 0)) >= KEEP_MAX_REUSE:
+        print("  Chitra (photo): rakhi kahani ka wahi khaana baar-baar fail - ab nayi kahani")
+        _keep_clear(part)
+        return None
+    try:
+        imgs = {}
+        for k_, pth in pk["files"].items():
+            with open(pth, "rb") as f:
+                imgs[int(k_)] = f.read()
+        out = {"scene": pk["scene"], "seed0": pk["seed0"], "panels": pk["panels"], "imgs": imgs,
+               "boxes": {int(k): v for k, v in pk["boxes"].items()},
+               "extra": {int(k): v for k, v in (pk.get("extra") or {}).items()},
+               "bgt": {int(k): v for k, v in (pk.get("bgt") or {}).items()},
+               "fixes": {int(k): v for k, v in (pk.get("fixes") or {}).items()}}
+        if 0 not in imgs or len(imgs) >= len(pk["panels"]):
+            raise ValueError("rakhe chitra adhoore")
+    except Exception as exc:
+        print("  Chitra (photo): rakhe chitra nahi mile -", str(exc)[:80])
+        _keep_clear(part)
+        return None
+    pk["reuse_n"] = int(pk.get("reuse_n", 0)) + 1
+    return out
+
+
+def _keep_clear(part):
+    pk = part.pop("chitra_keep", None)
+    _KEEP_MEM.pop(_photo_key(part), None)
+    if isinstance(pk, dict):
+        for pth in (pk.get("files") or {}).values():
+            try:
+                os.remove(pth)
+            except OSError:
+                pass
+
+
 def _photo_attempt(part, feedback=""):
     """Kahani (text AI) -> 3 chitra (Cloudflare) -> aankh-jaanch + box -> parchi lagao -> andhi-jaanch -> examiner."""
     import io
-    corr = (part.get("correct") or "a").lower()
-    wrong = ", ".join(part.get(k, "") for k in "abcd" if k != corr)
-    fb = ("\nPREVIOUS STORY WAS REJECTED. Reason: " + feedback + "\nMake a new story fixing exactly this.") if feedback else ""
-    fb = _lessons_text() + fb
-    res = as_dict(_llm_json(PHOTO_PLAN_PROMPT.format(fact=part.get("fact", ""), question=part.get("question", ""),
-                                                     answer=part.get(corr, ""), wrong=wrong, src=truth_src(part),
-                                                     feedback=fb)))
-    raw = res.get("panels") if isinstance(res.get("panels"), list) else []
-    raw = [x for x in raw if isinstance(x, dict)]
-    if not PHOTO_MIN_PANELS <= len(raw) <= PHOTO_MAX_PANELS:
-        return None, [f"{len(raw)} khaane aaye - kahani 3 se 5 chitra ki chahiye"]
-    N = len(raw)
-    scene = " ".join(str(res.get("scene") or "").split())
-    panels = []
-    for i, x in enumerate(raw):
-        tc = str(x.get("tag_color") or "dark").lower().strip()
-        panels.append({"prompt": " ".join(str(x.get("prompt") or "").split()),
-                       "target": " ".join(str(x.get("target") or "").split()),
-                       "tag": clean_hi(x.get("tag")), "tag_color": tc if tc in ("red", "green", "dark") else "dark",
-                       "text": " ".join(str(x.get("text") or "").split()),
-                       "desc": " ".join(str(x.get("desc") or "").split()),
-                       "mark": _panel_mark(x.get("mark"), i, N), "card": _parse_card(x.get("card")),
-                       "say": _parse_say(x.get("say"))})
-    errs = photo_plan_errors(panels, part)
-    for fx_i in range(2):                               # galti mili -> AI sirf wahi line sudhaare (chitra-kharch nahi)
-        if not errs:
-            break
-        print(f"  Chitra (photo) kahani-jaanch: {'; '.join(errs)[:200]} -> sirf ye sudhaar ({fx_i + 1}/2)")
-        try:
-            fixd = as_dict(_llm_json(PHOTO_PLAN_FIX_PROMPT.format(
-                fact=part.get("fact", ""), question=part.get("question", ""), errs="; ".join(errs)[:600],
-                plan=json.dumps({"panels": [{k: p_[k] for k in ("text", "tag")} for p_ in panels]}, ensure_ascii=False),
-                n=N)))
-        except ProviderBusy:
-            raise
-        except Exception as exc:
-            print("  Kahani sudhaar nahi hua:", str(exc)[:100])
-            break
-        fp_ = fixd.get("panels") if isinstance(fixd.get("panels"), list) else []
-        if len(fp_) != N or not all(isinstance(x, dict) for x in fp_):
-            break
-        for p_, x in zip(panels, fp_):
-            p_["text"] = " ".join(str(x.get("text") or p_["text"]).split())
-            p_["tag"] = clean_hi(x.get("tag") if x.get("tag") is not None else p_["tag"])
+    kept = _keep_get(part)                               # v20: pichhli koshish ke SAHI chitra -> dobara nahi banenge
+    if kept:
+        scene, panels, N = kept["scene"], [dict(p_) for p_ in kept["panels"]], len(kept["panels"])
+        print(f"  Chitra (photo): wahi kahani + {len(kept['imgs'])} sahi chitra rakhe - sirf khaana "
+              f"{', '.join(str(i + 1) for i in range(N) if i not in kept['imgs'])} naya banega (credit bachat)")
+    else:
+        corr = (part.get("correct") or "a").lower()
+        wrong = ", ".join(part.get(k, "") for k in "abcd" if k != corr)
+        fb = ("\nPREVIOUS STORY WAS REJECTED. Reason: " + feedback + "\nMake a new story fixing exactly this.") if feedback else ""
+        fb = _lessons_text() + fb
+        res = as_dict(_llm_json(PHOTO_PLAN_PROMPT.format(fact=part.get("fact", ""), question=part.get("question", ""),
+                                                         answer=part.get(corr, ""), wrong=wrong, src=truth_src(part),
+                                                         feedback=fb)))
+        raw = res.get("panels") if isinstance(res.get("panels"), list) else []
+        raw = [x for x in raw if isinstance(x, dict)]
+        if not PHOTO_MIN_PANELS <= len(raw) <= PHOTO_MAX_PANELS:
+            return None, [f"{len(raw)} khaane aaye - kahani 3 se 5 chitra ki chahiye"]
+        N = len(raw)
+        scene = " ".join(str(res.get("scene") or "").split())
+        panels = []
+        for i, x in enumerate(raw):
+            tc = str(x.get("tag_color") or "dark").lower().strip()
+            panels.append({"prompt": " ".join(str(x.get("prompt") or "").split()),
+                           "target": " ".join(str(x.get("target") or "").split()),
+                           "tag": clean_hi(x.get("tag")), "tag_color": tc if tc in ("red", "green", "dark") else "dark",
+                           "text": " ".join(str(x.get("text") or "").split()),
+                           "desc": " ".join(str(x.get("desc") or "").split()),
+                           "mark": _panel_mark(x.get("mark"), i, N), "card": _parse_card(x.get("card")),
+                           "say": _parse_say(x.get("say"))})
         errs = photo_plan_errors(panels, part)
-    if errs:
-        print("  Chitra (photo) kahani-jaanch FAIL: " + "; ".join(errs)[:220])
-        return None, errs
-    print(f"  Chitra (photo) kahani-jaanch PASS ({N} chitra):", " | ".join(p_["text"] for p_ in panels)[:260])
+        for fx_i in range(2):                               # galti mili -> AI sirf wahi line sudhaare (chitra-kharch nahi)
+            if not errs:
+                break
+            print(f"  Chitra (photo) kahani-jaanch: {'; '.join(errs)[:200]} -> sirf ye sudhaar ({fx_i + 1}/2)")
+            try:
+                fixd = as_dict(_llm_json(PHOTO_PLAN_FIX_PROMPT.format(
+                    fact=part.get("fact", ""), question=part.get("question", ""), errs="; ".join(errs)[:600],
+                    plan=json.dumps({"panels": [{k: p_[k] for k in ("text", "tag")} for p_ in panels]}, ensure_ascii=False),
+                    n=N)))
+            except ProviderBusy:
+                raise
+            except Exception as exc:
+                print("  Kahani sudhaar nahi hua:", str(exc)[:100])
+                break
+            fp_ = fixd.get("panels") if isinstance(fixd.get("panels"), list) else []
+            if len(fp_) != N or not all(isinstance(x, dict) for x in fp_):
+                break
+            for p_, x in zip(panels, fp_):
+                p_["text"] = " ".join(str(x.get("text") or p_["text"]).split())
+                p_["tag"] = clean_hi(x.get("tag") if x.get("tag") is not None else p_["tag"])
+            errs = photo_plan_errors(panels, part)
+        if errs:
+            print("  Chitra (photo) kahani-jaanch FAIL: " + "; ".join(errs)[:220])
+            return None, errs
+        print(f"  Chitra (photo) kahani-jaanch PASS ({N} chitra):", " | ".join(p_["text"] for p_ in panels)[:260])
     # --- khaana 1 pehle (bina reference); fir 2 aur 3 usi ko reference bana ke (wahi log, wahi style) ---
-    seed0 = random.randint(1000, 10 ** 8)
+    seed0 = kept["seed0"] if kept else random.randint(1000, 10 ** 8)
     imgs, boxes, last_probs = [None] * N, [None] * N, {}
     _FIXES.clear()
     _NEAR.clear()
     _EXTRA.clear()
+    if kept:                                             # sahi chitra wapas (aankh-jaanch pehle hi PASS)
+        for i, b_ in kept["imgs"].items():
+            imgs[i], boxes[i] = b_, kept["boxes"][i]
+            _EXTRA[i] = kept["extra"].get(i) or {}
+            _BG_TEXT[i] = bool(kept["bgt"].get(i, False))
+        _FIXES.update(kept.get("fixes") or {})           # bigde khaane ki galti -> naye chitra me sudhaar
     try:
         crefs = ensure_characters()
     except ProviderBusy:
@@ -3148,7 +3239,7 @@ def _photo_attempt(part, feedback=""):
         print("  Kirdaar nahi mile:", str(exc)[:100])
         crefs = None
     pre0 = (CHAR_REF_TEXT + char_text()) if crefs else ""
-    for rnd in range(PHOTO_ROUNDS):
+    for rnd in range(0 if boxes[0] is not None else PHOTO_ROUNDS):
         try:
             imgs[0] = _cf_image(f"{pre0}{scene} {panels[0]['prompt']}{_fix_text(0)} {PHOTO_STYLE}"
                                 + (" Friendly, everyday scene." if rnd else ""), ref=crefs)
@@ -3165,16 +3256,20 @@ def _photo_attempt(part, feedback=""):
         _s, boxes[0], imgs[0] = _NEAR[0]
         print(f"  Chitra (photo) khaana 1: sabse achha ({_s:.0f}/10) liya")
     if boxes[0] is None:
+        _keep_clear(part)                                # pehla (reference) hi nahi bana -> baaki ka koi kaam nahi
         return None, ["pehla chitra saaf nahi bana: " + last_probs.get(0, "")[:250]]
     ref = (crefs + [_ref_png(imgs[0])]) if crefs else _ref_png(imgs[0])     # kirdaar + pehla drishya
-    todo = list(range(1, N))
-    for rnd in range(PHOTO_ROUNDS):
+    todo = [i for i in range(1, N) if boxes[i] is None]
+    for rnd in range(PHOTO_ROUNDS if todo else 0):
         flagged = {}
         for i in todo:
             try:
                 imgs[i] = _cf_image(f"{(CHAR_REF_TEXT + char_text()) if crefs else PHOTO_REF_TEXT}"
                                     f"{panels[i]['prompt']}{_fix_text(i)} {PHOTO_STYLE}"
                                     + (" Friendly, everyday scene." if rnd else ""), ref=ref)
+            except ProviderBusy:                     # quota/budget beech me khatam -> ab tak ke sahi sambhalo
+                _keep_put(part, scene, panels, imgs, boxes, seed0, [j for j in range(N) if boxes[j] is None])
+                raise
             except PhotoFlagged as exc:
                 print(f"  Chitra (photo) khaana {i + 1}:", exc)
                 flagged[i] = "safety-chhalni ne roka - saral, saaf drishya likho"
@@ -3195,8 +3290,10 @@ def _photo_attempt(part, feedback=""):
             print(f"  Chitra (photo) khaana {i + 1}: sabse achha ({_s:.0f}/10) liya")
             todo.remove(i)
     if todo:
+        _keep_put(part, scene, panels, imgs, boxes, seed0, todo)   # sahi wale sambhal ke - agli baar sirf ye khaane
         return None, ["chitra saaf nahi bana (khaana " + ", ".join(str(i + 1) for i in todo) + "): "
                       + "; ".join(last_probs.get(i, "") for i in todo)[:300]]
+    _keep_clear(part)                                    # saare khaane ban gaye -> rakhe hue ki zaroorat nahi
     # --- save (repo me) ---
     os.makedirs(PHOTO_DIR, exist_ok=True)
     key = _photo_key(part)
@@ -3282,6 +3379,7 @@ def _photo_attempt(part, feedback=""):
     caps = [p_["text"] for p_ in panels]
     if not ok_:
         _drop()
+        _keep_clear(part)
         return None, [f"dekhne wale ne niyam theek nahi samjha: '{lesson[:160]}' - chhoota: {missing}"]
     cfg = {"kit": "photo", "panels": panels, "caps": caps, "score": score, "lesson": lesson, "pv": PHOTO_V}
     aud = as_dict(_llm_json(CHITRA_AUDIT_PROMPT.format(fact=part.get("fact", ""), src=truth_src(part),
@@ -3292,6 +3390,7 @@ def _photo_attempt(part, feedback=""):
     ok2 = (ok2 is True or (isinstance(ok2, str) and ok2.strip().lower() in ("true", "yes"))) and not ps2
     if not ok2:
         _drop()
+        _keep_clear(part)
         return None, ["examiner: " + ("; ".join(ps2) or "ok nahi")]
     try:                                               # sab jaanch PASS -> ab hi hilte pal (credit bekaar na jaaye)
         add_flip_frames(panels, imgs, ref, crefs, key, seed0)
@@ -3520,11 +3619,17 @@ def ensure_chitra(plan, part):
     if feedback:
         print("  Chitra: pichhli run ki galti AI ko batayi:", feedback[:140])
     if USE_PHOTO:
+        n_start = _CF_STATE.get("n", 0)
         for _a in range(PHOTO_TRIES):
+            if _a and _CF_STATE.get("n", 0) - n_start >= CF_PART_BUDGET:
+                print(f"  Chitra (photo): is part par is run me {CF_PART_BUDGET} chitra ho gaye - baaki agli run me "
+                      "(sahi chitra sambhale hue hain, poora quota ek part par nahi)")
+                break
             try:
                 cfg, errs = _photo_attempt(part, feedback)
             except ProviderBusy as exc:
                 print("  Chitra (photo): busy -", str(exc)[:140], "- ye run ginti me nahi, agli run me dobara")
+                save_plan(plan)                              # sambhale hue sahi chitra ki yaad bhi save
                 return False
             except Exception as exc:
                 cfg, errs = None, [f"photo nahi bana: {str(exc)[:160]}"]
@@ -9643,7 +9748,7 @@ USE_DRAW = os.getenv("USE_DRAW", "0") != "0"   # AI-aakaron wali drawing (kamzor
 USE_ICON_KITS = os.getenv("USE_ICON_KITS", "0") != "0"   # purani icon-kahani (kamzor) - band; sirf drawing/lifaafa/pata       # har niyam ka apna AI-drawn chitra (aankh-jaanch ke saath)
 SHOW_COURSE_PROGRESS = False   # "PO Guide पूरा कोर्स: Clause X / N" (user ne hataya)
 REQUIRE_CHITRA = os.getenv("REQUIRE_CHITRA", "1") != "0"   # 1 = sahi chitra ke bina reel NAHI (5 koshish/run, har baar galti sudhaar)
-ENGINE_VERSION = "v20-hook-saaf (2026-10-08): hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
+ENGINE_VERSION = "v20.1 (2026-10-09): bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
 
 
 def place_flip(canvas, front, back, cx, cy, p, scale=1.0):
@@ -11246,8 +11351,8 @@ def write_caption(data, path):
     """Instagram caption: pehli line search ke liye, jawab nahi batati (spoiler nahi)."""
     en_q = data.get("en_question", "")
     lines = [
-        (f"🚨 {SERIES_NAME} S{SEASON} EP {data['episode']} | " if data.get("episode") else "")
-        + f"{data['question']} | GDS to MTS / Postman | PO Guide Part I Clause {data['clause_no']}",
+        # v20: pehli line search ke shabd (EP number naye dekhne wale ko "beech ki series" lagta tha)
+        f"GDS से MTS / Postman परीक्षा | {data['question']} | PO Guide Part I Clause {data['clause_no']}",
     ] + ([f"🇬🇧 {en_q} (Answer in the reel 👀)"] if en_q else []) + [
         "",
         "सही उत्तर जानने के लिए पूरी रील देखें 👀",
@@ -11257,7 +11362,8 @@ def write_caption(data, path):
         "📤 जो दोस्त ये गलत करेगा, उसे ये रील भेजो!",
         ] + ([f"🎁 बोनस सवाल (रील के आखिर में): {data['bonus']['q']}  —  जवाब कमेंट करें!"] if data.get("bonus") else []) + [
         "✅ 100% Exam Oriented | GDS से MTS / Postman / PA परीक्षा के लिए",
-        "🔔 रोज़ 1 नियम | PO Guide Series  |  1 rule daily for GDS, MTS, Postman & PA",
+        "🎨 रोज़ शाम 5 बजे: PO Guide का एक नियम चित्रों से आसान भाषा में",
+        "🌅 रोज़ सुबह 9 बजे: पिछले साल के असली पेपर (PYQ) के 3 सवाल - जवाब कमेंट में",
         "",
         HASHTAGS,
         "",

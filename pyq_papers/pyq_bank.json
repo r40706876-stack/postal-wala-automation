@@ -1,0 +1,649 @@
+{
+ "_note": "Pichhle saal ke GDS->MTS/Postman paper ke sawal. Jawab = paper ki answer key + PO Guide se milaan (dono sahi hon tabhi). 'exams' = jin parikshaon me ye sawal aaya (ek pariksha ki do PDF ek hi ginti). 'MTS + Postman 2022' wale 25-key PDF bahar rakhe (key sawalon se mel nahi khaati). Naye sawal jodne ho to isi dhaanche me.",
+ "items": [
+  {
+   "id": "date_stamp_2",
+   "q_en": "Every letter, packet or parcel has to be stamped with the date stamps of at least",
+   "q": "हर पत्र, पैकेट या पार्सल पर कम से कम कितने डाकघरों की तारीख मुहर लगनी चाहिए?",
+   "opts": [
+    "दो डाकघरों की",
+    "रात्रि डाकघरों की",
+    "छँटाई डाकघरों की",
+    "मेल डाकघरों की"
+   ],
+   "ans": "A",
+   "exams": [
+    "राजस्थान 2021",
+    "झारखंड 2021",
+    "आंध्र प्रदेश 2021",
+    "बिहार 2022",
+    "दिल्ली 2022"
+   ]
+  },
+  {
+   "id": "stamp_corner",
+   "q_en": "The stamps should be affixed to the ___ of the address side",
+   "q": "डाक टिकट पता वाले पक्ष के किस कोने पर लगाने चाहिए?",
+   "opts": [
+    "बाएँ ऊपरी कोने पर",
+    "दाएँ ऊपरी कोने पर",
+    "बाएँ बीच में",
+    "दाएँ निचले कोने पर"
+   ],
+   "ans": "B",
+   "exams": [
+    "राजस्थान 2021",
+    "महाराष्ट्र 2022",
+    "छत्तीसगढ़ 2021"
+   ]
+  },
+  {
+   "id": "postcard_attach",
+   "q_en": "Following can be attached with Post Card",
+   "q": "पोस्टकार्ड के साथ क्या जोड़ा (अटैच किया) जा सकता है?",
+   "opts": [
+    "लेटर कार्ड",
+    "लिफाफा",
+    "पावती",
+    "कुछ भी नहीं"
+   ],
+   "ans": "D",
+   "exams": [
+    "पंजाब 2021"
+   ]
+  },
+  {
+   "id": "circles_23",
+   "q_en": "How many Postal Circles are in India?",
+   "q": "भारत में कुल कितने डाक सर्किल हैं?",
+   "opts": [
+    "20",
+    "23",
+    "25",
+    "29"
+   ],
+   "ans": "B",
+   "exams": [
+    "छत्तीसगढ़ 2021",
+    "दिल्ली 2022",
+    "तेलंगाना 2020",
+    "राजस्थान 2021",
+    "तमिलनाडु 2020"
+   ]
+  },
+  {
+   "id": "po_classes_3",
+   "q_en": "How many classes (types) of Post Offices available in the Department?",
+   "q": "विभाग में डाकघर कितने वर्गों (प्रकारों) में बँटे हैं?",
+   "opts": [
+    "2",
+    "3",
+    "5",
+    "7"
+   ],
+   "ans": "B",
+   "exams": [
+    "तेलंगाना 2020",
+    "तमिलनाडु 2020",
+    "मध्य प्रदेश 2020"
+   ]
+  },
+  {
+   "id": "ministry",
+   "q_en": "Department of Posts comes under which ministry",
+   "q": "डाक विभाग किस मंत्रालय के अंतर्गत आता है?",
+   "opts": [
+    "इलेक्ट्रॉनिकी और सूचना प्रौद्योगिकी मंत्रालय",
+    "संचार मंत्रालय",
+    "वाणिज्य मंत्रालय",
+    "रेल मंत्रालय"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2021"
+   ]
+  },
+  {
+   "id": "bo_5_hours",
+   "q_en": "Post offices in charge of GDS are kept open for a maximum of ___ hours",
+   "q": "ग्रामीण डाक सेवक के प्रभार वाले डाकघर अधिकतम कितने घंटे खुले रहते हैं?",
+   "opts": [
+    "3 घंटे",
+    "4 घंटे",
+    "5 घंटे",
+    "8 घंटे"
+   ],
+   "ans": "C",
+   "exams": [
+    "छत्तीसगढ़ 2021",
+    "केरल 2021",
+    "मध्य प्रदेश 2020",
+    "तमिलनाडु 2020",
+    "बिहार 2022"
+   ]
+  },
+  {
+   "id": "hours_by_circle",
+   "q_en": "Who generally fixes the working hours of a post office?",
+   "q": "डाकघर के काम के घंटे सामान्यतः कौन तय करता है?",
+   "opts": [
+    "महानिदेशक",
+    "सर्किल प्रमुख",
+    "डिवीजन प्रमुख",
+    "पोस्टमास्टर"
+   ],
+   "ans": "B",
+   "exams": [
+    "महाराष्ट्र 2020",
+    "बिहार 2021"
+   ]
+  },
+  {
+   "id": "night_po",
+   "q_en": "Post Offices which remain open on Sundays, postal holidays and beyond normal working hours are known as",
+   "q": "रविवार, डाक अवकाश और सामान्य समय के बाद भी खुले रहने वाले डाकघर क्या कहलाते हैं?",
+   "opts": [
+    "असामान्य डाकघर",
+    "अवकाश डाकघर",
+    "जनरल डाकघर",
+    "रात्रि डाकघर"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ]
+  },
+  {
+   "id": "ur_parcel_4kg",
+   "q_en": "The weight of un-registered parcel should not exceed",
+   "q": "बिना रजिस्ट्री (अपंजीकृत) पार्सल का वज़न अधिकतम कितना हो सकता है?",
+   "opts": [
+    "4 किलो",
+    "5 किलो",
+    "10 किलो",
+    "20 किलो"
+   ],
+   "ans": "A",
+   "exams": [
+    "ओडिशा 2021",
+    "पंजाब 2021",
+    "केरल 2020",
+    "उत्तराखंड 2020",
+    "बिहार 2022"
+   ]
+  },
+  {
+   "id": "letter_2kg",
+   "q_en": "Maximum weight of the letter should not be more than",
+   "q": "पत्र (लेटर) का वज़न अधिकतम कितना हो सकता है?",
+   "opts": [
+    "2 किलो",
+    "4 किलो",
+    "1 किलो",
+    "3 किलो"
+   ],
+   "ans": "A",
+   "exams": [
+    "पंजाब 2021",
+    "आंध्र प्रदेश 2021"
+   ]
+  },
+  {
+   "id": "speed_35kg",
+   "q_en": "What is the maximum weight for which a Speed Post article can be booked?",
+   "q": "स्पीड पोस्ट वस्तु अधिकतम कितने वज़न तक बुक हो सकती है?",
+   "opts": [
+    "20 किलो",
+    "25 किलो",
+    "30 किलो",
+    "35 किलो"
+   ],
+   "ans": "D",
+   "exams": [
+    "केरल 2020",
+    "हरियाणा 2022",
+    "छत्तीसगढ़ 2022"
+   ]
+  },
+  {
+   "id": "transit_mo",
+   "q_en": "A branch of RMS where closed bags are received and dispatched (sorting not done) is",
+   "q": "RMS की वह इकाई जहाँ सिर्फ बंद थैले आते-जाते हैं (छँटाई नहीं होती), क्या कहलाती है?",
+   "opts": [
+    "केंद्रीय रजिस्ट्रेशन केंद्र",
+    "ट्रांजिट मेल ऑफिस",
+    "बैग ऑफिस",
+    "शाखा कार्यालय"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2022",
+    "हरियाणा 2020",
+    "दिल्ली 2022",
+    "केरल 2020"
+   ]
+  },
+  {
+   "id": "rlo",
+   "q_en": "The office which deals with unclaimed and refused articles and articles with incomplete addresses is",
+   "q": "लावारिस, लेने से मना किए गए और अधूरे पते वाले लेख किस कार्यालय में जाते हैं?",
+   "opts": [
+    "RMS",
+    "HEO",
+    "PSO",
+    "RLO (रिटर्न लेटर ऑफिस)"
+   ],
+   "ans": "D",
+   "exams": [
+    "केरल 2020",
+    "आंध्र प्रदेश 2021",
+    "केरल 2021"
+   ]
+  },
+  {
+   "id": "face",
+   "q_en": "The side on which the address is written on a post article is called",
+   "q": "डाक लेख का जिस पक्ष पर पता लिखा जाता है, उसे क्या कहते हैं?",
+   "opts": [
+    "पिछला भाग (Rear)",
+    "फेस (Face)",
+    "रेस (Race)",
+    "मास्क (Mask)"
+   ],
+   "ans": "B",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ]
+  },
+  {
+   "id": "navy_fmo",
+   "q_en": "Mail for Navy personnel serving in INS ship should be addressed C/O",
+   "q": "INS जहाज़ पर तैनात नौसेना कर्मियों की डाक किसके पते (C/O) पर भेजी जाती है?",
+   "opts": [
+    "चीफ PMG",
+    "56 APO",
+    "99 APO",
+    "फ्लीट मेल ऑफिस"
+   ],
+   "ans": "D",
+   "exams": [
+    "पंजाब 2021",
+    "छत्तीसगढ़ 2022",
+    "बिहार 2021"
+   ]
+  },
+  {
+   "id": "aps_delhi",
+   "q_en": "Headquarters of Army Postal Services is at",
+   "q": "आर्मी पोस्टल सर्विस (APS) का मुख्यालय कहाँ है?",
+   "opts": [
+    "मुंबई",
+    "नई दिल्ली",
+    "चंडीगढ़",
+    "कोलकाता"
+   ],
+   "ans": "B",
+   "exams": [
+    "तेलंगाना 2020"
+   ]
+  },
+  {
+   "id": "upu_1874",
+   "q_en": "Universal Postal Union was established in the year",
+   "q": "यूनिवर्सल पोस्टल यूनियन (UPU) की स्थापना किस वर्ष हुई?",
+   "opts": [
+    "1926",
+    "1884",
+    "1874",
+    "1919"
+   ],
+   "ans": "C",
+   "exams": [
+    "तमिलनाडु 2020"
+   ]
+  },
+  {
+   "id": "sp_division",
+   "q_en": "Chief officer in charge of a postal division",
+   "q": "डाक डिवीजन का मुख्य प्रभारी अधिकारी कौन होता है?",
+   "opts": [
+    "अधीक्षक (Superintendent)",
+    "निरीक्षक (Inspector)",
+    "हेड पोस्टमास्टर",
+    "सब पोस्टमास्टर"
+   ],
+   "ans": "A",
+   "exams": [
+    "दिल्ली 2022",
+    "महाराष्ट्र 2022",
+    "तमिलनाडु 2020"
+   ]
+  },
+  {
+   "id": "postbox_circle",
+   "q_en": "Post boxes are available on rent at certain post offices which is determined by",
+   "q": "किन डाकघरों में पोस्ट बॉक्स किराए पर मिलेगा, यह कौन तय करता है?",
+   "opts": [
+    "सर्किल प्रमुख",
+    "रीजन प्रमुख",
+    "डिवीजन प्रमुख",
+    "हेड पोस्टमास्टर"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ]
+  },
+  {
+   "id": "bo_reg_parcel_10",
+   "q_en": "What is maximum weight of Registered Parcel that can be booked at Branch Office?",
+   "q": "शाखा डाकघर (BO) में रजिस्टर्ड पार्सल अधिकतम कितने वज़न तक बुक हो सकता है?",
+   "opts": [
+    "25 किलो",
+    "20 किलो",
+    "5 किलो",
+    "10 किलो"
+   ],
+   "ans": "D",
+   "exams": [
+    "महाराष्ट्र 2020",
+    "छत्तीसगढ़ 2021"
+   ]
+  },
+  {
+   "id": "vp_demurrage_7",
+   "q_en": "Demurrage charge on VP article is recovered from addressee after how many days",
+   "q": "VP वस्तु पर पाने वाले से विलंब शुल्क (डेमरेज) कितने दिन बाद लिया जाता है?",
+   "opts": [
+    "4 दिन",
+    "6 दिन",
+    "7 दिन",
+    "10 दिन"
+   ],
+   "ans": "C",
+   "exams": [
+    "उत्तर प्रदेश 2020",
+    "छत्तीसगढ़ 2021"
+   ]
+  },
+  {
+   "id": "insured_reg",
+   "q_en": "For which category of articles, registration is mandatory",
+   "q": "किस प्रकार के लेख के लिए रजिस्ट्री अनिवार्य है?",
+   "opts": [
+    "पोस्टकार्ड",
+    "बुक और पैटर्न पैकेट",
+    "बीमाकृत लेख",
+    "पत्र"
+   ],
+   "ans": "C",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ]
+  },
+  {
+   "id": "bo_no_foreign",
+   "q_en": "Which facility is not provided by branch post office",
+   "q": "शाखा डाकघर (BO) में कौन सी सुविधा नहीं मिलती?",
+   "opts": [
+    "रजिस्टर्ड लेख की बुकिंग",
+    "डाक का वितरण",
+    "बचत खाते से निकासी",
+    "अंतर्राष्ट्रीय डाक की बुकिंग"
+   ],
+   "ans": "D",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ]
+  },
+  {
+   "id": "franked_letterbox",
+   "q_en": "Which type of articles can't be posted in letter box",
+   "q": "कौन से लेख लेटर बॉक्स में नहीं डाले जा सकते?",
+   "opts": [
+    "मशीन से फ्रैंक किए लेख",
+    "पोस्टकार्ड",
+    "अंतर्देशीय पत्र कार्ड",
+    "पत्र"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ]
+  },
+  {
+   "id": "franking_any",
+   "q_en": "Franking is allowed upto what amount",
+   "q": "फ्रैंकिंग मशीन से कितनी राशि तक का डाक शुल्क लगाया जा सकता है?",
+   "opts": [
+    "₹1000 तक",
+    "₹2000 तक",
+    "₹10000 तक",
+    "कोई भी राशि"
+   ],
+   "ans": "D",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ]
+  },
+  {
+   "id": "revenue_unpaid",
+   "q_en": "What to do if revenue ticket affixed on a letter in place of postal stamp",
+   "q": "पत्र पर डाक टिकट की जगह रेवेन्यू टिकट लगा हो तो वह पत्र कैसा माना जाएगा?",
+   "opts": [
+    "डाक शुल्क चुकाया हुआ",
+    "बिना शुल्क (अदत्त)",
+    "भेजने वाले को लौटेगा",
+    "RLO भेजा जाएगा"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ]
+  },
+  {
+   "id": "blind_7kg",
+   "q_en": "India Post allows free transmission of blind literature packets upto",
+   "q": "नेत्रहीनों के साहित्य वाले पैकेट कितने वज़न तक मुफ्त भेजे जाते हैं?",
+   "opts": [
+    "7 किलो",
+    "8 किलो",
+    "9 किलो",
+    "10 किलो"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ]
+  },
+  {
+   "id": "pli_50l",
+   "q_en": "What is the maximum limit of sum assured in Postal Life Insurance (PLI)?",
+   "q": "डाक जीवन बीमा (PLI) में अधिकतम बीमा राशि कितनी है?",
+   "opts": [
+    "₹10 लाख",
+    "₹20 लाख",
+    "₹25 लाख",
+    "₹50 लाख"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2021",
+    "असम 2021"
+   ]
+  },
+  {
+   "id": "world_post_day",
+   "q_en": "Which day World Post Day is celebrated?",
+   "q": "विश्व डाक दिवस किस दिन मनाया जाता है?",
+   "opts": [
+    "8 अक्टूबर",
+    "9 अक्टूबर",
+    "10 अक्टूबर",
+    "11 अक्टूबर"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ]
+  },
+  {
+   "id": "sender_lower_left",
+   "q_en": "In which corner of address side of article, the sender's address should be written?",
+   "q": "पता वाले पक्ष पर भेजने वाले का पता किस कोने में लिखा जाता है?",
+   "opts": [
+    "ऊपर बाएँ",
+    "ऊपर दाएँ",
+    "नीचे बाएँ",
+    "नीचे दाएँ"
+   ],
+   "ans": "C",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ]
+  },
+  {
+   "id": "pin_6",
+   "q_en": "The Postal Index Number (PIN) must contain",
+   "q": "पिन कोड (PIN) में कितने अंक होते हैं?",
+   "opts": [
+    "5 अंक",
+    "4 अंक",
+    "7 अंक",
+    "6 अंक"
+   ],
+   "ans": "D",
+   "exams": [
+    "उत्तराखंड 2020"
+   ]
+  },
+  {
+   "id": "pin_1972",
+   "q_en": "Pin code system was introduced in",
+   "q": "पिन कोड प्रणाली कब शुरू हुई?",
+   "opts": [
+    "15 अगस्त 1999",
+    "26 जनवरी 1999",
+    "15 अगस्त 1972",
+    "26 जनवरी 1972"
+   ],
+   "ans": "C",
+   "exams": [
+    "उत्तराखंड 2020"
+   ]
+  },
+  {
+   "id": "minor_sb_10",
+   "q_en": "Minors can open a Savings Bank account if their age is above",
+   "q": "नाबालिग कितनी उम्र से ऊपर होने पर खुद बचत खाता खोल सकता है?",
+   "opts": [
+    "9 वर्ष",
+    "10 वर्ष",
+    "11 वर्ष",
+    "12 वर्ष"
+   ],
+   "ans": "B",
+   "exams": [
+    "तेलंगाना 2020"
+   ]
+  },
+  {
+   "id": "official_deficiency",
+   "q_en": "Postage chargeable when postage is insufficiently paid on official postal article",
+   "q": "सरकारी (आधिकारिक) डाक लेख पर कम डाक शुल्क लगा हो तो कितना शुल्क लिया जाता है?",
+   "opts": [
+    "कमी के बराबर",
+    "कमी का दोगुना",
+    "कमी का तिगुना",
+    "कोई अतिरिक्त शुल्क नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ]
+  },
+  {
+   "id": "fictitious_stamp",
+   "q_en": "Manufacturing and use of fictitious postage stamps is",
+   "q": "नकली डाक टिकट बनाना और इस्तेमाल करना क्या है?",
+   "opts": [
+    "आपत्तिजनक",
+    "इस्तेमाल की अनुमति है",
+    "दंडनीय अपराध",
+    "अपराध नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "तमिलनाडु 2020"
+   ]
+  }
+ ],
+ "sets": [
+  [
+   "world_post_day",
+   "date_stamp_2",
+   "postcard_attach"
+  ],
+  [
+   "circles_23",
+   "po_classes_3",
+   "ministry"
+  ],
+  [
+   "bo_5_hours",
+   "hours_by_circle",
+   "night_po"
+  ],
+  [
+   "ur_parcel_4kg",
+   "letter_2kg",
+   "speed_35kg"
+  ],
+  [
+   "transit_mo",
+   "rlo",
+   "face"
+  ],
+  [
+   "navy_fmo",
+   "aps_delhi",
+   "upu_1874"
+  ],
+  [
+   "sp_division",
+   "postbox_circle",
+   "bo_reg_parcel_10"
+  ],
+  [
+   "vp_demurrage_7",
+   "insured_reg",
+   "bo_no_foreign"
+  ],
+  [
+   "franked_letterbox",
+   "franking_any",
+   "revenue_unpaid"
+  ],
+  [
+   "blind_7kg",
+   "pli_50l",
+   "stamp_corner"
+  ],
+  [
+   "sender_lower_left",
+   "pin_6",
+   "pin_1972"
+  ],
+  [
+   "minor_sb_10",
+   "official_deficiency",
+   "fictitious_stamp"
+  ]
+ ]
+}
