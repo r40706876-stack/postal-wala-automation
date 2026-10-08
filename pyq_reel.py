@@ -1,13 +1,15 @@
 """
-PYQ TEST REEL  (subah 9 baje wali reel)
-=======================================
-Ek reel = pichhle saal ke ASLI paper ke 3 sawal, premium test-app jaisa:
-  intro (PYQ TEST, kitni parikshaon me aaya) -> 3 x [sawal + 4 option + countdown + "समय समाप्त"] -> CTA.
+PYQ TEST REEL  (subah 9 baje wali reel)  -  v2: safed premium, 10-12 second
+=========================================================================
+Ek reel = pichhle saal ke ASLI paper ke 3 sawal, premium test-app jaisa (safed kaagaz, navy + sunehra):
+  frame 0 se hi सवाल 1 (alag intro nahi - skip yahin hota tha) -> 3 x [sawal + 4 option + patli timer patti +
+  "समय समाप्त"] -> CTA (1-? 2-? 3-? + "सही जवाब पिन कमेंट में").
+Har sawal ka samay uski lambai se (padhne jitna), poori reel ~10-12 second.
 JAWAB REEL ME KABHI NAHI - sirf PIN comment me (caption file ke neeche taiyar).
-Upar hamesha: "जवाब: पिन कमेंट में" + "शाम 5 बजे: चित्रों से आसान नियम" (shaam wali series se jodta hai).
+Upar hamesha: "जवाब: पिन कमेंट में  •  शाम 5 बजे: चित्रों से आसान नियम".
 
-Sawal sirf pyq_papers/pyq_bank.json se (answer key + PO Guide se milaan karke chune hue). Naya kuch gadha nahi jaata.
-Bank ke saare set khatam -> reel nahi banti (galat/bina-jaanch sawal se behtar), log me sandesh.
+Sawal sirf pyq_papers/pyq_bank.json se (answer key + PO Guide se milaan karke chune hue).
+Bank ke saare set khatam -> reel nahi banti (bina-jaanch sawal se behtar), log me sandesh.
 
 Chalana:  python pyq_reel.py             (din me ek; dobara chalao to skip)
           DRY_RUN=1 python pyq_reel.py   (bina awaaz test, state nahi badalti)
@@ -33,27 +35,29 @@ EXP_LOG = os.path.join(OUT_DIR, "experiments.csv")
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 W, H = M.W, M.H
 
-THINK = 3.0            # sawal bolne ke baad sochne ka samay (countdown)
-TIMEUP = 0.45          # "समय समाप्त" ka pal
-INTRO_MIN = 2.0
-END_MIN = 4.2
-TRANS = 0.22           # scene badalne ka push
+TARGET = 11.5          # poori reel ka lakshya (sec)
+Q_MIN, Q_MAX = 3.0, 3.8
+END_DUR = 1.7
+TIMEUP = 0.32          # "समय समाप्त" ka pal (sawal ke samay ke andar)
+TRANS = 0.18
 
-GOLD = (245, 196, 66)
-GOLD_L = (255, 226, 140)
-INK = (8, 12, 28)
-CARD = (22, 30, 60)
-LINE = (70, 86, 130)
-SOFT = (170, 182, 210)
-TOP_LINE = "जवाब: पिन कमेंट में   |   शाम 5 बजे: चित्रों से आसान नियम"
+# ---- safed premium rang ----
+PAPER = (250, 249, 245)
+PAPER2 = (241, 238, 230)
+NAVY = (16, 28, 64)
+NAVY2 = (40, 56, 104)
+GOLD = (212, 160, 23)
+GOLD_L = (247, 222, 150)
+GREYT = (98, 108, 128)
+LINEC = (222, 224, 232)
+RED = (214, 48, 49)
+TOP_LINE = "जवाब: पिन कमेंट में   •   शाम 5 बजे: चित्रों से आसान नियम"
 
-INTROS = [
-    {"id": "A", "voice": "असली पेपर के तीन सवाल. आपके कितने सही?",
-     "big": "3 सवाल", "small": "पिछले साल के असली पेपर से"},
-    {"id": "B", "voice": "ये सवाल परीक्षा में आ चुके हैं. आपको आते हैं?",
-     "big": "PYQ टेस्ट", "small": "ये सवाल परीक्षा में आ चुके हैं"},
+HOOK_VOICES = [
+    {"id": "A", "voice": "तीन सवाल, दस सेकंड!"},
+    {"id": "B", "voice": "असली पेपर के तीन सवाल!"},
 ]
-END_VOICE = "जवाब कमेंट करो, सही जवाब पिन कमेंट में. शाम पाँच बजे, चित्रों से नियम!"
+END_VOICE = "जवाब कमेंट करो!"
 
 
 # ------------------------------------------------------------------ data
@@ -98,34 +102,30 @@ def exams_line(ex, maxn=2):
     return head + (f"  +{len(ex) - maxn}" if len(ex) > maxn else "")
 
 
-# ------------------------------------------------------------------ voice / timing
-
-def make_specs(items, intro):
-    sp = [{"name": "intro", "segs": [("i", intro["voice"])]}]
-    for i, it in enumerate(items):
-        sp.append({"name": f"q{i}", "segs": [("q", it["q"])]})
-    sp.append({"name": "end", "segs": [("e", END_VOICE)]})
-    return sp
+def ans_text(it):
+    return it["opts"]["ABCD".index(it["ans"])]
 
 
-def vlen(v):
-    return len(v[0]) / M.SR if v and v[0] is not None else 0.0
+# ------------------------------------------------------------------ timing / voice
+
+def q_seconds(it):
+    """Padhne jitna: sawal + options ke shabd se (3.0 - 3.8 sec)."""
+    words = len(it["q"].split()) + sum(len(o.split()) for o in it["opts"])
+    return max(Q_MIN, min(Q_MAX, 1.6 + 0.085 * words))
 
 
-def timeline(specs, voices):
+def timeline(items):
+    durs = [q_seconds(it) for it in items]
+    s = sum(durs) + END_DUR
+    if s > TARGET + 0.6:                                  # lambi ho rahi -> sab barabar chhote
+        k = (TARGET + 0.6 - END_DUR) / sum(durs)
+        durs = [max(Q_MIN * 0.9, d * k) for d in durs]
     tl, t = [], 0.0
-    for sp, v in zip(specs, voices):
-        vd = vlen(v)
-        nm = sp["name"]
-        if nm == "intro":
-            d = max(INTRO_MIN, vd + 0.2)
-        elif nm == "end":
-            d = max(END_MIN, vd + 0.8)
-        else:
-            d = max(2.4, vd) + THINK + TIMEUP
-        tl.append({"name": nm, "start": t, "dur": d, "vdur": vd})
+    for i, d in enumerate(durs):
+        tl.append({"name": f"q{i}", "start": t, "dur": d})
         t += d
-    return tl, t
+    tl.append({"name": "end", "start": t, "dur": END_DUR})
+    return tl, t + END_DUR
 
 
 def get_voices(specs):
@@ -137,43 +137,36 @@ def get_voices(specs):
         return M.make_voices(specs)
 
 
-def think_start(sc):
-    return max(2.4, sc["vdur"])
-
-
-def build_audio(voices, tl, total, path):
-    n = int(total * M.SR) + M.SR
+def build_audio(tl, total, hook_v, end_v, path):
+    n = int(total * M.SR) + M.SR // 2
     vt = np.zeros(n, dtype=np.float32)
-    for sc, v in zip(tl, voices):
-        if v and v[0] is not None:
-            M.add_at(vt, v[0], sc["start"] + M.VOICE_LEAD)
+    if hook_v is not None:
+        M.add_at(vt, hook_v, 0.05)
+    if end_v is not None:
+        M.add_at(vt, end_v, tl[-1]["start"] + 0.15)
     win = int(0.15 * M.SR)
     env = np.convolve(np.abs(vt), np.ones(win, dtype=np.float32) / win, mode="same")
-    duck = 1.0 - np.clip(env * 6, 0, 0.65)
+    duck = 1.0 - np.clip(env * 6, 0, 0.6)
     buf = np.zeros(n, dtype=np.float32)
     bed = M.music_bed(n / M.SR)
     m = min(len(bed), n)
-    buf[:m] += bed[:m] * duck[:m] * 0.9
+    buf[:m] += bed[:m] * duck[:m] * 0.85
+    M.add_at(buf, M.sfx_thud(0.6), 0.0)
     for sc in tl:
-        s, nm = sc["start"], sc["name"]
-        if nm == "intro":
-            M.add_at(buf, M.sfx_thud(0.85), s)
-            M.add_at(buf, M.sfx_riser(1.2, 0.16), s + 0.2)
-            M.add_at(buf, M.sfx_pop(0.4), s + 0.5)
-        elif nm.startswith("q"):
-            if sc["start"] > 0:
-                M.add_at(buf, M.sfx_whoosh(0.28, 0.32), max(0.0, s - 0.08))
-            for j in range(4):                                     # option aate hi halka pop
-                M.add_at(buf, M.sfx_pop(0.22), s + 0.55 + 0.12 * j)
-            t0 = think_start(sc)
-            for k in range(int(THINK)):                            # har second tik
-                M.add_at(buf, M.sfx_tick(0.42), s + t0 + k)
-            M.add_at(buf, M.sfx_heartbeat(0.35), s + t0 + THINK - 1.0)
-            M.add_at(buf, M.sfx_thud(0.7), s + t0 + THINK)         # samay samaapt
-        elif nm == "end":
-            M.add_at(buf, M.sfx_whoosh(0.3, 0.35), max(0.0, s - 0.08))
-            M.add_at(buf, M.sfx_pop(0.45), s + 0.1)
-            M.add_at(buf, M.sfx_pop(0.4), s + 0.5)
+        s = sc["start"]
+        if sc["name"].startswith("q"):
+            if s > 0:
+                M.add_at(buf, M.sfx_whoosh(0.22, 0.28), max(0.0, s - 0.06))
+            M.add_at(buf, M.sfx_pop(0.25), s + 0.12)
+            tend = s + sc["dur"] - TIMEUP
+            k = tend - 1.0
+            while k < tend - 0.05:                         # aakhri second: tik-tik
+                M.add_at(buf, M.sfx_tick(0.4), k)
+                k += 0.25
+            M.add_at(buf, M.sfx_thud(0.55), tend)
+        else:
+            M.add_at(buf, M.sfx_pop(0.45), s + 0.05)
+            M.add_at(buf, M.sfx_ding(0.35), s + 0.45)
     buf += vt
     peak = float(np.max(np.abs(buf))) or 1.0
     buf = buf / max(1.0, peak / 0.95)
@@ -182,268 +175,195 @@ def build_audio(voices, tl, total, path):
                    input=pcm.tobytes(), check=True)
 
 
-# ------------------------------------------------------------------ drawing helpers
+# ------------------------------------------------------------------ drawing
 
-_BG = {}
+_C = {}
 
 
-def bg_base():
-    """Premium test-hall background: gehra navy gradient + upar sunehri roshni + halki jaali."""
-    if "b" in _BG:
-        return _BG["b"]
-    bw, bh = W + 160, H + 160
-    y = np.linspace(0, 1, bh)[:, None]
-    x = np.linspace(0, 1, bw)[None, :]
-    top, bot = np.array([16, 22, 48]), np.array([5, 8, 20])
-    base = top[None, None, :] * (1 - y[..., None]) + bot[None, None, :] * y[..., None]
-    gl = np.exp(-(((x - 0.5) / 0.45) ** 2 + ((y - 0.08) / 0.22) ** 2))[..., None]
-    base = base + gl * np.array([70, 52, 14])[None, None, :] * 0.55
-    gl2 = np.exp(-(((x - 0.85) / 0.35) ** 2 + ((y - 0.85) / 0.3) ** 2))[..., None]
-    base = base + gl2 * np.array([20, 40, 110])[None, None, :] * 0.5
+def paper_bg():
+    """Safed premium kaagaz: halka garam gradient + baarik bindu-jaali."""
+    if "bg" in _C:
+        return _C["bg"]
+    y = np.linspace(0, 1, H)[:, None, None]
+    base = np.array(PAPER)[None, None, :] * (1 - y * 0.6) + np.array(PAPER2)[None, None, :] * (y * 0.6)
+    base = np.repeat(base, W, axis=1)
     im = Image.fromarray(np.clip(base, 0, 255).astype(np.uint8), "RGB")
     d = ImageDraw.Draw(im, "RGBA")
-    for gx in range(0, bw, 90):
-        d.line((gx, 0, gx, bh), fill=(255, 255, 255, 7), width=1)
-    for gy in range(0, bh, 90):
-        d.line((0, gy, bw, gy), fill=(255, 255, 255, 7), width=1)
-    _BG["b"] = im
+    for gx in range(30, W, 60):
+        for gy in range(290, H, 60):
+            d.ellipse((gx - 1.3, gy - 1.3, gx + 1.3, gy + 1.3), fill=(16, 28, 64, 18))
+    _C["bg"] = im
     return im
 
 
-_DUST = [(((i * 0.6180339) % 1.0), ((i * 0.41421) % 1.0), 0.4 + (i % 5) * 0.15) for i in range(36)]
-
-
-def bg(gt):
-    im = bg_base()
-    ox = int(80 + 50 * math.sin(gt * 0.35))
-    oy = int(80 + 50 * math.cos(gt * 0.27))
-    im = im.crop((ox, oy, ox + W, oy + H)).copy()
-    d = ImageDraw.Draw(im, "RGBA")
-    for px, py, sp in _DUST:                          # tairti sunehri dhool
-        yy = (py * H - gt * 30 * sp) % H
-        xx = px * W + 16 * math.sin(gt * 0.7 + py * 8)
-        r = 1.5 + 2.5 * sp
-        d.ellipse((xx - r, yy - r, xx + r, yy + r), fill=(255, 215, 120, int(40 + 50 * sp)))
+def shadow_card(w, h, r=34, fill=(255, 255, 255), border=None, bw=2, sh=26, sh_a=38, accent=None):
+    """Mulayam parchhai wala safed card (premium app jaisa)."""
+    key = ("card", w, h, r, fill, border, bw, sh, sh_a, accent)
+    if key in _C:
+        return _C[key]
+    pad = sh * 2
+    im = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    s = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    ImageDraw.Draw(s).rounded_rectangle((pad, pad + sh * 0.45, pad + w, pad + h + sh * 0.45), radius=r,
+                                        fill=(16, 28, 64, sh_a))
+    im = Image.alpha_composite(im, s.filter(ImageFilter.GaussianBlur(sh * 0.6)))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((pad, pad, pad + w - 1, pad + h - 1), radius=r, fill=fill + (255,),
+                        outline=(border + (255,)) if border else None, width=bw if border else 0)
+    if accent:
+        d.rounded_rectangle((pad, pad + 26, pad + 10, pad + h - 26), radius=5, fill=accent + (255,))
+    _C[key] = im
     return im
 
 
-def rrect(size, radius, fill, outline=None, width=0, glow=None):
-    w, h = size
-    pad = 30 if glow else 0
-    im = Image.new("RGBA", (w + 2 * pad, h + 2 * pad), (0, 0, 0, 0))
-    if glow:
-        g = Image.new("RGBA", im.size, (0, 0, 0, 0))
-        ImageDraw.Draw(g).rounded_rectangle((pad, pad, pad + w, pad + h), radius=radius, fill=glow)
-        im = Image.alpha_composite(im, g.filter(ImageFilter.GaussianBlur(16)))
-    ImageDraw.Draw(im).rounded_rectangle((pad, pad, pad + w - 1, pad + h - 1), radius=radius, fill=fill,
-                                         outline=outline, width=width)
-    return im
-
-
-def text_c(d, xy, text, size, fill, stroke=0, reg=False, anchor="mm"):
+def pill(text, size, fg, bg, outline=None, padx=26, pady=12, reg=False):
+    key = ("pill", text, size, fg, bg, outline, reg, padx, pady)
+    if key in _C:
+        return _C[key]
     f = M.get_font_reg(size) if reg else M.get_font(size)
-    d.text(xy, text, font=f, fill=fill, anchor=anchor, stroke_width=stroke, stroke_fill=INK)
+    tw = int(f.getlength(text))
+    w, h = tw + padx * 2, int(size * 1.25) + pady * 2
+    im = Image.new("RGBA", (w + 4, h + 4), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((2, 2, w + 1, h + 1), radius=h // 2, fill=bg + (255,),
+                        outline=(outline + (255,)) if outline else None, width=3 if outline else 0)
+    d.text((w / 2 + 2, h / 2 + 2), text, font=f, fill=fg, anchor="mm")
+    _C[key] = im
+    return im
 
 
-def block(d, text, cx, cy, max_w, size, min_size, fill, lines=4, lh=1.3, stroke=0):
-    f, s_, ls = M.fit_lines(text, max_w, lines, size, min_size)
-    step = int(s_ * lh)
-    y0 = cy - (len(ls) - 1) * step / 2
-    for k, ln in enumerate(ls):
-        d.text((cx, y0 + k * step), " ".join(ln), font=f, fill=fill, anchor="mm", stroke_width=stroke,
-               stroke_fill=INK)
-    return len(ls) * step
-
-
-def top_strip(cv, t):
-    """Har frame pe upar: brand + 'जवाब पिन कमेंट में | शाम 5 बजे चित्रों से नियम'."""
+def header(cv, k_cur, cur, n):
+    """Brand patti + upar ki line + 3 khaanon ki progress (abhi wala bharta hua)."""
     d = ImageDraw.Draw(cv, "RGBA")
-    d.rectangle((0, 0, W, 210), fill=(4, 6, 16, 150))
-    d.line((0, 210, W, 210), fill=GOLD + (120,), width=2)
-    M.place(cv, M.pill_sprite("POSTAL WALA  ·  PYQ TEST", 34, INK, GOLD, GOLD_L), W / 2, 62)
-    f, s_, ls = M.fit_lines(TOP_LINE, 1020, 1, 42, 28)
-    shine = 0.75 + 0.25 * math.sin(t * 2.2)
-    col = tuple(int(c * shine + 255 * (1 - shine) * 0.0) for c in (255, 236, 190))
-    d.text((W / 2, 150), " ".join(ls[0]) if ls else TOP_LINE, font=f, fill=col, anchor="mm")
-
-
-def progress(cv, cur, n, t, done_frac=0.0):
-    """3 khaanon wali patti: ho chuke sunehre, abhi wala bharta hua."""
-    d = ImageDraw.Draw(cv, "RGBA")
-    x0, x1, y = 300, 1020, 285
-    gap = 16
+    d.rectangle((0, 0, W, 236), fill=(255, 255, 255, 255))
+    d.line((0, 236, W, 236), fill=LINEC, width=2)
+    d.rectangle((0, 0, W, 8), fill=GOLD)
+    d.ellipse((48, 46, 140, 138), fill=NAVY)
+    d.ellipse((54, 52, 134, 132), outline=GOLD, width=3)
+    d.text((94, 92), "PW", font=M.get_font(40), fill=GOLD_L, anchor="mm")
+    d.text((162, 74), "POSTAL WALA", font=M.get_font(44), fill=NAVY, anchor="lm")
+    d.text((164, 120), "PYQ टेस्ट सीरीज़ · GDS → MTS / Postman", font=M.get_font_reg(30), fill=GREYT, anchor="lm")
+    M.place(cv, pill("असली पेपर", 30, NAVY, GOLD_L, GOLD), W - 150, 92)
+    f, s_, ls = M.fit_lines(TOP_LINE, 1000, 1, 36, 26)
+    d.text((W / 2, 196), " ".join(ls[0]) if ls else TOP_LINE, font=f, fill=NAVY2, anchor="mm")
+    x0, x1, y = 48, W - 48, 262
+    gap = 14
     seg = (x1 - x0 - gap * (n - 1)) / n
     for i in range(n):
         a = x0 + i * (seg + gap)
-        d.rounded_rectangle((a, y - 7, a + seg, y + 7), radius=7, fill=(255, 255, 255, 40))
-        k = 1.0 if i < cur else (done_frac if i == cur else 0.0)
+        d.rounded_rectangle((a, y - 5, a + seg, y + 5), radius=5, fill=LINEC)
+        k = 1.0 if i < cur else (k_cur if i == cur else 0.0)
         if k > 0:
-            d.rounded_rectangle((a, y - 7, a + seg * k, y + 7), radius=7, fill=GOLD + (255,))
+            d.rounded_rectangle((a, y - 5, a + seg * min(1.0, k), y + 5), radius=5, fill=GOLD)
 
 
-def opt_row(letter, text, w=960, h=146, state="idle"):
-    fill = {"idle": (24, 34, 70, 235), "lock": (30, 34, 50, 235)}[state]
-    out = {"idle": (90, 112, 170, 255), "lock": (70, 76, 96, 255)}[state]
-    im = rrect((w, h), 28, fill, out, 3)
-    d = ImageDraw.Draw(im)
-    pad = 0
-    cx, cy = 70, h / 2
-    d.ellipse((cx - 42, cy - 42, cx + 42, cy + 42), fill=GOLD if state == "idle" else (120, 120, 130),
-              outline=GOLD_L, width=3)
-    d.text((cx, cy), letter, font=M.get_font(48), fill=INK, anchor="mm")
-    f, s_, ls = M.fit_lines(text, w - 180, 2, 56, 34)
-    step = int(s_ * 1.2)
+def opt_sprite(letter, text, dim):
+    key = ("opt", letter, text, dim)
+    if key in _C:
+        return _C[key]
+    w, h = 980, 156
+    card = shadow_card(w, h, r=28, border=LINEC, bw=2, sh=14, sh_a=22).copy()
+    pad = 28
+    d = ImageDraw.Draw(card)
+    cx, cy = pad + 66, pad + h / 2
+    d.ellipse((cx - 36, cy - 36, cx + 36, cy + 36), fill=(NAVY if not dim else (180, 186, 200)))
+    d.text((cx, cy), letter, font=M.get_font(40), fill=GOLD_L if not dim else (250, 250, 250), anchor="mm")
+    f, s_, ls = M.fit_lines(text, w - 170, 2, 56, 34)
+    step = int(s_ * 1.18)
     y0 = cy - (len(ls) - 1) * step / 2
     for k, ln in enumerate(ls):
-        d.text((130, y0 + k * step), " ".join(ln), font=f, fill=(240, 244, 252) if state == "idle" else SOFT,
+        d.text((pad + 124, y0 + k * step), " ".join(ln), font=f, fill=NAVY if not dim else (160, 166, 180),
                anchor="lm")
-    return im
+    _C[key] = card
+    return card
 
 
-_OPT_CACHE = {}
-
-
-def opt_sprite(letter, text, state):
-    k = (letter, text, state)
-    if k not in _OPT_CACHE:
-        _OPT_CACHE[k] = opt_row(letter, text, state=state)
-    return _OPT_CACHE[k]
-
-
-def timer_ring(cv, cx, cy, left, total, urgent):
-    """Gol countdown: bachi sec ka number + ghat-ti patti; aakhri sec laal + dhadkan."""
-    d = ImageDraw.Draw(cv, "RGBA")
-    r = 84
-    pulse = 1.0 + (0.06 * math.sin(left * 18) if urgent else 0.0)
-    rr = r * pulse
-    d.ellipse((cx - rr - 14, cy - rr - 14, cx + rr + 14, cy + rr + 14), fill=(4, 6, 16, 170))
-    d.ellipse((cx - rr, cy - rr, cx + rr, cy + rr), outline=(255, 255, 255, 40), width=12)
-    k = max(0.0, min(1.0, left / total))
-    col = (239, 68, 68) if urgent else GOLD
-    if k > 0.001:
-        d.arc((cx - rr, cy - rr, cx + rr, cy + rr), -90, -90 + 360 * k, fill=col, width=12)
-    d.text((cx, cy), str(int(math.ceil(left - 1e-6))) if left > 0 else "0", font=M.get_font(64), fill=col,
-           anchor="mm")
-
-
-# ------------------------------------------------------------------ scenes
-
-def scene_intro(data, t, gt):
-    """PEHLA FRAME hi poora bhara (thumbnail jaisa) - kuch bhi fade-in se shuru nahi; sirf halki jaan (pulse/chamak)."""
-    cv = bg(gt)
-    top_strip(cv, gt)
-    it = data["intro"]
-    d = ImageDraw.Draw(cv, "RGBA")
-    stamp = rrect((780, 150), 30, (0, 0, 0, 0), GOLD + (255,), 7)
-    ImageDraw.Draw(stamp).text((stamp.width / 2, stamp.height / 2), "PREVIOUS YEAR PAPER", font=M.get_font(60),
-                               fill=GOLD, anchor="mm")
-    k = M.ease_out_back(M.clamp(t / 0.3))
-    M.place(cv, stamp, W / 2, 430, scale=1.12 - 0.12 * k, angle=-6)        # frame 0 pe bhi dikhti, bas thump
-    M.place(cv, M.glow_sprite(360, GOLD, 60), W / 2, 760)
-    pulse = 1.0 + 0.025 * math.sin(t * 7)
-    lay = Image.new("RGBA", (W, 330), (0, 0, 0, 0))
-    ld = ImageDraw.Draw(lay)
-    block(ld, it["big"], W / 2, 120, 1000, 170, 100, (255, 255, 255), 1, stroke=7)
-    block(ld, it["small"], W / 2, 270, 1000, 62, 44, GOLD_L, 1)
-    M.place(cv, lay, W / 2, 760, scale=pulse)
-    ex = data["items"][0].get("exams") or []
+def q_card(it, i, n):
+    key = ("q", it["id"], i)
+    if key in _C:
+        return _C[key]
+    f, s_, ls = M.fit_lines(it["q"], 880, 4, 74, 46)
+    step = int(s_ * 1.3)
+    ex = it.get("exams") or []
+    h = max(300, 130 + len(ls) * step + (70 if len(ex) >= 2 else 40))
+    card = shadow_card(980, h, r=36, accent=GOLD).copy()
+    pad = 52
+    d = ImageDraw.Draw(card)
+    qp = pill(f"प्रश्न {i + 1}/{n}", 32, (255, 255, 255), NAVY)
+    card.alpha_composite(qp, (pad + 40, pad + 30))
+    if ex:
+        lbl = (f"{len(ex)} परीक्षाओं में पूछा गया" if len(ex) >= 2 else f"पूछा गया: {ex[0]}")
+        ep = pill(lbl, 28, (120, 84, 0), (255, 246, 214), GOLD, padx=20, pady=10)
+        card.alpha_composite(ep, (pad + 980 - ep.width - 34, pad + 32))
+    y0 = pad + 130 + step / 2 - 10
+    for k, ln in enumerate(ls):
+        d.text((pad + 980 / 2 + 6, y0 + k * step), " ".join(ln), font=f, fill=NAVY, anchor="mm")
     if len(ex) >= 2:
-        M.place(cv, M.pill_sprite(f"पहला सवाल {len(ex)} परीक्षाओं में पूछा गया", 48, INK, GOLD, GOLD_L), W / 2, 1040)
-        shown = ex[:4]
-        for j, e in enumerate(shown):
-            row, col_ = divmod(j, 2)
-            x = W / 2 + (col_ - 0.5) * 420
-            M.place(cv, M.pill_sprite(e, 38, (235, 240, 252), (30, 40, 80), (90, 112, 170)), x, 1140 + row * 80)
-        if len(ex) > 4:
-            text_c(d, (W / 2, 1310), f"+ {len(ex) - 4} और", 38, SOFT, reg=True)
-    elif ex:
-        M.place(cv, M.pill_sprite(f"पहला सवाल: {ex[0]} की परीक्षा से", 46, INK, GOLD, GOLD_L), W / 2, 1060)
-    for j in range(len(data["items"])):
-        x = W / 2 + (j - 1) * 190
-        ring = rrect((140, 140), 70, (20, 28, 58, 255), GOLD + (255,), 5)
-        ImageDraw.Draw(ring).text((70, 70), str(j + 1), font=M.get_font(70), fill=GOLD, anchor="mm")
-        M.place(cv, ring, x, 1480, scale=1.0 + 0.06 * max(0.0, math.sin(t * 6 - j * 0.8)))
-    text_c(d, (W / 2, 1650), "हर सवाल पर 3 सेकंड · अपना जवाब सोचो", 44, SOFT, reg=True)
-    return cv
+        d.text((pad + 980 / 2, pad + h - 38), exams_line(ex, 3), font=M.get_font_reg(28), fill=GREYT, anchor="mm")
+    _C[key] = card
+    return card
 
 
-def scene_q(data, i, t, gt, sc):
+def scene_q(data, i, t, sc):
     it = data["items"][i]
     n = len(data["items"])
-    cv = bg(gt)
-    top_strip(cv, gt)
-    t0 = think_start(sc)
-    left = THINK - (t - t0) if t >= t0 else THINK
-    timeup = t >= t0 + THINK
-    progress(cv, i, n, gt, done_frac=M.clamp(t / sc["dur"]))
-    M.place(cv, M.pill_sprite(f"प्रश्न {i + 1}/{n}", 40, INK, GOLD, GOLD_L), 160, 285)
-    ex = it.get("exams") or []
-    if ex:
-        chip = ("पूछा गया: " + exams_line(ex)) if len(ex) < 2 else f"{len(ex)} परीक्षाओं में पूछा गया: {exams_line(ex)}"
-        kc = M.ease_out_back(M.clamp((t - 0.1) / 0.3))
-        M.place(cv, M.pill_sprite(chip, 36, (255, 236, 190), (60, 44, 10), GOLD), W / 2, 380, scale=max(0.05, kc))
-    # sawal card
-    kq = M.ease_out_cubic(M.clamp(t / 0.3))
-    f, s_, ls = M.fit_lines(it["q"], 900, 4, 74, 48)
-    step = int(s_ * 1.32)
-    ch = max(260, len(ls) * step + 90)
-    card = rrect((980, ch), 36, (255, 255, 255, 18), GOLD + (150,), 3, glow=(245, 196, 66, 40))
-    cd = ImageDraw.Draw(card)
-    y0 = card.height / 2 - (len(ls) - 1) * step / 2
-    for k, ln in enumerate(ls):
-        cd.text((card.width / 2, y0 + k * step), " ".join(ln), font=f, fill=(255, 255, 255), anchor="mm")
-    cy_card = 470 + ch / 2
-    M.place(cv, card, W / 2 + 60 * (1 - kq), cy_card, alpha=kq)
-    # options: daayein se ek-ek kar aate
-    oy = cy_card + ch / 2 + 120
+    cv = paper_bg().copy()
+    header(cv, M.clamp(t / sc["dur"]), i, n)
+    first = (i == 0)
+    tend = sc["dur"] - TIMEUP
+    timeup = t >= tend
+    # sawal card: pehle sawal pe frame 0 se poora (thumbnail jaisa), baaki pe halka upar khisak ke
+    kq = 1.0 if first else M.ease_out_cubic(M.clamp(t / 0.22))
+    card = q_card(it, i, n)
+    cy = 330 + card.height / 2 - 30
+    M.place(cv, card, W / 2, cy + 40 * (1 - kq), alpha=kq)
+    oy = cy + card.height / 2 + 40
     for j, (L, o) in enumerate(zip("ABCD", it["opts"])):
-        kj = M.ease_out_cubic(M.clamp((t - 0.5 - 0.12 * j) / 0.32))
-        if kj <= 0:
-            continue
-        spr = opt_sprite(L, o, "lock" if timeup else "idle")
-        M.place(cv, spr, W / 2 + 260 * (1 - kj), oy + j * 172, alpha=kj)
-    # countdown
-    ty = min(H - 200, oy + 3 * 172 + 230)
-    if t >= t0 - 0.3:
-        ka = M.clamp((t - (t0 - 0.3)) / 0.3)
-        if not timeup:
-            timer_ring(cv, W / 2, ty, left, THINK, left <= 1.0)
-            d = ImageDraw.Draw(cv, "RGBA")
-            d.text((W / 2, ty + 112), "अपना जवाब सोचो...", font=M.get_font(40), fill=GOLD_L + (int(255 * ka),),
-                   anchor="mm")
-    if timeup:                                            # samay samaapt: options band, muhar
-        k5 = M.ease_out_back(M.clamp((t - t0 - THINK) / 0.18))
-        st = M.pill_sprite("समय समाप्त", 70, (255, 255, 255), (200, 40, 50), (255, 150, 150))
-        M.place(cv, st, W / 2, ty, scale=max(0.05, 1.5 - 0.5 * k5), angle=-5)
+        kj = 1.0 if first else M.ease_out_cubic(M.clamp((t - 0.06 - 0.05 * j) / 0.2))
+        M.place(cv, opt_sprite(L, o, timeup), W / 2 + 120 * (1 - kj), oy + 40 + j * 180, alpha=kj)
+    ty = min(H - 230, oy + 40 + 3 * 180 + 170)                        # timer: patli patti jo khaali hoti hai
+    d = ImageDraw.Draw(cv, "RGBA")
+    left = max(0.0, tend - t)
+    k = left / tend if tend > 0 else 0
+    col = RED if left <= 1.0 else GOLD
+    d.rounded_rectangle((90, ty - 9, W - 90, ty + 9), radius=9, fill=LINEC)
+    if k > 0:
+        d.rounded_rectangle((90, ty - 9, 90 + (W - 180) * k, ty + 9), radius=9, fill=col)
+    if not timeup:
+        M.place(cv, pill(f"{left:0.1f} s", 40, (255, 255, 255), col), W / 2, ty + 62)
+        d.text((W / 2, ty + 132), "अपना जवाब सोचो", font=M.get_font_reg(36), fill=GREYT, anchor="mm")
+    else:
+        k5 = M.ease_out_back(M.clamp((t - tend) / 0.14))
+        M.place(cv, pill("समय समाप्त", 52, (255, 255, 255), RED), W / 2, ty + 70,
+                scale=max(0.05, 1.35 - 0.35 * k5), angle=-4)
     return cv
 
 
-def scene_end(data, t, gt):
+def scene_end(data, t):
     n = len(data["items"])
-    cv = bg(gt)
-    top_strip(cv, gt)
+    cv = paper_bg().copy()
+    header(cv, 1.0, n, n)
     d = ImageDraw.Draw(cv, "RGBA")
-    k = M.ease_out_back(M.clamp(t / 0.3))
-    M.place(cv, M.pill_sprite("अपने जवाब कमेंट करो", 84, INK, GOLD, GOLD_L), W / 2, 480, scale=max(0.05, k))
-    for j in range(n):                                    # 1-? 2-? 3-? dabbe
-        kj = M.ease_out_back(M.clamp((t - 0.25 - 0.12 * j) / 0.25))
-        box = rrect((230, 150), 30, (24, 34, 70, 240), GOLD + (255,), 4)
-        ImageDraw.Draw(box).text((115, 75), f"{j + 1} - ?", font=M.get_font(64), fill=(255, 255, 255), anchor="mm")
-        M.place(cv, box, W / 2 + (j - (n - 1) / 2) * 280, 720, scale=max(0.05, kj))
-    text_c(d, (W / 2, 850), "ऐसे लिखो:  1-B  2-A  3-D", 46, SOFT, reg=True)
-    k2 = M.ease_out_back(M.clamp((t - 0.6) / 0.3))
-    M.place(cv, M.pill_sprite("सही जवाब: पिन कमेंट में", 64, (255, 255, 255), (200, 40, 50), (255, 150, 150)),
-            W / 2, 1010, scale=max(0.05, k2))
-    k3 = M.ease_out_cubic(M.clamp((t - 0.9) / 0.3))
-    lay = Image.new("RGBA", (W, 240), (0, 0, 0, 0))
+    k = M.ease_out_back(M.clamp(t / 0.22))
+    M.place(cv, shadow_card(980, 1080, r=40, accent=GOLD), W / 2, 940, alpha=M.clamp(t / 0.12))
+    M.place(cv, pill("अपने जवाब कमेंट करो", 64, (255, 255, 255), NAVY), W / 2, 560, scale=max(0.05, k))
+    for j in range(n):
+        kj = M.ease_out_back(M.clamp((t - 0.12 - 0.08 * j) / 0.2))
+        box = shadow_card(240, 150, r=28, border=GOLD, bw=4, sh=12, sh_a=22).copy()
+        ImageDraw.Draw(box).text((box.width / 2, box.height / 2), f"{j + 1} - ?", font=M.get_font(62), fill=NAVY,
+                                 anchor="mm")
+        M.place(cv, box, W / 2 + (j - (n - 1) / 2) * 290, 790, scale=max(0.05, kj))
+    d.text((W / 2, 930), "ऐसे लिखो:  1-B  2-A  3-D", font=M.get_font_reg(42), fill=GREYT, anchor="mm")
+    k2 = M.ease_out_back(M.clamp((t - 0.35) / 0.2))
+    M.place(cv, pill("सही जवाब: पिन कमेंट में", 54, (255, 255, 255), RED), W / 2, 1080, scale=max(0.05, k2))
+    lay = Image.new("RGBA", (W, 200), (0, 0, 0, 0))
     ld = ImageDraw.Draw(lay)
-    block(ld, "SAVE करो · परीक्षा से पहले दोहराना", W / 2, 60, 980, 50, 38, (255, 255, 255), 1)
-    block(ld, "जिस दोस्त की तैयारी चल रही है, उसे भेजो", W / 2, 150, 980, 44, 34, GOLD_L, 1)
-    M.place(cv, lay, W / 2, 1220, alpha=k3)
+    ld.text((W / 2, 50), "SAVE करो · परीक्षा से पहले दोहराना", font=M.get_font(46), fill=NAVY, anchor="mm")
+    ld.text((W / 2, 130), "शाम 5 बजे: नियम चित्रों से आसान भाषा में", font=M.get_font_reg(40), fill=(150, 108, 0),
+            anchor="mm")
+    M.place(cv, lay, W / 2, 1270, alpha=M.clamp((t - 0.5) / 0.2))
     if M.host_ready():
-        M.host_bubble(cv, "शाम 5 बजे: चित्रों से नियम आसान!", t, 1.2, 1560, "batata")
-    else:
-        text_c(d, (W / 2, 1500), "शाम 5 बजे: चित्रों से नियम आसान!", 52, (255, 255, 255))
+        M.host_bubble(cv, "कल सुबह 9 बजे: नए 3 सवाल!", t, 0.6, 1600, "batata")
     return cv
 
 
@@ -453,41 +373,33 @@ def render(data, tl, gt):
         si += 1
     sc = tl[si]
     t = gt - sc["start"]
-    nm = sc["name"]
-    if nm == "intro":
-        return scene_intro(data, t, gt)
-    if nm == "end":
-        return scene_end(data, t, gt)
-    return scene_q(data, int(nm[1:]), t, gt, sc)
-
-
-def push(prev, cur, k):
-    """Purana scene baayein khisakta, naya daayein se (premium app jaisa)."""
-    k = M.ease_in_out(M.clamp(k))
-    out = Image.new("RGB", (W, H))
-    off = int(W * k)
-    out.paste(prev, (-off, 0))
-    out.paste(cur, (W - off, 0))
-    return out
+    if sc["name"] == "end":
+        return scene_end(data, t)
+    return scene_q(data, int(sc["name"][1:]), t, sc)
 
 
 def build_video(data, out):
     M.resolve_font()
-    specs = make_specs(data["items"], data["intro"])
+    tl, total = timeline(data["items"])
+    specs = [{"name": "hook", "segs": [("h", data["hook"]["voice"])]}, {"name": "end", "segs": [("e", END_VOICE)]}]
     print("PYQ: awaaz ban rahi hai...")
-    voices = get_voices(specs)
-    tl, total = timeline(specs, voices)
+    hook_v = end_v = None
+    try:
+        vs = get_voices(specs)
+        hook_v, end_v = vs[0][0], vs[1][0]
+    except Exception as exc:
+        print("PYQ: awaaz nahi bani (reel sirf sangeet/sfx se):", str(exc)[:120])
     for sc in tl:
-        print(f"  {sc['name']:<5} {sc['start']:5.2f}s  {sc['dur']:4.2f}s  voice {sc['vdur']:4.2f}s")
+        print(f"  {sc['name']:<4} {sc['start']:5.2f}s  {sc['dur']:4.2f}s")
     apath = out.replace(".mp4", "_audio.wav")
-    build_audio(voices, tl, total, apath)
+    build_audio(tl, total, hook_v, end_v, apath)
     n_frames = int(math.ceil(total * M.FPS))
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(M.FPS),
            "-i", "-", "-i", apath, "-map", "0:v:0", "-map", "1:a:0", "-c:v", "libx264", "-preset", "medium",
            "-crf", str(M.VIDEO_CRF), "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest",
            "-movflags", "+faststart", out]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
-    prev_cache = {}
+    prev = {}
     try:
         si = 0
         for fi in range(n_frames):
@@ -496,13 +408,11 @@ def build_video(data, out):
                 si += 1
             fr = render(data, tl, gt).convert("RGB")
             tt = gt - tl[si]["start"]
-            if si > 0 and tt < TRANS:
-                if si not in prev_cache:
-                    prev_cache = {si: render(data, tl, tl[si]["start"] - 1.0 / M.FPS).convert("RGB")}
-                fr = push(prev_cache[si], fr, tt / TRANS)
+            if si > 0 and tt < TRANS:                       # purana halka ghul ke naya (saaf, tez)
+                if si not in prev:
+                    prev = {si: render(data, tl, tl[si]["start"] - 1.0 / M.FPS).convert("RGB")}
+                fr = Image.blend(prev[si], fr, M.ease_in_out(tt / TRANS))
             proc.stdin.write(fr.tobytes())
-            if fi % 150 == 0:
-                print(f"  frame {fi}/{n_frames}")
         proc.stdin.close()
     except BrokenPipeError:
         pass
@@ -523,9 +433,9 @@ def write_caption(data, path):
     pin = "  ".join(f"{k + 1}-{it['ans']}" for k, it in enumerate(items))
     ex_all = sorted({e for it in items for e in it.get("exams") or []})
     lines = [
-        f"GDS to MTS / Postman परीक्षा | पिछले साल के {n} असली सवाल (PYQ) | आपका स्कोर?",
+        f"GDS to MTS / Postman परीक्षा | पिछले साल के {n} असली सवाल (PYQ) | 10 सेकंड चैलेंज",
         "",
-        f"{n} सवाल, हर सवाल पर 3 सेकंड. अपने जवाब कमेंट में लिखो (जैसे 1-B 2-A 3-D)",
+        "अपने जवाब कमेंट में लिखो (जैसे 1-B 2-A 3-D) · रील रोककर पढ़ सकते हो",
         "सही जवाब पिन कमेंट में 📌",
         "",
         "📝 स्रोत: GDS से MTS / Postman विभागीय परीक्षा प्रश्नपत्र (" + ", ".join(ex_all[:8])
@@ -538,8 +448,8 @@ def write_caption(data, path):
         "",
         "----- PIN करने वाला पहला कमेंट (reel डालने के 1 घंटे बाद पिन करें) -----",
         f"✅ सही जवाब: {pin}",
-        *[f"{k + 1}. {it['q']} → {it['ans']}) {it['opts']["ABCD".index(it['ans'])]}"
-          f"  [पूछा गया: {exams_line(it.get('exams') or [], 3)}]" for k, it in enumerate(items)],
+        *[f"{k + 1}. {it['q']} → {it['ans']}) {ans_text(it)}  [पूछा गया: {exams_line(it.get('exams') or [], 3)}]"
+          for k, it in enumerate(items)],
         f"आपके कितने सही हुए? __/{n} लिखो 👇  शाम 5 बजे नियम चित्रों से समझेंगे!",
     ]
     with open(path, "w", encoding="utf-8") as f:
@@ -552,9 +462,9 @@ def log_experiment(data, out, total):
     with open(EXP_LOG, "a", encoding="utf-8-sig" if new else "utf-8", newline="") as f:
         w = csv.writer(f)
         if new:
-            w.writerow(["post_date", "file", "format", "intro_variant", "questions", "length_sec",
+            w.writerow(["post_date", "file", "format", "hook_variant", "questions", "length_sec",
                         "views", "skip_rate", "avg_watch_sec", "comments", "saves", "shares", "follows"])
-        w.writerow([data["post_date"], os.path.basename(out), "pyq3", data["intro"]["id"],
+        w.writerow([data["post_date"], os.path.basename(out), "pyq3-white", data["hook"]["id"],
                     " ".join(it["id"] for it in data["items"]), f"{total:.1f}", "", "", "", "", "", "", ""])
 
 
@@ -578,9 +488,9 @@ def run(force=False):
         print("PYQ: sawal-bank ke saare set ho gaye - naye jaanche hue sawal pyq_bank.json me jodiye "
               "(Claude se agla batch banwa lijiye). Aaj PYQ reel nahi.")
         return
-    intro = INTROS[int(st.get("n", 0)) % len(INTROS)]
-    data = {"items": items, "intro": intro, "post_date": pdate}
-    print(f"PYQ {pdate} | intro {intro['id']} | sawal: {[x['id'] for x in items]}")
+    hook = HOOK_VOICES[int(st.get("n", 0)) % len(HOOK_VOICES)]
+    data = {"items": items, "hook": hook, "post_date": pdate}
+    print(f"PYQ {pdate} | awaaz {hook['id']} | sawal: {[x['id'] for x in items]}")
     out = os.path.join(OUT_DIR, f"pyq_{pdate}.mp4")
     k = 2
     while os.path.exists(out) and not M.DRY_RUN:
