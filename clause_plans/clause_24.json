@@ -397,7 +397,7 @@
       "d": "वेतन बढ़ना",
       "correct": "A",
       "fact": "पता पक्ष पर गलत लेबल लगाने से डाक कर्मचारियों के कार्य में बाधा उत्पन्न होती है।",
-      "trap": "काम जल्दी होना गलत है, कार्य में रुकावट आती है।",
+      "trap": "डाक के इस भाग पर फ्रैंकिंग मशीन जैसी छाप भी वर्जित",
       "yaad": "अतिरिक्त लेबल = काम में बाधा",
       "hook": "लिफाफे पर सील ऐसे लगाई कि सॉर्टिंग वाले भाई साहब को परेशानी हो रही है, क्यों?",
       "en": {
@@ -425,7 +425,7 @@
         ]
       },
       "hint": "",
-      "trap_quote": "",
+      "trap_quote": "Impressions which are likely to be mistaken for impressions of postal franking machine must also not be made on the address side.",
       "_clause_no": 24,
       "hook_v": {
         "ok": true,
@@ -439,7 +439,150 @@
       "style_v": "2026-09-26c",
       "style_retry": true,
       "published_prev": "2026-09-30",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "Medium shot, warm lighting. The customer stands at the post office counter holding a white envelope and a colored sticker, curiously asking a question. The postman in khaki uniform stands behind the wooden counter looking at the envelope.",
+            "target": "the white envelope in customer hands",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक पत्र पर नया लेबल चिपकाने आया।",
+            "desc": "The customer holds a white envelope and a sticker at the post office counter, asking the postman.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, यह लेबल यहाँ लगा दूँ?"
+            },
+            "img": "clause_plans/chitra_img/bcc9652324_20999145_1.jpg",
+            "box": [
+              0.433,
+              0.509,
+              0.601,
+              0.674
+            ],
+            "bg_text": false,
+            "badge": [
+              0.359,
+              0.477,
+              0.399,
+              0.519
+            ],
+            "face": [
+              0.576,
+              0.205,
+              0.725,
+              0.386
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Medium shot, focused lighting. The customer has placed a large colored sticker right over the middle of the white envelope on the counter. The postman looks troubled and confused, holding his forehead with one hand as he struggles to read the letter.",
+            "target": "the colored sticker on the envelope",
+            "tag": "कार्य में बाधा",
+            "tag_color": "red",
+            "text": "गलत लेबल से डाक कार्य में बाधा आती है।",
+            "desc": "A colored sticker covers the middle of the envelope, troubling the postman and tagged कार्य में बाधा.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "अनावश्यक गलत लेबल",
+                "पटना 800001"
+              ],
+              "corner": "डाक टिकट",
+              "hl": 1
+            },
+            "say": {
+              "who": "postman",
+              "text": "अरे भाई! पता छिप गया, काम रुक गया!"
+            },
+            "img": "clause_plans/chitra_img/bcc9652324_20999145_2.jpg",
+            "box": [
+              0.442,
+              0.519,
+              0.613,
+              0.69
+            ],
+            "bg_text": false,
+            "badge": [
+              0.359,
+              0.458,
+              0.413,
+              0.505
+            ],
+            "face": [
+              0.247,
+              0.121,
+              0.453,
+              0.364
+            ],
+            "frames": [
+              "clause_plans/chitra_img/bcc9652324_20999145_2f1.jpg",
+              "clause_plans/chitra_img/bcc9652324_20999145_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "Medium shot, bright cheerful lighting. The postman smiles warmly as he smoothly sorts a clean white envelope into the wooden pigeonhole sorting rack. The customer stands beside the counter, relieved and nodding.",
+            "target": "the clean envelope in postman hand",
+            "tag": "सही डाक छँटाई",
+            "tag_color": "green",
+            "text": "बिना फालतू लेबल के काम निर्बाध होता है।",
+            "desc": "The postman smoothly sorts a cleanly addressed envelope with no obstructing labels, tagged सही डाक छँटाई.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "गांधी नगर",
+                "पटना 800001"
+              ],
+              "corner": "डाक टिकट",
+              "hl": -1
+            },
+            "say": {
+              "who": "postman",
+              "text": "साफ पते से चिट्ठी जल्दी बँटती है!"
+            },
+            "img": "clause_plans/chitra_img/bcc9652324_20999145_3.jpg",
+            "box": [
+              0.48,
+              0.595,
+              0.584,
+              0.699
+            ],
+            "bg_text": false,
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/bcc9652324_20999145_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "ग्राहक पत्र पर नया लेबल चिपकाने आया।",
+          "गलत लेबल से डाक कार्य में बाधा आती है।",
+          "बिना फालतू लेबल के काम निर्बाध होता है।"
+        ],
+        "score": 8.0,
+        "lesson": "Do not affix unnecessary labels on postal letters to ensure uninterrupted postal processing.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      },
+      "opt_pics": {
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/bcc9652324_20999145_1.jpg",
+        "err": "option-chitra jaanch fail: A, B, C, D"
+      },
+      "trap_old": "काम जल्दी होना गलत है, कार्य में रुकावट आती है।",
+      "trap_v": {
+        "ok": true,
+        "v": 3
+      },
+      "published": "2026-10-08",
+      "published_round": 18
     },
     {
       "basis": "notes",

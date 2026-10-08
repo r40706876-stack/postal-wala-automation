@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पता पक्ष पर लेबल → पता समझना मुश्किल
 **Hook:** চিঠি पर गलत लेबल लगने से पता नहीं पढ़ा जा रहा, अब क्या होगा?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-10-08]
 **Source (PO Guide):** डाक कमणचाररयों के काम में बािा उत्पन्न होती है
 
 **Niyam:** पता पक्ष पर गलत लेबल लगाने से डाक कर्मचारियों के कार्य में बाधा उत्पन्न होती है।
@@ -43,7 +43,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. काम जल्दी होना
 - D. वेतन बढ़ना
 **Hint:** 
-**Trap:** काम जल्दी होना गलत है, कार्य में रुकावट आती है।
+**Trap:** डाक के इस भाग पर फ्रैंकिंग मशीन जैसी छाप भी वर्जित  (source: Impressions which are likely to be mistaken for impressions of postal franking machine must also not be made on the address side.)
 **Yaad:** अतिरिक्त लेबल = काम में बाधा
 **Hook:** लिफाफे पर सील ऐसे लगाई कि सॉर्टिंग वाले भाई साहब को परेशानी हो रही है, क्यों?
 
