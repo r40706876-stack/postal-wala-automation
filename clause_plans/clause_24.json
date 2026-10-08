@@ -194,7 +194,7 @@
       "d": "रंग बदलना",
       "correct": "A",
       "fact": "पता पक्ष पर लेबल लगाने से पता पढ़ना और समझना मुश्किल हो जाता है।",
-      "trap": "वजन बढ़ना गलत है, पते का स्पष्ट न दिखना मुख्य समस्या है।",
+      "trap": "डाक फ्रैंकिंग मशीन जैसी छाप भी पता पक्ष पर वर्जित है।",
       "yaad": "पता पक्ष पर लेबल → पता समझना मुश्किल",
       "hook": "চিঠি पर गलत लेबल लगने से पता नहीं पढ़ा जा रहा, अब क्या होगा?",
       "en": {
@@ -222,7 +222,7 @@
         ]
       },
       "hint": "",
-      "trap_quote": "",
+      "trap_quote": "Impressions which are likely to be mistaken for impressions of postal franking machine must also not be made on the address side.",
       "_clause_no": 24,
       "hook_v": {
         "ok": true,
@@ -236,7 +236,12 @@
       "style_v": "2026-09-26c",
       "style_retry": true,
       "published_prev": "2026-09-30",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "trap_old": "वजन बढ़ना गलत है, पते का स्पष्ट न दिखना मुख्य समस्या है।",
+      "trap_v": {
+        "ok": true,
+        "v": 3
+      }
     },
     {
       "basis": "notes",

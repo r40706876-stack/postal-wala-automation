@@ -29,7 +29,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - C. पैसे कम होना
 - D. रंग बदलना
 **Hint:** 
-**Trap:** वजन बढ़ना गलत है, पते का स्पष्ट न दिखना मुख्य समस्या है।
+**Trap:** डाक फ्रैंकिंग मशीन जैसी छाप भी पता पक्ष पर वर्जित है।  (source: Impressions which are likely to be mistaken for impressions of postal franking machine must also not be made on the address side.)
 **Yaad:** पता पक्ष पर लेबल → पता समझना मुश्किल
 **Hook:** চিঠি पर गलत लेबल लगने से पता नहीं पढ़ा जा रहा, अब क्या होगा?
 
