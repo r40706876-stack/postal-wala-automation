@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** अंतिम समय → डाक → भारी भीड़
 **Hook:** ग्राहक ने लिफाफा आख़िरी मिनट में दिया, क्या होगा?
 
-## Part 2  [PASS | publish: 2026-10-06]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** there is likelihood of detention and delay
 
 **Niyam:** डाक लेखों को देर से पोस्ट करने पर रोक और देरी की संभावना रहती है
@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** देर = रोक
 **Hook:** पार्सल देर से आया, क्या होगा?
 
-## Part 3  [PASS | publish: 2026-10-06]
+## Part 3  [PASS | publish baaki]
 **Source (PO Guide):** The public are, therefore, advised to post their mails as and when they are ready without waiting for the last clearance of mails from the Post Office
 
 **Niyam:** डाक तैयार होते ही उसे तुरंत पोस्ट कर देना चाहिए, अंतिम क्लियरेंस का इंतजार नहीं करना चाहिए
@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** तैयार = तुरंत पोस्ट
 **Hook:** ग्राहक अंतिम क्लियरेंस के समय डाक लाया, उसे क्या समझाएं?
 
-## Part 4  [PASS | publish: 2026-10-07]
+## Part 4  [PASS | publish baaki]
 **Source (PO Guide):** to endeavour to post as early in the day as possible
 
 **Niyam:** डाक को दिन में जितना संभव हो सके उतनी जल्दी पोस्ट करने का प्रयास करना चाहिए

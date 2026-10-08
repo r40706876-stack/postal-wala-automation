@@ -60,8 +60,8 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-05",
-      "published_round_prev": 16,
+      "published_prev": "2026-10-06",
+      "published_round_prev": 18,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -142,7 +142,7 @@
         "ref": "clause_plans/chitra_img/040f672031_77457295_1.jpg"
       },
       "published": "2026-10-06",
-      "published_round": 18
+      "published_round": 19
     },
     {
       "basis": "guide",
@@ -196,8 +196,8 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "published_prev": "2026-10-05",
-      "published_round_prev": 16,
+      "published_prev": "2026-10-06",
+      "published_round_prev": 18,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -272,8 +272,10 @@
         "tries": 2,
         "v": 3
       },
-      "published": "2026-10-06",
-      "published_round": 18
+      "punch_v": {
+        "ok": true,
+        "text": "आखिरी समय पर डाक आई तो?"
+      }
     },
     {
       "basis": "guide",
@@ -408,8 +410,8 @@
         "tries": 1,
         "v": 3
       },
-      "published": "2026-10-06",
-      "published_round": 18
+      "published_prev": "2026-10-06",
+      "published_round_prev": 18
     },
     {
       "basis": "guide",
@@ -540,8 +542,8 @@
         "none": true,
         "v": 3
       },
-      "published": "2026-10-07",
-      "published_round": 18
+      "published_prev": "2026-10-07",
+      "published_round_prev": 18
     },
     {
       "id": 1,
