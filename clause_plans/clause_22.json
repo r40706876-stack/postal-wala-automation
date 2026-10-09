@@ -512,19 +512,24 @@
         "attempt": 1
       },
       "opt_pics": {
-        "tries": 1,
-        "ref": "clause_plans/chitra_img/9e3979d785_48468898_1.jpg",
-        "err": "option-chitra jaanch fail: B, C"
+        "none": true,
+        "ref": "clause_plans/chitra_img/9e3979d785_86151848_1.jpg"
       },
       "trap_v": {
-        "tries": 1,
+        "none": true,
         "v": 3
       },
       "published_prev": "2026-10-06",
       "published_round_prev": 18,
       "cf_spent": {
         "2026-10-09": 6
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "डाक पेटी में कब डालें?"
+      },
+      "published": "2026-10-09",
+      "published_round": 19
     },
     {
       "basis": "guide",
@@ -656,7 +661,10 @@
         "v": 3
       },
       "published_prev": "2026-10-07",
-      "published_round_prev": 18
+      "published_round_prev": 18,
+      "cf_spent": {
+        "2026-10-09": 1
+      }
     },
     {
       "id": 1,
