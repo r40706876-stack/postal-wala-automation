@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** तैयार = तुरंत पोस्ट
 **Hook:** ग्राहक अंतिम क्लियरेंस के समय डाक लाया, उसे क्या समझाएं?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-10-09]
 **Source (PO Guide):** to endeavour to post as early in the day as possible
 
 **Niyam:** डाक को दिन में जितना संभव हो सके उतनी जल्दी पोस्ट करने का प्रयास करना चाहिए

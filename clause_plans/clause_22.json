@@ -584,77 +584,136 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS clerk and a customer standing at a counter with a bundle of mail letters on the table, warm daylight, medium shot.",
-            "target": "the bundle of mail letters",
-            "tag": "डाक पोस्ट करना",
+            "prompt": "On a bright street pavement next to a red pillar letter box, the customer in a light blue checked shirt holds a blank white letter, looking thoughtfully at his wrist. The postman in a khaki uniform stands nearby, carrying a mail bag. A large plain round clock on the wall shows early morning. Warm, bright morning light.",
+            "target": "the letter in the customer's hand",
+            "tag": "डाक पोस्ट करने का समय",
             "tag_color": "dark",
-            "text": "हमें आज डाक पोस्ट करने के लिए सही समय चुनना है।",
-            "desc": "The GDS clerk and customer look at the bundle of letters placed on the counter.",
+            "text": "डाक को दिन में कब पोस्ट करना चाहिए?",
+            "desc": "The customer stands by the red letter box holding a blank letter, debating when to post it, with a tag \"डाक पोस्ट करने का समय\" pointing to the letter.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/2ec6ecdf28_49499428_1.jpg",
+            "say": {
+              "who": "customer",
+              "text": "इसे अभी डालूँ या बाद में?"
+            },
+            "img": "clause_plans/chitra_img/2ec6ecdf28_31715767_1.jpg",
             "box": [
-              0.464,
-              0.618,
-              0.73,
-              0.745
+              0.484,
+              0.496,
+              0.649,
+              0.656
             ],
-            "bg_text": false
+            "bg_text": false,
+            "badge": [
+              0.417,
+              0.448,
+              0.477,
+              0.488
+            ],
+            "face": [
+              0.582,
+              0.27,
+              0.755,
+              0.422
+            ],
+            "pan": "lr"
           },
           {
-            "prompt": "The GDS clerk and customer standing at the counter in the evening as the sun sets outside, the counter is dark and empty, the clerk looks stressed.",
-            "target": "the bundle of mail letters",
-            "tag": "शाम को पोस्ट करना",
+            "prompt": "In the late evening under a warm orange sunset sky, the customer looks panicked as he drops a letter into the red letter box. In the background, the hands of a large plain round clock point to late evening, and a red mail van is starting to drive away. The postman looks worried.",
+            "target": "the letter being dropped late",
+            "tag": "देर शाम को पोस्ट करना",
             "tag_color": "red",
-            "text": "शाम के समय डाक पोस्ट करने से देरी हो सकती है।",
-            "desc": "The customer attempts to hand over the letters at sunset while the office is closing.",
+            "text": "शाम को आखिरी समय पर डाक पोस्ट करने से बचें।",
+            "desc": "The customer frantically drops a letter into the letter box at late sunset while a red mail van drives away in the background, with a red tag \"देर शाम को पोस्ट करना\" next to the letter.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/2ec6ecdf28_49499428_2.jpg",
+            "say": {
+              "who": "customer",
+              "text": "अरे! गाड़ी तो निकल रही है!"
+            },
+            "img": "clause_plans/chitra_img/2ec6ecdf28_31715767_2.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.493,
+              0.521,
+              0.646,
+              0.663
             ],
-            "bg_text": false
+            "bg_text": true,
+            "badge": [
+              0.429,
+              0.465,
+              0.487,
+              0.505
+            ],
+            "face": [
+              0.594,
+              0.22,
+              0.77,
+              0.429
+            ],
+            "frames": [
+              "clause_plans/chitra_img/2ec6ecdf28_31715767_2f1.jpg",
+              "clause_plans/chitra_img/2ec6ecdf28_31715767_2f2.jpg"
+            ]
           },
           {
-            "prompt": "The GDS clerk and customer at the counter in the bright morning sunlight, both smiling as the clerk accepts the letters early.",
-            "target": "the bundle of mail letters",
-            "tag": "दिन में जल्दी पोस्ट करना",
+            "prompt": "In bright morning sunlight, the customer smiles as he drops his letter into the red letter box. The postman stands next to him, smiling and pointing approvingly. The large plain round clock on the wall shows early morning. Warm, pleasant light.",
+            "target": "the letter being posted early",
+            "tag": "दिन में जितना जल्दी संभव हो",
             "tag_color": "green",
-            "text": "दिन में जितनी जल्दी हो सके डाक पोस्ट करनी चाहिए।",
-            "desc": "The GDS clerk accepts the letters from the customer early in the morning under bright light.",
+            "text": "डाक को दिन में जितना संभव हो सके उतनी जल्दी पोस्ट करें।",
+            "desc": "The customer happily posts his letter early in the morning under bright sunlight, with the postman smiling and a green tag \"दिन में जितना जल्दी संभव हो\" pointing to the letter.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/2ec6ecdf28_49499428_3.jpg",
+            "say": {
+              "who": "postman",
+              "text": "बहुत बढ़िया! सुबह पोस्ट करने से काम आसान!"
+            },
+            "img": "clause_plans/chitra_img/2ec6ecdf28_31715767_3.jpg",
             "box": [
-              0.383,
-              0.571,
-              0.715,
-              0.781
+              0.489,
+              0.494,
+              0.645,
+              0.648
             ],
-            "bg_text": false
+            "bg_text": false,
+            "badge": [
+              0.423,
+              0.448,
+              0.481,
+              0.483
+            ],
+            "face": [
+              0.583,
+              0.22,
+              0.757,
+              0.423
+            ],
+            "pan": "rl"
           }
         ],
         "caps": [
-          "हमें आज डाक पोस्ट करने के लिए सही समय चुनना है।",
-          "शाम के समय डाक पोस्ट करने से देरी हो सकती है।",
-          "दिन में जितनी जल्दी हो सके डाक पोस्ट करनी चाहिए।"
+          "डाक को दिन में कब पोस्ट करना चाहिए?",
+          "शाम को आखिरी समय पर डाक पोस्ट करने से बचें।",
+          "डाक को दिन में जितना संभव हो सके उतनी जल्दी पोस्ट करें।"
         ],
         "score": 10.0,
-        "lesson": "Post your mail as early as possible during the day to avoid delays caused by posting in the evening.",
-        "pv": 3,
+        "lesson": "Post mail as early as possible during the day and avoid posting it late in the evening.",
+        "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 2
+        "attempt": 1
       },
       "style_retry": true,
       "opt_pics": {
-        "tries": 1,
-        "ref": "clause_plans/chitra_img/2ec6ecdf28_49499428_1.jpg",
-        "err": "option-chitra jaanch fail: B"
+        "ok": true,
+        "ref": "clause_plans/chitra_img/2ec6ecdf28_31715767_1.jpg",
+        "pics": {
+          "दिन में जितनी जल्दी हो सके": "clause_plans/chitra_img/2ec6ecdf28_optA_762257.jpg",
+          "डाक प्रेषण के ठीक समय पर": "clause_plans/chitra_img/2ec6ecdf28_optB_902882.jpg",
+          "दोपहर के विश्राम काल के बाद": "clause_plans/chitra_img/2ec6ecdf28_optC_214718.jpg",
+          "शाम को खिड़की बंद होने के समय": "clause_plans/chitra_img/2ec6ecdf28_optD_374040.jpg"
+        }
       },
       "trap_v": {
         "none": true,
@@ -663,8 +722,14 @@
       "published_prev": "2026-10-07",
       "published_round_prev": 18,
       "cf_spent": {
-        "2026-10-09": 1
-      }
+        "2026-10-09": 9
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "आज डाक कब भेजें?"
+      },
+      "published": "2026-10-09",
+      "published_round": 19
     },
     {
       "id": 1,
