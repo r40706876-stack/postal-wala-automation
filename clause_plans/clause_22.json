@@ -199,10 +199,124 @@
       "published_prev": "2026-10-06",
       "published_round_prev": 18,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "dekhne wale ne niyam theek nahi samjha: 'Customers should avoid posting postal articles late to prevent potential delivery delays.' - chhoota: The English watermark 'POSTAL WALA' appears inconsistently across the panels.; The second picture circles the large background pillar/postbox rather than the",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "Inside the post office, the customer stands holding a white letter, looking at the postman behind the counter with a curious expression. On the plain wall behind them is a large round analog clock pointing near closing time.",
+            "target": "the white letter in the customer's hand",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "डाक लेखों को देर से पोस्ट करने पर रोक लगती है।",
+            "desc": "The customer stands at the post office counter holding a letter near closing time, wondering if it will be sent today.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, क्या यह पत्र अभी चला जाएगा?"
+            },
+            "img": "clause_plans/chitra_img/49db712012_42008151_1.jpg",
+            "box": [
+              0.519,
+              0.55,
+              0.686,
+              0.7
+            ],
+            "bg_text": false,
+            "badge": [
+              0.362,
+              0.504,
+              0.425,
+              0.545
+            ],
+            "face": [
+              0.239,
+              0.217,
+              0.396,
+              0.367
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "The customer stands looking shocked next to the counter, pointing at his letter left behind on a wooden sorting table next to a tightly sealed mailbag. Through the window, the red mail van is seen driving away. The wall clock shows it is very late.",
+            "target": "the letter left behind on the sorting table",
+            "tag": "रोक और देरी की संभावना",
+            "tag_color": "red",
+            "text": "डाक लेखों को देर से पोस्ट करने पर देरी की संभावना रहती है।",
+            "desc": "The letter lies left behind on the table while the mail van drives away, marked with a red tag 'रोक और देरी की संभावना'.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "गाड़ी चली गई, अब यह कल जाएगी।"
+            },
+            "img": "clause_plans/chitra_img/49db712012_42008151_2.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": true,
+            "badge": [
+              0.37,
+              0.481,
+              0.429,
+              0.521
+            ],
+            "face": [
+              0.237,
+              0.195,
+              0.41,
+              0.36
+            ]
+          },
+          {
+            "prompt": "Bright daytime light inside the post office. The customer smiles and hands the white letter to the smiling postman at the counter. The wall clock shows early morning. Outside the window, a red mail van is parked waiting.",
+            "target": "the white letter being handed to the postman",
+            "tag": "समय पर डिलीवरी",
+            "tag_color": "green",
+            "text": "डाक लेखों को समय पर पोस्ट करना चाहिए।",
+            "desc": "The postman smilingly accepts the letter from the customer early in the day, with a green tag reading 'समय पर डिलीवरी' pointing to the letter.",
+            "mark": "right",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "बहुत बढ़िया! यह आज ही निकल जाएगी।"
+            },
+            "img": "clause_plans/chitra_img/49db712012_42008151_3.jpg",
+            "box": [
+              0.511,
+              0.561,
+              0.677,
+              0.706
+            ],
+            "bg_text": true,
+            "badge": [
+              0.354,
+              0.512,
+              0.418,
+              0.553
+            ],
+            "face": [
+              0.216,
+              0.218,
+              0.417,
+              0.377
+            ],
+            "pan": "rl"
+          }
+        ],
+        "caps": [
+          "डाक लेखों को देर से पोस्ट करने पर रोक लगती है।",
+          "डाक लेखों को देर से पोस्ट करने पर देरी की संभावना रहती है।",
+          "डाक लेखों को समय पर पोस्ट करना चाहिए।"
+        ],
+        "score": 7.0,
+        "lesson": "Postal articles should be posted on time to prevent delays.",
+        "pv": 4,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 1
       },
       "trap_v": {
         "tries": 2,
@@ -211,7 +325,22 @@
       "punch_v": {
         "ok": true,
         "text": "आखिरी समय पर डाक आई तो?"
-      }
+      },
+      "cf_spent": {
+        "2026-10-09": 9
+      },
+      "opt_pics": {
+        "ok": true,
+        "ref": "clause_plans/chitra_img/49db712012_42008151_1.jpg",
+        "pics": {
+          "रोक और देरी": "clause_plans/chitra_img/49db712012_optA_316214.jpg",
+          "मुफ्त डिलीवरी": "clause_plans/chitra_img/49db712012_optB_877327.jpg",
+          "तेज़ डिलीवरी": "clause_plans/chitra_img/49db712012_optC_673362.jpg",
+          "कोई असर नहीं": "clause_plans/chitra_img/49db712012_optD_605364.jpg"
+        }
+      },
+      "published": "2026-10-09",
+      "published_round": 19
     },
     {
       "basis": "guide",
@@ -271,68 +400,113 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS clerk and a customer looking at a sealed mail envelope on a plain wooden counter, medium shot with warm lighting.",
-            "target": "the sealed mail envelope on the counter",
+            "prompt": "The postman and the customer standing at the post office counter, the customer holding a sealed letter, warm lighting.",
+            "target": "the sealed letter in hand",
             "tag": "",
             "tag_color": "dark",
-            "text": "तैयार डाक को पोस्ट करने के लिए कब दें?",
-            "desc": "A GDS clerk and a customer looking at a sealed mail envelope on a plain wooden counter.",
+            "text": "पत्र तैयार होने पर उसे समय पर पोस्ट करना जरूरी होता है।",
+            "desc": "The customer is holding a sealed letter at the post office counter.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/9e3979d785_48468898_1.jpg",
+            "say": {
+              "who": "customer",
+              "text": "भैया, क्या शाम को एक साथ डालूँ?"
+            },
+            "img": "clause_plans/chitra_img/9e3979d785_86151848_1.jpg",
             "box": [
-              0.368,
-              0.548,
-              0.626,
-              0.752
+              0.508,
+              0.617,
+              0.649,
+              0.742
             ],
-            "bg_text": false
+            "bg_text": true,
+            "badge": [
+              0.38,
+              0.494,
+              0.448,
+              0.536
+            ],
+            "face": [
+              0.629,
+              0.268,
+              0.827,
+              0.457
+            ],
+            "pan": "lr"
           },
           {
-            "prompt": "A GDS clerk and a customer holding back a prepared letter on the counter, waiting near a clock on the wall, medium shot.",
-            "target": "the letter held back on the counter",
-            "tag": "दिन की अंतिम क्लियरेंस",
+            "prompt": "The customer holding back the ready letter next to a wall clock showing late evening time, looking worried, mail bag tray empty on the counter.",
+            "target": "the letter held back by customer",
+            "tag": "अंतिम क्लियरेंस का इंतजार",
             "tag_color": "red",
-            "text": "दिन की अंतिम क्लियरेंस के समय डाक न रोकें।",
-            "desc": "A GDS clerk and a customer holding back a prepared letter waiting for the last clearance.",
+            "text": "अंतिम क्लियरेंस का इंतजार करने से डाक रुक सकती है।",
+            "desc": "The customer waits for the last clearance keeping the ready letter.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/9e3979d785_48468898_2.jpg",
+            "say": {
+              "who": "postman",
+              "text": "रुको भाई, रुकने से देरी हो सकती है!"
+            },
+            "img": "clause_plans/chitra_img/9e3979d785_86151848_2.jpg",
             "box": [
-              0.381,
-              0.561,
-              0.638,
-              0.762
+              0.532,
+              0.611,
+              0.65,
+              0.696
             ],
-            "bg_text": false
+            "bg_text": false,
+            "face": [
+              0.623,
+              0.289,
+              0.827,
+              0.485
+            ],
+            "frames": [
+              "clause_plans/chitra_img/9e3979d785_86151848_2f1.jpg",
+              "clause_plans/chitra_img/9e3979d785_86151848_2f2.jpg"
+            ]
           },
           {
-            "prompt": "A GDS clerk smiling while receiving the mail envelope instantly across the plain wooden counter, medium shot, warm light.",
-            "target": "the mail envelope on the counter",
+            "prompt": "The postman taking the ready letter immediately from the customer to post it right away, warm lighting, clear expression.",
+            "target": "the letter being posted immediately",
             "tag": "जैसे ही डाक तैयार हो जाए",
             "tag_color": "green",
-            "text": "जैसे ही डाक तैयार हो जाए तुरंत पोस्ट करें।",
-            "desc": "A GDS clerk smiling while receiving the mail envelope instantly across the plain wooden counter.",
+            "text": "डाक तैयार होते ही उसे तुरंत पोस्ट कर देना चाहिए।",
+            "desc": "The postman accepts and posts the ready mail immediately without waiting.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/9e3979d785_48468898_3.jpg",
+            "say": {
+              "who": "postman",
+              "text": "जैसे ही डाक तैयार हो, तुरंत पोस्ट करो।"
+            },
+            "img": "clause_plans/chitra_img/9e3979d785_86151848_3.jpg",
             "box": [
-              0.332,
-              0.45,
-              0.698,
-              0.775
+              0.22,
+              0.3,
+              0.78,
+              0.86
             ],
-            "bg_text": false
+            "bg_text": false,
+            "face": [
+              0.62,
+              0.292,
+              0.82,
+              0.479
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/9e3979d785_86151848_3f1.jpg"
+            ]
           }
         ],
         "caps": [
-          "तैयार डाक को पोस्ट करने के लिए कब दें?",
-          "दिन की अंतिम क्लियरेंस के समय डाक न रोकें।",
-          "जैसे ही डाक तैयार हो जाए तुरंत पोस्ट करें।"
+          "पत्र तैयार होने पर उसे समय पर पोस्ट करना जरूरी होता है।",
+          "अंतिम क्लियरेंस का इंतजार करने से डाक रुक सकती है।",
+          "डाक तैयार होते ही उसे तुरंत पोस्ट कर देना चाहिए।"
         ],
         "score": 8.0,
-        "lesson": "Post prepared mail immediately as soon as it is ready, and do not hold it back until the final clearance of the day.",
-        "pv": 3,
+        "lesson": "When a letter or mail article is ready, it must be posted immediately without waiting for final clearance.",
+        "pv": 4,
         "ok": true,
         "v": 9,
         "attempt": 1
@@ -347,7 +521,10 @@
         "v": 3
       },
       "published_prev": "2026-10-06",
-      "published_round_prev": 18
+      "published_round_prev": 18,
+      "cf_spent": {
+        "2026-10-09": 6
+      }
     },
     {
       "basis": "guide",

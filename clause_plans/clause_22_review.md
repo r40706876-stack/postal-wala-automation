@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** अंतिम समय → डाक → भारी भीड़
 **Hook:** ग्राहक ने लिफाफा आख़िरी मिनट में दिया, क्या होगा?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-10-09]
 **Source (PO Guide):** there is likelihood of detention and delay
 
 **Niyam:** डाक लेखों को देर से पोस्ट करने पर रोक और देरी की संभावना रहती है
