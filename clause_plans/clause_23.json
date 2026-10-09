@@ -297,81 +297,134 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "A GDS clerk and a customer standing at a plain wooden postal counter, looking curiously at a blank white envelope held between them. Warm indoor light, medium shot from the waist up.",
-            "target": "the blank white envelope on the counter",
+            "prompt": "The postman and the customer standing at the counter, the customer holding a letter envelope and wondering how to attach the stamp.",
+            "target": "the letter envelope in customer's hand",
             "tag": "",
             "tag_color": "dark",
-            "text": "पत्र पर डाक टिकट कैसे लगाया जाना चाहिए?",
-            "desc": "A GDS clerk and a customer standing at a plain wooden postal counter looking curiously at a blank white envelope on the counter.",
+            "text": "पत्र पर डाक टिकट कैसे लगाना चाहिए?",
+            "desc": "The customer is holding a letter at the counter.",
             "mark": "none",
             "card": null,
-            "img": "clause_plans/chitra_img/93bdf4014c_51917846_1.jpg",
+            "say": {
+              "who": "customer",
+              "text": "भैया, इस टिकट को कैसे लगाऊँ?"
+            },
+            "img": "clause_plans/chitra_img/93bdf4014c_35935296_1.jpg",
             "box": [
-              0.388,
-              0.481,
-              0.608,
-              0.638
+              0.428,
+              0.551,
+              0.613,
+              0.686
             ],
-            "bg_text": false
+            "bg_text": true,
+            "face": [
+              0.563,
+              0.134,
+              0.915,
+              0.814
+            ],
+            "pan": "lr"
           },
           {
-            "prompt": "A GDS clerk and a customer standing at a plain wooden postal counter, looking at a white envelope where a postage stamp is attached on a separate hanging paper label next to the letter. Warm indoor light, medium shot from the waist up.",
-            "target": "the separate hanging paper label",
-            "tag": "अलग लेबल पर चिपके हुए",
+            "prompt": "The customer is attaching the postage stamp using a separate hanging paper label next to the letter at the counter.",
+            "target": "the hanging paper label with stamp",
+            "tag": "अलग लेबल पर",
             "tag_color": "red",
-            "text": "टिकट को कभी भी अलग लेबल पर न चिपकाएं।",
-            "desc": "A GDS clerk and a customer looking at a white envelope where the postage stamp is attached on a separate hanging paper label next to the letter tagged अलग लेबल पर चिपके हुए.",
+            "text": "टिकट को अलग लेबल पर नहीं लगाना चाहिए।",
+            "desc": "The stamp is attached on a separate label instead of the letter.",
             "mark": "wrong",
             "card": null,
-            "img": "clause_plans/chitra_img/93bdf4014c_51917846_2.jpg",
+            "say": {
+              "who": "customer",
+              "text": "क्या इसे इस अलग लेबल पर चिपका दूँ?"
+            },
+            "img": "clause_plans/chitra_img/93bdf4014c_35935296_2.jpg",
             "box": [
-              0.492,
-              0.239,
-              0.616,
-              0.399
+              0.424,
+              0.553,
+              0.611,
+              0.726
             ],
-            "bg_text": false
+            "bg_text": false,
+            "face": [
+              0.566,
+              0.129,
+              0.786,
+              0.388
+            ],
+            "frames": [
+              "clause_plans/chitra_img/93bdf4014c_35935296_2f1.jpg",
+              "clause_plans/chitra_img/93bdf4014c_35935296_2f2.jpg"
+            ]
           },
           {
-            "prompt": "A GDS clerk and a customer smiling at a plain wooden postal counter, looking at a white envelope where the postage stamp is fully and neatly pasted directly onto the article. Warm indoor light, medium shot from the waist up.",
-            "target": "the white envelope with the stamp",
+            "prompt": "The postman is smiling and showing the letter where the postage stamp is pasted completely and directly on the article.",
+            "target": "the letter with stamp pasted directly",
             "tag": "लेख से पूरी तरह चिपके हुए",
             "tag_color": "green",
-            "text": "डाक टिकट लेख के साथ पूरी तरह से चिपके होने चाहिए।",
-            "desc": "A GDS clerk and a customer smiling at a plain wooden postal counter, looking at the white envelope with the stamp tagged लेख से पूरी तरह चिपके हुए.",
+            "text": "डाक टिकट लेख के साथ पूरी तरह चिपके होने चाहिए।",
+            "desc": "The postage stamp is fully pasted on the article itself.",
             "mark": "right",
             "card": null,
-            "img": "clause_plans/chitra_img/93bdf4014c_51917846_3.jpg",
+            "say": {
+              "who": "postman",
+              "text": "टिकट हमेशा सीधे लेख पर चिपकाना चाहिए।"
+            },
+            "img": "clause_plans/chitra_img/93bdf4014c_35935296_3.jpg",
             "box": [
-              0.385,
-              0.488,
-              0.608,
-              0.645
+              0.427,
+              0.535,
+              0.614,
+              0.668
             ],
-            "bg_text": false
+            "bg_text": false,
+            "face": [
+              0.576,
+              0.129,
+              0.791,
+              0.382
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/93bdf4014c_35935296_3f1.jpg"
+            ]
           }
         ],
         "caps": [
-          "पत्र पर डाक टिकट कैसे लगाया जाना चाहिए?",
-          "टिकट को कभी भी अलग लेबल पर न चिपकाएं।",
-          "डाक टिकट लेख के साथ पूरी तरह से चिपके होने चाहिए।"
+          "पत्र पर डाक टिकट कैसे लगाना चाहिए?",
+          "टिकट को अलग लेबल पर नहीं लगाना चाहिए।",
+          "डाक टिकट लेख के साथ पूरी तरह चिपके होने चाहिए।"
         ],
-        "score": 9.0,
-        "lesson": "Postage stamps must be affixed directly and completely onto the postal article itself rather than on a separate label.",
-        "pv": 3,
+        "score": 10.0,
+        "lesson": "Stamps must be fully affixed directly onto the mail article and never placed on a separate label.",
+        "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 3
+        "attempt": 1
       },
       "opt_pics": {
-        "tries": 1,
-        "ref": "clause_plans/chitra_img/93bdf4014c_51917846_1.jpg",
-        "err": "option-chitra jaanch fail: A, B, C, D"
+        "ok": true,
+        "ref": "clause_plans/chitra_img/93bdf4014c_35935296_1.jpg",
+        "pics": {
+          "लेख से पूरी तरह चिपके हुए": "clause_plans/chitra_img/93bdf4014c_optA_615483.jpg",
+          "सामग्री से बँधे हुए": "clause_plans/chitra_img/93bdf4014c_optB_62322.jpg",
+          "अलग लेबल पर चिपके हुए": "clause_plans/chitra_img/93bdf4014c_optC_214358.jpg",
+          "धागे से लटके हुए": "clause_plans/chitra_img/93bdf4014c_optD_485662.jpg"
+        }
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "लिफाफे पर टिकट कैसे?"
+      },
+      "cf_spent": {
+        "2026-10-09": 6
+      },
+      "published": "2026-10-09",
+      "published_round": 19
     }
   ],
   "clause_text_en": "23. Manner of affixing postage stamps  - Stamps affixed to a letter or packet must be \ncompletely adherent to the article itself and not to any part of its contents or any separate label or \nother device tied or attached to the article.  The stamps should be affixed to the right hand top \ncorner of the address side.",
