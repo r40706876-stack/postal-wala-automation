@@ -2027,10 +2027,14 @@ Using ONLY the pictures and captions, answer honestly:
 - "lesson": in one English sentence, the exact rule you learned (what to do, on which article, when/why, and any
   condition or exception the pictures show).
 - "why3": why are the pictures with a green tick right and the ones with a red X wrong - what exactly is different?
-- "confusing": list everything confusing: unclear objects, text you cannot read, a caption that does not match its
-  picture, misspelt words, things cut off or overlapping, panels that look almost the same.
-- "clarity": 1-10, how sure you are about the rule from the pictures alone.
-Return ONLY JSON: {{"lesson":"","why3":"","confusing":[],"clarity":0}}
+- "confusing": list only things that make the RULE unclear: a caption that does not match its picture, an object you
+  cannot recognise, a key action that is not visible, a right/wrong picture that does not show the difference.
+  IGNORE these (they are normal and not a problem): small garbled lettering on a letter box, van or wall (decoration);
+  the name badge "POSTAL WALA" on the postman's uniform (it is our character's name tag); the same office, people and
+  background in every picture (it is one continuing story).
+- "clarity": 1-10, how sure you are about the RULE from the pictures + captions (not about drawing details).
+- "weak": the number of the ONE picture that most hurts understanding (1-{n}), or 0 if none.
+Return ONLY JSON: {{"lesson":"","why3":"","confusing":[],"clarity":0,"weak":0}}
 """
 
 
@@ -2444,6 +2448,13 @@ bags, vans etc. very well, but it CANNOT write any text and does not know India 
   But NEVER ask for a sign, board, poster, banner, notice, screen or anything with writing - the image AI fills those
   with fake letters. Say "plain wall" for any wall.
 - Do not ask for stamps, forms, receipts or labels with writing; a plain coloured sticker/seal without text is fine.
+- NEVER ask for an empty room, an empty shelf or an object alone without people - the image AI always adds people
+  and the picture then fails. Every picture shows the postman and/or the customer DOING something with the object.
+- Each picture must look clearly DIFFERENT from the one before (a new action, a new place in the office, a closer or
+  wider view, a different expression), not the same frame with one small change.
+- For a rule about TIME (late / early / after hours / closing time): show a big plain round wall clock WITHOUT numbers
+  next to the people, the hands pointing late (or early), plus a clear consequence the viewer sees (a letter left
+  behind in an empty mail bag tray after the van left, the van driving away, the customer worried).
 - Choose objects and actions the image AI draws EASILY and a viewer recognises at once (a parcel, a letter, gold
   jewellery, coins, a watch, a scale, a mail bag, handing over, weighing, sealing). NEVER depend on subtle states the
   eye cannot see (real vs fake metal, peeling plating, material of a case, weight, value, inside of a closed box) -
@@ -3083,6 +3094,9 @@ def _panel_mark(v, i, n):
 
 
 KEEP_MAX_REUSE = 2            # rakhi hui kahani itni baar dobara; fir bhi wahi khaana na bane to nayi kahani
+BLIND_FLOOR = 4               # andhi-jaanch: isse kam = niyam samajh hi nahi aaya
+BLIND_OK = 6                  # niyam-milan PASS (sahi niyam samjha) + itna yakeen -> chitra pass (har chitra aankh 8/10 alag se)
+CF_PART_DAY = int(os.getenv("CF_PART_DAY", "30"))   # ek part par ek DIN me max itne chitra (4 run milke quota na khaayein)
 CF_PART_BUDGET = int(os.getenv("CF_PART_BUDGET", "18"))   # ek part par ek run me max itne chitra (poora quota ek part na kha jaaye)
 _KEEP_MEM = {}
 
@@ -3335,9 +3349,14 @@ def _photo_attempt(part, feedback=""):
                                                    and str(x).strip().lower() not in ("none", "no", "nothing")]
         les = " ".join(str(vis.get("lesson") or "").split())
         why = " ".join(str(vis.get("why3") or "").split())
+        try:
+            weak_[0] = int(vis.get("weak") or 0)
+        except (TypeError, ValueError):
+            weak_[0] = 0
         print(f"  Chitra (photo) andhi-jaanch: {sc_:.0f}/10 | samjha: {les[:140]}"
-              + (f" | uljhan: {'; '.join(pr_)[:160]}" if pr_ else ""))
-        if sc_ < DRAW_MIN_SCORE or not les:
+              + (f" | uljhan: {'; '.join(pr_)[:160]}" if pr_ else "") + (f" | kamzor: khaana {weak_[0]}" if weak_[0] else ""))
+        weak_[1] = "; ".join(pr_)[:200]
+        if sc_ < BLIND_FLOOR or not les:
             return False, sc_, les, "; ".join(pr_)[:250] or "saaf samajh nahi aaya"
         jj = as_dict(_llm_json(BLIND_JUDGE_PROMPT.format(fact=part.get("fact", ""), src=truth_src(part),
                                                          lesson=les, why3=why)))
@@ -3346,7 +3365,11 @@ def _photo_attempt(part, feedback=""):
         same_ = vd in ("same", "minor") or (not vd and (same_ is True or str(same_).strip().lower() in ("true", "yes")))
         print(f"  Chitra (photo) niyam-milan: {'PASS' if same_ else 'FAIL'}{' (' + vd + ')' if vd else ''}"
               + (f" - {str(jj.get('missing') or '')[:160]}" if not same_ else ""))
+        if same_ and sc_ < BLIND_OK:                      # niyam sahi samjha, par chitra se pakka nahi
+            return False, sc_, les, ("niyam sahi samjha par chitra se saaf nahi: " + "; ".join(pr_))[:250]
         return same_, sc_, les, str(jj.get("missing") or "")[:250]
+
+    weak_ = [0, ""]
 
     ok_, score, lesson, missing = _blind()
     for fix_i in range(2):
@@ -3379,7 +3402,14 @@ def _photo_attempt(part, feedback=""):
     caps = [p_["text"] for p_ in panels]
     if not ok_:
         _drop()
-        _keep_clear(part)
+        wk = weak_[0] - 1
+        if 0 < wk < N:                                     # sirf kamzor khaana dobara (baaki sahi chitra sambhale)
+            _FIXES[wk] = ("Make the rule obvious in this picture: " + (weak_[1] or missing or "show the key action clearly")
+                          + ". Make it look clearly different from the other pictures.")[:240]
+            _keep_put(part, scene, panels, imgs, boxes, seed0, [wk])
+            print(f"  Chitra (photo): andhi-jaanch fail - sirf khaana {wk + 1} badlega, baaki {N - 1} chitra wahi")
+        else:
+            _keep_clear(part)
         return None, [f"dekhne wale ne niyam theek nahi samjha: '{lesson[:160]}' - chhoota: {missing}"]
     cfg = {"kit": "photo", "panels": panels, "caps": caps, "score": score, "lesson": lesson, "pv": PHOTO_V}
     aud = as_dict(_llm_json(CHITRA_AUDIT_PROMPT.format(fact=part.get("fact", ""), src=truth_src(part),
@@ -3619,22 +3649,37 @@ def ensure_chitra(plan, part):
     if feedback:
         print("  Chitra: pichhli run ki galti AI ko batayi:", feedback[:140])
     if USE_PHOTO:
+        import datetime as _dt
+        today = (_dt.datetime.utcnow() + _dt.timedelta(hours=5, minutes=30)).date().isoformat()
+        spent = part.get("cf_spent") if isinstance(part.get("cf_spent"), dict) else {}
+        spent = {today: int(spent.get(today, 0))}
+        if spent[today] >= CF_PART_DAY:
+            print(f"  Chitra (photo): is part par aaj {spent[today]} chitra lag chuke (seema {CF_PART_DAY}) - "
+                  "kal subah naye quota se (sahi chitra sambhale hue hain)")
+            return False
         n_start = _CF_STATE.get("n", 0)
+        day_left = CF_PART_DAY - spent[today]
+
+        def _spend():
+            part["cf_spent"] = {today: spent[today] + _CF_STATE.get("n", 0) - n_start}
         for _a in range(PHOTO_TRIES):
-            if _a and _CF_STATE.get("n", 0) - n_start >= CF_PART_BUDGET:
-                print(f"  Chitra (photo): is part par is run me {CF_PART_BUDGET} chitra ho gaye - baaki agli run me "
-                      "(sahi chitra sambhale hue hain, poora quota ek part par nahi)")
+            if _a and _CF_STATE.get("n", 0) - n_start >= min(CF_PART_BUDGET, day_left):
+                print(f"  Chitra (photo): is part ki seema poori (is run {_CF_STATE.get('n', 0) - n_start}, aaj kul "
+                      f"{spent[today] + _CF_STATE.get('n', 0) - n_start}/{CF_PART_DAY}) - baaki agli run me "
+                      "(sahi chitra sambhale hue hain)")
                 break
             try:
                 cfg, errs = _photo_attempt(part, feedback)
             except ProviderBusy as exc:
                 print("  Chitra (photo): busy -", str(exc)[:140], "- ye run ginti me nahi, agli run me dobara")
+                _spend()
                 save_plan(plan)                              # sambhale hue sahi chitra ki yaad bhi save
                 return False
             except Exception as exc:
                 cfg, errs = None, [f"photo nahi bana: {str(exc)[:160]}"]
             if cfg:
                 part["chitra_v"] = dict(cfg, ok=True, v=CHITRA_SCHEMA, attempt=_a + 1)
+                _spend()
                 save_plan(plan)
                 print(f"  Chitra taiyar (photo) koshish {_a + 1}/{PHOTO_TRIES} me - aankh + andhi-jaanch + examiner PASS:",
                       " | ".join(cfg["caps"]))
@@ -3643,6 +3688,9 @@ def ensure_chitra(plan, part):
             print("  CHITRA (photo) FAIL WAJAH:", feedback[:400])
             add_photo_lesson(feedback)
         part["chitra_v"] = {"tries": runs + 1, "last_err": feedback[:300], "v": CHITRA_SCHEMA, "kit_try": "photo3"}
+        _spend()
+        print(f"  Chitra (photo): is run me is part par {_CF_STATE.get('n', 0) - n_start} chitra, aaj kul "
+              f"{part['cf_spent'][today]}/{CF_PART_DAY}")
         save_plan(plan)
         return False
     draw_busy = False
@@ -9748,7 +9796,7 @@ USE_DRAW = os.getenv("USE_DRAW", "0") != "0"   # AI-aakaron wali drawing (kamzor
 USE_ICON_KITS = os.getenv("USE_ICON_KITS", "0") != "0"   # purani icon-kahani (kamzor) - band; sirf drawing/lifaafa/pata       # har niyam ka apna AI-drawn chitra (aankh-jaanch ke saath)
 SHOW_COURSE_PROGRESS = False   # "PO Guide पूरा कोर्स: Clause X / N" (user ne hataya)
 REQUIRE_CHITRA = os.getenv("REQUIRE_CHITRA", "1") != "0"   # 1 = sahi chitra ke bina reel NAHI (5 koshish/run, har baar galti sudhaar)
-ENGINE_VERSION = "v20.1 (2026-10-09): bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
+ENGINE_VERSION = "v20.2 (2026-10-09): andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
 
 
 def place_flip(canvas, front, back, cx, cy, p, scale=1.0):
