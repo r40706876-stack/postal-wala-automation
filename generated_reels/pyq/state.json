@@ -1,9 +1,11 @@
 {
   "done_sets": [
-    "world_post_day|date_stamp_2|postcard_attach"
+    "world_post_day|date_stamp_2|postcard_attach",
+    "circles_23|po_classes_3|ministry"
   ],
   "made": {
-    "2026-10-09": "pyq_2026-10-09.mp4"
+    "2026-10-09": "pyq_2026-10-09.mp4",
+    "2026-10-10": "pyq_2026-10-10.mp4"
   },
-  "n": 1
+  "n": 2
 }
