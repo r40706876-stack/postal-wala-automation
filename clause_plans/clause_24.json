@@ -572,9 +572,8 @@
         "attempt": 1
       },
       "opt_pics": {
-        "tries": 1,
-        "ref": "clause_plans/chitra_img/bcc9652324_20999145_1.jpg",
-        "err": "option-chitra jaanch fail: A, B, C, D"
+        "none": true,
+        "ref": "clause_plans/chitra_img/bcc9652324_41572880_1.jpg"
       },
       "trap_old": "काम जल्दी होना गलत है, कार्य में रुकावट आती है।",
       "trap_v": {
@@ -583,7 +582,13 @@
       },
       "cf_spent": {
         "2026-10-10": 12
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "पते पर इतने लेबल क्यों?"
+      },
+      "published": "2026-10-10",
+      "published_round": 19
     },
     {
       "basis": "notes",
