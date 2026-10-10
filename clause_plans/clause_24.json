@@ -415,7 +415,17 @@
       },
       "cf_spent": {
         "2026-10-10": 7
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "लिफाफे पर ये क्या चिपकाया?"
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/555684a9e6_49696237_1.jpg"
+      },
+      "published": "2026-10-10",
+      "published_round": 19
     },
     {
       "basis": "notes",
@@ -474,128 +484,88 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "Medium shot, warm lighting. The customer stands at the post office counter holding a white envelope and a colored sticker, curiously asking a question. The postman in khaki uniform stands behind the wooden counter looking at the envelope.",
-            "target": "the white envelope in customer hands",
-            "tag": "",
+            "prompt": "Medium shot of the customer handing a white envelope covered with bright coloured square stickers on its front to the postman at the wooden counter, warm light, the postman looking curious and examining it closely.",
+            "target": "the envelope with stickers",
+            "tag": "पता पक्ष पर लेबल",
             "tag_color": "dark",
-            "text": "ग्राहक पत्र पर नया लेबल चिपकाने आया।",
-            "desc": "The customer holds a white envelope and a sticker at the post office counter, asking the postman.",
+            "text": "ग्राहक ने लिफाफे के पता पक्ष पर लेबल लगाए।",
+            "desc": "The customer gives an envelope with multiple stickers on the address side to the postman at the counter, tagged पता पक्ष पर लेबल.",
             "mark": "none",
             "card": null,
             "say": {
               "who": "customer",
-              "text": "भैया, यह लेबल यहाँ लगा दूँ?"
+              "text": "भैया, इस पर कुछ स्टीकर लगाए हैं!"
             },
-            "img": "clause_plans/chitra_img/bcc9652324_20999145_1.jpg",
+            "img": "clause_plans/chitra_img/bcc9652324_41572880_1.jpg",
             "box": [
-              0.433,
-              0.509,
-              0.601,
-              0.674
+              0.319,
+              0.611,
+              0.616,
+              0.771
             ],
             "bg_text": false,
-            "badge": [
-              0.359,
-              0.477,
-              0.399,
-              0.519
-            ],
-            "face": [
-              0.576,
-              0.205,
-              0.725,
-              0.386
-            ],
             "pan": "lr"
           },
           {
-            "prompt": "Medium shot, focused lighting. The customer has placed a large colored sticker right over the middle of the white envelope on the counter. The postman looks troubled and confused, holding his forehead with one hand as he struggles to read the letter.",
-            "target": "the colored sticker on the envelope",
+            "prompt": "Medium shot of the postman at the wooden sorting table squinting in frustration and holding his forehead, struggling to see the address due to cluttered stickers on the envelope, while the customer looks worried and confused.",
+            "target": "the cluttered envelope",
             "tag": "कार्य में बाधा",
             "tag_color": "red",
-            "text": "गलत लेबल से डाक कार्य में बाधा आती है।",
-            "desc": "A colored sticker covers the middle of the envelope, troubling the postman and tagged कार्य में बाधा.",
+            "text": "गलत लेबल से डाक कर्मचारियों के कार्य में बाधा होती है।",
+            "desc": "The postman struggles to read the cluttered envelope causing obstruction in work, tagged कार्य में बाधा.",
             "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "अनावश्यक गलत लेबल",
-                "पटना 800001"
-              ],
-              "corner": "डाक टिकट",
-              "hl": 1
-            },
+            "card": null,
             "say": {
               "who": "postman",
-              "text": "अरे भाई! पता छिप गया, काम रुक गया!"
+              "text": "अरे! पता पढ़ने में रुकावट आ रही है!"
             },
-            "img": "clause_plans/chitra_img/bcc9652324_20999145_2.jpg",
+            "img": "clause_plans/chitra_img/bcc9652324_41572880_2.jpg",
             "box": [
-              0.442,
-              0.519,
-              0.613,
-              0.69
+              0.342,
+              0.617,
+              0.596,
+              0.768
             ],
             "bg_text": false,
-            "badge": [
-              0.359,
-              0.458,
-              0.413,
-              0.505
-            ],
-            "face": [
-              0.247,
-              0.121,
-              0.453,
-              0.364
-            ],
             "frames": [
-              "clause_plans/chitra_img/bcc9652324_20999145_2f1.jpg",
-              "clause_plans/chitra_img/bcc9652324_20999145_2f2.jpg"
+              "clause_plans/chitra_img/bcc9652324_41572880_2f1.jpg",
+              "clause_plans/chitra_img/bcc9652324_41572880_2f2.jpg"
             ]
           },
           {
-            "prompt": "Medium shot, bright cheerful lighting. The postman smiles warmly as he smoothly sorts a clean white envelope into the wooden pigeonhole sorting rack. The customer stands beside the counter, relieved and nodding.",
-            "target": "the clean envelope in postman hand",
-            "tag": "सही डाक छँटाई",
+            "prompt": "Medium shot of the postman smiling happily while holding up a neat blank white envelope with a clear address space and no extra stickers, as the customer nods with a relieved smile.",
+            "target": "the clean envelope",
+            "tag": "साफ पता पक्ष",
             "tag_color": "green",
-            "text": "बिना फालतू लेबल के काम निर्बाध होता है।",
-            "desc": "The postman smoothly sorts a cleanly addressed envelope with no obstructing labels, tagged सही डाक छँटाई.",
+            "text": "पता पक्ष साफ रखने से डाक कार्य आसानी से होता है।",
+            "desc": "The postman happily presents an envelope with a clean address side free from extra labels, tagged साफ पता पक्ष.",
             "mark": "right",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "गांधी नगर",
-                "पटना 800001"
-              ],
-              "corner": "डाक टिकट",
-              "hl": -1
-            },
+            "card": null,
             "say": {
               "who": "postman",
-              "text": "साफ पते से चिट्ठी जल्दी बँटती है!"
+              "text": "पता पक्ष हमेशा साफ रखें!"
             },
-            "img": "clause_plans/chitra_img/bcc9652324_20999145_3.jpg",
+            "img": "clause_plans/chitra_img/bcc9652324_41572880_3.jpg",
             "box": [
-              0.48,
-              0.595,
-              0.584,
-              0.699
+              0.339,
+              0.573,
+              0.607,
+              0.75
             ],
             "bg_text": false,
             "pan": "rl",
             "frames": [
-              "clause_plans/chitra_img/bcc9652324_20999145_3f1.jpg"
+              "clause_plans/chitra_img/bcc9652324_41572880_3f1.jpg"
             ]
           }
         ],
         "caps": [
-          "ग्राहक पत्र पर नया लेबल चिपकाने आया।",
-          "गलत लेबल से डाक कार्य में बाधा आती है।",
-          "बिना फालतू लेबल के काम निर्बाध होता है।"
+          "ग्राहक ने लिफाफे के पता पक्ष पर लेबल लगाए।",
+          "गलत लेबल से डाक कर्मचारियों के कार्य में बाधा होती है।",
+          "पता पक्ष साफ रखने से डाक कार्य आसानी से होता है।"
         ],
-        "score": 8.0,
-        "lesson": "Do not affix unnecessary labels on postal letters to ensure uninterrupted postal processing.",
+        "score": 10.0,
+        "lesson": "Keep the address side of an envelope clean and free from unnecessary labels so that postal employees can process the mail smoothly without obstruction.",
         "pv": 4,
         "ok": true,
         "v": 9,
@@ -610,6 +580,9 @@
       "trap_v": {
         "ok": true,
         "v": 3
+      },
+      "cf_spent": {
+        "2026-10-10": 12
       }
     },
     {

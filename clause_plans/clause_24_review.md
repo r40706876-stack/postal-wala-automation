@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** गैर-डाक टिकट और सील → पता पक्ष → नहीं
 **Hook:** काउंटर पर ग्राहक ने लिफाफे के पते वाली साइड चैरिटी का स्टीकर चिपकाया, क्या यह सही है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-10-10]
 **Source (PO Guide):** पते को समझाना मुल्किल हो जाता है
 
 **Niyam:** पता पक्ष पर लेबल लगाने से पता पढ़ना और समझना मुश्किल हो जाता है।
