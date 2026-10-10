@@ -181,7 +181,21 @@
         "ok": true,
         "v": 9,
         "attempt": 1
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "इतने सारे टिकट क्यों लगाए?"
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/36b2069c5e_22145669_1.jpg"
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-10",
+      "published_round": 19
     },
     {
       "basis": "notes",
@@ -221,7 +235,121 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "simple_rebuilds": 1
+      "simple_rebuilds": 1,
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "The customer stands at the post office counter holding a large white envelope, asking the postman how many stamps to attach, warm daylight.",
+            "target": "the white envelope in customer hands",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक पत्र पर डाक टिकट लगाने खिड़की पर आया।",
+            "desc": "The customer holds a blank white envelope at the counter while the postman looks on attentively.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, ये छोटे टिकट चिपका दूँ?"
+            },
+            "img": "clause_plans/chitra_img/b831de21bc_56431804_1.jpg",
+            "box": [
+              0.347,
+              0.507,
+              0.605,
+              0.696
+            ],
+            "bg_text": true,
+            "badge": [
+              0.359,
+              0.471,
+              0.409,
+              0.517
+            ],
+            "face": [
+              0.57,
+              0.147,
+              0.763,
+              0.371
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "The customer has pasted dozens of tiny stamps crowded all over the front of the envelope, while the postman raises his hands in concern, close view.",
+            "target": "the envelope covered with many small stamps",
+            "tag": "मुद्रण शुल्क अधिक लगता है",
+            "tag_color": "red",
+            "text": "कम मूल्य के अधिक टिकटों से मुद्रण शुल्क अधिक लगता है।",
+            "desc": "The envelope is completely cluttered with dozens of tiny stamps with red tag 'मुद्रण शुल्क अधिक लगता है' and the postman looking concerned.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "अरे! इतने सारे छोटे टिकट मत लगाओ!"
+            },
+            "img": "clause_plans/chitra_img/b831de21bc_56431804_2.jpg",
+            "box": [
+              0.37,
+              0.504,
+              0.638,
+              0.692
+            ],
+            "bg_text": true,
+            "badge": [
+              0.377,
+              0.471,
+              0.41,
+              0.501
+            ],
+            "face": [
+              0.271,
+              0.172,
+              0.437,
+              0.335
+            ]
+          },
+          {
+            "prompt": "The postman hands one single larger stamp to the customer, who places only that single stamp neatly in the top right corner of the clean envelope, both smiling.",
+            "target": "the envelope with a single neat stamp",
+            "tag": "स्टैंप पेपर सुरक्षित",
+            "tag_color": "green",
+            "text": "सही मूल्य का एक टिकट लगाने से बचत होती है।",
+            "desc": "The customer neatly affixes one single stamp on the corner of the clean envelope with green tag 'स्टैंप पेपर सुरक्षित' while the postman smiles approvingly.",
+            "mark": "right",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "एक सही टिकट लगाओ, बचत होगी।"
+            },
+            "img": "clause_plans/chitra_img/b831de21bc_56431804_3.jpg",
+            "box": [
+              0.384,
+              0.504,
+              0.605,
+              0.679
+            ],
+            "bg_text": false,
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/b831de21bc_56431804_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "ग्राहक पत्र पर डाक टिकट लगाने खिड़की पर आया।",
+          "कम मूल्य के अधिक टिकटों से मुद्रण शुल्क अधिक लगता है।",
+          "सही मूल्य का एक टिकट लगाने से बचत होती है।"
+        ],
+        "score": 8.0,
+        "lesson": "When posting an envelope, affix a single postage stamp of the correct value instead of multiple low-denomination stamps in order to save on stamp printing costs.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      },
+      "cf_spent": {
+        "2026-10-10": 12
+      }
     },
     {
       "basis": "notes",

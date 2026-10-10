@@ -5,7 +5,7 @@ English title: Use of the minimum number of postage stamps
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-10-10]
 **Source (PO Guide):** डाकघर कमणचाररयों का काम बढ़ जाता है
 
 **Niyam:** अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।
