@@ -248,141 +248,127 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 3): saaf nahi",
+        "tries": 2,
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
         "v": 9,
         "kit_try": "photo3"
       },
       "published_prev": "2026-09-30",
       "published_round_prev": 1,
+      "cf_spent": {
+        "2026-10-11": 32
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "लिफाफे पर शहर कैसे लिखें?"
+      },
       "chitra_keep": {
-        "scene": "Inside a busy post office service hall with a plain counter and a white wall.",
-        "seed0": 32178908,
+        "scene": "Bright post office sorting counter with a plain wall in the background and a parcel kept on the wooden table.",
+        "seed0": 46476585,
         "files": {
-          "0": "clause_plans/chitra_img/d99eb5f581_keep_32178908_1.jpg",
-          "1": "clause_plans/chitra_img/d99eb5f581_keep_32178908_2.jpg"
+          "0": "clause_plans/chitra_img/d99eb5f581_keep_46476585_1.jpg"
         },
         "boxes": {
           "0": [
-            0.458,
-            0.579,
-            0.638,
-            0.68
-          ],
-          "1": [
-            0.483,
-            0.583,
-            0.646,
-            0.686
+            0.407,
+            0.732,
+            0.586,
+            0.871
           ]
         },
         "extra": {
           "0": {
             "badge": [
-              0.366,
-              0.486,
-              0.429,
-              0.532
+              0.388,
+              0.51,
+              0.459,
+              0.552
             ],
             "face": [
-              0.57,
-              0.121,
-              0.794,
-              0.369
-            ]
-          },
-          "1": {
-            "badge": [
-              0.38,
-              0.5,
-              0.437,
-              0.542
-            ],
-            "face": [
-              0.252,
-              0.195,
-              0.439,
-              0.375
+              0.613,
+              0.143,
+              0.789,
+              0.374
             ]
           }
         },
         "bgt": {
-          "0": false,
-          "1": false
+          "0": false
         },
         "fixes": {
-          "2": "Make it clearly show: the envelope with block letters - saaf nahi"
+          "1": "Make it clearly show: the parcel with small ununderlined letters - saaf nahi",
+          "2": "Make it clearly show: the parcel with block underlined letters - saaf nahi"
         },
         "panels": [
           {
-            "prompt": "The customer stands at the post office counter holding a plain white envelope, looking confused about how to write the post town. Warm light, medium shot from waist up.",
-            "target": "the plain white envelope",
+            "prompt": "Medium shot of the postman and the customer standing at the counter looking down at a plain white parcel.",
+            "target": "the plain white parcel on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक लिफाफे पर पोस्‍ट टाउन का नाम लिखने लगा।",
-            "desc": "The customer stands at the post office counter holding a plain white envelope.",
+            "text": "ग्राहक ने पार्सल पर पता लिखना शुरू किया।",
+            "desc": "The customer and postman look at the parcel on the counter.",
             "mark": "none",
             "card": {
               "lines": [
-                "श्री सुरेश कुमार",
-                "मकान नंबर 45",
-                "पटना"
+                "राहुल कुमार",
+                "मकान नंबर 5"
               ],
               "corner": "",
-              "hl": 2
+              "hl": -1
             },
             "say": {
               "who": "customer",
-              "text": "भैया, इस पर पोस्ट टाउन कैसे लिखें?"
+              "text": "भैया, इस पर पता कैसे लिखूँ?"
             }
           },
           {
-            "prompt": "The customer writes the post town in small letters on the envelope while the postman watches. Warm indoor light, medium shot.",
-            "target": "the envelope with small letters",
+            "prompt": "Medium shot of the postman shaking his head while looking at the parcel where the post town is written in small letters without any line.",
+            "target": "the parcel with small ununderlined letters",
             "tag": "छोटे अक्षरों में",
             "tag_color": "red",
-            "text": "छोटे अक्षरों में लिखने से नियम का पालन नहीं होता।",
-            "desc": "The customer writes the post town in small letters on the envelope tagged छोटे अक्षरों में.",
+            "text": "छोटे अक्षरों में लिखा पता नियम के विरुद्ध है।",
+            "desc": "The customer has written the post town in small letters without underlining.",
             "mark": "wrong",
             "card": {
               "lines": [
-                "श्री सुरेश कुमार",
-                "मकान नंबर 45"
+                "राहुल कुमार",
+                "मकान नंबर 5"
               ],
               "corner": "",
               "hl": -1
             },
             "say": {
               "who": "postman",
-              "text": "रुको भाई, छोटे अक्षरों में मत लिखो।"
+              "text": "रुको भाई! ऐसे छोटे अक्षरों में नहीं चलेगा।"
             }
           },
           {
-            "prompt": "The postman points at the envelope where the post town is written in large block letters and neatly underlined. Bright warm light, medium shot.",
-            "target": "the envelope with block letters",
+            "prompt": "Medium shot of the postman pointing his finger at the parcel where the post town is written in large block letters and properly underlined.",
+            "target": "the parcel with block underlined letters",
             "tag": "बड़े अक्षरों में और रेखांकित",
             "tag_color": "green",
-            "text": "पोस्‍ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित करें।",
-            "desc": "The postman points at the envelope where the post town is in block letters and underlined, tagged बड़े अक्षरों में और रेखांकित.",
+            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित करें।",
+            "desc": "The postman points to the post town written in block letters and underlined.",
             "mark": "right",
             "card": {
               "lines": [
-                "श्री सुरेश कुमार",
-                "मकान नंबर 45"
+                "राहुल कुमार",
+                "मकान नंबर 5"
               ],
               "corner": "",
               "hl": -1
             },
             "say": {
               "who": "postman",
-              "text": "हमेशा बड़े अक्षरों में लिखकर नीचे रेखा खींचें।"
+              "text": "हमेशा बड़े अक्षरों में लिखकर रेखांकित करें।"
             }
           }
         ],
         "reuse_n": 0
       },
-      "cf_spent": {
-        "2026-10-11": 19
+      "trap_v": {
+        "none": true,
+        "v": 3
       }
     },
     {
