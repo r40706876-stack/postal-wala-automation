@@ -5,7 +5,7 @@ English title: Particulars to be furnished
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-10-11]
 **Source (PO Guide):** leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels
 
 **Niyam:** डाक लेख के शीर्ष पर टिकटों व लेबलों हेतु कम से कम 3 सेंटीमीटर जगह छोड़ें।
