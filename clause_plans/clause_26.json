@@ -61,33 +61,120 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "steps": [
-          {
-            "icon": "counter",
-            "text": "काउंटर पर लिफाफा आया, टिकट के लिए जगह",
-            "mark": "none"
-          },
-          {
-            "icon": "letter",
-            "text": "ऊपर टिकट और लेबल लगाने हेतु कम जगह",
-            "mark": "wrong"
-          },
-          {
-            "icon": "letter",
-            "text": "शीर्ष पर कम से कम तीन सेमी जगह छोड़ें",
-            "mark": "right"
-          }
-        ],
-        "caps": [
-          "काउंटर पर लिफाफा आया, टिकट के लिए जगह",
-          "ऊपर टिकट और लेबल लगाने हेतु कम जगह",
-          "शीर्ष पर कम से कम तीन सेमी जगह छोड़ें"
-        ],
-        "kit": "story",
-        "ok": true
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 3): the small wooden ruler is tucked into the postman's pocket instead of being held against the top of the white envelope",
+        "v": 9,
+        "kit_try": "photo3"
       },
       "published_prev": "2026-09-30",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "punch_v": {
+        "ok": true,
+        "text": "टिकट लगाने की जगह नहीं?"
+      },
+      "chitra_keep": {
+        "scene": "Inside a busy post office service window with a plain wall and a wooden counter.",
+        "seed0": 26675899,
+        "files": {
+          "0": "clause_plans/chitra_img/443e206721_keep_26675899_1.jpg",
+          "1": "clause_plans/chitra_img/443e206721_keep_26675899_2.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.363,
+            0.553,
+            0.492,
+            0.638
+          ],
+          "1": [
+            0.22,
+            0.3,
+            0.78,
+            0.86
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": null,
+            "face": [
+              0.29,
+              0.189,
+              0.451,
+              0.347
+            ]
+          },
+          "1": {
+            "badge": [
+              0.381,
+              0.447,
+              0.442,
+              0.501
+            ],
+            "face": [
+              0.547,
+              0.182,
+              0.737,
+              0.395
+            ]
+          }
+        },
+        "bgt": {
+          "0": true,
+          "1": true
+        },
+        "fixes": {
+          "2": "the postman holds a small wooden ruler against the top of the white envelope to measure a clear 3 centimeter top margin"
+        },
+        "panels": [
+          {
+            "prompt": "The postman and the customer standing at the post office counter looking at a plain white envelope together with curious expressions, warm indoor light.",
+            "target": "the plain white envelope on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "डाक लेख पर टिकट लगाने के लिए सही जगह देखनी है।",
+            "desc": "The customer and postman look at the plain white envelope on the counter.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, इस पर टिकट कहाँ लगाऊँ?"
+            }
+          },
+          {
+            "prompt": "The customer is pasting a postage stamp right at the top edge of the white envelope with no margin left, looking confused under warm light.",
+            "target": "the postage stamp pasted at the top edge",
+            "tag": "कम जगह छोड़ना गलत है",
+            "tag_color": "red",
+            "text": "ऊपर जगह न छोड़ने से लेबल लगाने में दिक्कत होती है।",
+            "desc": "The customer pastes the postage stamp right at the top edge with no margin.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "मैं इसे सबसे ऊपर चिपका देता हूँ।"
+            }
+          },
+          {
+            "prompt": "The postman holding a small wooden ruler against the top of the white envelope to measure a clear 3 centimeter top margin, showing a helpful expression.",
+            "target": "the small wooden ruler against the envelope",
+            "tag": "कम से कम 3 सेमी",
+            "tag_color": "green",
+            "text": "डाक लेख के शीर्ष पर कम से कम 3 सेंटीमीटर जगह छोड़ें।",
+            "desc": "The postman uses a small wooden ruler to show a clear 3 centimeter top margin on the envelope.",
+            "mark": "right",
+            "card": null,
+            "say": null
+          }
+        ],
+        "reuse_n": 0
+      },
+      "cf_spent": {
+        "2026-10-11": 20
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      }
     },
     {
       "basis": "guide",
