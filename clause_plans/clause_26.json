@@ -381,9 +381,8 @@
         "v": 3
       },
       "opt_pics": {
-        "tries": 1,
-        "ref": "clause_plans/chitra_img/d99eb5f581_46476585_1.jpg",
-        "err": "option-chitra jaanch fail: A, B, C, D"
+        "none": true,
+        "ref": "clause_plans/chitra_img/d99eb5f581_46476585_1.jpg"
       }
     },
     {
@@ -665,6 +664,9 @@
         "kit": "story",
         "ok": true,
         "v": 2
+      },
+      "cf_spent": {
+        "2026-10-12": 1
       }
     },
     {
