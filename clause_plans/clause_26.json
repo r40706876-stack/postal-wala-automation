@@ -383,7 +383,9 @@
       "opt_pics": {
         "none": true,
         "ref": "clause_plans/chitra_img/d99eb5f581_46476585_1.jpg"
-      }
+      },
+      "published": "2026-10-12",
+      "published_round": 19
     },
     {
       "basis": "notes",
@@ -824,8 +826,79 @@
       "style_v": "2026-09-26c",
       "chitra_v": {
         "tries": 1,
-        "last_err": "khaana option dohra raha: 'पते को स्थानीय भाषा में लिख दिया' - galti ko kaam ke roop me dikhao",
-        "v": 2
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
+        "v": 9,
+        "kit_try": "photo3"
+      },
+      "chitra_keep": {
+        "scene": "Inside a busy post office with a plain wall and a wooden counter where mail is handled.",
+        "seed0": 43886340,
+        "files": {
+          "0": "clause_plans/chitra_img/ca635a18ed_keep_43886340_1.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.22,
+            0.3,
+            0.78,
+            0.86
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": null,
+            "face": null
+          }
+        },
+        "bgt": {
+          "0": false
+        },
+        "fixes": {
+          "1": "Make it clearly show: the envelope with local script - saaf nahi",
+          "2": "Make it clearly show: the correct letter on the counter - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "The postman and the customer stand at the post office counter, looking at a foreign letter together. Warm light, medium shot, clear expressions.",
+            "target": "the white envelope on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक ने विदेशी पते वाला एक पत्र डाकघर में दिया।",
+            "desc": "The customer and the postman look at the foreign letter on the counter.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, यह पत्र विदेश भेजना है।"
+            }
+          },
+          {
+            "prompt": "The customer hands over a letter written in local regional script, looking confused. The postman points at the address with a worried expression.",
+            "target": "the envelope with local script",
+            "tag": "देवनागरी लिपि",
+            "tag_color": "red",
+            "text": "गलत लिपि में लिखा पता विदेशी डाक के लिए नहीं चलेगा।",
+            "desc": "The envelope shows local script which is incorrect for foreign letters.",
+            "mark": "wrong",
+            "card": null,
+            "say": null
+          },
+          {
+            "prompt": "The postman smilingly shows the correct way, pointing at the clear address written in standard letters and numbers on the letter. Bright lighting, clear focus.",
+            "target": "the correct letter on the counter",
+            "tag": "रोमन अक्षर और अरबी अंक",
+            "tag_color": "green",
+            "text": "विदेशी पते हमेशा रोमन अक्षरों और अरबी अंकों में होने चाहिए।",
+            "desc": "The postman shows the correct letter with Roman letters and Arabic figures.",
+            "mark": "right",
+            "card": null,
+            "say": null
+          }
+        ],
+        "reuse_n": 2
+      },
+      "cf_spent": {
+        "2026-10-12": 19
       }
     },
     {
