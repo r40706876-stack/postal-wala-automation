@@ -639,34 +639,148 @@
       "check_errors": [],
       "simple": true,
       "chitra_v": {
-        "steps": [
+        "kit": "photo",
+        "panels": [
           {
-            "icon": "customer",
-            "text": "ग्राहक पते में वाया शब्द लिख रहा है",
-            "mark": "none"
+            "prompt": "Medium shot of the customer standing at a wooden post office counter holding a blank white envelope and a pen, asking the postman seated behind the counter, warm natural light.",
+            "target": "the blank white envelope in customer hands",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक डाक पत्र पर पता लिखने के बारे में पूछता है।",
+            "desc": "The customer shows a blank white envelope to the postman at the counter.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, इस पर पूरा रास्ता लिख दूँ?"
+            },
+            "img": "clause_plans/chitra_img/2fde91ee0e_68194712_1.jpg",
+            "box": [
+              0.483,
+              0.591,
+              0.65,
+              0.719
+            ],
+            "bg_text": true,
+            "badge": [
+              0.35,
+              0.54,
+              0.429,
+              0.58
+            ],
+            "face": [
+              0.616,
+              0.184,
+              0.785,
+              0.375
+            ],
+            "pan": "lr"
           },
           {
-            "icon": "letter",
-            "text": "मार्ग संकेत लिखने से छंटाई रुकती है",
-            "mark": "wrong"
+            "prompt": "Close medium shot of the customer holding the white envelope with writing on it, looking worried as the postman raises a hand to stop him, soft indoor lighting.",
+            "target": "the white envelope with address",
+            "tag": "वाया (मार्ग संकेत) वर्जित",
+            "tag_color": "red",
+            "text": "पते में वाया जैसे मार्ग संकेत कभी नहीं लिखने चाहिए।",
+            "desc": "The postman warns against writing route indications like 'वाया' on the envelope address.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी मार्ग",
+                "वाया हाजीपुर",
+                "पटना 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "रुको! पते में वाया कभी मत लिखना!"
+            },
+            "img": "clause_plans/chitra_img/2fde91ee0e_68194712_2.jpg",
+            "box": [
+              0.485,
+              0.603,
+              0.649,
+              0.725
+            ],
+            "bg_text": true,
+            "badge": [
+              0.355,
+              0.544,
+              0.436,
+              0.587
+            ],
+            "face": [
+              0.235,
+              0.169,
+              0.429,
+              0.41
+            ]
           },
           {
-            "icon": "officer",
-            "text": "पते में वाया जैसे संकेत न दें",
-            "mark": "right"
+            "prompt": "Medium shot of the customer smiling and holding up a neatly addressed white envelope while the postman nods approvingly with a thumbs up, bright clear light.",
+            "target": "the neatly addressed envelope",
+            "tag": "सही पता",
+            "tag_color": "green",
+            "text": "पते में सही स्थान और पिन कोड ही लिखना चाहिए।",
+            "desc": "The postman approves the correct address without any route indications.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी मार्ग",
+                "पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": {
+              "who": "postman",
+              "text": "शाबाश! यह बिल्कुल सही पता है।"
+            },
+            "img": "clause_plans/chitra_img/2fde91ee0e_68194712_3.jpg",
+            "box": [
+              0.485,
+              0.572,
+              0.642,
+              0.701
+            ],
+            "bg_text": true,
+            "badge": [
+              0.361,
+              0.516,
+              0.437,
+              0.558
+            ],
+            "face": [
+              0.219,
+              0.151,
+              0.423,
+              0.377
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/2fde91ee0e_68194712_3f1.jpg"
+            ]
           }
         ],
         "caps": [
-          "ग्राहक पते में वाया शब्द लिख रहा है",
-          "मार्ग संकेत लिखने से छंटाई रुकती है",
-          "पते में वाया जैसे संकेत न दें"
+          "ग्राहक डाक पत्र पर पता लिखने के बारे में पूछता है।",
+          "पते में वाया जैसे मार्ग संकेत कभी नहीं लिखने चाहिए।",
+          "पते में सही स्थान और पिन कोड ही लिखना चाहिए।"
         ],
-        "kit": "story",
+        "score": 10.0,
+        "lesson": "A customer must write the correct location and PIN code on a postal letter without including route indicators like 'via'.",
+        "pv": 4,
         "ok": true,
-        "v": 2
+        "v": 9,
+        "attempt": 1
       },
       "cf_spent": {
-        "2026-10-12": 1
+        "2026-10-12": 7
       }
     },
     {
