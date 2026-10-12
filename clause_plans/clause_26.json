@@ -248,64 +248,14 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 2,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
-        "v": 9,
-        "kit_try": "photo3"
-      },
-      "published_prev": "2026-09-30",
-      "published_round_prev": 1,
-      "cf_spent": {
-        "2026-10-11": 32
-      },
-      "punch_v": {
-        "ok": true,
-        "text": "लिफाफे पर शहर कैसे लिखें?"
-      },
-      "chitra_keep": {
-        "scene": "Bright post office sorting counter with a plain wall in the background and a parcel kept on the wooden table.",
-        "seed0": 46476585,
-        "files": {
-          "0": "clause_plans/chitra_img/d99eb5f581_keep_46476585_1.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.407,
-            0.732,
-            0.586,
-            0.871
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": [
-              0.388,
-              0.51,
-              0.459,
-              0.552
-            ],
-            "face": [
-              0.613,
-              0.143,
-              0.789,
-              0.374
-            ]
-          }
-        },
-        "bgt": {
-          "0": false
-        },
-        "fixes": {
-          "1": "Make it clearly show: the parcel with small ununderlined letters - saaf nahi",
-          "2": "Make it clearly show: the parcel with block underlined letters - saaf nahi"
-        },
+        "kit": "photo",
         "panels": [
           {
             "prompt": "Medium shot of the postman and the customer standing at the counter looking down at a plain white parcel.",
             "target": "the plain white parcel on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक ने पार्सल पर पता लिखना शुरू किया।",
+            "text": "ग्राहक काउंटर पर पार्सल लिख रहा है।",
             "desc": "The customer and postman look at the parcel on the counter.",
             "mark": "none",
             "card": {
@@ -319,14 +269,35 @@
             "say": {
               "who": "customer",
               "text": "भैया, इस पर पता कैसे लिखूँ?"
-            }
+            },
+            "img": "clause_plans/chitra_img/d99eb5f581_46476585_1.jpg",
+            "box": [
+              0.407,
+              0.732,
+              0.586,
+              0.871
+            ],
+            "bg_text": false,
+            "badge": [
+              0.388,
+              0.51,
+              0.459,
+              0.552
+            ],
+            "face": [
+              0.613,
+              0.143,
+              0.789,
+              0.374
+            ],
+            "pan": "lr"
           },
           {
             "prompt": "Medium shot of the postman shaking his head while looking at the parcel where the post town is written in small letters without any line.",
             "target": "the parcel with small ununderlined letters",
-            "tag": "छोटे अक्षरों में",
+            "tag": "बिना रेखांकित छोटे अक्षर",
             "tag_color": "red",
-            "text": "छोटे अक्षरों में लिखा पता नियम के विरुद्ध है।",
+            "text": "छोटे अक्षरों में बिना रेखांकित पोस्ट टाउन लिखना गलत है।",
             "desc": "The customer has written the post town in small letters without underlining.",
             "mark": "wrong",
             "card": {
@@ -340,14 +311,25 @@
             "say": {
               "who": "postman",
               "text": "रुको भाई! ऐसे छोटे अक्षरों में नहीं चलेगा।"
-            }
+            },
+            "img": "clause_plans/chitra_img/d99eb5f581_46476585_2.jpg",
+            "box": [
+              0.403,
+              0.725,
+              0.57,
+              0.863
+            ],
+            "bg_text": false,
+            "frames": [
+              "clause_plans/chitra_img/d99eb5f581_46476585_2f1.jpg"
+            ]
           },
           {
             "prompt": "Medium shot of the postman pointing his finger at the parcel where the post town is written in large block letters and properly underlined.",
             "target": "the parcel with block underlined letters",
             "tag": "बड़े अक्षरों में और रेखांकित",
             "tag_color": "green",
-            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित करें।",
+            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।",
             "desc": "The postman points to the post town written in block letters and underlined.",
             "mark": "right",
             "card": {
@@ -361,14 +343,47 @@
             "say": {
               "who": "postman",
               "text": "हमेशा बड़े अक्षरों में लिखकर रेखांकित करें।"
-            }
+            },
+            "img": "clause_plans/chitra_img/d99eb5f581_46476585_3.jpg",
+            "box": [
+              0.404,
+              0.734,
+              0.582,
+              0.874
+            ],
+            "bg_text": false,
+            "pan": "rl"
           }
         ],
-        "reuse_n": 0
+        "caps": [
+          "ग्राहक काउंटर पर पार्सल लिख रहा है।",
+          "छोटे अक्षरों में बिना रेखांकित पोस्ट टाउन लिखना गलत है।",
+          "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।"
+        ],
+        "score": 10.0,
+        "lesson": "The name of the post town must be written in capital letters and underlined on the parcel.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 2
+      },
+      "published_prev": "2026-09-30",
+      "published_round_prev": 1,
+      "cf_spent": {
+        "2026-10-12": 12
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "लिफाफे पर शहर कैसे लिखें?"
       },
       "trap_v": {
         "none": true,
         "v": 3
+      },
+      "opt_pics": {
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/d99eb5f581_46476585_1.jpg",
+        "err": "option-chitra jaanch fail: A, B, C, D"
       }
     },
     {
@@ -426,20 +441,152 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "line": "post_town",
-        "wrong": "missing",
-        "right": "present",
-        "caps": [
-          "ग्रामीण पार्सल काउंटर पर आया है",
-          "पते में तालुका का नाम नहीं लिखा है",
-          "सही पिन कोड होने पर तालुका आवश्यक नहीं"
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "The postman and the customer stand at the counter holding a white envelope with an address, warm indoor light.",
+            "target": "the white envelope on the counter",
+            "tag": "ग्रामीण पता",
+            "tag_color": "dark",
+            "text": "ग्रामीण पते पर पत्र भेजते समय पते की जांच हो रही है।",
+            "desc": "The postman and the customer stand at the counter holding a white envelope with the tag ग्रामीण पता.",
+            "mark": "none",
+            "card": {
+              "lines": [
+                "श्री रमेश कुमार",
+                "ग्राम रामपुर पोस्ट",
+                "जिला पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": null,
+            "img": "clause_plans/chitra_img/1d4db3180e_79110226_1.jpg",
+            "box": [
+              0.285,
+              0.794,
+              0.499,
+              0.871
+            ],
+            "bg_text": false,
+            "badge": [
+              0.381,
+              0.503,
+              0.465,
+              0.563
+            ],
+            "face": [
+              0.249,
+              0.18,
+              0.442,
+              0.375
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "The customer looks worried at the envelope while pointing at a blank space where taluk name is missing.",
+            "target": "the blank space on the envelope",
+            "tag": "तहसील का नाम नहीं",
+            "tag_color": "red",
+            "text": "तहसील न लिखे होने पर लोग परेशान हो जाते हैं।",
+            "desc": "The customer looks worried at the envelope with the tag तहसील का नाम नहीं.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री रमेश कुमार",
+                "ग्राम रामपुर पोस्ट",
+                "जिला पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 1
+            },
+            "say": null,
+            "img": "clause_plans/chitra_img/1d4db3180e_79110226_2.jpg",
+            "box": [
+              0.287,
+              0.794,
+              0.502,
+              0.874
+            ],
+            "bg_text": false,
+            "badge": [
+              0.381,
+              0.515,
+              0.465,
+              0.569
+            ],
+            "face": [
+              0.584,
+              0.159,
+              0.77,
+              0.403
+            ],
+            "frames": [
+              "clause_plans/chitra_img/1d4db3180e_79110226_2f1.jpg",
+              "clause_plans/chitra_img/1d4db3180e_79110226_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "The postman smiles warmly and points finger at the clear PIN code printed on the white envelope.",
+            "target": "the PIN code on the envelope",
+            "tag": "सही पिन कोड",
+            "tag_color": "green",
+            "text": "सही पिन कोड लिखे होने पर तालुका या तहसील आवश्यक नहीं।",
+            "desc": "The postman smiles warmly and points finger at the PIN code with the tag सही पिन कोड.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री रमेश कुमार",
+                "ग्राम रामपुर पोस्ट",
+                "जिला पटना",
+                "PIN 800001"
+              ],
+              "corner": "PIN 800001",
+              "hl": 3
+            },
+            "say": null,
+            "img": "clause_plans/chitra_img/1d4db3180e_79110226_3.jpg",
+            "box": [
+              0.295,
+              0.805,
+              0.508,
+              0.879
+            ],
+            "bg_text": false,
+            "badge": [
+              0.392,
+              0.515,
+              0.471,
+              0.57
+            ],
+            "face": [
+              0.532,
+              0.144,
+              0.903,
+              0.876
+            ],
+            "pan": "rl"
+          }
         ],
-        "kit": "address",
+        "caps": [
+          "ग्रामीण पते पर पत्र भेजते समय पते की जांच हो रही है।",
+          "तहसील न लिखे होने पर लोग परेशान हो जाते हैं।",
+          "सही पिन कोड लिखे होने पर तालुका या तहसील आवश्यक नहीं।"
+        ],
+        "score": 6.0,
+        "lesson": "When sending a letter to a rural address, writing the correct PIN code makes the tehsil or taluka unnecessary.",
+        "pv": 4,
         "ok": true,
-        "v": 2
+        "v": 9,
+        "attempt": 1
       },
       "published_prev": "2026-09-30",
-      "published_round_prev": 1
+      "published_round_prev": 1,
+      "cf_spent": {
+        "2026-10-12": 8
+      }
     },
     {
       "basis": "guide",
