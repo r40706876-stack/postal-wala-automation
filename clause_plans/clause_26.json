@@ -614,7 +614,7 @@
       "correct": "A",
       "fact": "पते में 'वाया' (via) जैसे मार्ग संकेत नहीं दिए जाने चाहिए।",
       "trap": "वाया लिखना सही मानना गलत है, वर्जित है।",
-      "yaad": "वाया (via) संकेत वर्जित",
+      "yaad": "पता → मार्ग संकेत → via (वाया) नहीं",
       "hook": "ग्राहक पते में 'वाया स्टेशन' लिख रहा है, क्या यह सही है?",
       "en": {
         "question": "Which route indication should not be given in the postal address?",
@@ -649,7 +649,7 @@
       "_clause_no": 26,
       "hook_v": {
         "ok": true,
-        "text": "ग्राहक पते में 'वाया स्टेशन' लिख रहा है, क्या यह सही है?"
+        "text": "पते में मार्ग दिखाने के लिए कौन सा शब्द न लिखें?"
       },
       "auto_check": true,
       "check_errors": [],
@@ -797,6 +797,19 @@
       },
       "cf_spent": {
         "2026-10-12": 7
+      },
+      "style_v": "2026-09-26c",
+      "punch_v": {
+        "ok": true,
+        "text": "पता लिखने का सही तरीका?"
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/2fde91ee0e_68194712_1.jpg"
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
       }
     },
     {
@@ -1043,7 +1056,143 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "The customer stands at the post office counter holding a plain white envelope, looking confused about where to write.",
+            "target": "the plain white envelope",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक पत्र पर प्रेषक का पता लिखना चाहता है।",
+            "desc": "The customer stands at the post office counter holding a plain white envelope, looking confused.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, पता कहाँ लिखें?"
+            },
+            "img": "clause_plans/chitra_img/b9c9117998_65230234_1.jpg",
+            "box": [
+              0.502,
+              0.664,
+              0.649,
+              0.75
+            ],
+            "bg_text": false,
+            "badge": [
+              0.388,
+              0.501,
+              0.461,
+              0.541
+            ],
+            "face": [
+              0.608,
+              0.172,
+              0.796,
+              0.391
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "The customer writes the sender address on the top right corner of the white envelope on the counter.",
+            "target": "the white envelope",
+            "tag": "शीर्ष दाएं कोने में",
+            "tag_color": "red",
+            "text": "गलत जगह पर पता लिखना बिल्कुल मना है।",
+            "desc": "The customer writes the sender address on the top right corner of the white envelope.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना 800001"
+              ],
+              "corner": "प्रेषक: ए. शर्मा, दिल्ली",
+              "hl": -2
+            },
+            "say": {
+              "who": "postman",
+              "text": "अरे भाई, वहाँ मत लिखो!"
+            },
+            "img": "clause_plans/chitra_img/b9c9117998_65230234_2.jpg",
+            "box": [
+              0.496,
+              0.676,
+              0.637,
+              0.759
+            ],
+            "bg_text": false,
+            "face": [
+              0.537,
+              0.17,
+              0.907,
+              1.0
+            ],
+            "frames": [
+              "clause_plans/chitra_img/b9c9117998_65230234_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "The postman points to the lower left corner of the white envelope on the counter, smiling wisely.",
+            "target": "the white envelope",
+            "tag": "निचले बाएं कोने में",
+            "tag_color": "green",
+            "text": "प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।",
+            "desc": "The postman points to the lower left corner of the white envelope on the counter.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "इसे हमेशा नीचे बाएं कोने में लिखो।"
+            },
+            "img": "clause_plans/chitra_img/b9c9117998_65230234_3.jpg",
+            "box": [
+              0.503,
+              0.663,
+              0.642,
+              0.749
+            ],
+            "bg_text": false,
+            "badge": [
+              0.394,
+              0.496,
+              0.465,
+              0.537
+            ],
+            "face": [
+              0.604,
+              0.178,
+              0.786,
+              0.381
+            ],
+            "pan": "rl"
+          }
+        ],
+        "caps": [
+          "ग्राहक पत्र पर प्रेषक का पता लिखना चाहता है।",
+          "गलत जगह पर पता लिखना बिल्कुल मना है।",
+          "प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।"
+        ],
+        "score": 7.0,
+        "lesson": "A customer must write the sender's address in the bottom-left corner of the address side of a letter.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      },
+      "cf_spent": {
+        "2026-10-13": 7
+      }
     },
     {
       "basis": "guide",

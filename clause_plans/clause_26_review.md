@@ -58,7 +58,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. Lane (लेन)
 **Hint:** 
 **Trap:** वाया लिखना सही मानना गलत है, वर्जित है।
-**Yaad:** वाया (via) संकेत वर्जित
+**Yaad:** पता → मार्ग संकेत → via (वाया) नहीं
 **Hook:** ग्राहक पते में 'वाया स्टेशन' लिख रहा है, क्या यह सही है?
 
 ## Part 5  [PASS | publish baaki]
