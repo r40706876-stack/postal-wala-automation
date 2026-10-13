@@ -810,7 +810,9 @@
       "trap_v": {
         "none": true,
         "v": 3
-      }
+      },
+      "published": "2026-10-13",
+      "published_round": 19
     },
     {
       "basis": "guide",
@@ -1233,7 +1235,10 @@
       "check_errors": [],
       "simple": true,
       "style_v": "2026-09-26c",
-      "simple_rebuilds": 1
+      "simple_rebuilds": 1,
+      "cf_spent": {
+        "2026-10-13": 3
+      }
     },
     {
       "basis": "guide",
