@@ -587,7 +587,21 @@
       "published_round_prev": 1,
       "cf_spent": {
         "2026-10-12": 8
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "गाँव का पता अधूरा है?"
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/1d4db3180e_79110226_1.jpg"
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "published": "2026-10-13",
+      "published_round": 19
     },
     {
       "basis": "guide",
@@ -825,80 +839,157 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
-        "v": 9,
-        "kit_try": "photo3"
-      },
-      "chitra_keep": {
-        "scene": "Inside a busy post office with a plain wall and a wooden counter where mail is handled.",
-        "seed0": 43886340,
-        "files": {
-          "0": "clause_plans/chitra_img/ca635a18ed_keep_43886340_1.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.22,
-            0.3,
-            0.78,
-            0.86
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": null,
-            "face": null
-          }
-        },
-        "bgt": {
-          "0": false
-        },
-        "fixes": {
-          "1": "Make it clearly show: the envelope with local script - saaf nahi",
-          "2": "Make it clearly show: the correct letter on the counter - saaf nahi"
-        },
+        "kit": "photo",
         "panels": [
           {
-            "prompt": "The postman and the customer stand at the post office counter, looking at a foreign letter together. Warm light, medium shot, clear expressions.",
-            "target": "the white envelope on the counter",
-            "tag": "",
+            "prompt": "Medium shot at a bright post office counter. The customer holds a plain white envelope towards the postman, looking curious.",
+            "target": "the white envelope held by the customer",
+            "tag": "विदेशी पता लिखना",
             "tag_color": "dark",
-            "text": "ग्राहक ने विदेशी पते वाला एक पत्र डाकघर में दिया।",
-            "desc": "The customer and the postman look at the foreign letter on the counter.",
+            "text": "विदेशी देश भेजने वाले लेख पर पता सही लिखना ज़रूरी है।",
+            "desc": "The customer shows a white envelope at the post office counter while asking how to address foreign mail.",
             "mark": "none",
-            "card": null,
+            "card": {
+              "lines": [
+                "To,",
+                "London, UK"
+              ],
+              "corner": "",
+              "hl": -1
+            },
             "say": {
               "who": "customer",
-              "text": "भैया, यह पत्र विदेश भेजना है।"
-            }
+              "text": "भैया, विदेश चिट्ठी का पता कैसे लिखूँ?"
+            },
+            "img": "clause_plans/chitra_img/ca635a18ed_73495299_1.jpg",
+            "box": [
+              0.456,
+              0.516,
+              0.638,
+              0.657
+            ],
+            "bg_text": true,
+            "badge": [
+              0.353,
+              0.454,
+              0.417,
+              0.501
+            ],
+            "face": [
+              0.661,
+              0.14,
+              0.856,
+              0.377
+            ],
+            "pan": "lr"
           },
           {
-            "prompt": "The customer hands over a letter written in local regional script, looking confused. The postman points at the address with a worried expression.",
-            "target": "the envelope with local script",
-            "tag": "देवनागरी लिपि",
+            "prompt": "Medium shot at the post office counter. The customer points at the envelope in confusion, while the postman shakes his head in disapproval.",
+            "target": "the white envelope with Devanagari script",
+            "tag": "देवनागरी और भारतीय अंक",
             "tag_color": "red",
-            "text": "गलत लिपि में लिखा पता विदेशी डाक के लिए नहीं चलेगा।",
-            "desc": "The envelope shows local script which is incorrect for foreign letters.",
+            "text": "विदेशी पते पर देवनागरी और भारतीय अंक लिखना गलत है।",
+            "desc": "The envelope shows Devanagari script and Indian numerals with a red tag indicating it is incorrect.",
             "mark": "wrong",
-            "card": null,
-            "say": null
+            "card": {
+              "lines": [
+                "सेवा में, जॉन स्मिथ",
+                "मकान १२३, मुख्य मार्ग",
+                "लंदन, ब्रिटेन"
+              ],
+              "corner": "",
+              "hl": 1
+            },
+            "say": {
+              "who": "customer",
+              "text": "क्या हिंदी और भारतीय अंकों में लिख दूँ?"
+            },
+            "img": "clause_plans/chitra_img/ca635a18ed_73495299_2.jpg",
+            "box": [
+              0.467,
+              0.513,
+              0.603,
+              0.603
+            ],
+            "bg_text": false,
+            "badge": [
+              0.364,
+              0.457,
+              0.429,
+              0.499
+            ],
+            "face": [
+              0.233,
+              0.169,
+              0.424,
+              0.342
+            ],
+            "frames": [
+              "clause_plans/chitra_img/ca635a18ed_73495299_2f1.jpg",
+              "clause_plans/chitra_img/ca635a18ed_73495299_2f2.jpg"
+            ]
           },
           {
-            "prompt": "The postman smilingly shows the correct way, pointing at the clear address written in standard letters and numbers on the letter. Bright lighting, clear focus.",
-            "target": "the correct letter on the counter",
+            "prompt": "Medium shot at the post office counter. The postman points to the correct envelope with a smiling expression, while the customer looks relieved.",
+            "target": "the white envelope with Roman script",
             "tag": "रोमन अक्षर और अरबी अंक",
             "tag_color": "green",
-            "text": "विदेशी पते हमेशा रोमन अक्षरों और अरबी अंकों में होने चाहिए।",
-            "desc": "The postman shows the correct letter with Roman letters and Arabic figures.",
+            "text": "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।",
+            "desc": "The envelope shows Roman letters and Arabic numerals with a green tag showing the correct rule.",
             "mark": "right",
-            "card": null,
-            "say": null
+            "card": {
+              "lines": [
+                "To,",
+                "123",
+                "London, UK"
+              ],
+              "corner": "",
+              "hl": 1
+            },
+            "say": {
+              "who": "postman",
+              "text": "इसे रोमन अक्षर और अरबी अंक में लिखो।"
+            },
+            "img": "clause_plans/chitra_img/ca635a18ed_73495299_3.jpg",
+            "box": [
+              0.476,
+              0.506,
+              0.611,
+              0.597
+            ],
+            "bg_text": false,
+            "badge": [
+              0.366,
+              0.454,
+              0.435,
+              0.496
+            ],
+            "face": [
+              0.242,
+              0.164,
+              0.435,
+              0.335
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/ca635a18ed_73495299_3f1.jpg"
+            ]
           }
         ],
-        "reuse_n": 2
+        "caps": [
+          "विदेशी देश भेजने वाले लेख पर पता सही लिखना ज़रूरी है।",
+          "विदेशी पते पर देवनागरी और भारतीय अंक लिखना गलत है।",
+          "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।"
+        ],
+        "score": 10.0,
+        "lesson": "Addresses on international mail articles must be written correctly using Roman letters and Arabic numerals instead of Devanagari script and Indian numerals.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
       },
       "cf_spent": {
-        "2026-10-12": 19
+        "2026-10-13": 8
       }
     },
     {
