@@ -840,7 +840,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "विदेशी पते",
+            "mark": "key"
+          },
+          {
+            "text": "रोमन अक्षर",
+            "mark": "yes"
+          },
+          {
+            "text": "अरबी अंक",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -1005,7 +1019,21 @@
       },
       "cf_spent": {
         "2026-10-13": 8
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "विदेशी डाक पर पता कैसे लिखें?"
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/ca635a18ed_73495299_1.jpg"
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "published": "2026-10-13",
+      "published_round": 19
     },
     {
       "basis": "guide",
@@ -1237,7 +1265,163 @@
       "style_v": "2026-09-26c",
       "simple_rebuilds": 1,
       "cf_spent": {
-        "2026-10-13": 3
+        "2026-10-13": 10
+      },
+      "chitra_keep": {
+        "scene": "A well-lit India Post counter with a plain wooden table and a plain wall behind.",
+        "seed0": 65211465,
+        "files": {
+          "0": "clause_plans/chitra_img/37e0a8e689_keep_65211465_1.jpg",
+          "1": "clause_plans/chitra_img/37e0a8e689_keep_65211465_2.jpg",
+          "2": "clause_plans/chitra_img/37e0a8e689_keep_65211465_3.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.303,
+            0.587,
+            0.638,
+            0.814
+          ],
+          "1": [
+            0.453,
+            0.842,
+            0.638,
+            0.903
+          ],
+          "2": [
+            0.314,
+            0.591,
+            0.646,
+            0.814
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.381,
+              0.521,
+              0.458,
+              0.569
+            ],
+            "face": [
+              0.513,
+              0.177,
+              0.876,
+              0.852
+            ]
+          },
+          "1": {
+            "badge": [
+              0.368,
+              0.534,
+              0.444,
+              0.584
+            ],
+            "face": [
+              0.218,
+              0.078,
+              0.461,
+              0.383
+            ]
+          },
+          "2": {
+            "badge": [
+              0.39,
+              0.527,
+              0.468,
+              0.582
+            ],
+            "face": [
+              0.233,
+              0.098,
+              0.464,
+              0.381
+            ]
+          }
+        },
+        "bgt": {
+          "0": false,
+          "1": false,
+          "2": false
+        },
+        "fixes": {
+          "3": "Make it clearly show: the thick bulky paper packet held by the postman - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "Medium shot, the customer stands at the post office counter holding a thick bulky rectangular paper packet, while the postman looks at it with curious interest. Warm indoor lighting, the thick packet in sharp focus on the wooden counter.",
+            "target": "the thick bulky paper packet on the counter",
+            "tag": "भारी पत्र पैकेट",
+            "tag_color": "dark",
+            "text": "ग्राहक काउंटर पर एक भारी पत्र पैकेट लेकर आया।",
+            "desc": "The customer presents a thick bulky paper packet at the counter, tagged 'भारी पत्र पैकेट'.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, इसे कैसे भेजूँ?"
+            }
+          },
+          {
+            "prompt": "Close-up medium shot at the counter, the customer writes with a pen on a small thin white envelope, while the postman raises his hand to stop him with a disapproving expression. Warm lighting, the small envelope resting flat on the counter.",
+            "target": "the small white envelope on the counter",
+            "tag": "साधारण पत्र पर अनावश्यक",
+            "tag_color": "red",
+            "text": "सभी साधारण पत्रों पर लेटर लिखना जरूरी नहीं है।",
+            "desc": "The customer writes 'Letter' on a normal small envelope, tagged 'साधारण पत्र पर अनावश्यक' with a red label.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना 800001"
+              ],
+              "corner": "डाक टिकट",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "छोटे साधारण पत्र पर नहीं!"
+            }
+          },
+          {
+            "prompt": "Medium shot at the mail sorting desk, the customer places the thick blank paper packet alongside heavy brown parcel boxes, while the postman points at it with a concerned and confused face. Warm light, packages in sharp focus.",
+            "target": "the thick blank packet among parcel boxes",
+            "tag": "बिना संकेत गलत श्रेणी",
+            "tag_color": "red",
+            "text": "बिना संकेत भारी पैकेट को पार्सल समझ लिया जाएगा।",
+            "desc": "The thick packet sits unmarked among parcels, risking misclassification, tagged 'बिना संकेत गलत श्रेणी'.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "अरे, यह पार्सल लग रहा!"
+            }
+          },
+          {
+            "prompt": "Medium shot at the wooden counter, the postman smiles approvingly while holding up the thick bulky paper packet marked with address details, while the customer looks happy and relieved. Bright warm light, the packet in clear view.",
+            "target": "the thick bulky paper packet held by the postman",
+            "tag": "भारी पैकेट पर Letter अनिवार्य",
+            "tag_color": "green",
+            "text": "भारी पत्र पैकेटों के पते पर लेटर लिखना चाहिए।",
+            "desc": "The postman displays the bulky letter packet correctly inscribed with 'Letter' on the address side, tagged 'भारी पैकेट पर Letter अनिवार्य'.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री मोहन लाल",
+                "सिविल लाइंस",
+                "जयपुर 302001"
+              ],
+              "corner": "डाक टिकट",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "शाबाश, अब यह सही है!"
+            }
+          }
+        ],
+        "reuse_n": 1
       }
     },
     {
