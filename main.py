@@ -83,16 +83,17 @@ STATE_FILE = "progress_state.json"
 USE_GEMINI_TTS = True                      # pehli priority: Gemini se ek baar me poori awaaz
 # "auto" = Gemini ki Hindi voice library se sabse natural (conversational/warm) native Hindi awaaz.
 # Voice test sun ke pasand aaye to yahan uska naam/ID likh dijiye (jaise "Sulafat" ya library ID).
-GEMINI_TTS_VOICE = os.getenv("GEMINI_TTS_VOICE", "auto")
+# v20.3: PAKKI awaaz (user ne male chuni; test me sabse saaf + average gati + Gemini pe sabse bharosemand)
+GEMINI_TTS_VOICE = os.getenv("GEMINI_TTS_VOICE", "hi-in-training-1")
 # "female" ya "male" - Gemini awaaz ka gender (rotation band hone ke baad). Gemini fail ho to hamesha Swara.
-GEMINI_TTS_GENDER = os.getenv("GEMINI_TTS_GENDER", "female").strip().lower()
+GEMINI_TTS_GENDER = os.getenv("GEMINI_TTS_GENDER", "male").strip().lower()
 _MALE = GEMINI_TTS_GENDER.startswith("m")
 GEMINI_TTS_FALLBACK_VOICE = "Charon" if _MALE else "Sulafat"          # standard voice (Hindi library na mile to)
-VOICE_NAME = "hi-IN-SwaraNeural"          # Gemini fail ho to HAMESHA Swara (edge-tts)
+VOICE_NAME = "hi-IN-MadhurNeural" if _MALE else "hi-IN-SwaraNeural"   # Gemini fail -> edge-tts, usi gender ki awaaz
 GEMINI_TTS_STYLE = "friendly teacher, calm and clear, speaking slowly with small natural pauses between sentences"   # docs: chhota style = zyada insaani
 # TEST: har reel me 5 awaazon me se agli (baari-baari). Pasand tay hone pe GEMINI_TTS_VOICE me wo ID likhiye
 # (tab rotation apne aap band ho jaata hai).
-VOICE_ROTATION = True
+VOICE_ROTATION = False        # v20.3: ek hi pakki awaaz (page ki pehchaan)
 PUBLISH_OLD_REPAIRS = False   # True = pichhle clauses ke sudhare parts beech me (kram tootega)
 MAX_OPTION_WORDS = 7          # isse lamba option = scene lamba + padhna mushkil -> sudhaar
 MERGE_COUNTDOWN = True        # sawal + 4 options + countdown ek scene (dohraav aur khaali taala khatam)
@@ -105,7 +106,7 @@ EN_PLACES = ("question", "options", "answer", "fact")   # hook me English nahi (
 EN_COL = (150, 200, 245)
 ROTATION_SIZE = 3                # Gemini ki top 3 Hindi awaazein, baari-baari
 VOICE_RATE = "-4%"
-VOICE_PITCH = "+2Hz"
+VOICE_PITCH = "+0Hz" if _MALE else "+2Hz"
 
 W, H = 1080, 1920
 LOOP_BLEND = 0.35             # reel ka ant pehle frame me ghulta hai -> Instagram loop pe seamless
@@ -5843,17 +5844,23 @@ def seg_progress(sc, key, t):
 
 # ==================== AUDIO: TTS ====================
 
+EDGE_BACKUP_VOICE = "hi-IN-SwaraNeural"   # Madhur kabhi na chale to bhi reel na ruke
+_EDGE_USED = {"voice": None}
+
+
 async def tts_save(text, path):
     """MP3 save karta hai aur har word ka (start, end, text) lautata hai."""
     import edge_tts
     last = None
     for attempt in range(4):
+        voice = VOICE_NAME if attempt < 3 else EDGE_BACKUP_VOICE      # aakhri mauka: backup awaaz
+        _EDGE_USED["voice"] = voice
         try:
             try:
-                com = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=VOICE_RATE,
+                com = edge_tts.Communicate(text=text, voice=voice, rate=VOICE_RATE,
                                            pitch=VOICE_PITCH, boundary="WordBoundary")
             except TypeError:  # purana edge-tts: boundary param nahi hota, default WordBoundary
-                com = edge_tts.Communicate(text=text, voice=VOICE_NAME, rate=VOICE_RATE, pitch=VOICE_PITCH)
+                com = edge_tts.Communicate(text=text, voice=voice, rate=VOICE_RATE, pitch=VOICE_PITCH)
             words = []
             with open(path, "wb") as f:
                 async for chunk in com.stream():
@@ -6504,7 +6511,8 @@ def make_voices(specs):
         return attach(out, clips)
 
     if USE_GEMINI_TTS and GEMINI_API_KEY:
-      for g_try in range(2):                        # kataai galat ho to ek baar aur nayi awaaz
+      G_TRIES = 3
+      for g_try in range(G_TRIES):                  # kataai galat ho to dobara (wahi awaaz) - fallback kam
         try:
             lines = [" ".join(t for _, t in sp["segs"]) for sp in specs] + [t for _, _, t in clip_list]
             pseudo = [{"name": "clip", "segs": [(k, t)]} for _, k, t in clip_list]
@@ -6519,13 +6527,13 @@ def make_voices(specs):
                       f"{inner} me andar ka sync mila")
                 _CURRENT["used"] = "Gemini: " + (_CURRENT.get("name") or pick_gemini_voice())
                 return attach(voices, clips)
-            print("Gemini awaaz sahi scenes me nahi kati" + (" -> ek baar aur" if g_try == 0 else ""))
+            print("Gemini awaaz sahi scenes me nahi kati" + (" -> ek baar aur" if g_try < G_TRIES - 1 else ""))
         except Exception as exc:
             print(f"Gemini TTS nahi chala ({str(exc)[:160]})")
             break
       if REQUIRE_GEMINI_VOICE and not _VOICE_FLAGS.get("allow_edge"):
           raise VoiceUnavailable("Gemini awaaz nahi mili")
-      print("Gemini awaaz nahi mili (intezaar ke baad bhi) -> purani awaaz edge-tts (Swara) se reel")
+      print(f"Gemini awaaz nahi mili (intezaar ke baad bhi) -> edge-tts ({VOICE_NAME}) se reel")
 
     voices = []
     for i, sp in enumerate(specs):
@@ -6546,8 +6554,8 @@ def make_voices(specs):
         asyncio.run(tts_save(text, path))
         clips.append(decode_raw(path, trim=True))
         os.remove(path)
-    print(f"Awaaz: edge-tts ({VOICE_NAME})")
-    _CURRENT["used"] = "edge-tts: " + VOICE_NAME
+    print(f"Awaaz: edge-tts ({_EDGE_USED['voice'] or VOICE_NAME})")
+    _CURRENT["used"] = "edge-tts: " + (_EDGE_USED["voice"] or VOICE_NAME)
     return attach(voices, clips)
 
 
@@ -9796,7 +9804,7 @@ USE_DRAW = os.getenv("USE_DRAW", "0") != "0"   # AI-aakaron wali drawing (kamzor
 USE_ICON_KITS = os.getenv("USE_ICON_KITS", "0") != "0"   # purani icon-kahani (kamzor) - band; sirf drawing/lifaafa/pata       # har niyam ka apna AI-drawn chitra (aankh-jaanch ke saath)
 SHOW_COURSE_PROGRESS = False   # "PO Guide पूरा कोर्स: Clause X / N" (user ne hataya)
 REQUIRE_CHITRA = os.getenv("REQUIRE_CHITRA", "1") != "0"   # 1 = sahi chitra ke bina reel NAHI (5 koshish/run, har baar galti sudhaar)
-ENGINE_VERSION = "v20.2 (2026-10-09): andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
+ENGINE_VERSION = "v20.3 (2026-10-14): ek pakki male awaaz (Training Voiceover 1) + fallback Madhur (male) + Gemini 3 mauke + v20.2: andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
 
 
 def place_flip(canvas, front, back, cx, cy, p, scale=1.0):
@@ -12274,6 +12282,12 @@ def run_daily():
     print("SOURCE (PO Guide):", part.get("source_quote", ""))
 
     voice_entry = None
+    if not rotation_active() and not DRY_RUN and GEMINI_TTS_VOICE.lower() != "auto":
+        # v20.3: pakki awaaz - har reel me wahi; voice_log me likhte rahein
+        voice_entry = {"id": GEMINI_TTS_VOICE, "name": "Training Voiceover 1" if GEMINI_TTS_VOICE == "hi-in-training-1"
+                       else GEMINI_TTS_VOICE, "gender": GEMINI_TTS_GENDER, "desc": "pakki awaaz"}
+        apply_voice(voice_entry)
+        print(f"Is reel ki awaaz (pakki): {voice_entry['name']} | fallback: {VOICE_NAME}")
     if rotation_active() and not DRY_RUN and GEMINI_API_KEY:
         try:
             rot = build_voice_rotation(state)[:ROTATION_SIZE]          # sirf top 3
