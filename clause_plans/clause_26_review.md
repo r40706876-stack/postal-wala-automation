@@ -103,7 +103,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** भारी पैकेट = 'Letter' संकेत
 **Hook:** मोटे आकार के पत्र पैकेट पर कौन सा विशेष संकेत देना होगा?
 
-## Part 8  [PASS | publish baaki]
+## Part 8  [PASS | publish: 2026-10-14]
 **Source (PO Guide):** Articles intended for delivery in camp to such officers should not be addressed to any Post Town but only to their camp as indicated in Clause 206.
 
 **Niyam:** उच्च अधिकारियों के कैंप के लेखों पर पोस्ट टाउन के बजाय केवल कैंप का पता दें।

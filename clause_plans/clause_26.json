@@ -1432,7 +1432,21 @@
         "ok": true
       },
       "beats": {
-        "tries": 0
+        "ok": true,
+        "items": [
+          {
+            "text": "उच्च अधिकारियों कैंप लेख",
+            "mark": "key"
+          },
+          {
+            "text": "पोस्ट टाउन पता",
+            "mark": "no"
+          },
+          {
+            "text": "केवल कैंप का पता",
+            "mark": "yes"
+          }
+        ]
       },
       "hint": "",
       "trap_quote": "",
@@ -1566,7 +1580,21 @@
       },
       "cf_spent": {
         "2026-10-14": 18
-      }
+      },
+      "punch_v": {
+        "ok": true,
+        "text": "बड़े साहब का पता क्या लिखें?"
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/e9158fc148_10253945_1.jpg"
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "published": "2026-10-14",
+      "published_round": 19
     }
   ],
   "clause_text_en": "26. Particulars to be furnished  –  (1) The prompt delivery of a postal article is greatly \nfacilitated if it is addressed in the correct manner.  Delay to correspondence and mistakes in \n\n\ndelivery often result from an incorrect or incomplete postal address.  The address should, \ntherefore, be complete and definite enough to ensure the easy transmission of the article and its \ndelivery at destination to the addressee without any el aborate enquiry.  The public can help the \nPost Office by keeping the following points in mind while addressing their correspondence: \n \n(a) The address should be written parallel to the length of the cover and in the lower half \nand towards the right-hand side of the front of the article, leaving a clear margin at least \n3 centimeter at the top for the postage stamps and labels, postmarks and other \nindications.  \n \n(b) The Post town should be noted in block letter and according to the approved spelling in \nthe List of Post Offices (Part III of this Guide).  It should, also be underlined.  The PIN \nCode of the post town should be noted below. \n \n(c) The following particulars should generally be furnished in the address and in the same \norder as noted below :- \n \nIn the case of articles for delivery in the urban \nareas \n \nIn the case of articles for delivery in the rural \nareas \n(i) Name of addressee \n \n(i) Name of addressee \n(ii) Profession, if any \n(iii)  \n(ii)Father’s or husbands’ name \n(iv) Number and/or name of the House, \nand name of the street or Road. \n(v)  \n(iii) Profession, if any \n(vi) Name of the locality or Mohall (iv) No. of house, if any along with the name \nof street if any. \n \n(v) Post Box No., if any. (v) Name of the village and Thana Firka, Hobli, \netc. \n \n(vi) Name of the Post Town and Pin -\nCode \n(vi) Name of the Post Office of delivery and the \nPIN-Code. \n \n(vii) Name of the District and State Pin -\nCode \n \n(vii) Name of the Taluk or Tahsil.  This is not \nnecessary if correct PIN is written. \n (viii) Name of the District and State  \n         This is not necessary if correct PIN is \nwritten. \n \n(d) It is particularly important to note the District in cases where there is more than one \nPost town bearing the same name and if PIN is not noted.  If the name of the district is \n\n\nthe same as that of the Post town, the name of the State should be noted.  I ndications of \nroute like ‘via’ should not be given. \n \n(e) In the case of articles addressed to foreign countries, the address should be written in \nRoman letters and in Arabic figures. \n \n(f) It is desirable to note the sender’s address preferable in the lower left -hand corner on \nthe address side or failing that on the reverse of the article.  There should be an \nindication from to obviate its being mistaken for the addressee’s particulars. \n \n(g) In the case of articles entitled to concessional rates of postage or to be tran smitted free \nof postage, the class of the articles, e.g., ‘Book -Post’, ‘Blind Literature’ should be \nclearly noted on the top of the address side of the article.  The indication ‘Letter’ should \nbe given on the address -side of bulky letter packets, which, on  account of their size or \nmake up, might be mistaken for other classes of packets. \n \n(h) The President, Prime Minister and other Ministers of the Government of India and \ncertain High government Officers are allowed the facility of delivery of their mails to \nthem wherever they may happen to be on tour within India.  A list of the high officers \nentitled to this privilege will be found in Clause 206.  Articles intended for delivery in \ncamp to such officers should not be addressed to any Post Town but only to their camp \nas indicated in Clause 206. \n \n \n(2)  A few examples of correct and complete addresses are given below :- \n \n(1)  ABC, \nEngineer, \nMandir Marg, \nGole Market, \nNew Delhi-110001. \n(2) Lakshmi, \nWife of Chikka Ramudu Dhobi, \nBukkapatnam Village, \nBUKKAPATNAM –  515144 \nPennukonda Taluq \nAnantpur District. \n \n(3)  Govindaswamy, \nSon of Kumaraswamy, \nHead Gangman \nQuarter No. T/23 \nKurumalai R.S., S.R., \nIdaiseval P.O., \nNallatinaputhur-627716. \n(Tirunelveli District) \nTamil Nadu. \n(4) Private Secretary to the Prime Minister of \nIndia, \nPrime Minister’s Camp"

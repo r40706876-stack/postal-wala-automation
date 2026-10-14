@@ -5,7 +5,8 @@
     "bo_5_hours|hours_by_circle|night_po",
     "ur_parcel_4kg|letter_2kg|speed_35kg",
     "transit_mo|rlo|face",
-    "navy_fmo|aps_delhi|upu_1874"
+    "navy_fmo|aps_delhi|upu_1874",
+    "sp_division|postbox_circle|bo_reg_parcel_10"
   ],
   "made": {
     "2026-10-09": "pyq_2026-10-09.mp4",
@@ -13,7 +14,8 @@
     "2026-10-11": "pyq_2026-10-11.mp4",
     "2026-10-12": "pyq_2026-10-12.mp4",
     "2026-10-13": "pyq_2026-10-13.mp4",
-    "2026-10-14": "pyq_2026-10-14.mp4"
+    "2026-10-14": "pyq_2026-10-14.mp4",
+    "2026-10-15": "pyq_2026-10-15.mp4"
   },
-  "n": 6
+  "n": 7
 }
