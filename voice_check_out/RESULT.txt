@@ -1,0 +1,8 @@
+ENGINE: v20.3 (2026-10-14): ek pakki male awaaz (Training Voiceover 1) + fallback Madhur (male) + Gemini 3 mauke + v20.2: andhi-
+Gemini awaaz: hi-in-training-1 | gender: male | rotation: False
+Fallback edge-tts: hi-IN-MadhurNeural (backup hi-IN-SwaraNeural)
+
+1_gemini_pakki_awaaz: chali = Gemini: Training Voiceover 1 | lambai 16.6s | pitch 121Hz -> PURUSH (male) OK
+2_fallback_edge: chali = edge-tts: hi-IN-MadhurNeural | lambai 15.6s | pitch 115Hz -> PURUSH (male) OK
+
+NATEEJA: PASS - dono raaste male awaaz
