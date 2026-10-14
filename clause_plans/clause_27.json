@@ -66,130 +66,147 @@
         "ok": true,
         "text": "फौज वाले पते में क्या लिखें?"
       },
-      "chitra_keep": {
-        "scene": "Inside a bright post office with a plain white wall, the customer stands at the counter holding a letter addressed to an army personnel.",
-        "seed0": 30985230,
-        "files": {
-          "0": "clause_plans/chitra_img/083a055612_keep_30985230_1.jpg",
-          "1": "clause_plans/chitra_img/083a055612_keep_30985230_2.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.526,
-            0.587,
-            0.638,
-            0.685
-          ],
-          "1": [
-            0.452,
-            0.509,
-            0.642,
-            0.668
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": [
-              0.379,
-              0.501,
-              0.455,
-              0.545
-            ],
-            "face": [
-              0.599,
-              0.175,
-              0.786,
-              0.396
-            ]
-          },
-          "1": {
-            "badge": [
-              0.347,
-              0.491,
-              0.403,
-              0.538
-            ],
-            "face": [
-              0.6,
-              0.171,
-              0.794,
-              0.396
-            ]
-          }
-        },
-        "bgt": {
-          "0": true,
-          "1": false
-        },
-        "fixes": {
-          "2": "Make it clearly show: the complete letter with all details - saaf nahi"
-        },
-        "panels": [
-          {
-            "prompt": "The customer stands at the post office counter holding a white envelope, looking confused.",
-            "target": "the white envelope in customer hands",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "सैनिक की डाक भेजने के लिए क्या पता लिखना जरूरी है?",
-            "desc": "The customer holds a white envelope at the post office counter.",
-            "mark": "none",
-            "card": null,
-            "say": null
-          },
-          {
-            "prompt": "The customer hands over an incomplete address envelope to the postman at the counter.",
-            "target": "the incomplete letter on the counter",
-            "tag": "केवल नाम और रैंक",
-            "tag_color": "red",
-            "text": "केवल नाम और रैंक लिखने से डाक वापस आ सकती है।",
-            "desc": "The envelope on the counter has only name and rank written on the card.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "सिपाही रमेश कुमार",
-                "राजपूत रेजिमेंट",
-                "जम्मू"
-              ],
-              "corner": "",
-              "hl": 0
-            },
-            "say": null
-          },
-          {
-            "prompt": "The postman points his finger firmly at the complete address card on the counter.",
-            "target": "the complete letter with all details",
-            "tag": "नंबर, रैंक, नाम, यूनिट",
-            "tag_color": "green",
-            "text": "सेना और वायु सेना डाक में नंबर, रैंक, नाम और यूनिट अनिवार्य है।",
-            "desc": "The postman points at the complete address card showing number, rank, name, and unit.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "नंबर 123456",
-                "नायक",
-                "रमेश कुमार",
-                "5वीं बटालियन"
-              ],
-              "corner": "",
-              "hl": 0
-            },
-            "say": null
-          }
-        ],
-        "reuse_n": 1
-      },
       "chitra_v": {
-        "tries": 1,
+        "tries": 2,
         "last_err": "chitra saaf nahi bana (khaana 3): saaf nahi",
         "v": 9,
         "kit_try": "photo3"
       },
       "cf_spent": {
-        "2026-10-14": 19
+        "2026-10-14": 30
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
+      },
+      "chitra_keep": {
+        "scene": "Inside a bright post office with a plain white wall and a wooden service counter.",
+        "seed0": 94723497,
+        "files": {
+          "0": "clause_plans/chitra_img/083a055612_keep_94723497_1.jpg",
+          "1": "clause_plans/chitra_img/083a055612_keep_94723497_2.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.375,
+            0.586,
+            0.584,
+            0.751
+          ],
+          "1": [
+            0.38,
+            0.576,
+            0.584,
+            0.749
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.355,
+              0.518,
+              0.427,
+              0.555
+            ],
+            "face": [
+              0.612,
+              0.269,
+              0.742,
+              0.422
+            ]
+          },
+          "1": {
+            "badge": [
+              0.353,
+              0.506,
+              0.433,
+              0.544
+            ],
+            "face": [
+              0.576,
+              0.17,
+              0.778,
+              0.414
+            ]
+          }
+        },
+        "bgt": {
+          "0": false,
+          "1": false
+        },
+        "fixes": {
+          "2": "Make it clearly show: the correct military letter on the counter - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "The postman and the customer stand at the wooden post office counter, looking at a military letter together under bright warm light.",
+            "target": "the white letter on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "सैनिक डाक भेजते समय पते की सभी जरूरी बातें लिखनी होती हैं।",
+            "desc": "The customer and postman look at the military letter on the counter.",
+            "mark": "none",
+            "card": {
+              "lines": [
+                "सिपाही रमेश कुमार",
+                "59 एपीएफओ",
+                "सेना डाक"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": {
+              "who": "customer",
+              "text": "भैया, यह सेना का पत्र भेजना है।"
+            }
+          },
+          {
+            "prompt": "The postman points at the military letter on the counter while the customer looks confused.",
+            "target": "the incomplete letter on the counter",
+            "tag": "केवल नाम और रैंक",
+            "tag_color": "red",
+            "text": "केवल नाम और रैंक लिखने से डाक पूरी नहीं होती।",
+            "desc": "The postman points at the letter showing only name and rank, missing unit and number.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "रैंक नायक",
+                "नाम सुरेश कुमार",
+                "भारत"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "अरे भाई, इसमें नंबर और यूनिट कहां है?"
+            }
+          },
+          {
+            "prompt": "The postman smiles and points his finger clearly at the fully detailed address card on the counter.",
+            "target": "the correct military letter on the counter",
+            "tag": "नंबर, रैंक, नाम, यूनिट",
+            "tag_color": "green",
+            "text": "सेना की डाक में नंबर रैंक नाम यूनिट अनिवार्य है।",
+            "desc": "The postman points at the correct military letter showing number, rank, name, and unit clearly.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "नंबर 12345",
+                "रैंक हवलदार",
+                "नाम राजेश कुमार",
+                "यूनिट 15 बटालियन"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "अब बिल्कुल सही है, यह तुरंत जाएगी।"
+            }
+          }
+        ],
+        "reuse_n": 0
       }
     },
     {
