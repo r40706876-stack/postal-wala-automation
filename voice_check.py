@@ -4,6 +4,7 @@ import numpy as np
 import main as M
 OUT = "voice_check_out"; os.makedirs(OUT, exist_ok=True)
 lines = json.load(open("fmt_test/lines.json", encoding="utf-8"))
+M.GEMINI_TTS_STYLE = "excited energetic storyteller, expressive and dramatic, natural conversational pace, short pauses"
 M.apply_voice({"id": "hi-in-training-1", "name": "Training Voiceover 1", "gender": "male"})
 specs = [{"name": k, "segs": [(k, t)]} for k, t in lines]
 vs = M.make_voices(specs)
