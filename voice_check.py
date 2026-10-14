@@ -10,11 +10,15 @@ def sh(cmd, check=True):
     if check and r.returncode: raise SystemExit(f"FAIL: {cmd}")
     return r
 try:
+    sh("sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL; df -h / | tail -1", check=False)
     sh("git clone --depth 1 https://github.com/OpenTalker/SadTalker /tmp/st")
     sh(f"{sys.executable} -m pip install -q torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cpu")
     sh(f"{sys.executable} -m pip install -q numpy==1.23.5 face_alignment==1.3.5 imageio==2.19.3 imageio-ffmpeg==0.4.7 "
        "librosa==0.9.2 numba resampy==0.3.1 pydub==0.25.1 scipy==1.10.1 kornia==0.6.8 tqdm yacs==0.1.8 pyyaml "
-       "joblib==1.1.0 scikit-image==0.19.3 basicsr==1.4.2 facexlib==0.3.0 gfpgan av safetensors")
+       "joblib==1.1.0 scikit-image==0.19.3 av safetensors cython lmdb opencv-python-headless tb-nightly addict future yapf")
+    sh(f"{sys.executable} -m pip install -q --no-build-isolation basicsr==1.4.2 facexlib==0.3.0 gfpgan")
+    sh(f"{sys.executable} -m pip install -q torch==2.0.1 torchvision==0.15.2 numpy==1.23.5 --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple")
+    sh(f"{sys.executable} -c 'import torch,basicsr,gfpgan;print(torch.__version__)'")
     sh("cd /tmp/st && bash scripts/download_models.sh")
     img, wav = os.path.abspath("talk_test/postman.png"), os.path.abspath("talk_test/voice.wav")
     for name, extra in (("still_full", "--still --preprocess full"), ("move_crop", "--preprocess crop")):
