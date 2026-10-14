@@ -75,7 +75,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** विदेश = रोमन अक्षर + अरबी अंक
 **Hook:** विदेश जाने वाली डाक पर पता किस लिपि में लिखा जाएगा?
 
-## Part 6  [PASS | publish baaki]
+## Part 6  [PASS | publish: 2026-10-14]
 **Source (PO Guide):** It is desirable to note the sender’s address preferable in the lower left-hand corner on the address side
 
 **Niyam:** प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।
