@@ -1,10 +1,10 @@
 chali: Gemini: Training Voiceover 1
-hook: 2.01s
-sit: 3.67s
-think: 1.26s
-rev: 3.57s
-rule: 6.67s
-trap: 3.23s
-mcq: 2.99s
-mans: 1.54s
-end: 1.74s
+hook: 2.81s
+sit: 3.09s
+think: 1.33s
+rev: 3.07s
+rule: 6.76s
+trap: 3.08s
+mcq: 3.30s
+mans: 1.47s
+end: 1.71s
