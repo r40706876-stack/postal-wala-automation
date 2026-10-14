@@ -83,8 +83,7 @@ STATE_FILE = "progress_state.json"
 USE_GEMINI_TTS = True                      # pehli priority: Gemini se ek baar me poori awaaz
 # "auto" = Gemini ki Hindi voice library se sabse natural (conversational/warm) native Hindi awaaz.
 # Voice test sun ke pasand aaye to yahan uska naam/ID likh dijiye (jaise "Sulafat" ya library ID).
-# v20.3: PAKKI awaaz (user ne male chuni; test me sabse saaf + average gati + Gemini pe sabse bharosemand)
-GEMINI_TTS_VOICE = os.getenv("GEMINI_TTS_VOICE", "hi-in-training-1")
+GEMINI_TTS_VOICE = os.getenv("GEMINI_TTS_VOICE", "auto")
 # "female" ya "male" - Gemini awaaz ka gender (rotation band hone ke baad). Gemini fail ho to hamesha Swara.
 GEMINI_TTS_GENDER = os.getenv("GEMINI_TTS_GENDER", "male").strip().lower()
 _MALE = GEMINI_TTS_GENDER.startswith("m")
@@ -93,7 +92,8 @@ VOICE_NAME = "hi-IN-MadhurNeural" if _MALE else "hi-IN-SwaraNeural"   # Gemini f
 GEMINI_TTS_STYLE = "friendly teacher, calm and clear, speaking slowly with small natural pauses between sentences"   # docs: chhota style = zyada insaani
 # TEST: har reel me 5 awaazon me se agli (baari-baari). Pasand tay hone pe GEMINI_TTS_VOICE me wo ID likhiye
 # (tab rotation apne aap band ho jaata hai).
-VOICE_ROTATION = False        # v20.3: ek hi pakki awaaz (page ki pehchaan)
+VOICE_ROTATION = True
+ROTATION_MALE_ONLY = True     # v20.3: user - female awaaz hatao, baaki rotation wahi (sirf purush awaazein)
 PUBLISH_OLD_REPAIRS = False   # True = pichhle clauses ke sudhare parts beech me (kram tootega)
 MAX_OPTION_WORDS = 7          # isse lamba option = scene lamba + padhna mushkil -> sudhaar
 MERGE_COUNTDOWN = True        # sawal + 4 options + countdown ek scene (dohraav aur khaali taala khatam)
@@ -1555,6 +1555,8 @@ Story situation (picture 1): {sit}
 Exam question: {q}
 Correct answer (do NOT reveal or hint it): {ans}
 Rules: simple spoken Hindi, 3-6 words, ends with "?", no numbers, no English, no answer words.
+Use everyday words a GDS says at the counter, NOT book/exam words (avoid: प्रेषक, सामान्यतः, अनिवार्य, संकेत, लेख,
+निर्धारित, प्रावधान). Best is a small worry or mistake the viewer has faced himself.
 Good style examples: "पता ढक गया, अब क्या?" / "ये लिफाफा कहाँ डालें?" / "गहने कैसे भेजें?"
 Return ONLY JSON: {{"punch": ""}}
 """
@@ -6696,6 +6698,11 @@ def build_audio(voices, timeline, total, out_path):
             if (sc["data"].get("chitra") or {}).get("kit") == "photo":
                 add_at(buf, sfx_whoosh(0.25, 0.4), s + 0.0)       # chitra aata hai
                 cut_ = SH_CUT if STORY_HOOK else 0.0
+                try:                                               # v20.3: flip pal ho to ❌ unke baad aata hai
+                    pn_ = sc["data"]["chitra"]["panels"][wrong_panel(sc["data"]["chitra"]["panels"])]
+                    cut_ += HOOK_FLIP_STEP * len(hook_flip_frames(pn_))
+                except Exception:
+                    pass
                 add_at(buf, sfx_thud(0.8), s + cut_)               # "रुको!" ka jhatka
                 add_at(buf, sfx_buzz(0.38), s + cut_ + 0.08)       # laal ❌
             add_at(buf, sfx_thud(0.9), s + sc["stamp_t"])
@@ -6798,6 +6805,10 @@ def audience_line_sprite():
     return im
 
 
+HIDE_CLASS_EARLY = os.getenv("HIDE_CLASS_EARLY", "1") != "0"   # hook + sawal me Clause/Part chip aur stepper nahi
+EARLY_SCENES = ("hook", "question")
+
+
 def draw_header(canvas, data, gt, total, name=None):
     d = ImageDraw.Draw(canvas)
     # chhota version-chinh (neeche kone me, Instagram caption ke neeche chhip jaata hai) - kaunsa code chala, pakka pata
@@ -6811,9 +6822,10 @@ def draw_header(canvas, data, gt, total, name=None):
         tw_ = text_w(TRUST_TAG, f_t) + 28
         d.rounded_rectangle((bx, hy - 19, bx + tw_, hy + 19), radius=19, fill=(22, 101, 52), outline=GREEN, width=2)
         d.text((bx + tw_ / 2, hy + 1), TRUST_TAG, font=f_t, fill=WHITE, anchor="mm")
-    chip = pill_sprite(f"Clause {data['clause_no']}  |  Part {data['part_no']}/{data['total_parts']}",
-                       26, YELLOW, (40, 32, 8), ORANGE)
-    place(canvas, chip, W - 130 - chip.width / 2 if HOOK_MODE == "pro" else W - 60 - chip.width / 2, hy)
+    if not (HIDE_CLASS_EARLY and name in EARLY_SCENES):    # v20.3: pehle pal "Part 6/8" dekh naya viewer bhaagta tha
+        chip = pill_sprite(f"Clause {data['clause_no']}  |  Part {data['part_no']}/{data['total_parts']}",
+                           26, YELLOW, (40, 32, 8), ORANGE)
+        place(canvas, chip, W - 130 - chip.width / 2 if HOOK_MODE == "pro" else W - 60 - chip.width / 2, hy)
     x0, x1, y = 60, W - 60, hy + 48
     d = ImageDraw.Draw(canvas)
     d.rounded_rectangle((x0, y, x1, y + 10), radius=5, fill=(27, 42, 58))
@@ -9270,6 +9282,15 @@ SH_CUT = float(os.getenv("SH_CUT", "0"))   # v20: 0 = frame 0 se hi GALTI wala c
 
 
 _HOOK_BG = {}
+HOOK_FLIP = os.getenv("HOOK_FLIP", "1") != "0"   # v20.3: hook me galti HOTE dikhe (flip pal) - still chitra pe log skip karte the
+HOOK_FLIP_STEP = 0.24        # har flip pal itni der (sec)
+HOOK_PUSH = 1.8              # galti ke baad camera itne sec me cheez ki taraf (dheema zoom, hilta rahe)
+
+
+def hook_flip_frames(pn):
+    if not HOOK_FLIP:
+        return []
+    return [f for f in (pn.get("frames") or []) if f and os.path.exists(f)][:2]
 
 
 def hook_bg(path):
@@ -9322,21 +9343,39 @@ def visual_hook(cv, data, t):
     pn = panels[0] if stage1 else panels[wrong_panel(panels)]
     lay = hook_bg(pn["img"]).copy()
     S, cy = 1030, 1040
-    if stage1:
+    flips = [] if stage1 else hook_flip_frames(pn)
+    t_mk = HOOK_FLIP_STEP * len(flips)              # galti ka pal (flip ke baad)
+    if flips and t < t_mk:
+        # v20.3: galti se theek pehle ke pal tez-tez -> chitra HILTA dikhe (frame 0 se harkat)
+        k_ = min(int(t / HOOK_FLIP_STEP), len(flips) - 1)
+        pnf = dict(pn, img=flips[k_])
+        pic = _round_mask(photo_frame(pnf, S, 0.25 * clamp(t / max(t_mk, 0.1)), 0.0, 0.0), 34)
+        z = 1.0 + 0.02 * clamp(t / max(t_mk, 0.1))
+        place(lay, pic, W / 2, cy, scale=z)
+        d0 = ImageDraw.Draw(lay)
+        d0.rounded_rectangle((W / 2 - S * z / 2 - 5, cy - S * z / 2 - 5, W / 2 + S * z / 2 + 5, cy + S * z / 2 + 5),
+                             radius=40, outline=YELLOW, width=8)
+    elif stage1:
         zk = clamp(t / SH_CUT)
         pic = _round_mask(photo_frame(pn, S, zk * 2.2, 0.0, 0.0, prog(t, 0.25, 0.45) * 0.8), 34)
         z, col = 1.0 + 0.03 * zk, CYAN
     else:
-        t2 = t - (SH_CUT if STORY_HOOK else 0.0)
-        pic = _round_mask(hook_clean_still(pn, S), 34)     # v20: parchi/card/ghera nahi - jawab hook me na khule
+        t2 = t - (SH_CUT if STORY_HOOK else 0.0) - t_mk
+        if flips or HOOK_FLIP:
+            # v20.3: galti ke baad camera dheere galti wali jagah ki taraf (bina ghera/parchi - jawab nahi khulta)
+            pic = _round_mask(photo_frame(pn, S, 0.25 + 0.75 * ease_in_out(clamp(t2 / HOOK_PUSH)), 0.0, 0.0), 34)
+        else:
+            pic = _round_mask(hook_clean_still(pn, S), 34)     # v20: parchi/card/ghera nahi - jawab hook me na khule
         z, col = 1.0 + 0.03 * clamp(t2 / 1.2) + 0.12 * (1 - ease_out_cubic(clamp(t2 / 0.3))), RED
         place(lay, glow_sprite(600, RED, 70), W / 2, cy)
-    place(lay, pic, W / 2, cy, scale=z)
+    if not (flips and t < t_mk):
+        place(lay, pic, W / 2, cy, scale=z)
     d = ImageDraw.Draw(lay)
-    d.rounded_rectangle((W / 2 - S * z / 2 - 5, cy - S * z / 2 - 5, W / 2 + S * z / 2 + 5, cy + S * z / 2 + 5),
-                        radius=40, outline=col, width=8)
-    if not stage1:
-        t2 = t - (SH_CUT if STORY_HOOK else 0.0)
+    if not (flips and t < t_mk):
+        d.rounded_rectangle((W / 2 - S * z / 2 - 5, cy - S * z / 2 - 5, W / 2 + S * z / 2 + 5, cy + S * z / 2 + 5),
+                            radius=40, outline=col, width=8)
+    if not stage1 and not (flips and t < t_mk):
+        t2 = t - (SH_CUT if STORY_HOOK else 0.0) - t_mk
         kx = ease_out_back(prog(t2, 0.05, 0.25))
         place(lay, x_mark_sprite(200), W / 2 + S * z / 2 - 70, cy - S * z / 2 + 70, scale=max(0.05, 1.6 - 0.6 * kx))
     # --- text (v20): har reel me same "पीली पट्टी + रुको!" nahi (83 reel baad aankh use pehchaan ke skip karti thi).
@@ -9369,6 +9408,8 @@ def visual_hook(cv, data, t):
     place(cv, lay, W / 2, H / 2 - off)
     if STORY_HOOK and SH_CUT > 0 and not stage1 and t - SH_CUT < 0.12:          # cut pe safed chamak (frame 0 pe nahi)
         place(cv, Image.new("RGBA", (W, H), (255, 255, 255, int(190 * (1 - (t - SH_CUT) / 0.12)))), W / 2, H / 2)
+    if flips and 0 <= t - t_mk < 0.1:                   # v20.3: galti ke pal halki chamak (jhatka)
+        place(cv, Image.new("RGBA", (W, H), (255, 255, 255, int(150 * (1 - (t - t_mk) / 0.1)))), W / 2, H / 2)
 
 
 def vs_pair_anim(cv, data, t, fx, cy0, th_):
@@ -9804,7 +9845,7 @@ USE_DRAW = os.getenv("USE_DRAW", "0") != "0"   # AI-aakaron wali drawing (kamzor
 USE_ICON_KITS = os.getenv("USE_ICON_KITS", "0") != "0"   # purani icon-kahani (kamzor) - band; sirf drawing/lifaafa/pata       # har niyam ka apna AI-drawn chitra (aankh-jaanch ke saath)
 SHOW_COURSE_PROGRESS = False   # "PO Guide पूरा कोर्स: Clause X / N" (user ne hataya)
 REQUIRE_CHITRA = os.getenv("REQUIRE_CHITRA", "1") != "0"   # 1 = sahi chitra ke bina reel NAHI (5 koshish/run, har baar galti sudhaar)
-ENGINE_VERSION = "v20.3 (2026-10-14): ek pakki male awaaz (Training Voiceover 1) + fallback Madhur (male) + Gemini 3 mauke + v20.2: andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
+ENGINE_VERSION = "v20.3 (2026-10-14): rotation se female awaaz hati (sirf purush) + fallback Madhur + Gemini 3 mauke + v20.2: andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
 
 
 def place_flip(canvas, front, back, cx, cy, p, scale=1.0):
@@ -10648,13 +10689,15 @@ def render_frame(sc, data, gt, total):
     under = sc["name"] == "hook" and ch_.get("kit") == "photo" and STORY_HOOK   # pehle pal ka chitra header ko dhakta hai
     if under:
         draw_header(cv, data, gt, total, sc["name"])
-        draw_stepper(cv, current_step(sc["name"], t, sc["marks"], sc), t,
-                     no_trap=(HOOK_MODE == "pro" and not data.get("trap")))
+        if not (HIDE_CLASS_EARLY and sc["name"] in EARLY_SCENES):
+            draw_stepper(cv, current_step(sc["name"], t, sc["marks"], sc), t,
+                         no_trap=(HOOK_MODE == "pro" and not data.get("trap")))
     fx = SCENES[sc["name"]](cv, data, t, sc["dur"], sc["marks"], sc["vdur"], sc) or {}
     if not under:
         draw_header(cv, data, gt, total, sc["name"])
-        draw_stepper(cv, current_step(sc["name"], t, sc["marks"], sc), t,
-                     no_trap=(HOOK_MODE == "pro" and not data.get("trap")))
+        if not (HIDE_CLASS_EARLY and sc["name"] in EARLY_SCENES):
+            draw_stepper(cv, current_step(sc["name"], t, sc["marks"], sc), t,
+                         no_trap=(HOOK_MODE == "pro" and not data.get("trap")))
 
     # scene-entry punch zoom + hook me dheema push-in (screen jama hua na lage)
     z = 1.0
@@ -12282,15 +12325,11 @@ def run_daily():
     print("SOURCE (PO Guide):", part.get("source_quote", ""))
 
     voice_entry = None
-    if not rotation_active() and not DRY_RUN and GEMINI_TTS_VOICE.lower() != "auto":
-        # v20.3: pakki awaaz - har reel me wahi; voice_log me likhte rahein
-        voice_entry = {"id": GEMINI_TTS_VOICE, "name": "Training Voiceover 1" if GEMINI_TTS_VOICE == "hi-in-training-1"
-                       else GEMINI_TTS_VOICE, "gender": GEMINI_TTS_GENDER, "desc": "pakki awaaz"}
-        apply_voice(voice_entry)
-        print(f"Is reel ki awaaz (pakki): {voice_entry['name']} | fallback: {VOICE_NAME}")
     if rotation_active() and not DRY_RUN and GEMINI_API_KEY:
         try:
             rot = build_voice_rotation(state)[:ROTATION_SIZE]          # sirf top 3
+            if ROTATION_MALE_ONLY:
+                rot = [r for r in rot if str(r.get("gender", "")).lower().startswith("m")] or rot   # female hatao
             voice_entry = rot[int(state.get("voice_idx", 0)) % len(rot)]
             apply_voice(voice_entry)
             print(f"Is reel ki awaaz: {voice_entry['name']} ({voice_entry['gender']}) "

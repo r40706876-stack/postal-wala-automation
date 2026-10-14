@@ -418,7 +418,9 @@ def scene_q(data, i, t, sc):
     M.place(cv, pm, W - 92, cy + card.height / 2 - 52, scale=0.85, angle=-12, alpha=0.85 * kq)   # kone par, shabdon se door
     oy = cy + card.height / 2 + 40
     for j, (L, o) in enumerate(zip("ABCD", it["opts"])):
-        kj = 1.0 if first else M.ease_out_cubic(M.clamp((t - 0.06 - 0.05 * j) / 0.2))
+        # v20.3: pehle sawal pe bhi option ek-ek karke (0.1-0.5s) - frame 0 pe sawal, fir harkat (still screen = skip)
+        kj = M.ease_out_cubic(M.clamp((t - 0.10 - 0.07 * j) / 0.22)) if first else \
+            M.ease_out_cubic(M.clamp((t - 0.06 - 0.05 * j) / 0.2))
         M.place(cv, opt_sprite(L, o, timeup), W / 2 + 120 * (1 - kj), oy + 40 + j * 180, alpha=kj)
     ty = min(H - 230, oy + 40 + 3 * 180 + 170)                        # timer: patli patti jo khaali hoti hai
     d = ImageDraw.Draw(cv, "RGBA")
