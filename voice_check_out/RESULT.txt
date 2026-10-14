@@ -1,0 +1,6 @@
+chali: Gemini: Training Voiceover 1
+hook: 3.49s
+c1: 3.17s
+c2: 5.05s
+q: 2.94s
+ans: 3.31s
