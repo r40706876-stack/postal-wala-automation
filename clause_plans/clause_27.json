@@ -20,7 +20,7 @@
       "fact": "सेना और वायु सेना कर्मियों की डाक में नंबर, रैंक, नाम और यूनिट अनिवार्य है।",
       "trap": "पोस्ट टाउन नहीं, केवल APO पता लिखना चाहिए।",
       "trap_quote": "",
-      "yaad": "नंबर + रैंक + नाम + यूनिट = सेना डाक",
+      "yaad": "नंबर + रैंक + नाम + यूनिट = अनिवार्य",
       "hook": "सेना के जवान को चिट्ठी भेजनी है, पते पर क्या लिखना जरूरी है?",
       "en": {
         "question": "What particulars must be furnished in the address of mails for Defence Services personnel?",
@@ -53,13 +53,144 @@
       "hint": "",
       "_clause_no": 27,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "सेना और वायु सेना डाक के पते में क्या होना चाहिए?"
       },
       "auto_check": true,
       "check_errors": [],
       "simple": true,
       "web_verdict": "unknown",
-      "web_sources": []
+      "web_sources": [],
+      "style_v": "2026-09-26c",
+      "punch_v": {
+        "ok": true,
+        "text": "फौज वाले पते में क्या लिखें?"
+      },
+      "chitra_keep": {
+        "scene": "Inside a bright post office with a plain white wall, the customer stands at the counter holding a letter addressed to an army personnel.",
+        "seed0": 30985230,
+        "files": {
+          "0": "clause_plans/chitra_img/083a055612_keep_30985230_1.jpg",
+          "1": "clause_plans/chitra_img/083a055612_keep_30985230_2.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.526,
+            0.587,
+            0.638,
+            0.685
+          ],
+          "1": [
+            0.452,
+            0.509,
+            0.642,
+            0.668
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.379,
+              0.501,
+              0.455,
+              0.545
+            ],
+            "face": [
+              0.599,
+              0.175,
+              0.786,
+              0.396
+            ]
+          },
+          "1": {
+            "badge": [
+              0.347,
+              0.491,
+              0.403,
+              0.538
+            ],
+            "face": [
+              0.6,
+              0.171,
+              0.794,
+              0.396
+            ]
+          }
+        },
+        "bgt": {
+          "0": true,
+          "1": false
+        },
+        "fixes": {
+          "2": "Make it clearly show: the complete letter with all details - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "The customer stands at the post office counter holding a white envelope, looking confused.",
+            "target": "the white envelope in customer hands",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "सैनिक की डाक भेजने के लिए क्या पता लिखना जरूरी है?",
+            "desc": "The customer holds a white envelope at the post office counter.",
+            "mark": "none",
+            "card": null,
+            "say": null
+          },
+          {
+            "prompt": "The customer hands over an incomplete address envelope to the postman at the counter.",
+            "target": "the incomplete letter on the counter",
+            "tag": "केवल नाम और रैंक",
+            "tag_color": "red",
+            "text": "केवल नाम और रैंक लिखने से डाक वापस आ सकती है।",
+            "desc": "The envelope on the counter has only name and rank written on the card.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "सिपाही रमेश कुमार",
+                "राजपूत रेजिमेंट",
+                "जम्मू"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": null
+          },
+          {
+            "prompt": "The postman points his finger firmly at the complete address card on the counter.",
+            "target": "the complete letter with all details",
+            "tag": "नंबर, रैंक, नाम, यूनिट",
+            "tag_color": "green",
+            "text": "सेना और वायु सेना डाक में नंबर, रैंक, नाम और यूनिट अनिवार्य है।",
+            "desc": "The postman points at the complete address card showing number, rank, name, and unit.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "नंबर 123456",
+                "नायक",
+                "रमेश कुमार",
+                "5वीं बटालियन"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": null
+          }
+        ],
+        "reuse_n": 1
+      },
+      "chitra_v": {
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 3): saaf nahi",
+        "v": 9,
+        "kit_try": "photo3"
+      },
+      "cf_spent": {
+        "2026-10-14": 19
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      }
     },
     {
       "basis": "notes",

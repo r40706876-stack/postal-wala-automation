@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. केवल नंबर और यूनिट
 **Hint:** 
 **Trap:** पोस्ट टाउन नहीं, केवल APO पता लिखना चाहिए।
-**Yaad:** नंबर + रैंक + नाम + यूनिट = सेना डाक
+**Yaad:** नंबर + रैंक + नाम + यूनिट = अनिवार्य
 **Hook:** सेना के जवान को चिट्ठी भेजनी है, पते पर क्या लिखना जरूरी है?
 
 ## Part 2  [PASS | publish baaki]
