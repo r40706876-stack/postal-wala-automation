@@ -1,2 +1,2 @@
 chali: Gemini: Training Voiceover 1
-pyq: 5.75s
+cta: 3.80s
