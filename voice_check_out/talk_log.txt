@@ -50,3 +50,4 @@ Mem:               7           0           1           0           5           6
 [  180s] 
 [exit 0]
 [  180s] >> cd /tmp/st && /opt/hostedtoolcache/Python/3.10.22/x64/bin/python inference.py --driven_audio /tmp/v4.wav --source_image /home/runner/work/postal-wala-automation/postal-wala-automation/talk_test/postman.png --result_dir /tmp/res --cpu --size 256 --still --preprocess full
+[ 1675s] BANA: /tmp/res/2026_10_14_12.59.21.mp4 (1495s)
