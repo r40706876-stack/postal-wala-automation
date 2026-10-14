@@ -132,7 +132,7 @@ def get_voices(specs):
     try:
         return M.make_voices(specs)
     except M.VoiceUnavailable:
-        print("PYQ: Gemini awaaz nahi mili -> purani awaaz (Swara)")
+        print(f"PYQ: Gemini awaaz nahi mili -> edge-tts ({M.VOICE_NAME})")
         M._VOICE_FLAGS["allow_edge"] = True
         return M.make_voices(specs)
 
