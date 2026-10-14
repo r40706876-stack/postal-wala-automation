@@ -114,10 +114,16 @@ def q_seconds(it):
     return max(Q_MIN, min(Q_MAX, 1.6 + 0.085 * words))
 
 
-def timeline(items):
+Q_AFTER_VOICE = 1.3    # v20.3: sawal bolne ke baad options dekhne + timer ka samay
+Q_VOICE_AT = 0.12      # sawal ki awaaz screen aate hi
+
+
+def timeline(items, vlens=None):
     durs = [q_seconds(it) for it in items]
+    if vlens:                                             # v20.3: sawal bola jaata hai -> screen utni der ruke
+        durs = [max(d, Q_VOICE_AT + v + Q_AFTER_VOICE) for d, v in zip(durs, vlens)]
     s = sum(durs) + END_DUR
-    if s > TARGET + 0.6:                                  # lambi ho rahi -> sab barabar chhote
+    if s > TARGET + 0.6 and not vlens:                    # lambi ho rahi -> sab barabar chhote
         k = (TARGET + 0.6 - END_DUR) / sum(durs)
         durs = [max(Q_MIN * 0.9, d * k) for d in durs]
     tl, t = [], 0.0
@@ -137,11 +143,12 @@ def get_voices(specs):
         return M.make_voices(specs)
 
 
-def build_audio(tl, total, hook_v, end_v, path):
+def build_audio(tl, total, q_vs, end_v, path):
     n = int(total * M.SR) + M.SR // 2
     vt = np.zeros(n, dtype=np.float32)
-    if hook_v is not None:
-        M.add_at(vt, hook_v, 0.05)
+    for sc, qv in zip([x for x in tl if x["name"].startswith("q")], q_vs or []):   # v20.3: har sawal bola jaata hai
+        if qv is not None:
+            M.add_at(vt, qv, sc["start"] + Q_VOICE_AT)
     if end_v is not None:
         M.add_at(vt, end_v, tl[-1]["start"] + 0.15)
     win = int(0.15 * M.SR)
@@ -483,19 +490,22 @@ def render(data, tl, gt):
 
 def build_video(data, out):
     M.resolve_font()
-    tl, total = timeline(data["items"])
-    specs = [{"name": "hook", "segs": [("h", data["hook"]["voice"])]}, {"name": "end", "segs": [("e", END_VOICE)]}]
+    items = data["items"]
+    # v20.3: frame 0 se har sawal awaaz me (pehle sirf screen pe likha tha - log padhe bina skip karte the)
+    specs = [{"name": f"q{i}", "segs": [("q", it["q"])]} for i, it in enumerate(items)] + \
+            [{"name": "end", "segs": [("e", END_VOICE)]}]
     print("PYQ: awaaz ban rahi hai...")
-    hook_v = end_v = None
+    q_vs, end_v = None, None
     try:
         vs = get_voices(specs)
-        hook_v, end_v = vs[0][0], vs[1][0]
+        q_vs, end_v = [v[0] for v in vs[:len(items)]], vs[-1][0]
     except Exception as exc:
         print("PYQ: awaaz nahi bani (reel sirf sangeet/sfx se):", str(exc)[:120])
+    tl, total = timeline(items, [len(v) / M.SR for v in q_vs] if q_vs else None)
     for sc in tl:
         print(f"  {sc['name']:<4} {sc['start']:5.2f}s  {sc['dur']:4.2f}s")
     apath = out.replace(".mp4", "_audio.wav")
-    build_audio(tl, total, hook_v, end_v, apath)
+    build_audio(tl, total, q_vs, end_v, apath)
     n_frames = int(math.ceil(total * M.FPS))
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(M.FPS),
            "-i", "-", "-i", apath, "-map", "0:v:0", "-map", "1:a:0", "-c:v", "libx264", "-preset", "medium",
@@ -536,7 +546,7 @@ def write_caption(data, path):
     pin = "  ".join(f"{k + 1}-{it['ans']}" for k, it in enumerate(items))
     ex_all = sorted({e for it in items for e in it.get("exams") or []})
     lines = [
-        f"GDS to MTS / Postman परीक्षा | पिछले साल के {n} असली सवाल (PYQ) | 10 सेकंड चैलेंज",
+        f"GDS to MTS / Postman परीक्षा | पिछले साल के {n} असली सवाल (PYQ) | सोचो और जवाब दो",
         "",
         "अपने जवाब कमेंट में लिखो (जैसे 1-B 2-A 3-D) · रील रोककर पढ़ सकते हो",
         "सही जवाब पिन कमेंट में 📌",
@@ -567,7 +577,7 @@ def log_experiment(data, out, total):
         if new:
             w.writerow(["post_date", "file", "format", "hook_variant", "questions", "length_sec",
                         "views", "skip_rate", "avg_watch_sec", "comments", "saves", "shares", "follows"])
-        w.writerow([data["post_date"], os.path.basename(out), "pyq3-white", data["hook"]["id"],
+        w.writerow([data["post_date"], os.path.basename(out), "pyq3-white-voice", data["hook"]["id"],
                     " ".join(it["id"] for it in data["items"]), f"{total:.1f}", "", "", "", "", "", "", ""])
 
 
