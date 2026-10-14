@@ -1,0 +1,13 @@
+PYQ 2026-10-14 | awaaz A | sawal: ['sp_division', 'postbox_circle', 'bo_reg_parcel_10']
+PYQ: awaaz ban rahi hai...
+  Awaaz chuni (male): Training Voiceover 1 (hi-in-training-1) - 41-year-old Instructional Video Host from Delhi, India. Speaks Urdu. Voice is highly appro
+  Gemini TTS gemini-3.8-flash-tts: 429 -> agla
+  Gemini TTS: gemini-3.8-flash-lite-tts, awaaz hi-in-training-1, 18.0s
+Awaaz: Gemini TTS (ek baar me poori) - 4 scenes + 0 ✗-tukde, 0 me andar ka sync mila
+  q0    0.00s  4.91s
+  q1    4.91s  6.21s
+  q2   11.12s  7.63s
+  end  18.75s  1.70s
+PYQ REEL BANI: generated_reels/pyq/pyq_2026-10-14_v2.mp4 (20.4s)
+Caption: generated_reels/pyq/pyq_2026-10-14_v2_caption.txt
+

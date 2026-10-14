@@ -114,7 +114,9 @@ def q_seconds(it):
     return max(Q_MIN, min(Q_MAX, 1.6 + 0.085 * words))
 
 
-Q_AFTER_VOICE = 1.3    # v20.3: sawal bolne ke baad options dekhne + timer ka samay
+Q_AFTER_VOICE = 1.0    # v20.3: sawal bolne ke baad options dekhne + timer ka samay
+Q_VOICE_SPEED = 1.15   # series ki awaaz (0.96) se ~10% tez - quiz ki normal gati, pitch wahi
+Q_MAX_PAUSE = 0.12     # sawal ke beech ki lambi chuppi itni tak
 Q_VOICE_AT = 0.12      # sawal ki awaaz screen aate hi
 
 
@@ -499,6 +501,7 @@ def build_video(data, out):
     try:
         vs = get_voices(specs)
         q_vs, end_v = [v[0] for v in vs[:len(items)]], vs[-1][0]
+        q_vs = [M.speed_voice(M._compress_pauses(q, Q_MAX_PAUSE)[0], Q_VOICE_SPEED) for q in q_vs]
     except Exception as exc:
         print("PYQ: awaaz nahi bani (reel sirf sangeet/sfx se):", str(exc)[:120])
     tl, total = timeline(items, [len(v) / M.SR for v in q_vs] if q_vs else None)
