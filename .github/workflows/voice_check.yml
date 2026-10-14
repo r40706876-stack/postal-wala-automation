@@ -10,6 +10,8 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,8 +27,11 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python voice_check.py
-      - uses: actions/upload-artifact@v4
+      - name: Nateeja usi test branch me rakho (main nahi chhuta)
         if: always()
-        with:
-          name: voice-check
-          path: voice_check_out/
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f voice_check_out/
+          git diff --staged --quiet || git commit -m "voice check nateeja [skip ci]"
+          git push origin HEAD:${{ inputs.branch }}
