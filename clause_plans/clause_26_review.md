@@ -89,7 +89,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** प्रेषक पता = नीचे बायां कोना
 **Hook:** रजिस्टर पत्र पर भेजने वाले का पता कहाँ दर्ज करना है?
 
-## Part 7  [PASS | publish baaki]
+## Part 7  [PASS | publish: 2026-10-14]
 **Source (PO Guide):** The indication ‘Letter’ should be given on the address-side of bulky letter packets, which, on account of their size or make up, might be mistaken for other classes of packets.
 
 **Niyam:** भारी पत्र पैकेटों के पते वाली साइड पर 'Letter' स्पष्ट लिखना चाहिए।

@@ -1,0 +1,327 @@
+{
+  "clause_no": 29,
+  "title_en": "Articles bearing indefinite addresses",
+  "title_hi": "Clause 29 - अनिश्चित पते वाले लेख (Articles Bearing Indefinite Address)",
+  "source_pdf": "Po guide part 1 Eng _260924_142306 (1).pdf",
+  "approved": true,
+  "build_tries": 1,
+  "simple": true,
+  "note": "Aasaan system. Sirf auto_check=true wale parts ki reel banti hai.",
+  "parts": [
+    {
+      "basis": "guide",
+      "source_quote": "No article will be delivered by the Post Office unless it bears a definite address.",
+      "question": "निश्चित पते के बिना किसी लेख का क्या होगा?",
+      "a": "वितरण किया जाएगा",
+      "b": "वितरण नहीं होगा",
+      "c": "वापस भेजेंगे",
+      "d": "नष्ट करेंगे",
+      "correct": "B",
+      "fact": "कोई भी लेख तब तक वितरित नहीं किया जाएगा जब तक उस पर निश्चित पता ना हो।",
+      "trap": "वितरण किया जाएगा गलत, क्योंकि निश्चित पते के बिना लेख वितरित नहीं होता।",
+      "trap_quote": "",
+      "yaad": "बिना निश्चित पते लेख वितरण नहीं",
+      "hook": "काउंटर पर बिना पते का पत्र आया, क्या होगा?",
+      "en": {
+        "question": "What happens to an article without a definite address?",
+        "a": "Will be delivered",
+        "b": "Will not be delivered",
+        "c": "Returned to sender",
+        "d": "Destroyed",
+        "fact": "No article will be delivered by the Post Office unless it bears a definite address.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "निश्चित पता",
+            "mark": "key"
+          },
+          {
+            "text": "बिना पता लेख",
+            "mark": "no"
+          },
+          {
+            "text": "वितरण",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "_clause_no": 29,
+      "hook_v": {
+        "ok": true,
+        "text": "काउंटर पर बिना पते का पत्र आया, क्या होगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    },
+    {
+      "basis": "guide",
+      "source_quote": "Articles addressed in a general way, i.e., address to a class of persons in contradiction to a particular person or firm and articles addressed to initials or figures or to clearly fictitious names, or to a Christian name without a surname, are regarded as not bearing a definite address",
+      "question": "किसे अनिश्चित पता माना जाता है?",
+      "a": "विशेष फर्म का नाम",
+      "b": "बिना उपनाम के ईसाई नाम",
+      "c": "निश्चित घर का पता",
+      "d": "विशेष डाक बॉक्स संख्या",
+      "correct": "B",
+      "fact": "बिना उपनाम के ईसाई नाम, काल्पनिक नाम और अंकों को अनिश्चित पता माना जाता है।",
+      "trap": "विशेष फर्म गलत, क्योंकि यह निश्चित पते के अंतर्गत आता है।",
+      "trap_quote": "",
+      "yaad": "उपनाम बिना ईसाई नाम अनिश्चित",
+      "hook": "बिना उपनाम वाला पत्र आया, पता कैसा है?",
+      "en": {
+        "question": "Which of these is considered an indefinite address?",
+        "a": "Particular firm name",
+        "b": "Christian name without surname",
+        "c": "Definite house address",
+        "d": "Particular post box",
+        "fact": "Christian names without surname, fictitious names and figures are regarded as indefinite addresses.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "बिना उपनाम ईसाई नाम",
+            "mark": "yes"
+          },
+          {
+            "text": "काल्पनिक नाम",
+            "mark": "yes"
+          },
+          {
+            "text": "अनिश्चित पता",
+            "mark": "key"
+          }
+        ]
+      },
+      "hint": "",
+      "_clause_no": 29,
+      "hook_v": {
+        "ok": true,
+        "text": "बिना उपनाम वाला पत्र आया, पता कैसा है?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    },
+    {
+      "basis": "guide",
+      "source_quote": "unless they are to the care of some definite person or firm, or unless the address specifies some definite place or delivery such as a particular house or a particular post box or a particular No. in a street.",
+      "question": "कौन सा विवरण होने पर सामान्य पता भी निश्चित माना जाता है?",
+      "a": "केवल डाकघर का नाम",
+      "b": "विशेष डाक बॉक्स नंबर",
+      "c": "केवल पोस्टमास्टर का नाम",
+      "d": "काल्पनिक नाम",
+      "correct": "B",
+      "fact": "विशेष डाक बॉक्स या विशिष्ट घर का पता होने पर लेख निश्चित माना जाता है।",
+      "trap": "केवल डाकघर गलत, क्योंकि इससे पता अनिश्चित ही रहता है।",
+      "trap_quote": "",
+      "yaad": "विशेष डाक बॉक्स से पता निश्चित",
+      "hook": "पत्र पर विशेष डाक बॉक्स नंबर है, क्या करें?",
+      "en": {
+        "question": "What detail makes a general address considered definite?",
+        "a": "Only post office name",
+        "b": "Particular post box number",
+        "c": "Only postmaster care",
+        "d": "Fictitious name",
+        "fact": "Articles are definite if address specifies a particular house or post box number.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "विशेष डाक बॉक्स",
+            "mark": "yes"
+          },
+          {
+            "text": "निश्चित पता",
+            "mark": "key"
+          },
+          {
+            "text": "केवल डाकघर",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "_clause_no": 29,
+      "hook_v": {
+        "tries": 0
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    },
+    {
+      "basis": "guide",
+      "source_quote": "Parcels or other articles tendered at a post office for transmission under the Registration, Insurance, or Value -payable system, as also Money Order, will not be accepted unless they are definitely addressed to a particular person or firm.",
+      "question": "पंजीकृत या बीमाकृत लेख स्वीकार करने के लिए क्या अनिवार्य है?",
+      "a": "काल्पनिक नाम",
+      "b": "निश्चित व्यक्ति या फर्म का पता",
+      "c": "केवल पोस्ट रेस्टेंटे",
+      "d": "बिना उपनाम का नाम",
+      "fact": "पंजीकृत, बीमाकृत, वीपी लेख और मनीऑर्डर तभी स्वीकार होंगे जब वे निश्चित व्यक्ति या फर्म को संबोधित हों।",
+      "trap": "काल्पनिक नाम गलत, क्योंकि ऐसे लेख बिना निश्चित पते के स्वीकार नहीं होते।",
+      "yaad": "बीमाकृत लेख हेतु निश्चित पता जरूरी",
+      "correct": "B",
+      "id": 1,
+      "hook": "पंजीकृत पार्सल आया है, उस पर क्या जांचेंगे?",
+      "en": {
+        "question": "What is mandatory for accepting registered or insured articles?",
+        "a": "Fictitious name",
+        "b": "Definite person or firm address",
+        "c": "Only Poste Restante",
+        "d": "Name without surname",
+        "fact": "Registered, insured, V.P. articles and money orders must be definitely addressed to a particular person or firm.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पंजीकृत लेख",
+            "mark": "key"
+          },
+          {
+            "text": "बीमाकृत वस्तु",
+            "mark": "key"
+          },
+          {
+            "text": "निश्चित पता",
+            "mark": "yes"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 29,
+      "hook_v": {
+        "ok": true,
+        "text": "पंजीकृत पार्सल आया है, उस पर क्या जांचेंगे?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    },
+    {
+      "basis": "guide",
+      "source_quote": "Such articles addressed to a particular person or firm care of post box and the name of the office where post box stands registered will also be accepted provided they are addressed to persons or firms in whose names the post box stands registered.",
+      "question": "पोस्ट बॉक्स के पते वाले लेख कब स्वीकार किए जाएंगे?",
+      "a": "पंजीकृत धारक के नाम पर",
+      "b": "किसी भी व्यक्ति के नाम पर",
+      "c": "केवल काल्पनिक नाम होने पर",
+      "d": "बिना पते के होने पर",
+      "fact": "पोस्ट बॉक्स के नाम पंजीकृत व्यक्ति या फर्म को संबोधित होने पर ही ऐसे लेख स्वीकार होंगे।",
+      "trap": "किसी भी व्यक्ति के नाम गलत, क्योंकि पोस्ट बॉक्स उसी के नाम होना चाहिए।",
+      "yaad": "पोस्ट बॉक्स धारक के नाम ही स्वीकार",
+      "correct": "A",
+      "id": 2,
+      "hook": "पोस्ट बॉक्स नंबर पर आया लेख, नाम किसका देखेंगे?",
+      "en": {
+        "question": "When are articles addressed to a post box accepted?",
+        "a": "In the name of the registered post box renter",
+        "b": "In any person's name",
+        "c": "Only fictitious name",
+        "d": "Without address",
+        "fact": "Articles are accepted if addressed to persons or firms in whose names the post box stands registered.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पोस्ट बॉक्स",
+            "mark": "key"
+          },
+          {
+            "text": "पंजीकृत धारक",
+            "mark": "yes"
+          },
+          {
+            "text": "अन्य नाम",
+            "mark": "no"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 29,
+      "hook_v": {
+        "ok": true,
+        "text": "पोस्ट बॉक्स नंबर पर आया लेख, नाम किसका देखेंगे?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    },
+    {
+      "basis": "guide",
+      "source_quote": "In the office of delivery if it is found that there is no post box in the name of the addressee or the addressee has ceased to be a renter of a post box the article will be returned to the sender.",
+      "question": "प्राप्तकर्ता के नाम पोस्ट बॉक्स ना मिलने पर लेख का क्या होगा?",
+      "a": "नष्ट कर दिया जाएगा",
+      "b": "प्रेषक को वापस कर दिया जाएगा",
+      "c": "वितरित कर दिया जाएगा",
+      "d": "नीलाम किया जाएगा",
+      "fact": "वितरण कार्यालय में पोस्ट बॉक्स ना मिलने या किराया समाप्त होने पर लेख प्रेषक को वापस कर दिया जाएगा।",
+      "trap": "वितरित कर दिया जाएगा गलत, लेख प्रेषक को वापस किया जाता है।",
+      "yaad": "पोस्ट बॉक्स ना मिलने पर प्रेषक को वापसी",
+      "correct": "B",
+      "id": 3,
+      "hook": "वितरण कार्यालय में पोस्ट बॉक्स बंद मिला, पत्र का क्या होगा?",
+      "en": {
+        "question": "What happens if no post box is found in addressee's name at delivery office?",
+        "a": "Destroyed",
+        "b": "Returned to the sender",
+        "c": "Delivered anyway",
+        "d": "Auctioned",
+        "fact": "If no post box is found or renter has ceased, the article will be returned to the sender.",
+        "trap": "",
+        "yaad": "",
+        "ok": true
+      },
+      "beats": {
+        "ok": true,
+        "items": [
+          {
+            "text": "पोस्ट बॉक्स नहीं",
+            "mark": "no"
+          },
+          {
+            "text": "प्रेषक को वापसी",
+            "mark": "yes"
+          },
+          {
+            "text": "वितरण कार्यालय",
+            "mark": "key"
+          }
+        ]
+      },
+      "hint": "",
+      "trap_quote": "",
+      "_clause_no": 29,
+      "hook_v": {
+        "ok": true,
+        "text": "वितरण कार्यालय में पोस्ट बॉक्स बंद मिला, पत्र का क्या होगा?"
+      },
+      "auto_check": true,
+      "check_errors": [],
+      "simple": true
+    }
+  ],
+  "clause_text_en": "29. Articles bearing indefinite addresses  – (1) N o article will be delivered by the Post \nOffice unless it bears a definite address.  Articles addressed in a general way, i.e., address to a \nclass of persons in contradiction to a particular person or firm and articles addressed to initials or \nfigures or to clearly fictitious names, or to a Christian name without a surname, are regarded as not \nbearing a definite address unless they are to the care of some definite person or firm, or unless the \naddress specifies some definite place or delivery such as a particular house or a particular post box \nor a particular No. in a street.  Articles addressed in a general way or to initials figures.  Christian \nnames without surnames, fictitious names or conventional marks of any kind will not be delivered \nif addressed merely to a post office or “Poste Restante” or to the care of a postmaster. \n \n (2) The following are examples of definite and indefinite addresses : - \n \nDefinite and therefore Deliverable  Indefinite and therefore undeliverable  \n \n(a) The Chief Secreta ry to the Govt. of H.P. \nEllerelie Simla \n(a) Chief Secretary, Shimla  \n \n \n(b) The Occupant No. 10 Park Street, Calcutta -\n700016. \n \n(b) The non -commissioned Officer Meerut.  \n \n(c) The President of the Officers’ Mess, Mathura.  \n \n(This would be a definite address as  there is only \none Officers’ Mess at Mathura).  \n \n(c) The President of the Officer’s Mess Delhi.  \n \n(This address would be indefinite as Delhi has several \nOfficer’s Messes).  \n \n(d) E-97 Pioneer Press, Lucknow.  \n \n(d) The Station Master Lalpur, C.R.  \n \n(e) Invester  No. 2 Victoria Gardens, Bombay -\n400027. \n \n(This address could be definite because the Post office \nof destination is not given).  \n \n (3) Parcels or other articles tendered at a post office for transmission under the \nRegistration, Insurance, or Value -payable s ystem, as also Money Order, will not be accepted \n\n\nunless they are definitely addressed to a particular person or firm.  Such articles addressed to a \nparticular person or firm care of post box and the name of the office where post box stands \nregistered will also be accepted provided they are addressed to persons or firms in whose names \nthe post box stands registered.  In the office of delivery if it is found that there is no post box in the \nname of  the addressee or the addressee has ceased to be a renter of a post box the article will be \nreturned to the sender."
+}
