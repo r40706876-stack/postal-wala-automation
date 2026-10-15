@@ -28,16 +28,14 @@ from PIL import Image, ImageDraw, ImageFilter
 M = None            # main module (init se) - main.py ke globals (chuni hui awaaz waghaira) wahi rahen
 W, H, FPS = 1080, 1920, 30
 
-NAYA_VERSION = "v21.2-naya (2026-10-15): sawal-pehle hook (3s) + ek kahani drishya + सोचो 2s + chhota jawab + kitaab ki line bade akshar + TRAP ❌/✓ + asli paper sawal ka jawab (answer key se jaancha) + याद/Follow ant (~26s)"
+NAYA_VERSION = "v21.3-naya (2026-10-15): v21.1 format wahi, sirf lambai kam (awaaz 15% tez, khaali intezaar kam) + asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल ant + alag PYQ reel"
 
 POV_LINE = "POV: आप डाकघर में हो"
 PROOF_VOICE = "GDS साथियों! PO Guide की ये एक लाइन याद रखो!"
 END_VOICE = "याद रखो साथियों!"
 TRANS = 0.2                 # scene badalne ka samay
-CD_STEP = 0.3               # 3-2-1 ka ek kadam (v21.2: 0.62 -> 0.3, "सोचो" ~2s - user plan)
-NAYA_SPEED = 1.15           # v21.2: naye format ki awaaz (main ki 0.96 ke upar) -> demo7 jaisi gati, reel ~26s
-RUKO_VOICE = "सही विकल्प कौन-सा है?"
-HOOK_TAIL = " नियम देखो!"
+CD_STEP = 0.45              # 3-2-1 ka ek kadam (v21.3: 0.62 -> 0.45, lambai kam)
+NAYA_SPEED = 1.15           # v21.3: awaaz ~15% tez (format wahi, sirf lambai kam - user 2026-10-15)
 
 NAVY = (16, 28, 64)
 GOLD = (255, 205, 40)
@@ -456,8 +454,7 @@ class Proof:
             return None
         lh_pt = max(w[3] - w[1] for w in words)
         cw, padx, pady = 980, 44, 36
-        words = list(words)
-        for ppt in (5.4, 5.0, 4.6):                  # v21.2: kam se kam 4.6 px/pt (~55px akshar), max 5 line
+        for ppt in (5.2, 4.8, 4.4, 4.0, 3.6):       # px per pt: jitna bada fit ho (max 7 line)
             sc = ppt / self.k
             crops = []
             for (x0, y0, x1, y1, _t) in words:
@@ -471,18 +468,7 @@ class Proof:
                     x, y = padx, y + lh
                 place.append((x, y, c))
                 x += c.width + sp
-            if (y - pady) // lh + 1 <= 5:
-                break
-            if ppt == 4.6 and len(words) > 8:          # 5 line me na aaye -> aakhri shabd hatao (asli line ka shuru)
-                while words and (y - pady) // lh + 1 > 5:
-                    words = words[:-1]
-                    crops = crops[:len(words)]
-                    place, x, y = [], padx, pady
-                    for c in crops:
-                        if x + c.width > cw - padx:
-                            x, y = padx, y + lh
-                        place.append((x, y, c))
-                        x += c.width + sp
+            if (y - pady) // lh + 1 <= 7:
                 break
         else:
             return None
@@ -582,7 +568,7 @@ def pyq_for(plan, part, data):
     _sys.modules.setdefault("main", M)            # pyq_reel 'import main' -> yahi chalta module (dobara load nahi)
     import pyq_reel as P
     pv = part.get("pyq_v") if isinstance(part.get("pyq_v"), dict) else {}
-    if int(pv.get("v") or 0) < getattr(P, "PYQ_V", 2):   # v21.2: purani khoj me jawab answer key se nahi milaya tha
+    if int(pv.get("v") or 0) < getattr(P, "PYQ_V", 2):   # v21.3: purani khoj me jawab answer key se nahi milaya tha
         pv = {}
     items = [x for x in (pv.get("items") or []) if x.get("q") and len(x.get("opts") or []) == 4]
     if not items and not pv.get("searched"):
@@ -601,13 +587,13 @@ def pyq_for(plan, part, data):
         if not M.DRY_RUN:
             part["pyq_v"] = {"items": items, "searched": True, "v": getattr(P, "PYQ_V", 2)}
     items = [x for x in items if x.get("key_ok")]      # sirf answer key se jaanche jawab wale
-    if items:                                          # sabse chhota sawal (reel me padha ja sake)
-        return dict(min(items, key=lambda x: len(x["q"]) + sum(len(o) for o in x["opts"])), key_ok=True), True
+    if items:
+        return items[0], True
     try:                                            # bank: asli paper ka jaancha hua sawal (episode se ghoomta)
         bank, _sets = P.load_bank()
         ids = sorted(bank)
         if ids:
-            it = dict(bank[ids[int(data.get("episode") or 0) % len(ids)]], key_ok=True)   # bank = pehle se jaancha
+            it = dict(bank[ids[int(data.get("episode") or 0) % len(ids)]])
             return it, False
     except Exception as exc:
         print("  Bank sawal nahi mila:", str(exc)[:120])
@@ -688,37 +674,20 @@ def ruko_q(data):
     return " ".join(q.split())
 
 
-def hook_text(data):
-    """Pehle second ka sawal: punch line (3-6 shabd) ya chhota hook sawal."""
-    pv = data.get("punch_v") if isinstance(data.get("punch_v"), dict) else {}
-    if pv.get("ok") and pv.get("text"):
-        return pv["text"].strip()
-    return ruko_q(data)
-
-
-def ans_voice(data):
-    ct = " ".join((data.get("correct_text") or "").split())
-    return f"सही जवाब: {ct}!" if ct and len(ct.split()) <= 7 else f"सही जवाब, विकल्प {data.get('correct', '')}!"
-
-
-def pyq_ans_voice(it):
-    o = it["opts"]["ABCD".index(it["ans"])]
-    return f"सही जवाब: {o}!" if len(o.split()) <= 5 else f"सही जवाब, विकल्प {it['ans']}!"
-
-
 def build_specs(data, story, ans_pn, has_proof, pyq=None):
-    """v21.2 kram (user ka Final Editing Plan): hook -> kahani -> सोचो -> jawab -> niyam -> TRAP -> asli sawal -> याद."""
-    specs = [{"name": "hook", "segs": [("h", hook_text(data) + (HOOK_TAIL if has_proof else ""))]},
-             {"name": "s0", "segs": [("c0", story[0].get("text") or "")]},
-             {"name": "ruko", "segs": [("r", RUKO_VOICE)]},
-             {"name": "ans", "segs": [("a", ans_voice(data))]},
-             {"name": "rule", "segs": [("f", "नियम: " + data["fact"])]}]
+    specs = []
+    if has_proof:
+        specs.append({"name": "proof", "segs": [("p", PROOF_VOICE)]})
+    for i, pn in enumerate(story):
+        specs.append({"name": f"s{i}", "segs": [(f"c{i}", pn.get("text") or "")]})
+    specs.append({"name": "ruko", "segs": [("r", "रुको! पहले सोचो, " + ruko_q(data))]})
+    specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
+    specs.append({"name": "rule", "segs": [("f", "नियम: " + data["fact"])]})
     if data.get("trap"):
         specs.append({"name": "trap", "segs": [("t", "ट्रैप: " + data["trap"])]})
-    if pyq:
-        specs.append({"name": "pyq", "segs": [("q", "असली पेपर का सवाल!")]})
-        if pyq.get("key_ok"):
-            specs.append({"name": "pyqa", "segs": [("qa", pyq_ans_voice(pyq))]})
+    if pyq:                                    # lamba sawal poora bolne se reel 30s+ -> tab sirf screen pe
+        say = ("असली पेपर का सवाल! " + pyq["q"]) if len(pyq["q"].split()) <= PYQ_SAY_MAX else PYQ_SHORT_VOICE
+        specs.append({"name": "pyq", "segs": [("q", say)], "short": say == PYQ_SHORT_VOICE})
     specs.append({"name": "end", "segs": [("e", END_VOICE)]})
     return specs
 
@@ -729,75 +698,34 @@ def plan_timeline(specs, voices, data):
         a = v[0]
         vd = len(a) / M.SR
         n = sp["name"]
-        if n == "pyqa":                                # pyq drishya ke andar: 3-2-1 ke baad jawab ki awaaz
-            sc = tl[-1]
-            sc["rev"] = sc["cd0"] + 3 * CD_STEP + 0.05
-            sc["audio2"], sc["vd2"] = a, vd
-            new = sc["rev"] + vd + 0.55
-            cur += new - sc["dur"]
-            sc["dur"] = new
-            continue
         lead = 0.08
-        if n == "hook":                                # 0-0.5 close-up | 0.5 sawal | 2.3 kitaab ki line
-            dur = max(3.0, lead + vd + 0.25)
+        if n == "proof":
+            dur = max(2.3, lead + vd + 0.2)
         elif n.startswith("s"):
-            dur = lead + vd + 0.35
-        elif n == "ruko":                              # ? -> do vikalp -> 3-2-1 (~2s)
-            cd0 = max(0.7, lead + vd - 0.25)
-            dur = cd0 + 3 * CD_STEP + 0.1
+            dur = lead + vd + 0.25
+        elif n == "ruko":                              # 3-2-1 sawal ke aakhri hisse ke saath hi (khaali intezaar nahi)
+            cd0 = max(0.9, lead + vd - 0.9)
+            dur = max(cd0 + 3 * CD_STEP + 0.1, lead + vd + 0.2)
         elif n == "ans":
             lead = 0.2
-            dur = lead + vd + 0.35
+            dur = lead + vd + 0.25
         elif n == "rule":
-            dur = max(4.0, lead + vd + 0.4)
+            dur = lead + vd + 0.3
         elif n == "trap":
             lead = 0.3                                 # pehle TRAP thappa, fir awaaz
-            dur = lead + vd + 0.4
-        elif n == "pyq":
-            lead = 0.1
-            cd0 = lead + vd + 0.2
-            dur = cd0 + 3 * CD_STEP + 0.6              # (jawab na ho to) 3-2-1 + "जवाब कमेंट करो"
+            dur = lead + vd + 0.35
+        elif n == "pyq":                               # sawal bolne ke baad bas ~1s soch (khaali tik-tik nahi)
+            lead = 0.15
+            dur = max(4.2, lead + vd + 0.7) if sp.get("short") else lead + vd + 1.0
         else:                                          # end
-            dur = max(2.3, lead + vd + 0.9)
+            dur = max(2.3, lead + vd + 1.0)
         sc = {"name": n, "start": cur, "dur": dur, "lead": lead, "vd": vd, "audio": a,
               "text": " ".join(t for _, t in sp["segs"])}
-        if n in ("ruko", "pyq"):
+        if n == "ruko":
             sc["cd0"] = cd0
         tl.append(sc)
         cur += dur
     return tl, cur
-
-
-def _closeup(pn, z, zk=0.0):
-    """Mukhya cheez (box) ka close-up poori screen pe (hook) - parchi/ghera nahi (jawab na khule)."""
-    pn = {k: v for k, v in pn.items() if k != "badge"}     # close-up me chhati ki naam-patti badi hoke kat-ti thi
-    base = panel_full(pn, zk, 0.0, 0.0, 0.0, 0.0)
-    box = pn.get("box") or [0.3, 0.3, 0.7, 0.7]
-    try:
-        cx = _focus_center(pn, H, zk, 0.0, True) - max(0, 0)
-        x0 = min(max(cx - W / 2, 0), H - W)
-        cx = cx - x0
-    except Exception:
-        cx = W / 2
-    cy = (box[1] + box[3]) / 2 * H
-    vw, vh = W / z, H / z
-    l = min(max(cx - vw / 2, 0), W - vw)
-    t_ = min(max(cy - vh / 2, 0), H - vh)
-    return base.crop((int(l), int(t_), int(l + vw), int(t_ + vh))).resize((W, H), Image.BILINEAR), \
-        ((cx - l) * z, (cy - t_) * z)
-
-
-def headline(cv, text, y=330, size=104, col=(255, 214, 40), k=1.0):
-    if k <= 0.02:
-        return
-    f, s_, ls = fit_wrap(text, 990, size, 2, int(size * 0.62))
-    lh = int(s_ * 1.18)
-    lay = Image.new("RGBA", (W, lh * 2 + 80), (0, 0, 0, 0))
-    d = ImageDraw.Draw(lay)
-    y0 = lay.height / 2 - (len(ls) - 1) * lh / 2
-    for i, ln in enumerate(ls[:2]):
-        stroke_text(d, (W / 2, y0 + i * lh), ln, f, col, max(6, s_ // 9))
-    put(cv, lay, W / 2, y, alpha=min(1.0, k), scale=max(0.05, 0.85 + 0.15 * M.ease_out_back(min(1.0, k))))
 
 
 class Reel:
@@ -807,226 +735,192 @@ class Reel:
         self.ep = int(data.get("episode") or 0)
         self.cno = data.get("clause_no")
         self.trap_pair = trap_pair(data.get("trap") or "")
-        self.wrong = next((p for p in story if p.get("mark") == "wrong"), story[-1])
         self._last = {}
 
-    def _card(self, t, scale=1.0):
-        if not (self.proof and self.proof.card):
-            return None
-        cf = self.proof._card_frame(t)
-        if scale != 1.0:
-            cf = cf.resize((int(cf.width * scale), int(cf.height * scale)), Image.LANCZOS)
-        return cf
+    # ---- har drishya ----
+    def sc_proof(self, sc, t):
+        return self.proof.frame(t, sc["dur"])
 
-    # ---- 0-3s: sawal pehle (user plan) - close-up -> bada sawal -> ? -> kitaab ki line ka chhota highlight
-    def sc_hook(self, sc, t):
-        pn = self.wrong
-        cv, (ox, oy) = _closeup(pn, 1.45 + 0.35 * ease(t / max(0.5, sc["dur"])), 0.6)
-        cv = cv.convert("RGBA")
-        bands_fast(cv)
-        brand(cv)
-        if t >= 0.5:
-            headline(cv, hook_text(self.data), 330, 108, k=(t - 0.5) / 0.18)
-        t_card = 2.3 if self.proof and self.proof.card else 99
-        if 1.5 <= t < t_card:
-            k = M.ease_out_back(M.prog(t, 1.5, 0.25)) * (1 + 0.06 * math.sin(t * 9))
-            put(cv, big_q(), min(W - 200, max(200, ox)), min(1150, max(700, oy)), scale=max(0.05, 0.7 * k))
-        if t >= t_card:
-            k = M.ease_out_cubic(M.prog(t, t_card, 0.18))
-            cv.alpha_composite(Image.new("RGBA", (W, H), (8, 8, 14, int(120 * k))))
-            cf = self._card(t - t_card + 0.1, 0.86)
-            put(cv, cf, W / 2, 860 + 30 * (1 - k), alpha=k)
-        caption(cv, sc["text"], (t - sc["lead"]) / max(0.3, sc["vd"]))
-        return cv
-
-    # ---- kahani: action (flip pal) -> camera cheez par -> ❌ (parchi nahi - jawab "सोचो" ke baad)
-    def sc_story(self, sc, t, i=0):
+    def sc_story(self, sc, t, i):
+        pn = self.story[i]
         dur = sc["dur"]
-        first, pn = self.story[0], self.wrong
-        frames = [f_ for f_ in (pn.get("frames") or []) if f_ and os.path.exists(f_)]
+        mk = pn.get("mark", "none")
         t_mk = sc["lead"] + sc["vd"] - 0.15
-        t1 = 0.0 if first is pn else min(1.0, dur * 0.3)            # pehle pal: ghatna (agar alag chitra ho)
-        if t < t1:
-            cv = panel_full(first, t / max(0.3, t1), 0.0, 0.0, 0.3, 0.0)
-        else:
-            tt = t - t1
-            step = 0.28
-            if frames and tt < step * len(frames):
-                pnf = dict(pn, img=frames[min(len(frames) - 1, int(tt / step))], tag="", card=None, badge=None, face=None)
-                cv = panel_full(pnf, 0.2, 0.0, 0.0, 0.0, 0.0)
-            else:
-                t2 = tt - step * len(frames)
-                zk = M.clamp(t2 / max(0.5, dur - t1 - step * len(frames)))
-                cv = panel_full(pn, 0.3 + 0.7 * zk, M.prog(t, t_mk - 0.35, 0.4), 0.0, M.prog(t2, 0.0, 0.5),
-                                M._punch(t, t_mk))
+        zk = t / dur
+        rk = M.prog(t, dur * 0.35, 0.45) if mk != "none" or pn.get("tag") else 0.0
+        tk = M.prog(t, dur * 0.5, 0.4)
+        sk = M.prog(t, 0.3, 0.6) * (1.0 if mk != "none" else 0.5)
+        pu = M._punch(t, t_mk) if mk == "wrong" else 0.0
+        cv = panel_full(pn, zk, rk, tk, sk, pu)
         bands_fast(cv)
         brand(cv)
         d = ImageDraw.Draw(cv)
-        stroke_text(d, (W / 2, 150), POV_LINE, font(58), (255, 255, 255), 7)
-        headline(cv, "गलती कहाँ होगी?", 300, 96, k=t / 0.15)
-        if t >= t_mk:
+        stroke_text(d, (W / 2, 150), POV_LINE, font(62), (255, 255, 255), 7)
+        if i == 0 and not self.proof:
+            put(cv, pill(f"GDS की गलती #{self.ep}", 38, (25, 25, 25), GOLD), W / 2, 245)
+        if mk == "wrong" and t >= t_mk:
             km = M.ease_out_back(M.prog(t, t_mk, 0.3))
-            put(cv, M.x_mark_sprite(160), W - 150, 470, scale=max(0.05, 1.6 - 0.6 * km))
-        caption(cv, sc["text"], (t - sc["lead"]) / max(0.3, sc["vd"]))
+            put(cv, M.x_mark_sprite(150), W - 150, 390, scale=max(0.05, 1.6 - 0.6 * km))
+        p = (t - sc["lead"]) / max(0.3, sc["vd"])
+        caption(cv, sc["text"], p)
         return cv
 
-    # ---- सोचो (~2s): ? -> do vikalp -> 3-2-1. Koi CTA nahi.
     def sc_ruko(self, sc, t):
-        key = ("ruko_bg", self.wrong.get("img"))
+        last = self.story[-1]
+        key = ("ruko_bg", last.get("img"))
         if key not in self._last:
-            im = panel_full(self.wrong, 1.0, 0.0, 0.0, 1.0, 0.0).convert("RGB").filter(ImageFilter.GaussianBlur(5))
+            im = panel_full(last, 1.0, 1.0, 0.0, 1.0, 0.0).convert("RGB").filter(ImageFilter.GaussianBlur(5))
             self._last[key] = Image.blend(im, Image.new("RGB", (W, H), (8, 8, 14)), 0.6).convert("RGBA")
         cv = self._last[key].copy()
         bands_fast(cv)
         brand(cv)
-        put(cv, pill("रुको !  पहले सोचो", 56, (255, 255, 255), RED_C), W / 2, 230,
-            scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.25))))
-        pulse = 1.0 + 0.06 * math.sin(t * 8)
-        put(cv, big_q(), W / 2, 640, scale=max(0.05, M.ease_out_back(M.prog(t, 0.05, 0.3))) * pulse)
+        k0 = M.ease_out_back(M.prog(t, 0.0, 0.3))
+        put(cv, pill("रुको !  पहले सोचो", 54, (255, 255, 255), RED_C), W / 2, 230, scale=max(0.05, k0))
+        pulse = 1.0 + 0.06 * math.sin(t * 7)
+        qs = big_q()
+        put(cv, qs, W / 2, 690, scale=max(0.05, M.ease_out_back(M.prog(t, 0.1, 0.35))) * pulse)
         vs = vs_letters(self.data)
         if vs:
             for j, (L, txt) in enumerate(vs):
-                kj = M.ease_out_back(M.prog(t, 0.45 + 0.12 * j, 0.25))
-                jig = 5 * math.sin(t * 40) if t > sc["cd0"] else 0.0
-                put(cv, pill(f"{L}  ·  {txt}", 50, NAVY, (255, 255, 255), GOLD), W / 2 + (jig if j else -jig),
-                    930 + j * 124, scale=max(0.05, kj))
-            put(cv, pill("या", 34, (255, 255, 255), (60, 60, 70)), W / 2, 992,
-                scale=max(0.05, M.ease_out_back(M.prog(t, 0.6, 0.2))))
+                kj = M.ease_out_back(M.prog(t, 0.35 + 0.15 * j, 0.3))
+                put(cv, pill(f"{L}  ·  {txt}", 46, NAVY, (255, 255, 255), GOLD), W / 2, 960 + j * 112,
+                    scale=max(0.05, kj))
+            put(cv, pill("या", 34, (255, 255, 255), (60, 60, 70)), W / 2, 1016,
+                scale=max(0.05, M.ease_out_back(M.prog(t, 0.55, 0.25))))
+            cy_c = 1225
+        else:
+            cy_c = 1010
+        put(cv, pill("सही जवाब कमेंट करो", 44, (25, 25, 25), GOLD), W / 2, cy_c,
+            scale=max(0.05, M.ease_out_back(M.prog(t, 0.6, 0.3))))
         cd0 = sc["cd0"]
         if t >= cd0:
             n = 3 - min(2, int((t - cd0) / CD_STEP))
-            kk = M.ease_out_back(M.prog(t, cd0 + (3 - n) * CD_STEP, 0.15))
-            put(cv, countdown(n), W / 2 + 300, 640, scale=max(0.05, 1.35 - 0.35 * kk))
-        caption(cv, sc["text"], (t - sc["lead"]) / max(0.3, sc["vd"]), cy=1450)
+            kk = M.ease_out_back(M.prog(t, cd0 + (3 - n) * CD_STEP, 0.18))
+            put(cv, countdown(n), W / 2 + 300, 690, scale=max(0.05, 1.35 - 0.35 * kk))
+        p = (t - sc["lead"]) / max(0.3, sc["vd"])
+        caption(cv, sc["text"], p, cy=1450)
         return cv
 
     def sc_ans(self, sc, t):
         pn = self.ans_pn
         dur = sc["dur"]
-        cv = panel_full(pn, 0.3 + 0.5 * t / dur, M.prog(t, 0.15, 0.4), M.prog(t, 0.35, 0.35),
-                        M.prog(t, 0.1, 0.4), M._punch(t, 0.25))
+        cv = panel_full(pn, 0.3 + 0.7 * t / dur, M.prog(t, 0.15, 0.45), M.prog(t, 0.45, 0.4),
+                        M.prog(t, 0.1, 0.5), M._punch(t, 0.3))
         bands_fast(cv)
         brand(cv)
-        put(cv, pill("सही जवाब", 54, (255, 255, 255), GREEN_C), W / 2, 210,
-            scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.25))))
-        if t >= 0.25:
-            km = M.ease_out_back(M.prog(t, 0.25, 0.25))
+        put(cv, pill("सही जवाब", 50, (255, 255, 255), GREEN_C), W / 2, 200,
+            scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
+        if t >= 0.3:
+            km = M.ease_out_back(M.prog(t, 0.3, 0.3))
             put(cv, M.check_sprite(160), W - 150, 390, scale=max(0.05, 1.6 - 0.6 * km))
-        caption(cv, sc["text"], (t - sc["lead"]) / max(0.3, sc["vd"]))
+            if t < 0.6:
+                put(cv, M.glow_sprite(560, M.GREEN, int(120 * (1 - (t - 0.3) / 0.3))), W / 2, 820)
+        src = pill(f"स्रोत: PO Guide Part I, Clause {self.cno}", 30, (255, 255, 255), NAVY, reg=True)
+        put(cv, src, W / 2, 292, alpha=M.clamp((t - 0.5) / 0.3))
+        p = (t - sc["lead"]) / max(0.3, sc["vd"])
+        caption(cv, sc["text"], p)
         return cv
 
-    def _blur(self, dark=0.62):
-        key = ("rule_bg", dark)
+    def _rule_base(self, t_rule):
+        key = ("rule_bg",)
         if key not in self._last:
-            self._last[key] = blurred_bg(self.ans_pn, dark)
+            self._last[key] = blurred_bg(self.ans_pn, 0.62)
         cv = self._last[key].copy()
         brand(cv)
-        return cv
+        card = rule_card(self.data["fact"], self.cno)
+        k = M.ease_out_cubic(M.clamp(t_rule / 0.3))
+        put(cv, card, W / 2, 330 + card.height / 2 + 40 * (1 - k), alpha=k)
+        return cv, 330 + card.height
 
-    # ---- niyam: pehle PO Guide ki asli line (bade akshar + highlighter), fir aasan Hindi
     def sc_rule(self, sc, t):
-        cv = self._blur()
-        t_hi = min(2.2, sc["dur"] * 0.45) if (self.proof and self.proof.card) else 0.0
-        if t < t_hi:
-            cf = self._card(t, 1.0)
-            put(cv, cf, W / 2, 780, alpha=M.clamp(t / 0.15))
-        else:
-            k = M.ease_out_cubic(M.clamp((t - t_hi) / 0.25))
-            put(cv, pill("आसान भाषा में", 50, (25, 25, 25), GOLD), W / 2, 330, scale=max(0.05, M.ease_out_back(min(1, k))))
-            card = rule_card(self.data["fact"], self.cno)
-            put(cv, card, W / 2, 420 + card.height / 2 + 40 * (1 - k), alpha=k)
-        caption(cv, sc["text"], (t - sc["lead"]) / max(0.3, sc["vd"]), cy=1560)
+        cv, _ = self._rule_base(t)
+        put(cv, pill("आसान भाषा में", 44, (25, 25, 25), GOLD), W / 2, 230,
+            scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
+        p = (t - sc["lead"]) / max(0.3, sc["vd"])
+        caption(cv, sc["text"], p, cy=1560)
         return cv
 
-    # ---- TRAP: thappa -> ❌ galat soch -> ✓ sahi baat (niyam card nahi - ek waqt me ek baat)
-    def sc_trap(self, sc, t, _unused=0.0):
-        cv = self._blur(0.66)
+    def sc_trap(self, sc, t, t_rule_total):
+        cv, card_bottom = self._rule_base(t_rule_total + t)
+        ks = M.prog(t, 0.0, 0.22)
         st = trap_stamp()
-        put(cv, st, W / 2, 330, scale=max(0.05, 1.8 - 0.8 * M.ease_out_cubic(M.prog(t, 0.0, 0.22))), angle=-4)
-        y = 720
+        put(cv, st, W / 2, 210, scale=max(0.05, 1.8 - 0.8 * M.ease_out_cubic(ks)), angle=-4)
+        y = card_bottom + 120
         if self.trap_pair:
             wrong, right = self.trap_pair
-            put(cv, trap_row(wrong, False), W / 2, y, scale=max(0.05, M.ease_out_back(M.prog(t, sc["lead"], 0.3))))
+            k1 = M.ease_out_back(M.prog(t, sc["lead"] + 0.1, 0.3))
+            put(cv, trap_row(wrong, False), W / 2, y, scale=max(0.05, k1))
             t2 = sc["lead"] + sc["vd"] * 0.45
-            put(cv, trap_row(right, True), W / 2, y + 210, scale=max(0.05, M.ease_out_back(M.prog(t, t2, 0.3))))
+            k2 = M.ease_out_back(M.prog(t, t2, 0.3))
+            put(cv, trap_row(right, True), W / 2, y + 190, scale=max(0.05, k2))
         else:
-            put(cv, trap_row(self.data["trap"], None), W / 2, y + 80,
-                scale=max(0.05, M.ease_out_back(M.prog(t, sc["lead"], 0.3))))
-        caption(cv, sc["text"], (t - sc["lead"]) / max(0.3, sc["vd"]), cy=1560)
+            k1 = M.ease_out_back(M.prog(t, sc["lead"] + 0.1, 0.3))
+            put(cv, trap_row(self.data["trap"], None), W / 2, y + 60, scale=max(0.05, k1))
+        p = (t - sc["lead"]) / max(0.3, sc["vd"])
+        caption(cv, sc["text"], p, cy=1600)
         return cv
 
-    # ---- asli paper ka sawal: sawal + 4 vikalp EK SAATH -> 3-2-1 -> sahi vikalp hara + answer key ka naam
     def sc_pyq(self, sc, t):
+        """Demo4 jaisa: asli paper ka sawal + 4 option + khaali hoti patti + 'जवाब कमेंट करो' + 'पाओ FREE PDF'. Jawab nahi."""
         it = self.pyq
-        rev = sc.get("rev")
         cv = _paper_bg().copy()
         d = ImageDraw.Draw(cv)
-        put(cv, pill("असली पेपर का सवाल", 52, (255, 255, 255), RED_C), W / 2, 190,
-            scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.25))))
+        k0 = M.ease_out_back(M.prog(t, 0.0, 0.3))
+        put(cv, pill("असली पेपर का सवाल", 50, (255, 255, 255), RED_C), W / 2, 190, scale=max(0.05, k0))
         ex = [e for e in (it.get("exams") or []) if e][:3]
         y = 268
         if ex:
-            d.text((W / 2, y), "  •  ".join(ex), font=font(36), fill=(150, 108, 0), anchor="mm")
-            y += 60
+            d.text((W / 2, y), "  •  ".join(ex), font=font(34), fill=(150, 108, 0), anchor="mm")
+            y += 58
         if self.pyq_related:
             put(cv, pill(f"इसी नियम पर पूछा गया  •  Clause {self.cno}", 30, NAVY, (255, 246, 214), GOLD, reg=True),
                 W / 2, y + 8)
             y += 76
-        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        dl = ImageDraw.Draw(lay)
-        f, s_, ls = fit_wrap(it["q"], 940, 64, 4, 42)
-        lh = int(s_ * 1.28)
-        y += 26
-        for ln in ls:
-            dl.text((W / 2, y + lh / 2), ln, font=f, fill=NAVY + (255,), anchor="mm")
-            y += lh
+        f, s_, ls = fit_wrap(it["q"], 940, 60, 4, 40)
+        lh = int(s_ * 1.3)
         y += 30
-        shown = rev is not None and t >= rev
-        rows_y = []
+        for ln in ls:
+            d.text((W / 2, y + lh / 2), ln, font=f, fill=NAVY, anchor="mm")
+            y += lh
+        y += 36
         for j, (L, o) in enumerate(zip("ABCD", it["opts"])):
-            state = ("right" if L == it["ans"] else "dim") if shown else "norm"
-            row = opt_row2(L, o, state)
-            sc_ = (1 + 0.05 * (1 - ease((t - rev) / 0.25))) if (shown and state == "right") else 1.0
-            put(lay, row, W / 2, y + row.height / 2, scale=sc_)
-            rows_y.append(y + row.height / 2)
+            kj = M.ease_out_cubic(M.prog(t, 0.15 + 0.08 * j, 0.22))
+            row = opt_row(L, o)
+            put(cv, row, W / 2 + 110 * (1 - kj), y + row.height / 2, alpha=kj)
             y += row.height + 14
-        k = M.ease_out_cubic(M.prog(t, 0.0, 0.18))
-        put(cv, lay, W / 2, H / 2 + 40 * (1 - k), alpha=k)
-        y = min(y + 70, 1600)
-        cd0 = sc["cd0"]
-        if cd0 <= t < cd0 + 3 * CD_STEP:
-            n = 3 - min(2, int((t - cd0) / CD_STEP))
-            kk = M.ease_out_back(M.prog(t, cd0 + (3 - n) * CD_STEP, 0.15))
-            put(cv, countdown(n), W / 2, y + 40, scale=max(0.05, 1.3 - 0.3 * kk))
-        if shown:
-            put(cv, M.check_sprite(110), W - 110, rows_y["ABCD".index(it["ans"])],
-                scale=max(0.05, M.ease_out_back(M.prog(t, rev, 0.2))))
-            src = "उत्तर कुंजी" + (f": {ex[0]}" if ex else "") + "  •  सही जवाब " + it["ans"]
-            put(cv, pill(src, 38, (255, 255, 255), NAVY, GOLD, reg=True), W / 2, y + 40,
-                scale=max(0.05, M.ease_out_back(M.prog(t, rev + 0.25, 0.2))))
-        elif rev is None and t >= cd0 + 3 * CD_STEP:
-            put(cv, pill("जवाब कमेंट करो", 52, (25, 25, 25), GOLD), W / 2, y + 40,
-                scale=max(0.05, M.ease_out_back(M.prog(t, cd0 + 3 * CD_STEP, 0.25))))
+        y = min(y + 40, 1560)
+        dur = sc["dur"]
+        left = M.clamp(1 - t / max(0.5, dur - 0.1))
+        col = RED_C if left < 0.3 else (215, 160, 20)
+        d.rounded_rectangle((90, y - 9, W - 90, y + 9), radius=9, fill=(222, 224, 232))
+        if left > 0:
+            d.rounded_rectangle((90, y - 9, 90 + (W - 180) * left, y + 9), radius=9, fill=col)
+        kc = M.ease_out_back(M.prog(t, 0.45, 0.3))
+        put(cv, pill("जवाब कमेंट करो", 48, (25, 25, 25), GOLD), W / 2, y + 95, scale=max(0.05, kc))
+        kp = M.ease_out_back(M.prog(t, 0.7, 0.3)) * (1 + 0.04 * math.sin(t * 7))
+        put(cv, pill(PDF_LINE, 52, (255, 255, 255), GREEN_C), W / 2, y + 205, scale=max(0.05, kp))
         return cv
 
-    # ---- ant: याद रखो (pramukh) -> chhota Follow -> chhota logo. Ek hi CTA.
     def sc_end(self, sc, t):
         key = ("end_bg",)
         if key not in self._last:
-            self._last[key] = blurred_bg(self.ans_pn, 0.68)
+            self._last[key] = blurred_bg(self.ans_pn, 0.66)
         cv = self._last[key].copy()
+        brand(cv)
         d = ImageDraw.Draw(cv)
-        put(cv, pill("याद रखो साथियों", 52, (25, 25, 25), GOLD), W / 2, 380,
-            scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.25))))
-        f, s_, ls = fit_wrap(self.data.get("yaad") or self.data["fact"], 980, 92, 3, 56)
-        y0 = 540
+        put(cv, pill("याद रखो साथियों", 46, (25, 25, 25), GOLD), W / 2, 330,
+            scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
+        f, s_, ls = fit_wrap(self.data.get("yaad") or self.data["fact"], 960, 76, 3, 46)
+        y0 = 470
         for i, ln in enumerate(ls):
-            stroke_text(d, (W / 2, y0 + i * int(s_ * 1.25)), ln, f, (255, 255, 255), 8)
-        yb = y0 + len(ls) * int(s_ * 1.25) + 120
-        put(cv, pill("ऐसे और Postal Exam सवालों के लिए  FOLLOW करो", 42, (25, 25, 25), GOLD), W / 2, yb,
-            scale=max(0.05, M.ease_out_back(M.prog(t, 0.7, 0.25))))
-        put(cv, pill("POSTAL WALA", 34, GOLD, NAVY, GOLD), W / 2, yb + 120,
-            scale=max(0.05, M.ease_out_back(M.prog(t, 1.5, 0.25))))
+            stroke_text(d, (W / 2, y0 + i * int(s_ * 1.28)), ln, f, (255, 255, 255), 7)
+        yb = y0 + len(ls) * int(s_ * 1.28) + 150
+        ksh = M.ease_out_back(M.prog(t, 0.35, 0.3))
+        put(cv, share_btn(), W / 2, yb, scale=max(0.05, ksh) * (1 + 0.03 * math.sin(t * 6)))
+        put(cv, pill("इसी नियम के और असली सवाल  →  अगली रील", 38, (255, 255, 255), NAVY, GOLD), W / 2, yb + 200,
+            alpha=M.clamp((t - 0.6) / 0.25))
+        put(cv, pill(f"कल: गलती #{self.ep + 1}", 40, (255, 255, 255), RED_C), W / 2, yb + 320,
+            alpha=M.clamp((t - 0.8) / 0.25))
         return cv
 
     def frame(self, tl, gt):
@@ -1038,8 +932,8 @@ class Reel:
     def render(self, tl, si, t):
         sc = tl[si]
         n = sc["name"]
-        if n == "hook":
-            return self.sc_hook(sc, t)
+        if n == "proof":
+            return self.sc_proof(sc, t)
         if n.startswith("s"):
             return self.sc_story(sc, t, int(n[1:]))
         if n == "ruko":
@@ -1049,35 +943,11 @@ class Reel:
         if n == "rule":
             return self.sc_rule(sc, t)
         if n == "trap":
-            return self.sc_trap(sc, t)
+            rule = next((x for x in tl if x["name"] == "rule"), None)
+            return self.sc_trap(sc, t, rule["dur"] if rule else 1.0)
         if n == "pyq":
             return self.sc_pyq(sc, t)
         return self.sc_end(sc, t)
-
-
-@lru_cache(maxsize=32)
-def opt_row2(letter, text, state):
-    """Vikalp ki patti: norm / right (hara + ✓ jagah) / dim (feeka)."""
-    w = 940
-    f, s_, ls = fit_wrap(text, w - 170, 50, 2, 34, reg=True)
-    lh = int(s_ * 1.25)
-    h = max(112, 36 + len(ls) * lh)
-    fill = (222, 248, 230) if state == "right" else (255, 255, 255)
-    border = GREEN_C if state == "right" else (222, 224, 232)
-    txt = (165, 170, 185) if state == "dim" else (25, 30, 45)
-    im = Image.new("RGBA", (w + 16, h + 16), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.rounded_rectangle((8, 12, 8 + w, 12 + h), radius=22, fill=(0, 0, 0, 30))
-    d.rounded_rectangle((8, 8, 8 + w, 8 + h), radius=22, fill=fill + (255,), outline=border + (255,),
-                        width=7 if state == "right" else 3)
-    d.ellipse((34, 8 + h / 2 - 32, 98, 8 + h / 2 + 32), fill=(GREEN_C if state == "right" else NAVY) + (255,))
-    d.text((66, 8 + h / 2), letter, font=font(38), fill=(255, 255, 255, 255) if state == "right" else (255, 214, 40, 255),
-           anchor="mm")
-    y = 8 + (h - len(ls) * lh) / 2
-    for ln in ls:
-        d.text((130, y + lh / 2), ln, font=f, fill=txt + (255,), anchor="lm")
-        y += lh
-    return im
 
 
 @lru_cache(maxsize=2)
@@ -1114,7 +984,7 @@ def trap_stamp():
 @lru_cache(maxsize=16)
 def rule_card(fact, clause_no):
     w = 980
-    f, s_, ls = fit_wrap(fact, w - 100, 66, 5, 42)
+    f, s_, ls = fit_wrap(fact, w - 100, 54, 5, 36)
     lh = int(s_ * 1.32)
     h = 120 + len(ls) * lh + 80
     im = Image.new("RGBA", (w + 24, h + 30), (0, 0, 0, 0))
@@ -1135,9 +1005,9 @@ def rule_card(fact, clause_no):
 @lru_cache(maxsize=16)
 def trap_row(text, good):
     w = 980
-    f, s_, ls = fit_wrap(text, w - 200, 58, 3, 38)
+    f, s_, ls = fit_wrap(text, w - 200, 50, 2, 34)
     lh = int(s_ * 1.25)
-    h = max(160, 56 + len(ls) * lh)
+    h = max(150, 50 + len(ls) * lh)
     col = GREEN_C if good else (RED_C if good is False else (230, 140, 20))
     fill = (225, 250, 232) if good else ((255, 228, 230) if good is False else (255, 240, 210))
     im = Image.new("RGBA", (w + 24, h + 24), (0, 0, 0, 0))
@@ -1188,11 +1058,11 @@ def build_audio(tl, total, path):
         s, nm = sc["start"], sc["name"]
         if i > 0 and nm != "trap":
             M.add_at(buf, M.sfx_whoosh(0.3, 0.32), max(0.0, s - 0.12), 0.9)
-        if nm == "hook":
-            M.add_at(buf, M.sfx_whoosh(0.3, 0.35), s)
-            M.add_at(buf, M.sfx_thud(0.8), s + 0.5)                  # sawal aate hi
-            M.add_at(buf, M.sfx_pop(0.4), s + 1.5)
-            M.add_at(buf, M.sfx_riser(0.6, 0.1), s + 2.2)
+        if nm == "proof":
+            M.add_at(buf, M.sfx_pop(0.4), s + 0.05)
+            M.add_at(buf, M.sfx_riser(0.9, 0.12), s + 0.2)
+        elif nm.startswith("s") and i == 0:
+            M.add_at(buf, M.sfx_thud(0.7), s)
         elif nm == "ruko":
             M.add_at(buf, M.sfx_thud(0.8), s + 0.02)
             for k in range(3):
@@ -1208,13 +1078,9 @@ def build_audio(tl, total, path):
             M.add_at(buf, M.sfx_buzz(0.22), s + sc["lead"] + 0.1)
         elif nm == "pyq":
             M.add_at(buf, M.sfx_pop(0.36), s + 0.05)
-            for k in range(3):
-                M.add_at(buf, M.sfx_tick(0.5), s + sc["cd0"] + k * CD_STEP)
-            if sc.get("rev") is not None:
-                M.add_at(buf, M.sfx_ding(0.55), s + sc["rev"])
-                M.add_at(vt, sc["audio2"], s + sc["rev"] + 0.05)
+            M.add_at(buf, M.sfx_pop(0.3), s + 0.72)          # 'पाओ FREE PDF'
         elif nm == "end":
-            M.add_at(buf, M.sfx_pop(0.4), s + 0.7)
+            M.add_at(buf, M.sfx_pop(0.4), s + 0.35)
     # ❌ wale chitra pe buzz
     for sc in tl:
         if sc["name"].startswith("s") and sc.get("wrong"):
@@ -1268,7 +1134,7 @@ def build(data, out, plan=None, part=None):
     tl, total = plan_timeline(specs, voices, data)
     for sc in tl:
         if sc["name"].startswith("s"):
-            sc["wrong"] = any(p.get("mark") == "wrong" for p in story)
+            sc["wrong"] = story[int(sc["name"][1:])].get("mark") == "wrong"
     print("  NAYA TIMELINE (drishya | shuru | lambai | awaaz)")
     for sc in tl:
         print(f"  {sc['name']:<6} {sc['start']:5.2f}s  {sc['dur']:4.2f}s  voice {sc['vd']:4.2f}s")
