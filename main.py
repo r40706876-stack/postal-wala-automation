@@ -4295,8 +4295,8 @@ def plan_path(num):
 # RESTART_ROUND badhao + RESTART_FROM_CLAUSE likho -> agli run clause RESTART_FROM_CLAUSE part 1 se shuru.
 # Us clause aur aage ke purane daur me publish hue parts "baaki" maane jaate hain (dobara naye format me banenge);
 # unka purana record "published_prev" me rehta hai (mitaya nahi jaata). Pichhle clauses nahi chhede jaate.
-RESTART_ROUND = int(os.getenv("RESTART_ROUND", "19"))
-RESTART_FROM_CLAUSE = int(os.getenv("RESTART_FROM_CLAUSE", "22"))
+RESTART_ROUND = int(os.getenv("RESTART_ROUND", "20"))          # v21: naya format (user ne clause 24 part 2 se manga)
+RESTART_FROM_CLAUSE = int(os.getenv("RESTART_FROM_CLAUSE", "24"))
 RESTART_FROM_PART = int(os.getenv("RESTART_FROM_PART", "2"))   # is clause ke isse pehle ke parts = post ho chuke (user ne daale)
 
 
@@ -9855,7 +9855,13 @@ USE_DRAW = os.getenv("USE_DRAW", "0") != "0"   # AI-aakaron wali drawing (kamzor
 USE_ICON_KITS = os.getenv("USE_ICON_KITS", "0") != "0"   # purani icon-kahani (kamzor) - band; sirf drawing/lifaafa/pata       # har niyam ka apna AI-drawn chitra (aankh-jaanch ke saath)
 SHOW_COURSE_PROGRESS = False   # "PO Guide पूरा कोर्स: Clause X / N" (user ne hataya)
 REQUIRE_CHITRA = os.getenv("REQUIRE_CHITRA", "1") != "0"   # 1 = sahi chitra ke bina reel NAHI (5 koshish/run, har baar galti sudhaar)
-ENGINE_VERSION = "v20.3 (2026-10-14): chitra me camera-harkat + chamak + gubbara uchhle + tez zoom + PYQ sawal bole + rotation se female awaaz hati (sirf purush) + fallback Madhur + Gemini 3 mauke + v20.2: andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
+# v21 NAYA FORMAT (naya_reel.py): asli PO Guide panna -> POV kahani -> रुको/3-2-1 -> jawab ✓ -> niyam card -> TRAP ❌/✓ ->
+# share/कल. Fail ho to purana format (neeche wala, chheda nahi gaya). 0 = purana hi.
+NAYA_FORMAT = os.getenv("NAYA_FORMAT", "1") != "0"
+# har niyam reel ke baad usi niyam ke ASLI pichhle paper ke sawal ki alag reel (pyq_reel.py wala step banata hai)
+PYQ_COMPANION = os.getenv("PYQ_COMPANION", "1") != "0"
+PYQ_QUEUE = os.path.join(OUTPUT_DIR, "pyq", "companion_queue.json")
+ENGINE_VERSION = "v21 (2026-10-14): naya format (asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल) + har niyam reel ke saath asli PYQ reel + clause 24 part 2 se dobara + v20.3:chitra me camera-harkat + chamak + gubbara uchhle + tez zoom + PYQ sawal bole + rotation se female awaaz hati (sirf purush) + fallback Madhur + Gemini 3 mauke + v20.2: andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
 
 
 def place_flip(canvas, front, back, cx, cy, p, scale=1.0):
@@ -11473,6 +11479,7 @@ def write_caption(data, path):
         "✅ 100% Exam Oriented | GDS से MTS / Postman / PA परीक्षा के लिए",
         "🎨 रोज़ शाम 5 बजे: PO Guide का एक नियम चित्रों से आसान भाषा में",
         "🌅 रोज़ सुबह 9 बजे: पिछले साल के असली पेपर (PYQ) के 3 सवाल - जवाब कमेंट में",
+        ] + (["📝 इसी नियम पर पूछे गए असली पेपर के सवाल: अगली रील में 👉"] if data.get("naya") and PYQ_COMPANION else []) + [
         "",
         HASHTAGS,
         "",
@@ -12137,6 +12144,30 @@ def list_clauses():
 MAX_NEW_PLANS_PER_RUN = 2
 
 
+def enqueue_pyq(plan, part, num, part_no, out):
+    """Is niyam reel ki saathi PYQ reel line me (pyq_reel.py wala step usi run me banata hai)."""
+    q = []
+    if os.path.exists(PYQ_QUEUE):
+        try:
+            with open(PYQ_QUEUE, encoding="utf-8") as f:
+                q = json.load(f)
+        except Exception:
+            q = []
+    en = part.get("en") if isinstance(part.get("en"), dict) else {}
+    q.append({
+        "clause": int(num), "part_index": plan["parts"].index(part), "part_no": int(part_no),
+        "reel": os.path.basename(out), "question": part.get("question", ""), "fact": part.get("fact", ""),
+        "answer": part.get(str(part.get("correct", "")).lower(), "") if part.get("correct") else "",
+        "en_question": en.get("question", ""), "en_fact": en.get("fact", ""),
+        "source_quote": part.get("source_quote", ""), "trap_quote": part.get("trap_quote", ""),
+        "guide_line": (part.get("guide_line_v") or {}).get("sentence", ""), "done": False,
+    })
+    os.makedirs(os.path.dirname(PYQ_QUEUE), exist_ok=True)
+    with open(PYQ_QUEUE, "w", encoding="utf-8") as f:
+        json.dump(q, f, ensure_ascii=False, indent=2)
+    print(f"PYQ line-up: Clause {num} Part {part_no} ki saathi PYQ reel agle step me banegi")
+
+
 def run_daily():
     print("=" * 60)
     print(f"POSTAL WALA ENGINE: {ENGINE_VERSION}")
@@ -12355,7 +12386,28 @@ def run_daily():
         k_ += 1
     _VOICE_FLAGS["allow_edge"] = int(state.get("voice_fail_runs", 0)) >= VOICE_FAIL_MAX
     try:
-        build_reel(data, out)
+        naya_ok = False
+        if NAYA_FORMAT:
+            try:
+                import naya_reel
+                naya_reel.init(sys.modules[__name__])
+                if naya_reel.usable(data):
+                    naya_reel.build(data, out, plan, part)
+                    naya_ok = True
+                else:
+                    print("Naya format: is part ka photo-chitra nahi -> purana format")
+            except VoiceUnavailable:
+                raise
+            except Exception as exc:
+                import traceback
+                traceback.print_exc()
+                print(f"NAYA FORMAT nahi bana ({type(exc).__name__}: {str(exc)[:200]}) -> aaj purane format se reel "
+                      "(koi din khaali nahi). Ye log Claude ko bhejiye.")
+        if naya_ok:
+            data["bonus"] = None                         # naye format me bonus screen nahi (caption me bhi nahi)
+            data["naya"] = True
+        else:
+            build_reel(data, out)
     except VoiceUnavailable as exc:
         state["voice_fail_runs"] = int(state.get("voice_fail_runs", 0)) + 1
         save_state(state)
@@ -12386,6 +12438,11 @@ def run_daily():
         except OSError:
             pass
     remember_reel(out)
+    if PYQ_COMPANION:
+        try:
+            enqueue_pyq(plan, part, num, part_no, out)
+        except Exception as exc:
+            print("PYQ line-up me nahi gaya (series pe asar nahi):", str(exc)[:150])
     state["episode"] = data["episode"]
     save_state(state)
     if voice_entry:

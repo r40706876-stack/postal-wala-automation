@@ -34,7 +34,7 @@ jobs:
         timeout-minutes: 10
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation libraqm0
+          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation libraqm0 poppler-utils
 
       - name: Install Python Packages
         run: |

@@ -19,6 +19,7 @@ import csv
 import datetime
 import json
 import math
+import re
 import os
 import subprocess
 import sys
@@ -52,6 +53,9 @@ GREYT = (98, 108, 128)
 LINEC = (222, 224, 232)
 RED = (214, 48, 49)
 TOP_LINE = "जवाब: पिन कमेंट में   •   शाम 5 बजे: चित्रों से आसान नियम"
+# screen ki likhai (saathi-PYQ reel me badli jaati hai)
+TXT_DAILY = {"top": TOP_LINE, "end2": "शाम 5 बजे: नियम चित्रों से आसान भाषा में", "host": "कल सुबह 9 बजे: नए 3 सवाल!"}
+TXT = dict(TXT_DAILY)
 
 HOOK_VOICES = [
     {"id": "A", "voice": "तीन सवाल, दस सेकंड!"},
@@ -350,8 +354,8 @@ def header(cv, k_cur, cur, n):
     d.text((178, 78), "POSTAL WALA", font=M.get_font(44), fill=NAVY, anchor="lm")
     d.text((180, 124), "PYQ टेस्ट सीरीज़ · GDS → MTS / Postman", font=M.get_font_reg(30), fill=GREYT, anchor="lm")
     M.place(cv, pill("असली पेपर", 30, NAVY, GOLD_L, GOLD), W - 150, 92)
-    f, s_, ls = M.fit_lines(TOP_LINE, 1000, 1, 36, 26)
-    d.text((W / 2, 196), " ".join(ls[0]) if ls else TOP_LINE, font=f, fill=NAVY2, anchor="mm")
+    f, s_, ls = M.fit_lines(TXT["top"], 1000, 1, 36, 26)
+    d.text((W / 2, 196), " ".join(ls[0]) if ls else TXT["top"], font=f, fill=NAVY2, anchor="mm")
     x0, x1, y = 48, W - 48, 262
     gap = 14
     seg = (x1 - x0 - gap * (n - 1)) / n
@@ -465,17 +469,18 @@ def scene_end(data, t):
         ImageDraw.Draw(box).text((box.width / 2, box.height / 2), f"{j + 1} - ?", font=M.get_font(62), fill=NAVY,
                                  anchor="mm")
         M.place(cv, box, W / 2 + (j - (n - 1) / 2) * 290, 790, scale=max(0.05, kj))
-    d.text((W / 2, 930), "ऐसे लिखो:  1-B  2-A  3-D", font=M.get_font_reg(42), fill=GREYT, anchor="mm")
+    eg = "ऐसे लिखो:  B" if n == 1 else ("ऐसे लिखो:  1-B  2-A" if n == 2 else "ऐसे लिखो:  1-B  2-A  3-D")
+    d.text((W / 2, 930), eg, font=M.get_font_reg(42), fill=GREYT, anchor="mm")
     k2 = M.ease_out_back(M.clamp((t - 0.35) / 0.2))
     M.place(cv, pill("सही जवाब: पिन कमेंट में", 54, (255, 255, 255), RED), W / 2, 1080, scale=max(0.05, k2))
     lay = Image.new("RGBA", (W, 200), (0, 0, 0, 0))
     ld = ImageDraw.Draw(lay)
     ld.text((W / 2, 50), "SAVE करो · परीक्षा से पहले दोहराना", font=M.get_font(46), fill=NAVY, anchor="mm")
-    ld.text((W / 2, 130), "शाम 5 बजे: नियम चित्रों से आसान भाषा में", font=M.get_font_reg(40), fill=(150, 108, 0),
+    ld.text((W / 2, 130), TXT["end2"], font=M.get_font_reg(40), fill=(150, 108, 0),
             anchor="mm")
     M.place(cv, lay, W / 2, 1270, alpha=M.clamp((t - 0.5) / 0.2))
     if M.host_ready():
-        M.host_bubble(cv, "कल सुबह 9 बजे: नए 3 सवाल!", t, 0.6, 1600, "batata")
+        M.host_bubble(cv, TXT["host"], t, 0.6, 1600, "batata")
     return cv
 
 
@@ -625,7 +630,267 @@ def run(force=False):
     log_experiment(data, out, total)
 
 
+# ================================================================== SAATHI PYQ REEL (v21)
+# Har niyam-reel ke baad: USI niyam pe pichhle saal ke ASLI paper me poochhe gaye sawal (pyq_papers ki PDF se).
+# Mile -> 1-3 sawal. Na mile -> bank ka jaancha hua set (tab reel "isi niyam" ka daava NAHI karti).
+# Jawab reel me kabhi nahi - sirf PIN comment (caption me taiyar).
+
+PAPER_DIR = "pyq_papers"
+STATES = [("andhra", "आंध्र प्रदेश"), ("ap-", "आंध्र प्रदेश"), ("assam", "असम"), ("asm-", "असम"), ("bihar", "बिहार"),
+          ("bh-", "बिहार"), ("chhattisgarh", "छत्तीसगढ़"), ("cg-", "छत्तीसगढ़"), ("delhi", "दिल्ली"), ("dl-", "दिल्ली"),
+          ("gujrat", "गुजरात"), ("gujarat", "गुजरात"), ("gj-", "गुजरात"), ("haryana", "हरियाणा"), ("hr-", "हरियाणा"),
+          ("himac", "हिमाचल प्रदेश"), ("j & k", "जम्मू-कश्मीर"), ("jharkhand", "झारखंड"), ("karnataka", "कर्नाटक"),
+          ("kerala", "केरल"), ("krl-", "केरल"), ("madhya", "मध्य प्रदेश"), ("mp-", "मध्य प्रदेश"),
+          ("maharas", "महाराष्ट्र"), ("mh-", "महाराष्ट्र"), ("north east", "नॉर्थ ईस्ट"), ("odisha", "ओडिशा"),
+          ("punjab", "पंजाब"), ("rajasthan", "राजस्थान"), ("tamil", "तमिलनाडु"), ("telangana", "तेलंगाना"),
+          ("uttar pardesh", "उत्तर प्रदेश"), ("uttar pradesh", "उत्तर प्रदेश"), ("uttarakh", "उत्तराखंड"),
+          ("uttrakh", "उत्तराखंड"), ("west bengal", "पश्चिम बंगाल")]
+STOP = set("""the a an of to in on for and or is are be by with as at from that this which should shall will may
+not any all such other than their its it into also must can only per post office offices postal article articles
+following given above none both these those what when who whom how mail letter""".split())
+SAATHI_MAX = 3
+
+
+def paper_label(fn):
+    low = fn.lower()
+    st = next((h for k, h in STATES if k in low), "")
+    yr = re.search(r"20\d\d", fn)
+    return (f"{st} {yr.group()}" if st and yr else (st or (yr.group() if yr else "MTS/Postman पेपर"))).strip()
+
+
+_IDX = []
+
+
+def paper_index():
+    """Har paper ke English sawal (tukde) + uski answer key ka hissa. Ek run me ek baar."""
+    if _IDX:
+        return _IDX
+    for fn in sorted(os.listdir(PAPER_DIR)):
+        if not fn.lower().endswith(".pdf") or "math" in fn.lower():
+            continue
+        try:
+            txt = subprocess.run(["pdftotext", os.path.join(PAPER_DIR, fn), "-"], capture_output=True,
+                                 text=True, timeout=60).stdout
+        except Exception:
+            continue
+        km = re.search(r"(?i)(ans(wer)?\.?\s*key|\{ans key\}|key\s*:)", txt)
+        key = txt[km.start(): km.start() + 1600] if km else ""
+        body = txt[: km.start()] if km else txt
+        # 'MTS + Postman 2022' wali kuch PDF ki key sawalon se mel nahi khaati (bank note) -> key pe bharosa nahi
+        trust = not ("mts + postman 2022" in fn.lower() or "mts+postman 2022" in fn.lower())
+        parts = re.split(r"(?m)^\s*(?:Q\.?\s*)?(\d{1,3})\s*[).]?\s+(?=[A-Z“\"'(])", body)
+        for i in range(1, len(parts) - 1, 2):
+            no, blk = parts[i], " ".join(parts[i + 1].split())[:700]
+            letters = re.findall(r"[A-Za-zऀ-ॿ]", blk)
+            if len(blk) < 25 or not letters or sum(c.isascii() for c in letters) / len(letters) < 0.8:
+                continue
+            _IDX.append({"file": fn, "exam": paper_label(fn), "no": int(no), "text": blk,
+                         "key": key if trust else "", "trust": trust})
+    print(f"PYQ papers: {len(_IDX)} English sawal-tukde index me")
+    return _IDX
+
+
+def _words(s):
+    return [w for w in re.findall(r"[a-z0-9]+", (s or "").lower().replace("-", "")) if len(w) >= 3 and w not in STOP]
+
+
+def candidates(entry, k=24):
+    idx = paper_index()
+    if not idx:
+        return []
+    src = " ".join([entry.get("guide_line") or "", entry.get("en_question") or "", entry.get("en_fact") or "",
+                    entry.get("source_quote") if re.search(r"[A-Za-z]{4}", entry.get("source_quote") or "") else "",
+                    entry.get("trap_quote") or ""])
+    kw = set(_words(src))
+    if not kw:
+        return []
+    df = {}
+    for it in idx:
+        for w_ in set(_words(it["text"])):
+            df[w_] = df.get(w_, 0) + 1
+    N = len(idx)
+    scored = []
+    for it in idx:
+        ws = set(_words(it["text"])) & kw
+        sc = sum(math.log(N / (1 + df.get(w_, 0))) for w_ in ws)
+        if len(ws) >= 2 and sc >= 6.0:
+            scored.append((sc, it))
+    scored.sort(key=lambda x: -x[0])
+    out, seen = [], {}
+    for sc, it in scored:
+        sig = " ".join(_words(it["text"])[:10])
+        if sig in seen:                                  # wahi sawal doosre paper me -> pariksha jod do
+            if it["exam"] not in seen[sig]["exams"]:
+                seen[sig]["exams"].append(it["exam"])
+            continue
+        c = dict(it, id=f"c{len(out) + 1}", exams=[it["exam"]])
+        seen[sig] = c
+        out.append(c)
+        if len(out) >= k:
+            break
+    return out
+
+
+PICK_PROMPT = """You check REAL previous-year India Post departmental exam questions (GDS to MTS/Postman) for ONE rule.
+
+THE RULE (PO Guide Part I, Clause {clause}):
+English source line: {guide}
+Hindi rule taught in our reel: {fact}
+Our reel's question (Hindi): {question}  | correct answer: {answer}
+
+Below are question snippets copied from real exam papers (with the paper's answer key text when available).
+Pick at most {n} questions whose correct answer is DECIDED BY THIS SAME RULE (not just the same topic).
+Strict rules:
+- Use the question and its 4 options exactly as in the paper (fix only obvious OCR spacing). Never invent options.
+- Find the answer letter in that paper's answer key for that question number when the key is given.
+  The answer MUST also agree with the rule. If key and rule disagree, or you are not sure, SKIP the question.
+  If no key is given, include it only if the rule alone makes the answer 100% certain.
+- Translate question and options into simple, correct Hindi (Devanagari) without changing meaning
+  (keep English terms like 'Letter', PIN, APO as they are).
+- Do not include two questions that are the same.
+
+Snippets:
+{snips}
+
+Return JSON: {{"items": [{{"id": "c1", "q_en": "...", "q": "<Hindi question>", "opts": ["<A>", "<B>", "<C>", "<D>"],
+"ans": "A|B|C|D", "why": "<one line: how the rule decides it>"}}]}}  (empty list if none fits)"""
+
+
+def find_pyq(entry):
+    cands = candidates(entry)
+    if not cands or M.DRY_RUN:
+        print(f"PYQ saathi: is niyam ke {len(cands)} sambhavit sawal" + (" (DRY_RUN: AI jaanch nahi)" if M.DRY_RUN else ""))
+        return []
+    keys = {}
+    for c in cands:
+        if c["key"]:
+            keys.setdefault(c["file"], c["key"])
+    snips = "\n".join(
+        f'[{c["id"]}] paper="{c["file"]}" Q.no {c["no"]}: {c["text"]}' for c in cands) + "\n\nANSWER KEYS:\n" + \
+        "\n".join(f'paper="{f}": {" ".join(k.split())[:900]}' for f, k in keys.items())
+    prompt = PICK_PROMPT.format(clause=entry.get("clause"), guide=entry.get("guide_line") or entry.get("source_quote"),
+                                fact=entry.get("fact"), question=entry.get("question"), answer=entry.get("answer"),
+                                n=SAATHI_MAX, snips=snips)
+    try:
+        js = M._llm_json(prompt, only="gemini") if M.GEMINI_API_KEY else M._llm_json(prompt)
+    except Exception as exc:
+        print("PYQ saathi: AI jaanch nahi hui:", str(exc)[:150])
+        return []
+    by = {c["id"]: c for c in cands}
+    items = []
+    for x in (js or {}).get("items") or []:
+        c = by.get(str(x.get("id")))
+        opts = [str(o).strip() for o in (x.get("opts") or [])]
+        ans = str(x.get("ans") or "").strip().upper()[:1]
+        q = " ".join(str(x.get("q") or "").split())
+        if not c or len(opts) != 4 or ans not in "ABCD" or not ans or not q or not all(opts):
+            continue
+        items.append({"id": f"saathi_{entry['clause']}_{entry['part_no']}_{len(items) + 1}", "q": q, "opts": opts,
+                      "ans": ans, "exams": c["exams"], "q_en": x.get("q_en", ""), "why": x.get("why", "")})
+        if len(items) >= SAATHI_MAX:
+            break
+    print(f"PYQ saathi: {len(items)} asli sawal is niyam pe mile")
+    return items
+
+
+def write_saathi_caption(data, path, entry, related):
+    items = data["items"]
+    n = len(items)
+    pin = "  ".join(f"{k + 1}-{it['ans']}" for k, it in enumerate(items)) if n > 1 else items[0]["ans"]
+    ex_all = sorted({e for it in items for e in it.get("exams") or []})
+    head = (f"GDS to MTS / Postman | Clause {entry['clause']} के नियम पर पूछे गए असली सवाल (PYQ)" if related else
+            f"GDS to MTS / Postman | पिछले साल के {n} असली सवाल (PYQ)")
+    lines = [
+        head, "",
+        "जवाब कमेंट में लिखो · रील रोककर पढ़ सकते हो", "सही जवाब पिन कमेंट में 📌", "",
+        "📝 स्रोत: विभागीय परीक्षा प्रश्नपत्र (" + ", ".join(ex_all[:8]) + (" ..." if len(ex_all) > 8 else "") + ")",
+        "🎨 ये नियम चित्रों से: पिछली रील में", "🔖 SAVE करो - परीक्षा से पहले दोहराना",
+        f"🎯 FREE MOCK TEST चाहिए? कमेंट करें: {M.MOCK_KEYWORD}", "",
+        M.HASHTAGS + " #gdsexam #pyq #postalexam", "",
+        "----- PIN करने वाला पहला कमेंट (reel डालने के 1 घंटे बाद पिन करें) -----",
+        f"✅ सही जवाब: {pin}",
+        *[f"{k + 1}. {it['q']} → {it['ans']}) {ans_text(it)}  [पूछा गया: {exams_line(it.get('exams') or [], 3)}]"
+          for k, it in enumerate(items)],
+    ]
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print("Caption:", path)
+
+
+def saathi_run(max_n=2):
+    """Line me pade niyam-reels ki saathi PYQ reel (series ke turant baad, usi run me)."""
+    qpath = getattr(M, "PYQ_QUEUE", os.path.join(M.OUTPUT_DIR, "pyq", "companion_queue.json"))
+    if not os.path.exists(qpath):
+        return
+    with open(qpath, encoding="utf-8") as f:
+        queue = json.load(f)
+    todo = [e for e in queue if not e.get("done")]
+    if not todo:
+        return
+    st = load_state()
+    for entry in todo[:max_n]:
+        tag = f"Clause {entry['clause']} Part {entry['part_no']}"
+        print(f"\nSAATHI PYQ: {tag}")
+        items = find_pyq(entry)
+        related = bool(items)
+        bank_key = None
+        if not items:
+            bank_key, items = pick_set(st)
+            if not items:
+                print("PYQ saathi: na niyam ka sawal mila, na bank me set bacha - is niyam ki PYQ reel nahi")
+                entry["done"] = "skip"
+                continue
+            print(f"PYQ saathi: niyam ka asli sawal nahi mila -> bank set {bank_key} (reel 'isi niyam' nahi kahegi)")
+        TXT.clear()
+        TXT.update({"top": ("इसी नियम पर असली पेपर में पूछा गया" if related else "पिछले साल के असली पेपर से") +
+                           "   •   जवाब: पिन कमेंट में",
+                    "end2": "ये नियम चित्रों से: पिछली रील में",
+                    "host": "कल: अगला नियम + उसका असली सवाल!"})
+        pdate = post_date_now()
+        mon = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+        dd = datetime.date.fromisoformat(pdate)
+        data = {"items": items, "hook": HOOK_VOICES[0], "post_date": pdate,
+                "pm_date": f"{dd.day:02d} {mon[dd.month - 1]} {dd.year % 100:02d}"}
+        out = os.path.join(M.OUTPUT_DIR, f"pyq_clause_{entry['clause']}_part_{entry['part_no']}.mp4")
+        k = 2
+        while os.path.exists(out) and not M.DRY_RUN:
+            out = os.path.join(M.OUTPUT_DIR, f"pyq_clause_{entry['clause']}_part_{entry['part_no']}_v{k}.mp4")
+            k += 1
+        try:
+            build_video(data, out)
+            write_saathi_caption(data, out.replace(".mp4", "_caption.txt"), entry, related)
+        finally:
+            TXT.clear()
+            TXT.update(TXT_DAILY)
+        if M.DRY_RUN:
+            continue
+        entry["done"] = True
+        entry["pyq_reel"] = os.path.basename(out)
+        entry["related"] = related
+        if bank_key:
+            st.setdefault("done_sets", []).append(bank_key)
+            save_state(st)
+        try:                                            # mile sawal plan me bhi (dobara AI nahi)
+            plan = M.load_plan(entry["clause"])
+            if plan and related:
+                plan["parts"][entry["part_index"]]["pyq_v"] = {"items": items}
+                M.save_plan(plan)
+        except Exception:
+            pass
+        with open(qpath, "w", encoding="utf-8") as f:
+            json.dump(queue, f, ensure_ascii=False, indent=2)
+    if not M.DRY_RUN:
+        with open(qpath, "w", encoding="utf-8") as f:
+            json.dump(queue, f, ensure_ascii=False, indent=2)
+
+
 if __name__ == "__main__":
+    try:
+        saathi_run()
+    except Exception as exc:                      # roz ki PYQ / series kabhi na ruke
+        import traceback
+        traceback.print_exc()
+        print(f"Saathi PYQ reel nahi bani ({type(exc).__name__}: {str(exc)[:200]}) - agli run me dobara")
     try:
         run(force="--force" in sys.argv[1:])
     except Exception as exc:                      # shaam wali series kabhi na ruke
