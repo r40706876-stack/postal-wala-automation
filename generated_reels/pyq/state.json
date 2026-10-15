@@ -7,7 +7,8 @@
     "transit_mo|rlo|face",
     "navy_fmo|aps_delhi|upu_1874",
     "sp_division|postbox_circle|bo_reg_parcel_10",
-    "vp_demurrage_7|insured_reg|bo_no_foreign"
+    "vp_demurrage_7|insured_reg|bo_no_foreign",
+    "franked_letterbox|franking_any|revenue_unpaid"
   ],
   "made": {
     "2026-10-09": "pyq_2026-10-09.mp4",
