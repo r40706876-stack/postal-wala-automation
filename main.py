@@ -181,6 +181,7 @@ MAKE_COVER = False
 
 IG_HANDLE = "@POSTAL_WALA"
 MOCK_KEYWORD = "MOCK"          # comment me ye likhne pe aap free mock test bhejenge
+PDF_KEYWORD = "PDF"            # naye format ki reel ke ant ka sawal: jawab + PDF likhne pe aap FREE PDF bhejenge
 # Instagram ab ek post me sirf 5 hashtag leta hai - zyada = nuksaan
 HASHTAGS = "#gdstomts #postmanexam #mtsexam #poguide #indiapost"
 
@@ -11465,12 +11466,23 @@ def find_teaser(plan, part, nxt):
 def write_caption(data, path):
     """Instagram caption: pehli line search ke liye, jawab nahi batati (spoiler nahi)."""
     en_q = data.get("en_question", "")
+    npq = data.get("naya_pyq") or {}
+    pyq_top, pyq_pin = [], []
+    if npq.get("q") and npq.get("ans") in ("A", "B", "C", "D"):
+        ex_ = ", ".join((npq.get("exams") or [])[:4])
+        pyq_top = [f"📝 रील के आखिर का असली पेपर सवाल{' (' + ex_ + ')' if ex_ else ''}: जवाब कमेंट करो → "
+                   f"FREE PDF पाओ! (कमेंट में लिखो: जवाब + {PDF_KEYWORD})"]
+        pyq_pin = ["", "----- 1 घंटे बाद PIN करने वाला कमेंट (आखिरी सवाल का जवाब) -----",
+                   f"✅ असली पेपर सवाल का सही जवाब: {npq['ans']}) {npq['opts']['ABCD'.index(npq['ans'])]}"
+                   + (f"  [पूछा गया: {ex_}]" if ex_ else ""),
+                   f"📩 FREE PDF चाहिए? कमेंट करें: {PDF_KEYWORD}"]
     lines = [
         # v20: pehli line search ke shabd (EP number naye dekhne wale ko "beech ki series" lagta tha)
         f"GDS से MTS / Postman परीक्षा | {data['question']} | PO Guide Part I Clause {data['clause_no']}",
     ] + ([f"🇬🇧 {en_q} (Answer in the reel 👀)"] if en_q else []) + [
         "",
         "सही उत्तर जानने के लिए पूरी रील देखें 👀",
+        ] + pyq_top + [
         f"📘 स्रोत: PO Guide Part I, Clause {data['clause_no']}"
         + ("  (नया नियम - PO Guide 1985 के बाद बदला)" if data.get("basis") == "notes" else ""),
         f"🎯 FREE MOCK TEST चाहिए? कमेंट करें: {MOCK_KEYWORD}  |  Want a FREE MOCK TEST? Comment {MOCK_KEYWORD}",
@@ -11487,7 +11499,7 @@ def write_caption(data, path):
         "📮 Postal Wala भैया पूछ रहे हैं: आप होते तो क्या करते? A / B / C / D लिखो 👇",
         "📌 सबसे पहले सही जवाब + सही वजह लिखने वाले का कमेंट PIN होगा!",
         f"Your answer? Comment A / B / C / D  |  Free Mock Test: {MOCK_KEYWORD}",
-    ]
+    ] + pyq_pin
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))

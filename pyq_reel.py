@@ -831,7 +831,16 @@ def saathi_run(max_n=2):
     for entry in todo[:max_n]:
         tag = f"Clause {entry['clause']} Part {entry['part_no']}"
         print(f"\nSAATHI PYQ: {tag}")
-        items = find_pyq(entry)
+        items = []
+        try:                                           # niyam-reel ne ant ke sawal ke liye pehle hi dhoondha ho -> wahi (AI bachat)
+            pv = (M.load_plan(entry["clause"]) or {}).get("parts", [])[entry["part_index"]].get("pyq_v") or {}
+            items = [x for x in (pv.get("items") or []) if x.get("q") and len(x.get("opts") or []) == 4]
+            if pv.get("searched") and not items:
+                print("PYQ saathi: niyam-reel ki khoj me is niyam ka asli sawal nahi mila tha")
+        except Exception:
+            pv = {}
+        if not items and not pv.get("searched"):
+            items = find_pyq(entry)
         related = bool(items)
         bank_key = None
         if not items:

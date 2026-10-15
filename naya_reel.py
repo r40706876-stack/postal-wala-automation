@@ -550,6 +550,84 @@ class Proof:
         return fr
 
 
+# ============================================================ asli paper ka sawal (ant me)
+
+PDF_LINE = "पाओ FREE PDF"
+PYQ_SAY_MAX = 16                                     # isse lamba sawal bola nahi jaata (reel ~30s rahe)
+PYQ_SHORT_VOICE = "असली पेपर का सवाल! पढ़ो और जवाब कमेंट करो!"
+
+
+def pyq_for(plan, part, data):
+    """
+    Reel ke ant ka ASLI paper sawal: (item, related) ya (None, False).
+    1) usi niyam ka asli PYQ (pyq_papers + answer key se milaan, pyq_reel.find_pyq) - ek baar dhoondh ke part["pyq_v"]
+    2) na mile -> bank ka jaancha hua asli sawal (tab 'isi niyam' nahi kehte)
+    """
+    import sys as _sys
+    _sys.modules.setdefault("main", M)            # pyq_reel 'import main' -> yahi chalta module (dobara load nahi)
+    import pyq_reel as P
+    pv = part.get("pyq_v") if isinstance(part.get("pyq_v"), dict) else {}
+    items = [x for x in (pv.get("items") or []) if x.get("q") and len(x.get("opts") or []) == 4]
+    if not items and not pv.get("searched"):
+        gv = part.get("guide_line_v") if isinstance(part.get("guide_line_v"), dict) else {}
+        en = part.get("en") if isinstance(part.get("en"), dict) else {}
+        entry = {"clause": data.get("clause_no"), "part_no": data.get("part_no"),
+                 "guide_line": gv.get("sentence", ""), "en_question": en.get("question", ""),
+                 "en_fact": en.get("fact", ""), "source_quote": part.get("source_quote", ""),
+                 "trap_quote": part.get("trap_quote", ""), "fact": data.get("fact", ""),
+                 "question": data.get("question", ""), "answer": data.get("correct_text", "")}
+        try:
+            items = P.find_pyq(entry)
+        except Exception as exc:
+            print("  Ant ka PYQ nahi dhoondha:", str(exc)[:140])
+            items = []
+        if not M.DRY_RUN:
+            part["pyq_v"] = {"items": items, "searched": True}
+    if items:
+        return items[0], True
+    try:                                            # bank: asli paper ka jaancha hua sawal (episode se ghoomta)
+        bank, _sets = P.load_bank()
+        ids = sorted(bank)
+        if ids:
+            it = dict(bank[ids[int(data.get("episode") or 0) % len(ids)]])
+            return it, False
+    except Exception as exc:
+        print("  Bank sawal nahi mila:", str(exc)[:120])
+    return None, False
+
+
+PAPER = (250, 248, 242)
+
+
+@lru_cache(maxsize=4)
+def _paper_bg():
+    im = Image.new("RGBA", (W, H), PAPER + (255,))
+    d = ImageDraw.Draw(im)
+    for x in range(-40, W + 40, 56):                 # upar laal-safed patti (asli paper/lifaafa jaisa)
+        d.polygon([(x, 0), (x + 28, 0), (x + 8, 16), (x - 20, 16)], fill=RED_C + (255,))
+    d.text((40, 44), "POSTAL WALA", font=font(30), fill=NAVY + (255,))
+    return im
+
+
+@lru_cache(maxsize=32)
+def opt_row(letter, text):
+    w = 940
+    f, s_, ls = fit_wrap(text, w - 170, 46, 2, 32, reg=True)
+    lh = int(s_ * 1.25)
+    h = max(108, 34 + len(ls) * lh)
+    im = Image.new("RGBA", (w + 16, h + 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((8, 12, 8 + w, 12 + h), radius=22, fill=(0, 0, 0, 30))
+    d.rounded_rectangle((8, 8, 8 + w, 8 + h), radius=22, fill=(255, 255, 255, 255), outline=(222, 224, 232, 255), width=3)
+    d.ellipse((34, 8 + h / 2 - 32, 98, 8 + h / 2 + 32), fill=NAVY + (255,))
+    d.text((66, 8 + h / 2), letter, font=font(38), fill=(255, 214, 40, 255), anchor="mm")
+    y = 8 + (h - len(ls) * lh) / 2
+    for ln in ls:
+        d.text((130, y + lh / 2), ln, font=f, fill=(25, 30, 45, 255), anchor="lm")
+        y += lh
+    return im
+
+
 # ============================================================ scenes
 
 def trap_pair(trap):
@@ -592,7 +670,7 @@ def ruko_q(data):
     return " ".join(q.split())
 
 
-def build_specs(data, story, ans_pn, has_proof):
+def build_specs(data, story, ans_pn, has_proof, pyq=None):
     specs = []
     if has_proof:
         specs.append({"name": "proof", "segs": [("p", PROOF_VOICE)]})
@@ -603,6 +681,9 @@ def build_specs(data, story, ans_pn, has_proof):
     specs.append({"name": "rule", "segs": [("f", "नियम: " + data["fact"])]})
     if data.get("trap"):
         specs.append({"name": "trap", "segs": [("t", "ट्रैप: " + data["trap"])]})
+    if pyq:                                    # lamba sawal poora bolne se reel 30s+ -> tab sirf screen pe
+        say = ("असली पेपर का सवाल! " + pyq["q"]) if len(pyq["q"].split()) <= PYQ_SAY_MAX else PYQ_SHORT_VOICE
+        specs.append({"name": "pyq", "segs": [("q", say)], "short": say == PYQ_SHORT_VOICE})
     specs.append({"name": "end", "segs": [("e", END_VOICE)]})
     return specs
 
@@ -629,6 +710,9 @@ def plan_timeline(specs, voices, data):
         elif n == "trap":
             lead = 0.35                                # pehle TRAP thappa, fir awaaz
             dur = lead + vd + 0.75
+        elif n == "pyq":                               # sawal bolne ke baad bas ~1s soch (khaali tik-tik nahi)
+            lead = 0.15
+            dur = max(4.2, lead + vd + 0.7) if sp.get("short") else lead + vd + 1.0
         else:                                          # end
             dur = max(2.3, lead + vd + 1.4)
         sc = {"name": n, "start": cur, "dur": dur, "lead": lead, "vd": vd, "audio": a,
@@ -641,8 +725,9 @@ def plan_timeline(specs, voices, data):
 
 
 class Reel:
-    def __init__(self, data, story, ans_pn, proof):
+    def __init__(self, data, story, ans_pn, proof, pyq=None, pyq_related=False):
         self.data, self.story, self.ans_pn, self.proof = data, story, ans_pn, proof
+        self.pyq, self.pyq_related = pyq, pyq_related
         self.ep = int(data.get("episode") or 0)
         self.cno = data.get("clause_no")
         self.trap_pair = trap_pair(data.get("trap") or "")
@@ -771,6 +856,47 @@ class Reel:
         caption(cv, sc["text"], p, cy=1600)
         return cv
 
+    def sc_pyq(self, sc, t):
+        """Demo4 jaisa: asli paper ka sawal + 4 option + khaali hoti patti + 'जवाब कमेंट करो' + 'पाओ FREE PDF'. Jawab nahi."""
+        it = self.pyq
+        cv = _paper_bg().copy()
+        d = ImageDraw.Draw(cv)
+        k0 = M.ease_out_back(M.prog(t, 0.0, 0.3))
+        put(cv, pill("असली पेपर का सवाल", 50, (255, 255, 255), RED_C), W / 2, 190, scale=max(0.05, k0))
+        ex = [e for e in (it.get("exams") or []) if e][:3]
+        y = 268
+        if ex:
+            d.text((W / 2, y), "  •  ".join(ex), font=font(34), fill=(150, 108, 0), anchor="mm")
+            y += 58
+        if self.pyq_related:
+            put(cv, pill(f"इसी नियम पर पूछा गया  •  Clause {self.cno}", 30, NAVY, (255, 246, 214), GOLD, reg=True),
+                W / 2, y + 8)
+            y += 76
+        f, s_, ls = fit_wrap(it["q"], 940, 60, 4, 40)
+        lh = int(s_ * 1.3)
+        y += 30
+        for ln in ls:
+            d.text((W / 2, y + lh / 2), ln, font=f, fill=NAVY, anchor="mm")
+            y += lh
+        y += 36
+        for j, (L, o) in enumerate(zip("ABCD", it["opts"])):
+            kj = M.ease_out_cubic(M.prog(t, 0.15 + 0.08 * j, 0.22))
+            row = opt_row(L, o)
+            put(cv, row, W / 2 + 110 * (1 - kj), y + row.height / 2, alpha=kj)
+            y += row.height + 14
+        y = min(y + 40, 1560)
+        dur = sc["dur"]
+        left = M.clamp(1 - t / max(0.5, dur - 0.1))
+        col = RED_C if left < 0.3 else (215, 160, 20)
+        d.rounded_rectangle((90, y - 9, W - 90, y + 9), radius=9, fill=(222, 224, 232))
+        if left > 0:
+            d.rounded_rectangle((90, y - 9, 90 + (W - 180) * left, y + 9), radius=9, fill=col)
+        kc = M.ease_out_back(M.prog(t, 0.45, 0.3))
+        put(cv, pill("जवाब कमेंट करो", 48, (25, 25, 25), GOLD), W / 2, y + 95, scale=max(0.05, kc))
+        kp = M.ease_out_back(M.prog(t, 0.7, 0.3)) * (1 + 0.04 * math.sin(t * 7))
+        put(cv, pill(PDF_LINE, 52, (255, 255, 255), GREEN_C), W / 2, y + 205, scale=max(0.05, kp))
+        return cv
+
     def sc_end(self, sc, t):
         key = ("end_bg",)
         if key not in self._last:
@@ -787,7 +913,7 @@ class Reel:
         yb = y0 + len(ls) * int(s_ * 1.28) + 150
         ksh = M.ease_out_back(M.prog(t, 0.35, 0.3))
         put(cv, share_btn(), W / 2, yb, scale=max(0.05, ksh) * (1 + 0.03 * math.sin(t * 6)))
-        put(cv, pill("इसी नियम का असली पेपर सवाल  →  अगली रील", 38, (255, 255, 255), NAVY, GOLD), W / 2, yb + 200,
+        put(cv, pill("इसी नियम के और असली सवाल  →  अगली रील", 38, (255, 255, 255), NAVY, GOLD), W / 2, yb + 200,
             alpha=M.clamp((t - 0.6) / 0.25))
         put(cv, pill(f"कल: गलती #{self.ep + 1}", 40, (255, 255, 255), RED_C), W / 2, yb + 320,
             alpha=M.clamp((t - 0.8) / 0.25))
@@ -815,6 +941,8 @@ class Reel:
         if n == "trap":
             rule = next((x for x in tl if x["name"] == "rule"), None)
             return self.sc_trap(sc, t, rule["dur"] if rule else 1.0)
+        if n == "pyq":
+            return self.sc_pyq(sc, t)
         return self.sc_end(sc, t)
 
 
@@ -944,6 +1072,9 @@ def build_audio(tl, total, path):
         elif nm == "trap":
             M.add_at(buf, M.sfx_thud(0.9), s + 0.05)
             M.add_at(buf, M.sfx_buzz(0.22), s + sc["lead"] + 0.1)
+        elif nm == "pyq":
+            M.add_at(buf, M.sfx_pop(0.36), s + 0.05)
+            M.add_at(buf, M.sfx_pop(0.3), s + 0.72)          # 'पाओ FREE PDF'
         elif nm == "end":
             M.add_at(buf, M.sfx_pop(0.4), s + 0.35)
     # ❌ wale chitra pe buzz
@@ -982,7 +1113,17 @@ def build(data, out, plan=None, part=None):
         a = proof_assets(plan, part, data)
         if a:
             proof = Proof(a, data.get("clause_no"), int(data.get("episode") or 0))
-    specs = build_specs(data, story, ans_pn, bool(proof))
+    pyq, pyq_rel = None, False
+    if plan is not None and part is not None:
+        try:
+            pyq, pyq_rel = pyq_for(plan, part, data)
+        except Exception as exc:
+            print("  Ant ka asli paper sawal nahi juda (reel bina iske):", str(exc)[:140])
+    if pyq:
+        print(f"  Ant me asli paper sawal ({'isi niyam ka' if pyq_rel else 'bank se'}): {pyq['q'][:80]} | jawab {pyq['ans']}")
+        data["naya_pyq"] = {"q": pyq["q"], "opts": pyq["opts"], "ans": pyq["ans"], "exams": pyq.get("exams") or [],
+                            "related": pyq_rel}
+    specs = build_specs(data, story, ans_pn, bool(proof), pyq)
     print(f"NAYA FORMAT ({NAYA_VERSION.split(':')[0]}): awaaz ban rahi hai ({len(specs)} tukde)...")
     voices = M.make_voices(specs)
     tl, total = plan_timeline(specs, voices, data)
@@ -992,7 +1133,7 @@ def build(data, out, plan=None, part=None):
     print("  NAYA TIMELINE (drishya | shuru | lambai | awaaz)")
     for sc in tl:
         print(f"  {sc['name']:<6} {sc['start']:5.2f}s  {sc['dur']:4.2f}s  voice {sc['vd']:4.2f}s")
-    reel = Reel(data, story, ans_pn, proof)
+    reel = Reel(data, story, ans_pn, proof, pyq, pyq_rel)
     apath = out.replace(".mp4", "_naya_audio.wav")
     build_audio(tl, total, apath)
     n_frames = int(math.ceil(total * FPS))
