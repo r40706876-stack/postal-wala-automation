@@ -690,6 +690,33 @@ def paper_index():
     return _IDX
 
 
+_KEYS = {}
+PYQ_V = 2          # v21.2: jawab answer key (PDF table) se code me milaya jaata hai - purane pyq_v dobara jaanche jaate hain
+
+
+def key_map(fn):
+    """
+    Paper ki answer key (PDF ki table) -> {sawal_no: 'A'..'D'}. pdftotext -layout se table ki line saath rehti hai.
+    v21.2: pehle AI key ki table padh ke jawab chunta tha -> Telangana 2020 Q10 me C ki jagah B likh diya (galat).
+    Ab jawab hamesha isi map se aata hai; key na mile to sawal reel me nahi.
+    """
+    if fn in _KEYS:
+        return _KEYS[fn]
+    out = {}
+    try:
+        txt = subprocess.run(["pdftotext", "-layout", os.path.join(PAPER_DIR, fn), "-"], capture_output=True,
+                             text=True, timeout=60).stdout
+        km = re.search(r"(?i)(ans(wer)?\.?\s*key|\{ans key\}|key\s*:)", txt)
+        if km:
+            for ln in txt[km.end(): km.end() + 6000].splitlines():
+                for no, l in re.findall(r"(?<![\d.])(\d{1,3})\s*[).:-]?\s+\(?([ABCD])\)?(?![A-Za-z])", ln):
+                    out.setdefault(int(no), l)
+    except Exception as exc:
+        print(f"  Answer key nahi padhi ({fn}):", str(exc)[:100])
+    _KEYS[fn] = out
+    return out
+
+
 def _words(s):
     return [w for w in re.findall(r"[a-z0-9]+", (s or "").lower().replace("-", "")) if len(w) >= 3 and w not in STOP]
 
@@ -785,8 +812,17 @@ def find_pyq(entry):
         q = " ".join(str(x.get("q") or "").split())
         if not c or len(opts) != 4 or ans not in "ABCD" or not ans or not q or not all(opts):
             continue
+        key_ans = key_map(c["file"]).get(int(c["no"])) if c.get("trust") else None
+        if not key_ans:                                 # jawab ki pakki jaanch nahi ho sakti -> sawal nahi
+            print(f"  PYQ chhoda (answer key nahi mili): {c['exam']} Q{c['no']}")
+            continue
+        why = x.get("why", "")
+        if key_ans != ans:                              # AI ne key galat padhi -> asli key ka jawab
+            print(f"  PYQ jawab sudhaara {c['exam']} Q{c['no']}: AI {ans} -> answer key {key_ans}")
+            ans, why = key_ans, ""
         items.append({"id": f"saathi_{entry['clause']}_{entry['part_no']}_{len(items) + 1}", "q": q, "opts": opts,
-                      "ans": ans, "exams": c["exams"], "q_en": x.get("q_en", ""), "why": x.get("why", "")})
+                      "ans": ans, "exams": c["exams"], "q_en": x.get("q_en", ""), "why": why,
+                      "src": f"{c['file']}#Q{c['no']}", "key_ok": True})
         if len(items) >= SAATHI_MAX:
             break
     print(f"PYQ saathi: {len(items)} asli sawal is niyam pe mile")
@@ -834,6 +870,8 @@ def saathi_run(max_n=2):
         items = []
         try:                                           # niyam-reel ne ant ke sawal ke liye pehle hi dhoondha ho -> wahi (AI bachat)
             pv = (M.load_plan(entry["clause"]) or {}).get("parts", [])[entry["part_index"]].get("pyq_v") or {}
+            if int(pv.get("v") or 0) < PYQ_V:            # purani khoj (jawab key se nahi milaya) -> dobara
+                pv = {}
             items = [x for x in (pv.get("items") or []) if x.get("q") and len(x.get("opts") or []) == 4]
             if pv.get("searched") and not items:
                 print("PYQ saathi: niyam-reel ki khoj me is niyam ka asli sawal nahi mila tha")
@@ -882,7 +920,7 @@ def saathi_run(max_n=2):
         try:                                            # mile sawal plan me bhi (dobara AI nahi)
             plan = M.load_plan(entry["clause"])
             if plan and related:
-                plan["parts"][entry["part_index"]]["pyq_v"] = {"items": items}
+                plan["parts"][entry["part_index"]]["pyq_v"] = {"items": items, "searched": True, "v": PYQ_V}
                 M.save_plan(plan)
         except Exception:
             pass
