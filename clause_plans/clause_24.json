@@ -59,8 +59,8 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published_prev": "2026-10-07",
-      "published_round_prev": 18,
+      "published_prev": "2026-10-10",
+      "published_round_prev": 19,
       "trap_old": "कहीं भी चिपकाना गलत है, केवल पता पक्ष वर्जित है।",
       "trap_v": {
         "ok": true,
@@ -203,7 +203,7 @@
         "2026-10-10": 8
       },
       "published": "2026-10-10",
-      "published_round": 19
+      "published_round": 20
     },
     {
       "basis": "notes",
@@ -256,8 +256,8 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published_prev": "2026-10-08",
-      "published_round_prev": 18,
+      "published_prev": "2026-10-10",
+      "published_round_prev": 19,
       "trap_old": "वजन बढ़ना गलत है, पते का स्पष्ट न दिखना मुख्य समस्या है।",
       "trap_v": {
         "ok": true,
@@ -267,165 +267,188 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "Medium close-up of the postman and the customer at the post office counter, the customer holding a plain white envelope and looking curious.",
-            "target": "the plain white envelope on the counter",
+            "prompt": "The customer stands at the wooden counter holding a plain white envelope in one hand and a small bright yellow sticker in the other, looking puzzled. The postman stands behind the counter watching with an attentive expression, warm soft light, plain wall in the background.",
+            "target": "the white envelope on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक ने पत्र पर बड़ा सा रंगीन लेबल चिपका दिया है।",
-            "desc": "The customer is holding a plain white envelope on the counter.",
+            "text": "ग्राहक डाक पत्र पर लेबल चिपकाने के बारे में सोचता है।",
+            "desc": "The customer holds a white envelope and a small sticker at the post office counter while asking the postman.",
             "mark": "none",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "पटना",
-                "PIN 800001"
-              ],
-              "corner": "",
-              "hl": -1
-            },
+            "card": null,
             "say": {
               "who": "customer",
-              "text": "भैया, इस पर ये लेबल लगा दूँ क्या?"
+              "text": "भैया, यह लेबल कहाँ चिपकाऊँ?"
             },
-            "img": "clause_plans/chitra_img/555684a9e6_49696237_1.jpg",
+            "img": "clause_plans/chitra_img/555684a9e6_16604786_1.jpg",
             "box": [
-              0.498,
-              0.652,
-              0.655,
-              0.747
+              0.502,
+              0.53,
+              0.659,
+              0.654
             ],
-            "bg_text": true,
+            "bg_text": false,
             "badge": [
-              0.371,
-              0.484,
-              0.438,
+              0.381,
+              0.488,
+              0.451,
               0.529
             ],
             "face": [
-              0.616,
-              0.301,
-              0.786,
-              0.432
+              0.599,
+              0.159,
+              0.797,
+              0.389
             ],
             "pan": "lr"
           },
           {
-            "prompt": "Medium close-up of the postman looking concerned as the customer places a bright yellow sticker completely hiding the address on the white envelope.",
+            "prompt": "The customer has stuck the bright yellow sticker right across the middle of the front of the white envelope. The postman bends forward, squinting with a confused and worried expression as he tries to read the obstructed front side, warm light.",
             "target": "the yellow sticker on the envelope",
-            "tag": "लेबल से ढका पता",
+            "tag": "पता समझना मुश्किल",
             "tag_color": "red",
-            "text": "पता पक्ष पर लेबल लगाने से पता समझना मुश्किल होना।",
-            "desc": "The envelope shows a yellow sticker covering the address with tag 'लेबल से ढका पता'.",
+            "text": "पता पक्ष पर लेबल लगाने से पता समझना मुश्किल होता है।",
+            "desc": "A yellow sticker is pasted over the address side of the white envelope with tag 'पता समझना मुश्किल', making the postman squint in confusion.",
             "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "पटना",
-                "PIN 800001"
-              ],
-              "corner": "LABEL",
-              "hl": 1
-            },
+            "card": null,
             "say": {
               "who": "postman",
-              "text": "रुको भाई! ऐसे लेबल मत लगाओ।"
+              "text": "अरे, पता छिप जाएगा!"
             },
-            "img": "clause_plans/chitra_img/555684a9e6_49696237_2.jpg",
+            "img": "clause_plans/chitra_img/555684a9e6_16604786_2.jpg",
             "box": [
-              0.513,
-              0.66,
-              0.665,
-              0.755
+              0.508,
+              0.538,
+              0.668,
+              0.656
             ],
-            "bg_text": true,
-            "badge": [
-              0.379,
-              0.503,
-              0.451,
-              0.552
-            ],
+            "bg_text": false,
             "face": [
-              0.267,
-              0.217,
-              0.431,
-              0.362
+              0.273,
+              0.182,
+              0.453,
+              0.383
             ],
             "frames": [
-              "clause_plans/chitra_img/555684a9e6_49696237_2f2.jpg"
+              "clause_plans/chitra_img/555684a9e6_16604786_2f1.jpg",
+              "clause_plans/chitra_img/555684a9e6_16604786_2f2.jpg"
             ]
           },
           {
-            "prompt": "Medium close-up of the smiling postman pointing at the clean envelope without any label, while the customer looks relieved.",
-            "target": "the clean white envelope without label",
-            "tag": "साफ पता",
+            "prompt": "The postman holds up the white envelope with its front completely clear and unobstructed, pointing a finger neatly at it with a warm smile. The customer smiles in relief and nods in understanding, medium shot, bright clear light.",
+            "target": "the front of the white envelope",
+            "tag": "साफ और स्पष्ट पता",
             "tag_color": "green",
-            "text": "पता पक्ष पर कभी भी लेबल नहीं लगाना चाहिए।",
-            "desc": "The clean white envelope without label shows the clear address with tag 'साफ पता'.",
+            "text": "पते वाले हिस्से को हमेशा साफ और खुला रखना चाहिए।",
+            "desc": "The postman points with a smile to the clean address side of the white envelope with tag 'साफ और स्पष्ट पता'.",
             "mark": "right",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "पटना",
-                "PIN 800001"
-              ],
-              "corner": "",
-              "hl": -1
-            },
+            "card": null,
             "say": {
               "who": "postman",
-              "text": "बिल्कुल साफ रखो, तभी जल्दी पहुँचेगा।"
+              "text": "पते की जगह खाली रखें!"
             },
-            "img": "clause_plans/chitra_img/555684a9e6_49696237_3.jpg",
+            "img": "clause_plans/chitra_img/555684a9e6_16604786_3.jpg",
             "box": [
-              0.467,
-              0.642,
-              0.649,
-              0.742
+              0.426,
+              0.458,
+              0.542,
+              0.568
             ],
             "bg_text": false,
-            "badge": [
-              0.377,
-              0.485,
-              0.446,
-              0.531
-            ],
             "face": [
-              0.256,
-              0.202,
-              0.424,
-              0.344
+              0.252,
+              0.165,
+              0.442,
+              0.342
             ],
-            "pan": "rl"
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/555684a9e6_16604786_3f1.jpg"
+            ]
           }
         ],
         "caps": [
-          "ग्राहक ने पत्र पर बड़ा सा रंगीन लेबल चिपका दिया है।",
-          "पता पक्ष पर लेबल लगाने से पता समझना मुश्किल होना।",
-          "पता पक्ष पर कभी भी लेबल नहीं लगाना चाहिए।"
+          "ग्राहक डाक पत्र पर लेबल चिपकाने के बारे में सोचता है।",
+          "पता पक्ष पर लेबल लगाने से पता समझना मुश्किल होता है।",
+          "पते वाले हिस्से को हमेशा साफ और खुला रखना चाहिए।"
         ],
         "score": 10.0,
-        "lesson": "Never place a label on the address side of a letter, as it obscures the delivery address and makes it difficult to read.",
+        "lesson": "Always keep the address side of a mail article clean and clear by avoiding improper placement of labels that obscure the address.",
         "pv": 4,
         "ok": true,
         "v": 9,
         "attempt": 1
       },
       "cf_spent": {
-        "2026-10-10": 7
+        "2026-10-15": 7
       },
       "punch_v": {
         "ok": true,
         "text": "लिफाफे पर ये क्या चिपकाया?"
       },
       "opt_pics": {
-        "none": true,
-        "ref": "clause_plans/chitra_img/555684a9e6_49696237_1.jpg"
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/555684a9e6_16604786_1.jpg",
+        "err": "option-chitra jaanch fail: D"
       },
-      "published": "2026-10-10",
-      "published_round": 19
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "This prohibition applies equally in cases in wh ich any labels, stamps, or markings are attached or impressed to the address side of a postal article in such a manner that it becomes difficult to decipher the address, or hampers the work of the postal officials in any way.",
+        "kind": "line"
+      },
+      "pyq_v": {
+        "items": [
+          {
+            "id": "saathi_24_2_1",
+            "q": "उन लेखों के साथ क्या किया जाए जिनके पता पक्ष पर कुछ लिखा, मुद्रित, अंकित या चिपकाया गया हो, या जिन पर ऐसे टिकट हों जो कभी उपयोग में थे लेकिन अब नहीं हैं?",
+            "opts": [
+              "RMS को भेजा जाना",
+              "Returned Letter Office (RLO) को भेजा जाना",
+              "प्रेषक को लौटाया जाना",
+              "सर्किल प्रमुख को भेजा जाना"
+            ],
+            "ans": "B",
+            "exams": [
+              "तेलंगाना 2020"
+            ],
+            "q_en": "How to treat articles which have anything written, printed, impressed or attached to the address side or which bears any stamps that was at any time but not now, in use for the payment of postage?",
+            "why": "यह नियम उन वस्तुओं पर लागू होता है जिनके पता पक्ष पर अतिरिक्त लेबल या चिह्न चिपके हों, जिससे पता पढ़ना मुश्किल हो, इन्हें RLO को भेजा जाना चाहिए।"
+          },
+          {
+            "id": "saathi_24_2_2",
+            "q": "डाक टिकट चिपकाने का 'सही तरीका' क्या है?",
+            "opts": [
+              "पता पक्ष के ऊपरी दाहिने कोने पर चिपकाया जाना चाहिए",
+              "लेख की सामग्री का कोई हिस्सा नहीं होना चाहिए",
+              "लेख पर पूरी तरह से चिपकना चाहिए",
+              "उपरोक्त सभी"
+            ],
+            "ans": "D",
+            "exams": [
+              "असम 2021"
+            ],
+            "q_en": "What is the ‘Manner of affixing postage stamps”?",
+            "why": "नियम स्पष्ट करता है कि डाक सामग्री पर लेबल या टिकट इस तरह न हों कि वे पता पढ़ने में बाधा डालें, इसलिए टिकट का सही स्थान पर पूर्णतः चिपकना अनिवार्य है।"
+          },
+          {
+            "id": "saathi_24_2_3",
+            "q": "डाक टिकटों को पता पक्ष के ___ कोने पर चिपकाया जाना चाहिए।",
+            "opts": [
+              "ऊपरी दाहिने",
+              "ऊपरी बाएं",
+              "निचले दाहिने",
+              "निचले बाएं"
+            ],
+            "ans": "A",
+            "exams": [
+              "कर्नाटक 2020"
+            ],
+            "q_en": "Postage stamps should be affixed to the ___corner of the address side.",
+            "why": "पता पक्ष पर लेबल या टिकट गलत जगह लगाने से पता पढ़ना मुश्किल हो सकता है, इसलिए डाक विभाग टिकट के लिए ऊपरी दाहिने कोने को अनिवार्य करता है।"
+          }
+        ]
+      },
+      "published": "2026-10-15",
+      "published_round": 20
     },
     {
       "basis": "notes",
@@ -478,98 +501,122 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published_prev": "2026-10-08",
-      "published_round_prev": 18,
+      "published_prev": "2026-10-10",
+      "published_round_prev": 19,
       "chitra_v": {
         "kit": "photo",
         "panels": [
           {
-            "prompt": "Medium shot of the customer handing a white envelope covered with bright coloured square stickers on its front to the postman at the wooden counter, warm light, the postman looking curious and examining it closely.",
-            "target": "the envelope with stickers",
-            "tag": "पता पक्ष पर लेबल",
+            "prompt": "The customer is handing a plain brown parcel over the counter to the postman, looking curious about how to address it properly.",
+            "target": "the brown parcel",
+            "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक ने लिफाफे के पता पक्ष पर लेबल लगाए।",
-            "desc": "The customer gives an envelope with multiple stickers on the address side to the postman at the counter, tagged पता पक्ष पर लेबल.",
+            "text": "पार्सल के पता पक्ष पर सही जानकारी लिखना आवश्यक है।",
+            "desc": "Customer presenting a parcel to the postman at the counter.",
             "mark": "none",
             "card": null,
-            "say": {
-              "who": "customer",
-              "text": "भैया, इस पर कुछ स्टीकर लगाए हैं!"
-            },
-            "img": "clause_plans/chitra_img/bcc9652324_41572880_1.jpg",
+            "say": null,
+            "img": "clause_plans/chitra_img/bcc9652324_5873718_1.jpg",
             "box": [
-              0.319,
-              0.611,
-              0.616,
-              0.771
+              0.404,
+              0.606,
+              0.589,
+              0.737
             ],
             "bg_text": false,
+            "face": [
+              0.237,
+              0.201,
+              0.417,
+              0.345
+            ],
             "pan": "lr"
           },
           {
-            "prompt": "Medium shot of the postman at the wooden sorting table squinting in frustration and holding his forehead, struggling to see the address due to cluttered stickers on the envelope, while the customer looks worried and confused.",
-            "target": "the cluttered envelope",
-            "tag": "कार्य में बाधा",
+            "prompt": "The customer is sticking multiple unnecessary decorative labels and wax seals all over the address side of the parcel, while the postman looks concerned.",
+            "target": "the extra labels and seals",
+            "tag": "पता पक्ष पर गलत लेबल",
             "tag_color": "red",
-            "text": "गलत लेबल से डाक कर्मचारियों के कार्य में बाधा होती है।",
-            "desc": "The postman struggles to read the cluttered envelope causing obstruction in work, tagged कार्य में बाधा.",
+            "text": "पता पक्ष पर गलत लेबल डाक कर्मचारियों में बाधा है।",
+            "desc": "The parcel is cluttered with unnecessary stickers and wax seals on the address side.",
             "mark": "wrong",
             "card": null,
-            "say": {
-              "who": "postman",
-              "text": "अरे! पता पढ़ने में रुकावट आ रही है!"
-            },
-            "img": "clause_plans/chitra_img/bcc9652324_41572880_2.jpg",
+            "say": null,
+            "img": "clause_plans/chitra_img/bcc9652324_5873718_2.jpg",
             "box": [
-              0.342,
-              0.617,
-              0.596,
-              0.768
+              0.412,
+              0.606,
+              0.592,
+              0.762
             ],
             "bg_text": false,
+            "badge": [
+              0.365,
+              0.486,
+              0.429,
+              0.523
+            ],
+            "face": [
+              0.275,
+              0.215,
+              0.412,
+              0.345
+            ],
             "frames": [
-              "clause_plans/chitra_img/bcc9652324_41572880_2f1.jpg",
-              "clause_plans/chitra_img/bcc9652324_41572880_2f2.jpg"
+              "clause_plans/chitra_img/bcc9652324_5873718_2f1.jpg",
+              "clause_plans/chitra_img/bcc9652324_5873718_2f2.jpg"
             ]
           },
           {
-            "prompt": "Medium shot of the postman smiling happily while holding up a neat blank white envelope with a clear address space and no extra stickers, as the customer nods with a relieved smile.",
-            "target": "the clean envelope",
+            "prompt": "The postman shows the customer the clean address side of the parcel with only the required address details, smiling as he points to the clear surface.",
+            "target": "the clear address side",
             "tag": "साफ पता पक्ष",
             "tag_color": "green",
-            "text": "पता पक्ष साफ रखने से डाक कार्य आसानी से होता है।",
-            "desc": "The postman happily presents an envelope with a clean address side free from extra labels, tagged साफ पता पक्ष.",
+            "text": "पता पक्ष साफ रखने से डाक कर्मचारियों का काम आसान होता है।",
+            "desc": "The postman gesturing to the clean parcel surface with only the necessary address.",
             "mark": "right",
             "card": null,
             "say": {
               "who": "postman",
-              "text": "पता पक्ष हमेशा साफ रखें!"
+              "text": "देखो, पता पक्ष एकदम साफ होना चाहिए।"
             },
-            "img": "clause_plans/chitra_img/bcc9652324_41572880_3.jpg",
+            "img": "clause_plans/chitra_img/bcc9652324_5873718_3.jpg",
             "box": [
-              0.339,
-              0.573,
-              0.607,
-              0.75
+              0.403,
+              0.602,
+              0.587,
+              0.73
             ],
             "bg_text": false,
+            "badge": [
+              0.364,
+              0.484,
+              0.428,
+              0.521
+            ],
+            "face": [
+              0.276,
+              0.206,
+              0.413,
+              0.335
+            ],
             "pan": "rl",
             "frames": [
-              "clause_plans/chitra_img/bcc9652324_41572880_3f1.jpg"
+              "clause_plans/chitra_img/bcc9652324_5873718_3f1.jpg"
             ]
           }
         ],
         "caps": [
-          "ग्राहक ने लिफाफे के पता पक्ष पर लेबल लगाए।",
-          "गलत लेबल से डाक कर्मचारियों के कार्य में बाधा होती है।",
-          "पता पक्ष साफ रखने से डाक कार्य आसानी से होता है।"
+          "पार्सल के पता पक्ष पर सही जानकारी लिखना आवश्यक है।",
+          "पता पक्ष पर गलत लेबल डाक कर्मचारियों में बाधा है।",
+          "पता पक्ष साफ रखने से डाक कर्मचारियों का काम आसान होता है।"
         ],
-        "score": 10.0,
-        "lesson": "Keep the address side of an envelope clean and free from unnecessary labels so that postal employees can process the mail smoothly without obstruction.",
+        "score": 6.0,
+        "lesson": "You must write correct information on the address side of a parcel and keep it clean and free of unnecessary labels or clutter to assist postal staff.",
         "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 1
+        "attempt": 2
       },
       "opt_pics": {
         "none": true,
@@ -581,14 +628,12 @@
         "v": 3
       },
       "cf_spent": {
-        "2026-10-10": 12
+        "2026-10-15": 8
       },
       "punch_v": {
         "ok": true,
         "text": "पते पर इतने लेबल क्यों?"
-      },
-      "published": "2026-10-10",
-      "published_round": 19
+      }
     },
     {
       "basis": "notes",
