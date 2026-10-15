@@ -620,7 +620,7 @@
       },
       "opt_pics": {
         "none": true,
-        "ref": "clause_plans/chitra_img/bcc9652324_41572880_1.jpg"
+        "ref": "clause_plans/chitra_img/bcc9652324_5873718_1.jpg"
       },
       "trap_old": "काम जल्दी होना गलत है, कार्य में रुकावट आती है।",
       "trap_v": {
@@ -633,7 +633,18 @@
       "punch_v": {
         "ok": true,
         "text": "पते पर इतने लेबल क्यों?"
-      }
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "This prohibition applies equally in cases in wh ich any labels, stamps, or markings are attached or impressed to the address side of a postal article in such a manner that it becomes difficult to decipher the address, or hampers the work of the postal officials in any way.",
+        "kind": "line"
+      },
+      "pyq_v": {
+        "items": [],
+        "searched": true
+      },
+      "published": "2026-10-15",
+      "published_round": 20
     },
     {
       "basis": "notes",
