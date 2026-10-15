@@ -28,11 +28,28 @@ from PIL import Image, ImageDraw, ImageFilter
 M = None            # main module (init se) - main.py ke globals (chuni hui awaaz waghaira) wahi rahen
 W, H, FPS = 1080, 1920, 30
 
-NAYA_VERSION = "v21.3-naya (2026-10-15): v21.1 format wahi, sirf lambai kam (awaaz 15% tez, khaali intezaar kam) + asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल ant + alag PYQ reel"
+NAYA_VERSION = "v21.4-naya (2026-10-15): TRAP hata + ant ke sawal pe 'जवाब कमेंट करो, पाओ FREE PDF' + koi line dohraayi nahi + v21.1 format wahi, sirf lambai kam (awaaz 15% tez, khaali intezaar kam) + asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल ant + alag PYQ reel"
 
 POV_LINE = "POV: आप डाकघर में हो"
 PROOF_VOICE = "GDS साथियों! PO Guide की ये एक लाइन याद रखो!"
-END_VOICE = "याद रखो साथियों!"
+END_VOICE = "उस साथी को भेजो, जो ये गलती करता है!"     # v21.4: "याद रखो" shuru me bola ja chuka (dohraav nahi)
+PYQ_VOICE = "इस सवाल का जवाब कमेंट करो, और पाओ इसकी फ्री PDF!"   # v21.4: user ki line (sawal padha nahi jaata)
+RULE_SAME_VOICE = "PO Guide का नियम भी यही कहता है!"            # niyam wahi baat jo kahani me boli ja chuki
+SHOW_TRAP = False           # v21.4: user ne TRAP hataya
+
+
+_STOP = {"पर", "से", "है", "हैं", "और", "हो", "होता", "होती", "जाता", "जाती", "का", "की", "के", "में", "को", "ये", "यह",
+         "नियम", "भी", "तो", "एक", "कर", "करना", "चाहिए"}
+
+
+def _wset(t):
+    return {w for w in re.findall(r"[\u0900-\u097F]+", t or "") if w not in _STOP and len(w) > 1}
+
+
+def same_line(a, b, th=0.6):
+    """Do lines lagbhag ek hi baat (shabd milaan) -> dohraav."""
+    A, B = _wset(a), _wset(b)
+    return bool(A and B) and len(A & B) / min(len(A), len(B)) >= th
 TRANS = 0.2                 # scene badalne ka samay
 CD_STEP = 0.45              # 3-2-1 ka ek kadam (v21.3: 0.62 -> 0.45, lambai kam)
 NAYA_SPEED = 1.15           # v21.3: awaaz ~15% tez (format wahi, sirf lambai kam - user 2026-10-15)
@@ -682,12 +699,13 @@ def build_specs(data, story, ans_pn, has_proof, pyq=None):
         specs.append({"name": f"s{i}", "segs": [(f"c{i}", pn.get("text") or "")]})
     specs.append({"name": "ruko", "segs": [("r", "रुको! पहले सोचो, " + ruko_q(data))]})
     specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
-    specs.append({"name": "rule", "segs": [("f", "नियम: " + data["fact"])]})
-    if data.get("trap"):
+    said = [" ".join(t for _, t in sp["segs"]) for sp in specs]
+    rule_say = RULE_SAME_VOICE if any(same_line(data["fact"], x) for x in said) else "नियम: " + data["fact"]
+    specs.append({"name": "rule", "segs": [("f", rule_say)]})          # card pe poora niyam likha rehta hai
+    if SHOW_TRAP and data.get("trap"):
         specs.append({"name": "trap", "segs": [("t", "ट्रैप: " + data["trap"])]})
-    if pyq:                                    # lamba sawal poora bolne se reel 30s+ -> tab sirf screen pe
-        say = ("असली पेपर का सवाल! " + pyq["q"]) if len(pyq["q"].split()) <= PYQ_SAY_MAX else PYQ_SHORT_VOICE
-        specs.append({"name": "pyq", "segs": [("q", say)], "short": say == PYQ_SHORT_VOICE})
+    if pyq:                                    # sawal sirf screen pe; awaaz: jawab kamment + FREE PDF
+        specs.append({"name": "pyq", "segs": [("q", PYQ_VOICE)], "short": True})
     specs.append({"name": "end", "segs": [("e", END_VOICE)]})
     return specs
 
@@ -709,8 +727,8 @@ def plan_timeline(specs, voices, data):
         elif n == "ans":
             lead = 0.2
             dur = lead + vd + 0.25
-        elif n == "rule":
-            dur = lead + vd + 0.3
+        elif n == "rule":                              # card pe poora niyam - padhne bhar samay zaroor
+            dur = max(3.5, lead + vd + 0.3)
         elif n == "trap":
             lead = 0.3                                 # pehle TRAP thappa, fir awaaz
             dur = lead + vd + 0.35
@@ -790,8 +808,7 @@ class Reel:
             cy_c = 1225
         else:
             cy_c = 1010
-        put(cv, pill("सही जवाब कमेंट करो", 44, (25, 25, 25), GOLD), W / 2, cy_c,
-            scale=max(0.05, M.ease_out_back(M.prog(t, 0.6, 0.3))))
+        # v21.4: "सही जवाब कमेंट करो" yahan nahi (ant ke sawal pe hi - dohraav nahi)
         cd0 = sc["cd0"]
         if t >= cd0:
             n = 3 - min(2, int((t - cd0) / CD_STEP))
@@ -908,7 +925,7 @@ class Reel:
         cv = self._last[key].copy()
         brand(cv)
         d = ImageDraw.Draw(cv)
-        put(cv, pill("याद रखो साथियों", 46, (25, 25, 25), GOLD), W / 2, 330,
+        put(cv, pill("शॉर्ट ट्रिक", 46, (25, 25, 25), GOLD), W / 2, 330,
             scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
         f, s_, ls = fit_wrap(self.data.get("yaad") or self.data["fact"], 960, 76, 3, 46)
         y0 = 470
@@ -917,7 +934,7 @@ class Reel:
         yb = y0 + len(ls) * int(s_ * 1.28) + 150
         ksh = M.ease_out_back(M.prog(t, 0.35, 0.3))
         put(cv, share_btn(), W / 2, yb, scale=max(0.05, ksh) * (1 + 0.03 * math.sin(t * 6)))
-        put(cv, pill("इसी नियम के और असली सवाल  →  अगली रील", 38, (255, 255, 255), NAVY, GOLD), W / 2, yb + 200,
+        put(cv, pill("इसी नियम के और असली सवाल - अगली रील में", 38, (255, 255, 255), NAVY, GOLD), W / 2, yb + 200,
             alpha=M.clamp((t - 0.6) / 0.25))
         put(cv, pill(f"कल: गलती #{self.ep + 1}", 40, (255, 255, 255), RED_C), W / 2, yb + 320,
             alpha=M.clamp((t - 0.8) / 0.25))
