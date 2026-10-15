@@ -63,8 +63,8 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "style_retry": true,
-      "published_prev": "2026-09-30",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-10",
+      "published_round_prev": 19,
       "chitra_v": {
         "kit": "photo",
         "panels": [
@@ -191,11 +191,12 @@
         "ref": "clause_plans/chitra_img/36b2069c5e_22145669_1.jpg"
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
       },
-      "published": "2026-10-10",
-      "published_round": 19
+      "cf_spent": {
+        "2026-10-15": 3
+      }
     },
     {
       "basis": "notes",
@@ -377,8 +378,8 @@
         "tries": 1,
         "v": 3
       },
-      "published": "2026-10-11",
-      "published_round": 19
+      "published_prev": "2026-10-11",
+      "published_round_prev": 19
     },
     {
       "basis": "notes",
