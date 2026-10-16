@@ -382,7 +382,7 @@
         "attempt": 1
       },
       "cf_spent": {
-        "2026-10-16": 1
+        "2026-10-16": 2
       },
       "style_v": "2026-09-26c",
       "punch_v": {
@@ -394,7 +394,7 @@
         "ref": "clause_plans/chitra_img/b831de21bc_56431804_1.jpg"
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
       },
       "published_prev": "2026-10-11",
