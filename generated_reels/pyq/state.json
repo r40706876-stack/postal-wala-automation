@@ -10,7 +10,8 @@
     "vp_demurrage_7|insured_reg|bo_no_foreign",
     "franked_letterbox|franking_any|revenue_unpaid",
     "blind_7kg|pli_50l|stamp_corner",
-    "sender_lower_left|pin_6|pin_1972"
+    "sender_lower_left|pin_6|pin_1972",
+    "minor_sb_10|official_deficiency|fictitious_stamp"
   ],
   "made": {
     "2026-10-09": "pyq_2026-10-09.mp4",

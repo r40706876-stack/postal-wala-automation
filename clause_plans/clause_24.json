@@ -264,13 +264,134 @@
         "v": 3
       },
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 4): saaf nahi",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "Medium shot, warm lighting. The customer stands at a wooden post office counter holding a plain brown parcel in one hand and a bright red sticker in the other hand, looking inquiringly at the postman across the counter.",
+            "target": "the bright red sticker in the customer's hand",
+            "tag": "लेबल लगाना",
+            "tag_color": "dark",
+            "text": "ग्राहक पार्सल पर लेबल लगाने के बारे में पूछता है।",
+            "desc": "The customer at the counter holds a parcel and a red sticker, asking the postman where to stick it.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, यह लेबल कहाँ चिपकाऊँ?"
+            },
+            "img": "clause_plans/chitra_img/555684a9e6_6179264_1.jpg",
+            "box": [
+              0.22,
+              0.3,
+              0.78,
+              0.86
+            ],
+            "bg_text": false,
+            "badge": [
+              0.387,
+              0.517,
+              0.472,
+              0.57
+            ],
+            "face": [
+              0.241,
+              0.089,
+              0.461,
+              0.372
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Close medium shot. The customer has stuck the large bright red sticker directly on the front side of the brown parcel. The postman leans forward with a worried expression, squinting closely as he struggles to read the front.",
+            "target": "the bright red sticker on the front of the parcel",
+            "tag": "पता समझना मुश्किल",
+            "tag_color": "red",
+            "text": "पता पक्ष पर लेबल लगाने से पता समझना मुश्किल होता है।",
+            "desc": "A large red sticker covers the front side of the parcel, making the address unreadable as the postman looks worried.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "अरे! अब पता कैसे दिखेगा?"
+            },
+            "img": "clause_plans/chitra_img/555684a9e6_6179264_2.jpg",
+            "box": [
+              0.401,
+              0.638,
+              0.614,
+              0.856
+            ],
+            "bg_text": false,
+            "badge": [
+              0.399,
+              0.513,
+              0.489,
+              0.565
+            ],
+            "face": [
+              0.312,
+              0.21,
+              0.485,
+              0.361
+            ],
+            "frames": [
+              "clause_plans/chitra_img/555684a9e6_6179264_2f1.jpg",
+              "clause_plans/chitra_img/555684a9e6_6179264_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "Medium shot, bright lighting. The postman smiles warmly and gives an approving thumbs up toward the brown parcel on the counter, whose front side is completely clean and clear, while the red sticker is neatly placed on the back edge.",
+            "target": "the clean front side of the brown parcel",
+            "tag": "पता पक्ष बिल्कुल साफ",
+            "tag_color": "green",
+            "text": "पता पक्ष को हमेशा साफ और स्पष्ट रखना चाहिए।",
+            "desc": "The front address side of the parcel is completely clear with the sticker placed away, and the postman gives a smiling thumbs up.",
+            "mark": "right",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "शाबाश! अब पता एकदम साफ है!"
+            },
+            "img": "clause_plans/chitra_img/555684a9e6_6179264_3.jpg",
+            "box": [
+              0.397,
+              0.648,
+              0.608,
+              0.851
+            ],
+            "bg_text": false,
+            "badge": [
+              0.389,
+              0.512,
+              0.478,
+              0.564
+            ],
+            "face": [
+              0.251,
+              0.191,
+              0.434,
+              0.345
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/555684a9e6_6179264_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "ग्राहक पार्सल पर लेबल लगाने के बारे में पूछता है।",
+          "पता पक्ष पर लेबल लगाने से पता समझना मुश्किल होता है।",
+          "पता पक्ष को हमेशा साफ और स्पष्ट रखना चाहिए।"
+        ],
+        "score": 10.0,
+        "lesson": "Place the label cleanly on the parcel so the address side remains clear and legible without being obstructed.",
+        "pv": 4,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 1
       },
       "cf_spent": {
-        "2026-10-16": 18
+        "2026-10-16": 25
       },
       "punch_v": {
         "ok": true,
@@ -278,12 +399,12 @@
       },
       "opt_pics": {
         "ok": true,
-        "ref": "clause_plans/chitra_img/555684a9e6_34274672_1.jpg",
+        "ref": "clause_plans/chitra_img/555684a9e6_6179264_1.jpg",
         "pics": {
-          "पता समझना मुश्किल होना": "clause_plans/chitra_img/555684a9e6_optA_378576.jpg",
-          "वजन बढ़ जाना": "clause_plans/chitra_img/555684a9e6_optB_425674.jpg",
-          "पैसे कम होना": "clause_plans/chitra_img/555684a9e6_optC_456493.jpg",
-          "रंग बदलना": "clause_plans/chitra_img/555684a9e6_optD_393904.jpg"
+          "पता समझना मुश्किल होना": "clause_plans/chitra_img/555684a9e6_optA_907153.jpg",
+          "वजन बढ़ जाना": "clause_plans/chitra_img/555684a9e6_optB_621071.jpg",
+          "पैसे कम होना": "clause_plans/chitra_img/555684a9e6_optC_580957.jpg",
+          "रंग बदलना": "clause_plans/chitra_img/555684a9e6_optD_32920.jpg"
         }
       },
       "guide_line_v": {
@@ -296,110 +417,8 @@
         "searched": true,
         "v": 2
       },
-      "chitra_keep": {
-        "scene": "At a busy post office service counter with a plain wall and a wooden counter top.",
-        "seed0": 63250735,
-        "files": {
-          "0": "clause_plans/chitra_img/555684a9e6_keep_63250735_1.jpg",
-          "1": "clause_plans/chitra_img/555684a9e6_keep_63250735_2.jpg",
-          "2": "clause_plans/chitra_img/555684a9e6_keep_63250735_3.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.22,
-            0.3,
-            0.78,
-            0.86
-          ],
-          "1": [
-            0.22,
-            0.3,
-            0.78,
-            0.86
-          ],
-          "2": [
-            0.22,
-            0.3,
-            0.78,
-            0.86
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": null,
-            "face": null
-          },
-          "1": {
-            "badge": null,
-            "face": null
-          },
-          "2": {
-            "badge": null,
-            "face": null
-          }
-        },
-        "bgt": {
-          "0": true,
-          "1": false,
-          "2": true
-        },
-        "fixes": {
-          "3": "Make it clearly show: the clearly visible address side - saaf nahi"
-        },
-        "panels": [
-          {
-            "prompt": "Medium shot of the customer holding a brown parcel in front of the postman at the post office counter, looking curious.",
-            "target": "the brown parcel",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "ग्राहक ने पार्सल पर लेबल लगाने के लिए काउंटर पर रखा।",
-            "desc": "The customer is holding a brown parcel at the counter, preparing to apply a large label.",
-            "mark": "none",
-            "card": null,
-            "say": {
-              "who": "customer",
-              "text": "भैया, इस पार्सल पर लेबल लगाना है।"
-            }
-          },
-          {
-            "prompt": "Medium shot of the customer placing a large square paper label right over the address area of the parcel, while the postman watches with concern.",
-            "target": "the large label on the parcel",
-            "tag": "गलत लेबल",
-            "tag_color": "red",
-            "text": "पता पक्ष पर लेबल लगाने से पता छिप जाता है।",
-            "desc": "The customer places a large label directly over the address side of the parcel.",
-            "mark": "wrong",
-            "card": null,
-            "say": {
-              "who": "postman",
-              "text": "अरे भाई! पते के ऊपर लेबल मत लगाओ।"
-            }
-          },
-          {
-            "prompt": "Medium shot of the wise postman pointing his finger at the parcel where the address is hidden under the label, explaining to the customer.",
-            "target": "the hidden address under the label",
-            "tag": "पता समझना मुश्किल",
-            "tag_color": "red",
-            "text": "पता पक्ष पर लेबल लगाने से पता पढ़ना मुश्किल होता है।",
-            "desc": "The postman points out that the address has become difficult to read because of the label.",
-            "mark": "wrong",
-            "card": null,
-            "say": null
-          },
-          {
-            "prompt": "Medium shot of the postman and the customer smiling as the label is placed carefully on the side leaving the address fully visible.",
-            "target": "the clearly visible address side",
-            "tag": "सही तरीका",
-            "tag_color": "green",
-            "text": "पता साफ दिखने पर पार्सल आसानी से भेजा जाता है।",
-            "desc": "The parcel is corrected with the label away from the address, showing the correct way.",
-            "mark": "right",
-            "card": null,
-            "say": null
-          }
-        ],
-        "reuse_n": 2
-      }
+      "published": "2026-10-16",
+      "published_round": 23
     },
     {
       "basis": "notes",
