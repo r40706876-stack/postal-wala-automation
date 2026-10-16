@@ -69,114 +69,121 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "The postman and the customer stand at the post office counter, the customer holding a letter with curiosity.",
-            "target": "the letter in customer's hand",
+            "prompt": "The postman and the customer stand at the post office counter looking at a letter with curiosity.",
+            "target": "the letter on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक ने पत्र पर बहुत सारे छोटे टिकट चिपका दिए।",
-            "desc": "The customer stands at the post office counter with a letter.",
+            "text": "ग्राहक काउंटर पर डाक भेजने के लिए आया है।",
+            "desc": "The postman and the customer stand at the post office counter looking at a letter with curiosity.",
             "mark": "none",
             "card": null,
             "say": {
               "who": "customer",
               "text": "भैया, इस पर टिकट लगाना है।"
             },
-            "img": "clause_plans/chitra_img/36b2069c5e_22145669_1.jpg",
+            "img": "clause_plans/chitra_img/36b2069c5e_27810641_1.jpg",
             "box": [
-              0.431,
-              0.559,
-              0.584,
-              0.663
+              0.359,
+              0.732,
+              0.638,
+              0.801
             ],
-            "bg_text": true,
+            "bg_text": false,
             "badge": [
-              0.389,
-              0.5,
-              0.453,
-              0.542
+              0.387,
+              0.51,
+              0.449,
+              0.55
             ],
             "face": [
-              0.579,
-              0.16,
-              0.761,
-              0.388
+              0.275,
+              0.195,
+              0.472,
+              0.395
             ],
             "pan": "lr"
           },
           {
-            "prompt": "The customer pastes numerous tiny postage stamps all over the letter on the counter, looking confused.",
-            "target": "the letter covered in tiny stamps",
+            "prompt": "The customer is pasting many small value stamps all over the letter on the counter, looking worried.",
+            "target": "the letter covered in small stamps",
             "tag": "बहुत सारे छोटे टिकट",
             "tag_color": "red",
             "text": "बहुत सारे छोटे टिकट लगाने से काम बढ़ जाता है।",
-            "desc": "The customer pastes many tiny stamps on the letter.",
+            "desc": "The customer is pasting many small value stamps all over the letter on the counter, looking worried.",
             "mark": "wrong",
             "card": null,
             "say": {
               "who": "postman",
-              "text": "रुको भाई! ऐसे बहुत टिकट मत लगाओ।"
+              "text": "रुको भाई! इतने छोटे टिकट मत लगाओ।"
             },
-            "img": "clause_plans/chitra_img/36b2069c5e_22145669_2.jpg",
+            "img": "clause_plans/chitra_img/36b2069c5e_27810641_2.jpg",
             "box": [
-              0.442,
-              0.564,
-              0.63,
-              0.659
+              0.377,
+              0.711,
+              0.638,
+              0.785
             ],
-            "bg_text": false,
+            "bg_text": true,
             "badge": [
-              0.401,
-              0.498,
-              0.467,
-              0.542
+              0.396,
+              0.489,
+              0.458,
+              0.529
+            ],
+            "face": [
+              0.303,
+              0.182,
+              0.471,
+              0.368
             ],
             "frames": [
-              "clause_plans/chitra_img/36b2069c5e_22145669_2f1.jpg"
+              "clause_plans/chitra_img/36b2069c5e_27810641_2f1.jpg",
+              "clause_plans/chitra_img/36b2069c5e_27810641_2f2.jpg"
             ]
           },
           {
-            "prompt": "The postman at the counter sorts a letter with a single correct high-value postage stamp, smiling and relieved.",
-            "target": "the letter with a single proper stamp",
-            "tag": "काम बढ़ जाता है",
+            "prompt": "The postman points at the letter with proper required postage stamps while the customer looks on with a smile.",
+            "target": "the letter with correct stamps",
+            "tag": "सही मूल्य के टिकट",
             "tag_color": "green",
             "text": "अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।",
-            "desc": "The postman handles the correct letter, showing that extra small stamps increase the workload.",
+            "desc": "The postman points at the letter with proper required postage stamps while the customer looks on with a smile.",
             "mark": "right",
             "card": null,
-            "say": {
-              "who": "postman",
-              "text": "सही मूल्य का एक ही टिकट लगाओ।"
-            },
-            "img": "clause_plans/chitra_img/36b2069c5e_22145669_3.jpg",
+            "say": null,
+            "img": "clause_plans/chitra_img/36b2069c5e_27810641_3.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.362,
+              0.743,
+              0.65,
+              0.806
             ],
-            "bg_text": false,
+            "bg_text": true,
             "badge": [
-              0.38,
-              0.492,
-              0.448,
-              0.538
+              0.381,
+              0.518,
+              0.452,
+              0.558
             ],
             "face": [
-              0.597,
-              0.267,
-              0.762,
-              0.395
+              0.283,
+              0.198,
+              0.467,
+              0.398
             ],
-            "pan": "rl"
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/36b2069c5e_27810641_3f1.jpg"
+            ]
           }
         ],
         "caps": [
-          "ग्राहक ने पत्र पर बहुत सारे छोटे टिकट चिपका दिए।",
+          "ग्राहक काउंटर पर डाक भेजने के लिए आया है।",
           "बहुत सारे छोटे टिकट लगाने से काम बढ़ जाता है।",
           "अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।"
         ],
-        "score": 8.0,
-        "lesson": "Avoid pasting many small, low-denomination postage stamps on a letter because it increases the workload for postal workers.",
+        "score": 10.0,
+        "lesson": "Avoid using too many low-denomination postage stamps on mail articles because it increases the workload for post office staff.",
         "pv": 4,
         "ok": true,
         "v": 9,
@@ -195,8 +202,20 @@
         "v": 3
       },
       "cf_spent": {
-        "2026-10-15": 3
-      }
+        "2026-10-16": 6
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "It also, increases the work of the Post Office staff and entails waste of valuable stamp paper and printing charges.",
+        "kind": "line"
+      },
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "published": "2026-10-16",
+      "published_round": 23
     },
     {
       "basis": "notes",
@@ -363,7 +382,7 @@
         "attempt": 1
       },
       "cf_spent": {
-        "2026-10-10": 12
+        "2026-10-16": 1
       },
       "style_v": "2026-09-26c",
       "punch_v": {

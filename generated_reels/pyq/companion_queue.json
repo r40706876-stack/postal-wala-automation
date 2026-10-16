@@ -98,5 +98,20 @@
     "trap_quote": "Impressions which are likely to be mistaken for impressions of postal franking machine must also not be made on the address side.",
     "guide_line": "This prohibition applies equally in cases in wh ich any labels, stamps, or markings are attached or impressed to the address side of a postal article in such a manner that it becomes difficult to decipher the address, or hampers the work of the postal officials in any way.",
     "done": "skip"
+  },
+  {
+    "clause": 25,
+    "part_index": 0,
+    "part_no": 1,
+    "reel": "reel_clause_25_part_1_v2.mp4",
+    "question": "बहुत सारे छोटे टिकट लगाने से डाकघर के कर्मचारियों पर क्या असर पड़ता है?",
+    "fact": "अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।",
+    "answer": "काम बढ़ जाता है",
+    "en_question": "How does the use of many low-value stamps affect Post Office staff?",
+    "en_fact": "It also increases the work of the Post Office staff.",
+    "source_quote": "डाकघर कमणचाररयों का काम बढ़ जाता है",
+    "trap_quote": "",
+    "guide_line": "It also, increases the work of the Post Office staff and entails waste of valuable stamp paper and printing charges.",
+    "done": "skip"
   }
 ]
