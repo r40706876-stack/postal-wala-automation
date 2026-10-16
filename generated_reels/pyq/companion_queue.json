@@ -113,5 +113,20 @@
     "trap_quote": "",
     "guide_line": "It also, increases the work of the Post Office staff and entails waste of valuable stamp paper and printing charges.",
     "done": "skip"
+  },
+  {
+    "clause": 25,
+    "part_index": 1,
+    "part_no": 2,
+    "reel": "reel_clause_25_part_2_v2.mp4",
+    "question": "कम मूल्य के अधिक टिकटों के प्रयोग से क्या नुकसान होता है?",
+    "fact": "कम मूल्य के अधिक टिकटों से स्टैंप पेपर बर्बाद होता है और मुद्रण शुल्क अधिक लगता है।",
+    "answer": "मुद्रण शुल्क अधिक लगता है",
+    "en_question": "What is the disadvantage of using many low-value stamps?",
+    "en_fact": "Using many low-value stamps wastes stamp paper and increases printing charges.",
+    "source_quote": "मूल्यवान स्टैंप पेपर बबाणद होता है और मुिर् शुल्क (printing charges) अटिक लगता है",
+    "trap_quote": "",
+    "guide_line": "It also, increases the work of the Post Office staff and entails waste of valuable stamp paper and printing charges.",
+    "done": "skip"
   }
 ]

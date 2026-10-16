@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** छोटे टिकट → काम → बढ़ जाता है
 **Hook:** आइटम पर दर्जनों छोटे टिकट लगे हैं, कर्मचारी को छांटने में क्या होगा?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-10-16]
 **Source (PO Guide):** मूल्यवान स्टैंप पेपर बबाणद होता है और मुिर् शुल्क (printing charges) अटिक लगता है
 
 **Niyam:** कम मूल्य के अधिक टिकटों से स्टैंप पेपर बर्बाद होता है और मुद्रण शुल्क अधिक लगता है।
