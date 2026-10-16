@@ -611,8 +611,11 @@
       },
       "pyq_v": {
         "items": [],
-        "searched": true
-      }
+        "searched": true,
+        "v": 2
+      },
+      "published": "2026-10-16",
+      "published_round": 23
     },
     {
       "basis": "notes",

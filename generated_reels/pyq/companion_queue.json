@@ -83,5 +83,20 @@
     "done": true,
     "pyq_reel": "pyq_clause_24_part_2_v4.mp4",
     "related": false
+  },
+  {
+    "clause": 24,
+    "part_index": 2,
+    "part_no": 3,
+    "reel": "reel_clause_24_part_3.mp4",
+    "question": "पता पक्ष पर अतिरिक्त लेबल या सील लगाने से डाक कर्मचारियों पर क्या असर पड़ता है?",
+    "fact": "पता पक्ष पर गलत लेबल लगाने से डाक कर्मचारियों के कार्य में बाधा उत्पन्न होती है।",
+    "answer": "काम में बाधा उत्पन्न होना",
+    "en_question": "What effect do improper labels on the address side have on postal staff?",
+    "en_fact": "Improper labels on the address side hampers the work of postal officials.",
+    "source_quote": "डाक कमणचाररयों के काम में बािा उत्पन्न होती है",
+    "trap_quote": "Impressions which are likely to be mistaken for impressions of postal franking machine must also not be made on the address side.",
+    "guide_line": "This prohibition applies equally in cases in wh ich any labels, stamps, or markings are attached or impressed to the address side of a postal article in such a manner that it becomes difficult to decipher the address, or hampers the work of the postal officials in any way.",
+    "done": "skip"
   }
 ]

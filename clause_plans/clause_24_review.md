@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पता पक्ष पर लेबल → पता समझना मुश्किल
 **Hook:** চিঠি पर गलत लेबल लगने से पता नहीं पढ़ा जा रहा, अब क्या होगा?
 
-## Part 3  [PASS | publish baaki]
+## Part 3  [PASS | publish: 2026-10-16]
 **Source (PO Guide):** डाक कमणचाररयों के काम में बािा उत्पन्न होती है
 
 **Niyam:** पता पक्ष पर गलत लेबल लगाने से डाक कर्मचारियों के कार्य में बाधा उत्पन्न होती है।
