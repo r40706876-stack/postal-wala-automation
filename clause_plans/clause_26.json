@@ -493,15 +493,15 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 2): The postman points at the customer instead of pointing directly at the envelope's address area.",
+        "tries": 2,
+        "last_err": "chitra saaf nahi bana (khaana 2): The envelope is not being held in the hands; it is lying flat on the counter.",
         "v": 9,
         "kit_try": "photo3"
       },
       "published_prev": "2026-10-13",
       "published_round_prev": 19,
       "cf_spent": {
-        "2026-10-17": 18
+        "2026-10-17": 30
       },
       "punch_v": {
         "ok": true,
@@ -516,95 +516,130 @@
         "v": 3
       },
       "chitra_keep": {
-        "scene": "A neat post office wooden counter under warm lighting with a plain cream wall in the background.",
-        "seed0": 92539085,
+        "scene": "A village post office with a simple wooden counter and a plain grey wall in the background under soft warm indoor light.",
+        "seed0": 6535885,
         "files": {
-          "0": "clause_plans/chitra_img/1d4db3180e_keep_92539085_1.jpg",
-          "2": "clause_plans/chitra_img/1d4db3180e_keep_92539085_3.jpg"
+          "0": "clause_plans/chitra_img/1d4db3180e_keep_6535885_1.jpg",
+          "2": "clause_plans/chitra_img/1d4db3180e_keep_6535885_3.jpg"
         },
         "boxes": {
           "0": [
-            0.539,
-            0.648,
-            0.731,
-            0.786
+            0.368,
+            0.701,
+            0.608,
+            0.779
           ],
           "2": [
-            0.548,
-            0.653,
-            0.715,
-            0.781
+            0.381,
+            0.723,
+            0.614,
+            0.804
           ]
         },
         "extra": {
-          "0": {},
-          "2": {}
+          "0": {
+            "badge": [
+              0.36,
+              0.489,
+              0.42,
+              0.526
+            ],
+            "face": [
+              0.568,
+              0.147,
+              0.777,
+              0.381
+            ]
+          },
+          "2": {
+            "badge": [
+              0.377,
+              0.496,
+              0.437,
+              0.541
+            ],
+            "face": [
+              0.604,
+              0.207,
+              0.765,
+              0.393
+            ]
+          }
         },
         "bgt": {
           "0": false,
           "2": false
         },
         "fixes": {
-          "1": "Make a close-up of the counter with the postman pointing his finger directly at the envelope address area."
+          "1": "The customer holds a white envelope in both hands in front of the counter."
         },
         "panels": [
           {
-            "prompt": "Medium shot of the customer holding a plain white envelope and a pen across the wooden counter, looking thoughtfully at the postman, who listens attentively with a pleasant expression.",
-            "target": "the white envelope in the customer's hands",
+            "prompt": "The customer stands at the wooden counter holding a pen over a blank white envelope, looking confused. The postman stands behind the counter observing him with a patient expression, warm light focused on the counter.",
+            "target": "the white envelope on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक ग्रामीण पते पर पत्र भेजने आया।",
-            "desc": "The customer stands at the post office counter holding a plain envelope and pen, asking how to write the rural address.",
+            "text": "ग्राहक ग्रामीण पते पर पत्र भेजने आया है।",
+            "desc": "The customer stands at the wooden counter holding a pen over an envelope, looking confused.",
             "mark": "none",
-            "card": null,
+            "card": {
+              "lines": [
+                "श्री मोहन लाल",
+                "ग्राम रामपुर",
+                "जिला वाराणसी"
+              ],
+              "corner": "",
+              "hl": -1
+            },
             "say": {
               "who": "customer",
-              "text": "भैया, ग्रामीण पता कैसे लिखूँ?"
+              "text": "भैया, पूरा पता कैसे लिखूँ?"
             }
           },
           {
-            "prompt": "Close-up of the counter where the customer places the white envelope, while the postman shakes his head and points with one finger at the missing postal code line.",
-            "target": "the address area on the envelope",
-            "tag": "पिन कोड गायब",
+            "prompt": "The customer holds the white envelope with both hands across the counter looking unsure. The postman stands behind the counter, shaking his head with an open palm raised in a gentle stopping gesture.",
+            "target": "the white envelope in hands",
+            "tag": "तहसील और पिन कोड गायब",
             "tag_color": "red",
             "text": "बिना पिन कोड तहसील छोड़ना गलत है।",
-            "desc": "The postman points out that the envelope lacks a PIN code, so skipping the tehsil is incorrect.",
+            "desc": "The customer shows the envelope without PIN code or taluka, and the postman stops him with an open palm.",
             "mark": "wrong",
             "card": {
               "lines": [
                 "श्री मोहन लाल",
                 "ग्राम रामपुर",
-                "जिला मेरठ"
+                "जिला वाराणसी",
+                "उत्तर प्रदेश"
               ],
               "corner": "",
               "hl": 2
             },
             "say": {
               "who": "postman",
-              "text": "रुको! बिना पिन कोड नहीं चलेगा!"
+              "text": "नहीं भाई, पिन कोड कहाँ है?"
             }
           },
           {
-            "prompt": "Medium shot of the postman smiling warmly and giving a clear thumbs up, while the customer holds up the envelope showing the completed address with PIN code.",
-            "target": "the bottom line of the address",
+            "prompt": "The customer places the white envelope flat on the wooden counter, smiling with relief. The postman behind the counter smiles warmly and gives a cheerful thumbs up.",
+            "target": "the white envelope on the counter",
             "tag": "सही पिन कोड",
             "tag_color": "green",
-            "text": "सही पिन कोड होने पर तहसील आवश्यक नहीं।",
-            "desc": "The postman happily approves the envelope bearing a correct PIN code, where writing taluka or tehsil is not needed.",
+            "text": "सही पिन कोड होने पर तहसील जरूरी नहीं।",
+            "desc": "The envelope shows the correct 6-digit PIN code line highlighted, with the postman giving an approving thumbs up.",
             "mark": "right",
             "card": {
               "lines": [
                 "श्री मोहन लाल",
                 "ग्राम रामपुर",
-                "जिला मेरठ",
-                "PIN 250001"
+                "जिला वाराणसी",
+                "PIN 221001"
               ],
               "corner": "",
               "hl": 3
             },
             "say": {
               "who": "postman",
-              "text": "बिल्कुल सही, अब तहसील नहीं चाहिए!"
+              "text": "अब बिल्कुल सही है!"
             }
           }
         ],
