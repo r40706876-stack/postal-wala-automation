@@ -64,124 +64,122 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "The postman and the customer standing at the post office counter looking at a plain white envelope together with curious expressions, warm indoor light.",
-            "target": "the plain white envelope on the counter",
+            "prompt": "The customer stands at the post office counter holding a plain white envelope, looking confused.",
+            "target": "the white envelope in customer hands",
             "tag": "",
             "tag_color": "dark",
-            "text": "डाक लेख पर टिकट लगाने के लिए सही जगह देखनी है।",
-            "desc": "The customer and postman look at the plain white envelope on the counter.",
+            "text": "डाक लेख भेजने के लिए क्या सही तरीका अपनाना चाहिए?",
+            "desc": "The customer stands at the post office counter holding a plain white envelope, looking confused.",
             "mark": "none",
             "card": null,
             "say": {
               "who": "customer",
-              "text": "भैया, इस पर टिकट कहाँ लगाऊँ?"
+              "text": "भैया, इस लिफाफे पर टिकट कहाँ लगाएं?"
             },
-            "img": "clause_plans/chitra_img/443e206721_26675899_1.jpg",
+            "img": "clause_plans/chitra_img/443e206721_77074105_1.jpg",
             "box": [
-              0.363,
-              0.553,
-              0.492,
-              0.638
+              0.526,
+              0.591,
+              0.663,
+              0.715
             ],
             "bg_text": true,
+            "badge": [
+              0.394,
+              0.478,
+              0.461,
+              0.529
+            ],
             "face": [
-              0.29,
-              0.189,
-              0.451,
-              0.347
+              0.528,
+              0.148,
+              0.891,
+              0.999
             ],
             "pan": "lr"
           },
           {
-            "prompt": "The customer is pasting a postage stamp right at the top edge of the white envelope with no margin left, looking confused under warm light.",
-            "target": "the postage stamp pasted at the top edge",
+            "prompt": "The customer places postage stamps right at the very top edge of the envelope with no space left.",
+            "target": "the postage stamps on the envelope",
             "tag": "कम जगह छोड़ना गलत है",
             "tag_color": "red",
-            "text": "ऊपर जगह न छोड़ने से लेबल लगाने में दिक्कत होती है।",
-            "desc": "The customer pastes the postage stamp right at the top edge with no margin.",
+            "text": "शीर्ष पर कम जगह छोड़ना बिल्कुल गलत है।",
+            "desc": "The customer places postage stamps right at the very top edge of the envelope with no space left, marked with the tag 'कम जगह छोड़ना गलत है'.",
             "mark": "wrong",
             "card": null,
             "say": {
               "who": "customer",
-              "text": "मैं इसे सबसे ऊपर चिपका देता हूँ।"
+              "text": "मैंने तो ऊपर ही टिकट चिपका दिए।"
             },
-            "img": "clause_plans/chitra_img/443e206721_26675899_2.jpg",
+            "img": "clause_plans/chitra_img/443e206721_77074105_2.jpg",
             "box": [
               0.22,
               0.3,
               0.78,
               0.86
             ],
-            "bg_text": true,
-            "badge": [
-              0.381,
-              0.447,
-              0.442,
-              0.501
-            ],
+            "bg_text": false,
             "face": [
-              0.547,
-              0.182,
-              0.737,
-              0.395
+              0.577,
+              0.147,
+              0.771,
+              0.375
+            ],
+            "frames": [
+              "clause_plans/chitra_img/443e206721_77074105_2f1.jpg",
+              "clause_plans/chitra_img/443e206721_77074105_2f2.jpg"
             ]
           },
           {
-            "prompt": "The postman holding a small wooden ruler against the top of the white envelope to measure a clear 3 centimeter top margin, showing a helpful expression.",
-            "target": "the small wooden ruler against the envelope",
+            "prompt": "The postman points his finger clearly at the top of the white envelope, showing a wide margin for stamps.",
+            "target": "the top margin of the white envelope",
             "tag": "कम से कम 3 सेमी",
             "tag_color": "green",
-            "text": "डाक लेख के शीर्ष पर कम से कम 3 सेंटीमीटर जगह छोड़ें।",
-            "desc": "The postman uses a small wooden ruler to show a clear 3 centimeter top margin on the envelope.",
+            "text": "डाक लेख के शीर्ष पर कम से कम 3 सेमी जगह छोड़ें।",
+            "desc": "The postman points his finger clearly at the top of the white envelope, showing a wide margin for stamps, marked with the tag 'कम से कम 3 सेमी'.",
             "mark": "right",
             "card": null,
-            "say": null,
-            "img": "clause_plans/chitra_img/443e206721_26675899_3.jpg",
+            "say": {
+              "who": "postman",
+              "text": "रुko भाई, ऊपर तीन सेंटीमीटर जगह छोड़नी चाहिए।"
+            },
+            "img": "clause_plans/chitra_img/443e206721_77074105_3.jpg",
             "box": [
-              0.377,
-              0.556,
-              0.52,
-              0.655
+              0.483,
+              0.471,
+              0.658,
+              0.617
             ],
-            "bg_text": true,
-            "badge": [
-              0.403,
-              0.462,
-              0.464,
-              0.523
-            ],
+            "bg_text": false,
             "face": [
-              0.317,
-              0.182,
-              0.477,
-              0.356
+              0.59,
+              0.151,
+              0.786,
+              0.377
             ],
-            "pan": "rl",
-            "frames": [
-              "clause_plans/chitra_img/443e206721_26675899_3f1.jpg"
-            ]
+            "pan": "rl"
           }
         ],
         "caps": [
-          "डाक लेख पर टिकट लगाने के लिए सही जगह देखनी है।",
-          "ऊपर जगह न छोड़ने से लेबल लगाने में दिक्कत होती है।",
-          "डाक लेख के शीर्ष पर कम से कम 3 सेंटीमीटर जगह छोड़ें।"
+          "डाक लेख भेजने के लिए क्या सही तरीका अपनाना चाहिए?",
+          "शीर्ष पर कम जगह छोड़ना बिल्कुल गलत है।",
+          "डाक लेख के शीर्ष पर कम से कम 3 सेमी जगह छोड़ें।"
         ],
-        "score": 8.0,
-        "lesson": "Leave at least 3 centimeters of space at the top of a postal article when placing a stamp to avoid difficulties in attaching labels.",
+        "score": 7.0,
+        "lesson": "Leave at least 3 cm of space at the top of postal articles.",
         "pv": 4,
         "ok": true,
         "v": 9,
         "attempt": 1
       },
-      "published_prev": "2026-09-30",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-11",
+      "published_round_prev": 19,
       "punch_v": {
         "ok": true,
         "text": "टिकट लगाने की जगह नहीं?"
       },
       "cf_spent": {
-        "2026-10-11": 26
+        "2026-10-17": 6
       },
       "trap_v": {
         "tries": 2,
@@ -189,10 +187,39 @@
       },
       "opt_pics": {
         "none": true,
-        "ref": "clause_plans/chitra_img/443e206721_26675899_1.jpg"
+        "ref": "clause_plans/chitra_img/443e206721_77074105_1.jpg"
       },
-      "published": "2026-10-11",
-      "published_round": 19
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels",
+        "kind": "line"
+      },
+      "pyq_v": {
+        "items": [
+          {
+            "id": "saathi_26_1_1",
+            "q": "पता लिखते समय लिफाफे के दाहिने ऊपरी भाग में कितनी जगह (मार्जिन) छोड़नी चाहिए?",
+            "opts": [
+              "2 सेमी",
+              "3 सेमी",
+              "4 सेमी",
+              "5 सेमी"
+            ],
+            "ans": "B",
+            "exams": [
+              "छत्तीसगढ़ 2020"
+            ],
+            "q_en": "While addressing, margin should be left at the righthand top side of cover",
+            "why": "PO गाइड पार्ट I नियम 26 के अनुसार, डाक टिकटों और लेबलों के लिए शीर्ष पर कम से कम 3 सेंटीमीटर जगह छोड़नी होगी।",
+            "src": "CG-MTS-PM-MG-2020.pdf#Q7",
+            "key_ok": true
+          }
+        ],
+        "searched": true,
+        "v": 2
+      },
+      "published": "2026-10-17",
+      "published_round": 23
     },
     {
       "basis": "guide",
@@ -251,91 +278,99 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "Medium shot of the postman and the customer standing at the counter looking down at a plain white parcel.",
-            "target": "the plain white parcel on the counter",
+            "prompt": "The customer stands at the post office counter handing a white envelope to the postman, both looking down curiously.",
+            "target": "the white envelope on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक काउंटर पर पार्सल लिख रहा है।",
-            "desc": "The customer and postman look at the parcel on the counter.",
+            "text": "ग्राहक ने पत्र पर पता लिखकर पोस्टमैन को थमाया।",
+            "desc": "The customer hands the white envelope to the postman at the counter.",
             "mark": "none",
             "card": {
               "lines": [
-                "राहुल कुमार",
-                "मकान नंबर 5"
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना 800001"
               ],
               "corner": "",
               "hl": -1
             },
             "say": {
               "who": "customer",
-              "text": "भैया, इस पर पता कैसे लिखूँ?"
+              "text": "भैया, इसे जल्दी भेज दीजिए।"
             },
-            "img": "clause_plans/chitra_img/d99eb5f581_46476585_1.jpg",
+            "img": "clause_plans/chitra_img/d99eb5f581_94172131_1.jpg",
             "box": [
-              0.407,
-              0.732,
-              0.586,
-              0.871
+              0.22,
+              0.3,
+              0.78,
+              0.86
             ],
             "bg_text": false,
             "badge": [
-              0.388,
-              0.51,
-              0.459,
-              0.552
+              0.368,
+              0.454,
+              0.41,
+              0.493
             ],
             "face": [
-              0.613,
-              0.143,
-              0.789,
-              0.374
+              0.529,
+              0.116,
+              0.893,
+              0.992
             ],
             "pan": "lr"
           },
           {
-            "prompt": "Medium shot of the postman shaking his head while looking at the parcel where the post town is written in small letters without any line.",
-            "target": "the parcel with small ununderlined letters",
-            "tag": "बिना रेखांकित छोटे अक्षर",
+            "prompt": "The postman points at the envelope on the counter with a worried expression, while the customer looks confused.",
+            "target": "the small lowercase town name on the envelope",
+            "tag": "छोटे अक्षरों में",
             "tag_color": "red",
-            "text": "छोटे अक्षरों में बिना रेखांकित पोस्ट टाउन लिखना गलत है।",
-            "desc": "The customer has written the post town in small letters without underlining.",
+            "text": "छोटे अक्षरों में लिखा शहर का नाम गलत है।",
+            "desc": "The postman points at the small lowercase town name marked in red.",
             "mark": "wrong",
             "card": {
               "lines": [
-                "राहुल कुमार",
-                "मकान नंबर 5"
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर"
               ],
               "corner": "",
               "hl": -1
             },
             "say": {
               "who": "postman",
-              "text": "रुको भाई! ऐसे छोटे अक्षरों में नहीं चलेगा।"
+              "text": "अरे भाई, ऐसे छोटे अक्षर नहीं चलेंगे।"
             },
-            "img": "clause_plans/chitra_img/d99eb5f581_46476585_2.jpg",
+            "img": "clause_plans/chitra_img/d99eb5f581_94172131_2.jpg",
             "box": [
-              0.403,
-              0.725,
-              0.57,
-              0.863
+              0.22,
+              0.3,
+              0.78,
+              0.86
             ],
             "bg_text": false,
+            "face": [
+              0.292,
+              0.188,
+              0.467,
+              0.353
+            ],
             "frames": [
-              "clause_plans/chitra_img/d99eb5f581_46476585_2f1.jpg"
+              "clause_plans/chitra_img/d99eb5f581_94172131_2f1.jpg",
+              "clause_plans/chitra_img/d99eb5f581_94172131_2f2.jpg"
             ]
           },
           {
-            "prompt": "Medium shot of the postman pointing his finger at the parcel where the post town is written in large block letters and properly underlined.",
-            "target": "the parcel with block underlined letters",
+            "prompt": "The postman smiles warmly and points his finger at the clearly corrected town name on the envelope.",
+            "target": "the large underlined town name on the envelope",
             "tag": "बड़े अक्षरों में और रेखांकित",
             "tag_color": "green",
-            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।",
-            "desc": "The postman points to the post town written in block letters and underlined.",
+            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में और रेखांकित होना चाहिए।",
+            "desc": "The postman points to the correct town name written in block letters and underlined, marked in green.",
             "mark": "right",
             "card": {
               "lines": [
-                "राहुल कुमार",
-                "मकान नंबर 5"
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर"
               ],
               "corner": "",
               "hl": -1
@@ -344,33 +379,39 @@
               "who": "postman",
               "text": "हमेशा बड़े अक्षरों में लिखकर रेखांकित करें।"
             },
-            "img": "clause_plans/chitra_img/d99eb5f581_46476585_3.jpg",
+            "img": "clause_plans/chitra_img/d99eb5f581_94172131_3.jpg",
             "box": [
-              0.404,
-              0.734,
-              0.582,
-              0.874
+              0.22,
+              0.3,
+              0.78,
+              0.86
             ],
             "bg_text": false,
+            "face": [
+              0.285,
+              0.188,
+              0.465,
+              0.362
+            ],
             "pan": "rl"
           }
         ],
         "caps": [
-          "ग्राहक काउंटर पर पार्सल लिख रहा है।",
-          "छोटे अक्षरों में बिना रेखांकित पोस्ट टाउन लिखना गलत है।",
-          "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।"
+          "ग्राहक ने पत्र पर पता लिखकर पोस्टमैन को थमाया।",
+          "छोटे अक्षरों में लिखा शहर का नाम गलत है।",
+          "पोस्ट टाउन का नाम बड़े अक्षरों में और रेखांकित होना चाहिए।"
         ],
-        "score": 10.0,
-        "lesson": "The name of the post town must be written in capital letters and underlined on the parcel.",
+        "score": 7.0,
+        "lesson": "Write the post town name in block letters and underline it on a letter address.",
         "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 2
+        "attempt": 1
       },
-      "published_prev": "2026-09-30",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-12",
+      "published_round_prev": 19,
       "cf_spent": {
-        "2026-10-12": 12
+        "2026-10-17": 6
       },
       "punch_v": {
         "ok": true,
@@ -383,9 +424,7 @@
       "opt_pics": {
         "none": true,
         "ref": "clause_plans/chitra_img/d99eb5f581_46476585_1.jpg"
-      },
-      "published": "2026-10-12",
-      "published_round": 19
+      }
     },
     {
       "basis": "notes",
@@ -583,8 +622,8 @@
         "v": 9,
         "attempt": 1
       },
-      "published_prev": "2026-09-30",
-      "published_round_prev": 1,
+      "published_prev": "2026-10-13",
+      "published_round_prev": 19,
       "cf_spent": {
         "2026-10-12": 8
       },
@@ -599,9 +638,7 @@
       "trap_v": {
         "none": true,
         "v": 3
-      },
-      "published": "2026-10-13",
-      "published_round": 19
+      }
     },
     {
       "basis": "guide",
@@ -811,8 +848,8 @@
         "none": true,
         "v": 3
       },
-      "published": "2026-10-13",
-      "published_round": 19
+      "published_prev": "2026-10-13",
+      "published_round_prev": 19
     },
     {
       "basis": "guide",
@@ -1032,8 +1069,8 @@
         "none": true,
         "v": 3
       },
-      "published": "2026-10-13",
-      "published_round": 19
+      "published_prev": "2026-10-13",
+      "published_round_prev": 19
     },
     {
       "basis": "guide",
@@ -1236,8 +1273,8 @@
         "tries": 1,
         "v": 3
       },
-      "published": "2026-10-14",
-      "published_round": 19
+      "published_prev": "2026-10-14",
+      "published_round_prev": 19
     },
     {
       "basis": "guide",
@@ -1403,8 +1440,8 @@
         "none": true,
         "v": 3
       },
-      "published": "2026-10-14",
-      "published_round": 19
+      "published_prev": "2026-10-14",
+      "published_round_prev": 19
     },
     {
       "basis": "guide",
@@ -1593,8 +1630,8 @@
         "tries": 1,
         "v": 3
       },
-      "published": "2026-10-14",
-      "published_round": 19
+      "published_prev": "2026-10-14",
+      "published_round_prev": 19
     }
   ],
   "clause_text_en": "26. Particulars to be furnished  –  (1) The prompt delivery of a postal article is greatly \nfacilitated if it is addressed in the correct manner.  Delay to correspondence and mistakes in \n\n\ndelivery often result from an incorrect or incomplete postal address.  The address should, \ntherefore, be complete and definite enough to ensure the easy transmission of the article and its \ndelivery at destination to the addressee without any el aborate enquiry.  The public can help the \nPost Office by keeping the following points in mind while addressing their correspondence: \n \n(a) The address should be written parallel to the length of the cover and in the lower half \nand towards the right-hand side of the front of the article, leaving a clear margin at least \n3 centimeter at the top for the postage stamps and labels, postmarks and other \nindications.  \n \n(b) The Post town should be noted in block letter and according to the approved spelling in \nthe List of Post Offices (Part III of this Guide).  It should, also be underlined.  The PIN \nCode of the post town should be noted below. \n \n(c) The following particulars should generally be furnished in the address and in the same \norder as noted below :- \n \nIn the case of articles for delivery in the urban \nareas \n \nIn the case of articles for delivery in the rural \nareas \n(i) Name of addressee \n \n(i) Name of addressee \n(ii) Profession, if any \n(iii)  \n(ii)Father’s or husbands’ name \n(iv) Number and/or name of the House, \nand name of the street or Road. \n(v)  \n(iii) Profession, if any \n(vi) Name of the locality or Mohall (iv) No. of house, if any along with the name \nof street if any. \n \n(v) Post Box No., if any. (v) Name of the village and Thana Firka, Hobli, \netc. \n \n(vi) Name of the Post Town and Pin -\nCode \n(vi) Name of the Post Office of delivery and the \nPIN-Code. \n \n(vii) Name of the District and State Pin -\nCode \n \n(vii) Name of the Taluk or Tahsil.  This is not \nnecessary if correct PIN is written. \n (viii) Name of the District and State  \n         This is not necessary if correct PIN is \nwritten. \n \n(d) It is particularly important to note the District in cases where there is more than one \nPost town bearing the same name and if PIN is not noted.  If the name of the district is \n\n\nthe same as that of the Post town, the name of the State should be noted.  I ndications of \nroute like ‘via’ should not be given. \n \n(e) In the case of articles addressed to foreign countries, the address should be written in \nRoman letters and in Arabic figures. \n \n(f) It is desirable to note the sender’s address preferable in the lower left -hand corner on \nthe address side or failing that on the reverse of the article.  There should be an \nindication from to obviate its being mistaken for the addressee’s particulars. \n \n(g) In the case of articles entitled to concessional rates of postage or to be tran smitted free \nof postage, the class of the articles, e.g., ‘Book -Post’, ‘Blind Literature’ should be \nclearly noted on the top of the address side of the article.  The indication ‘Letter’ should \nbe given on the address -side of bulky letter packets, which, on  account of their size or \nmake up, might be mistaken for other classes of packets. \n \n(h) The President, Prime Minister and other Ministers of the Government of India and \ncertain High government Officers are allowed the facility of delivery of their mails to \nthem wherever they may happen to be on tour within India.  A list of the high officers \nentitled to this privilege will be found in Clause 206.  Articles intended for delivery in \ncamp to such officers should not be addressed to any Post Town but only to their camp \nas indicated in Clause 206. \n \n \n(2)  A few examples of correct and complete addresses are given below :- \n \n(1)  ABC, \nEngineer, \nMandir Marg, \nGole Market, \nNew Delhi-110001. \n(2) Lakshmi, \nWife of Chikka Ramudu Dhobi, \nBukkapatnam Village, \nBUKKAPATNAM –  515144 \nPennukonda Taluq \nAnantpur District. \n \n(3)  Govindaswamy, \nSon of Kumaraswamy, \nHead Gangman \nQuarter No. T/23 \nKurumalai R.S., S.R., \nIdaiseval P.O., \nNallatinaputhur-627716. \n(Tirunelveli District) \nTamil Nadu. \n(4) Private Secretary to the Prime Minister of \nIndia, \nPrime Minister’s Camp"

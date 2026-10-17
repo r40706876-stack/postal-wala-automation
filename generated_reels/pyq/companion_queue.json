@@ -128,5 +128,22 @@
     "trap_quote": "",
     "guide_line": "It also, increases the work of the Post Office staff and entails waste of valuable stamp paper and printing charges.",
     "done": "skip"
+  },
+  {
+    "clause": 26,
+    "part_index": 0,
+    "part_no": 1,
+    "reel": "reel_clause_26_part_1_v2.mp4",
+    "question": "डाक लेख के ऊपर डाक टिकटों और लेबल के लिए कितनी जगह छोड़नी चाहिए?",
+    "fact": "डाक लेख के शीर्ष पर टिकटों व लेबलों हेतु कम से कम 3 सेंटीमीटर जगह छोड़ें।",
+    "answer": "कम से कम 3 सेमी",
+    "en_question": "How much clear margin should be left at the top of a postal article for stamps?",
+    "en_fact": "A clear margin of at least 3 cm must be left at the top for stamps and labels.",
+    "source_quote": "leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels",
+    "trap_quote": "",
+    "guide_line": "leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels",
+    "done": true,
+    "pyq_reel": "pyq_clause_26_part_1.mp4",
+    "related": true
   }
 ]

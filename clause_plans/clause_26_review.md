@@ -5,7 +5,7 @@ English title: Particulars to be furnished
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish: 2026-10-11]
+## Part 1  [PASS | publish: 2026-10-17]
 **Source (PO Guide):** leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels
 
 **Niyam:** डाक लेख के शीर्ष पर टिकटों व लेबलों हेतु कम से कम 3 सेंटीमीटर जगह छोड़ें।
@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** शीर्ष मार्जिन = 3 सेंटीमीटर
 **Hook:** काउंटर पर लिफाफा आया, टिकट के लिए ऊपर कितनी जगह छोड़नी होगी?
 
-## Part 2  [PASS | publish: 2026-10-12]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** The Post town should be noted in block letter and according to the approved spelling in the List of Post Offices (Part III of this Guide). It should, also be underlined.
 
 **Niyam:** पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।
@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पोस्ट टाउन = बड़े अक्षर + रेखांकित
 **Hook:** छंटाई करते समय पोस्ट टाउन का नाम कैसे लिखा होना चाहिए?
 
-## Part 3  [PASS | publish: 2026-10-13]
+## Part 3  [PASS | publish baaki]
 **Source (PO Guide):** तालुका या तिसील का नाम ( यकि सिी PIN कोड कलखा िै तो इसकी आवश्यक निीां िै)
 
 **Niyam:** सही पिन कोड लिखे होने पर ग्रामीण पते में तालुका या तहसील आवश्यक नहीं।
@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सही पिन = तहसील अनावश्यक
 **Hook:** ग्रामीण पार्सल पर सही पिन है, क्या तहसील लिखना जरूरी है?
 
-## Part 4  [PASS | publish: 2026-10-13]
+## Part 4  [PASS | publish baaki]
 **Source (PO Guide):** Indications of route like ‘via’ should not be given.
 
 **Niyam:** पते में 'वाया' (via) जैसे मार्ग संकेत नहीं दिए जाने चाहिए।
@@ -61,7 +61,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पता → मार्ग संकेत → via (वाया) नहीं
 **Hook:** ग्राहक पते में 'वाया स्टेशन' लिख रहा है, क्या यह सही है?
 
-## Part 5  [PASS | publish: 2026-10-13]
+## Part 5  [PASS | publish baaki]
 **Source (PO Guide):** In the case of articles addressed to foreign countries, the address should be written in Roman letters and in Arabic figures.
 
 **Niyam:** विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।
@@ -75,7 +75,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** विदेश = रोमन अक्षर + अरबी अंक
 **Hook:** विदेश जाने वाली डाक पर पता किस लिपि में लिखा जाएगा?
 
-## Part 6  [PASS | publish: 2026-10-14]
+## Part 6  [PASS | publish baaki]
 **Source (PO Guide):** It is desirable to note the sender’s address preferable in the lower left-hand corner on the address side
 
 **Niyam:** प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।
@@ -89,7 +89,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** प्रेषक पता = नीचे बायां कोना
 **Hook:** रजिस्टर पत्र पर भेजने वाले का पता कहाँ दर्ज करना है?
 
-## Part 7  [PASS | publish: 2026-10-14]
+## Part 7  [PASS | publish baaki]
 **Source (PO Guide):** The indication ‘Letter’ should be given on the address-side of bulky letter packets, which, on account of their size or make up, might be mistaken for other classes of packets.
 
 **Niyam:** भारी पत्र पैकेटों के पते वाली साइड पर 'Letter' स्पष्ट लिखना चाहिए।
@@ -103,7 +103,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** भारी पैकेट = 'Letter' संकेत
 **Hook:** मोटे आकार के पत्र पैकेट पर कौन सा विशेष संकेत देना होगा?
 
-## Part 8  [PASS | publish: 2026-10-14]
+## Part 8  [PASS | publish baaki]
 **Source (PO Guide):** Articles intended for delivery in camp to such officers should not be addressed to any Post Town but only to their camp as indicated in Clause 206.
 
 **Niyam:** उच्च अधिकारियों के कैंप के लेखों पर पोस्ट टाउन के बजाय केवल कैंप का पता दें।
