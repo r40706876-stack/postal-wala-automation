@@ -26,7 +26,6 @@ pehli baar branding/ (profile photo, highlight covers, intro post).
 """
 
 import os
-import datetime
 import re
 import sys
 import json
@@ -12237,7 +12236,8 @@ def run_daily():
           "BAND - CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_API_TOKEN secrets workflow me nahi mile (purane lifaafa/pata chitra chalenge)")
     print("=" * 60)
     _RUN_FLAGS.update({"busy": False, "builds": 0})
-    _ist_today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date().isoformat()
+    import datetime as _dt
+    _ist_today = (_dt.datetime.utcnow() + _dt.timedelta(hours=5, minutes=30)).date().isoformat()
     _lsd = os.path.join(OUTPUT_DIR, "series_last_date.txt")
     if os.getenv("SERIES_FORCE", "0") != "1" and os.path.exists(_lsd) and \
             open(_lsd, encoding="utf-8").read().strip() == _ist_today:
@@ -12515,8 +12515,12 @@ def run_daily():
     import datetime
     part["published"] = datetime.date.today().isoformat()
     try:                                                 # v23: din me ek hi series reel (late schedule run se dohri nahi)
+        import datetime as _dt
+        _d = (_dt.datetime.utcnow() + _dt.timedelta(hours=5, minutes=30)).date().isoformat()
         with open(os.path.join(OUTPUT_DIR, "series_last_date.txt"), "w", encoding="utf-8") as f_:
-            f_.write((datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date().isoformat())
+            f_.write(_d)
+        with open(os.path.join(OUTPUT_DIR, "series_today.json"), "w", encoding="utf-8") as f_:   # ig_post isi ko post karta hai
+            json.dump({"date": _d, "file": os.path.basename(out)}, f_, ensure_ascii=False)
     except OSError:
         pass
     part["published_round"] = RESTART_ROUND

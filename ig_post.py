@@ -198,27 +198,16 @@ def items_for(job):
                 imgs = sorted(glob.glob(os.path.join(folder, "*.jpg")))
                 if len(imgs) >= 2:
                     out.append({"key": f"carousel_9pm_{d0}", "images": imgs, "caption": v.replace(".mp4", "_caption.txt")})
-    elif job == "series":
+    elif job == "series":                       # sirf wahi reel jo main.py ne AAJ banayi (series_today.json)
         try:
-            idx = json.load(open(os.path.join(OUT, "reel_index.json"), encoding="utf-8"))
+            st = json.load(open(os.path.join(OUT, "series_today.json"), encoding="utf-8"))
         except Exception:
-            idx = []
-        made_today = [n for n in idx if n.startswith("reel_clause_") and os.path.exists(os.path.join(OUT, n))
-                      and _made_on(os.path.join(OUT, n)) == d0]
-        if made_today:
-            v = os.path.join(OUT, made_today[-1])
-            out.append({"key": made_today[-1], "video": v, "caption": v.replace(".mp4", "_caption.txt"),
+            st = {}
+        if st.get("date") == d0 and st.get("file") and os.path.exists(os.path.join(OUT, st["file"])):
+            v = os.path.join(OUT, st["file"])
+            out.append({"key": st["file"], "video": v, "caption": v.replace(".mp4", "_caption.txt"),
                         "cover": v.replace(".mp4", "_cover.jpg")})
     return out
-
-
-def _made_on(path):
-    """GitHub checkout me file ka samay bharosemand nahi -> git commit ka din (IST); na mile to file ka samay."""
-    r = subprocess.run(["git", "log", "-1", "--format=%cI", "--", path], capture_output=True, text=True).stdout.strip()
-    try:
-        return datetime.datetime.fromisoformat(r).astimezone(IST).date().isoformat()
-    except Exception:
-        return datetime.datetime.fromtimestamp(os.path.getmtime(path), IST).date().isoformat()
 
 
 def run(job):
