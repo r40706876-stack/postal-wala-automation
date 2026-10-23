@@ -160,5 +160,20 @@
     "trap_quote": "",
     "guide_line": "The Post town should be noted in block letter and according to the approved spelling in the List of Post Offices (Part III of this Guide). It should, also be underlined.",
     "done": "skip"
+  },
+  {
+    "clause": 25,
+    "part_index": 0,
+    "part_no": 1,
+    "reel": "reel_clause_25_part_1_v3.mp4",
+    "question": "बहुत सारे छोटे टिकट लगाने से डाकघर के कर्मचारियों पर क्या असर पड़ता है?",
+    "fact": "अधिक कम मूल्य के टिकट लगाने से डाकघर कर्मचारियों का काम बढ़ जाता है।",
+    "answer": "काम बढ़ जाता है",
+    "en_question": "How does the use of many low-value stamps affect Post Office staff?",
+    "en_fact": "It also increases the work of the Post Office staff.",
+    "source_quote": "डाकघर कमणचाररयों का काम बढ़ जाता है",
+    "trap_quote": "",
+    "guide_line": "It also, increases the work of the Post Office staff and entails waste of valuable stamp paper and printing charges.",
+    "done": "skip"
   }
 ]
