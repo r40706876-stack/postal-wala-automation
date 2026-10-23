@@ -129,7 +129,7 @@ jobs:
           git push origin main || git push
 
       - name: Post ke time tak ruko (8 AM / 5 PM / 9 PM IST)
-        if: always() && github.event_name == 'schedule'
+        if: always() && steps.job.outputs.job != 'check'
         run: |
           case "${{ steps.job.outputs.job }}" in
             am) T="08:00" ;; series) T="17:00" ;; pm) T="21:00" ;;

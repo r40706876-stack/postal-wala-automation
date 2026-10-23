@@ -1,0 +1,49 @@
+name: Timer (theek samay par reel run)
+
+# GitHub ka apna schedule kabhi ghanton der / chhoot jaata hai. Ye timer khud sota hai, theek samay par
+# run.yml chalata hai, fir khud ko dobara chala deta hai (chain). Public repo = minute free.
+# Backup: har 6 ghante schedule bhi isi timer ko jaga deta hai (chain toot jaaye to bhi).
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '29 */6 * * *'
+
+concurrency:
+  group: postal-wala-timer
+  cancel-in-progress: true        # hamesha sirf ek timer zinda
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  timer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - name: Agla slot tak ruko, run chalao, timer dobara
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          # build ka samay (IST) -> run.yml khud post ke time (8:00 / 17:00 / 21:00) tak rukta hai
+          SLOTS="06:43=am 15:43=series 19:43=pm"
+          NOW=$(date +%s)
+          BEST=""; BESTT=0
+          for d in today tomorrow; do
+            for s in $SLOTS; do
+              T=${s%%=*}; J=${s##*=}
+              TS=$(TZ=Asia/Kolkata date -d "$d $T" +%s)
+              if [ $TS -gt $((NOW+60)) ] && { [ -z "$BEST" ] || [ $TS -lt $BESTT ]; }; then BEST=$J; BESTT=$TS; fi
+            done
+          done
+          W=$((BESTT-NOW))
+          echo "Agla kaam: $BEST, $(TZ=Asia/Kolkata date -d @$BESTT '+%d %b %H:%M IST') ($W sec baad)"
+          if [ $W -le 19800 ]; then
+            sleep $W
+            gh workflow run run.yml -R "$REPO" --ref main -f job=$BEST && echo "run.yml ($BEST) chalaya"
+            sleep 90
+          else
+            sleep 19800
+          fi
+          gh workflow run timer.yml -R "$REPO" --ref main && echo "timer dobara chalu"
