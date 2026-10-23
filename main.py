@@ -26,6 +26,7 @@ pehli baar branding/ (profile photo, highlight covers, intro post).
 """
 
 import os
+import datetime
 import re
 import sys
 import json
@@ -12236,6 +12237,12 @@ def run_daily():
           "BAND - CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_API_TOKEN secrets workflow me nahi mile (purane lifaafa/pata chitra chalenge)")
     print("=" * 60)
     _RUN_FLAGS.update({"busy": False, "builds": 0})
+    _ist_today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date().isoformat()
+    _lsd = os.path.join(OUTPUT_DIR, "series_last_date.txt")
+    if os.getenv("SERIES_FORCE", "0") != "1" and os.path.exists(_lsd) and \
+            open(_lsd, encoding="utf-8").read().strip() == _ist_today:
+        print(f"Aaj ({_ist_today}) ki series reel ban chuki hai - din me ek hi (dobara chalana ho to SERIES_FORCE=1)")
+        return
     try:
         b = make_branding()
         if b:
@@ -12507,6 +12514,11 @@ def run_daily():
     # publish mark (index ki jagah flag, taaki baad me sudhre parts se kram na bigde)
     import datetime
     part["published"] = datetime.date.today().isoformat()
+    try:                                                 # v23: din me ek hi series reel (late schedule run se dohri nahi)
+        with open(os.path.join(OUTPUT_DIR, "series_last_date.txt"), "w", encoding="utf-8") as f_:
+            f_.write((datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date().isoformat())
+    except OSError:
+        pass
     part["published_round"] = RESTART_ROUND
     for p_ in ((part.get("chitra_v") or {}).get("panels") or []):   # reel ban gayi -> chitra file hatao (repo halka)
         try:

@@ -10,9 +10,11 @@ on:
         default: series
   schedule:
     # v22: din ke 3 slot (IST) - reel post ke time se ~30 min pehle taiyar
-    - cron: '0 2 * * *'    # 07:30 AM IST -> 8 AM wali 7 PYQ quiz reel
-    - cron: '0 11 * * *'   # 04:30 PM IST -> 5 PM wali clause series reel (+ saathi PYQ)
-    - cron: '0 15 * * *'   # 08:30 PM IST -> 9 PM wali 7 PYQ copy-panna reel + carousel
+    # ghante ke beech ka minute (GitHub :00 wale schedule aksar der se chalata/chhod deta hai); reel banke
+    # post ke time tak run rukta hai
+    - cron: '13 1 * * *'   # 06:43 AM IST -> 8 AM wali 7 PYQ quiz reel
+    - cron: '13 10 * * *'  # 03:43 PM IST -> 5 PM wali clause series reel (+ saathi PYQ)
+    - cron: '13 14 * * *'  # 07:43 PM IST -> 9 PM wali 7 PYQ copy-panna reel + carousel
 
 # ek run khatam hone se pehle doosra shuru na ho (state kharab na ho)
 concurrency:
@@ -22,7 +24,7 @@ concurrency:
 jobs:
   build-and-post:
     runs-on: ubuntu-24.04          # pakka version (ubuntu-latest Oct 2026 se badal raha hai)
-    timeout-minutes: 90            # banana + post ke time tak rukna
+    timeout-minutes: 200           # banana + post ke time tak rukna
 
     permissions:
       contents: write
@@ -37,8 +39,8 @@ jobs:
           JOB="${{ github.event.inputs.job }}"
           if [ -z "$JOB" ]; then
             case "${{ github.event.schedule }}" in
-              "0 2 * * *")  JOB=am ;;
-              "0 15 * * *") JOB=pm ;;
+              "13 1 * * *")  JOB=am ;;
+              "13 14 * * *") JOB=pm ;;
               *)            JOB=series ;;
             esac
           fi
@@ -130,7 +132,7 @@ jobs:
           NOW=$(TZ=Asia/Kolkata date +%s)
           TGT=$(TZ=Asia/Kolkata date -d "today $T" +%s)
           W=$((TGT-NOW))
-          if [ $W -gt 0 ] && [ $W -lt 3600 ]; then echo "$W sec ruk rahe hain ($T IST)"; sleep $W; else echo "turant post"; fi
+          if [ $W -gt 0 ] && [ $W -lt 9000 ]; then echo "$W sec ruk rahe hain ($T IST)"; sleep $W; else echo "turant post"; fi
 
       - name: Instagram pe post (title + description + hashtag + cover)
         if: always() && steps.job.outputs.job != 'check'
