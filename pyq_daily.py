@@ -465,6 +465,15 @@ class Quiz:
         return cv
 
 
+def am_cover(qz):
+    """Instagram cover: bada pehla sawal + '7 असली PYQ • 5 सेकंड' (grid ke beech 1350px me sab)."""
+    cv = qz.frame(0.6).convert("RGB")
+    d = ImageDraw.Draw(cv)
+    d.rounded_rectangle((90, 1440, 990, 1560), 40, fill=RED)
+    d.text((540, 1500), "जवाब रील के आखिर में ✓".replace(" ✓", ""), font=M.get_font(54), fill=(255, 255, 255), anchor="mm")
+    return cv
+
+
 def am_audio(path):
     n = int(AM_DUR * M.SR)
     buf = np.zeros(n, dtype=np.float32)
@@ -529,6 +538,7 @@ def run_am(force=False):
     am_audio(wav)
     qz = Quiz(items)
     encode(qz.frame, int(AM_DUR * FPS), wav, out)
+    am_cover(qz).save(out.replace(".mp4", "_cover.jpg"), quality=92)
     os.remove(wav)
     am_caption(items, out.replace(".mp4", "_caption.txt"))
     print(f"8 AM REEL BANI: {out}")
@@ -719,6 +729,7 @@ def run_pm(force=False):
     write_wav(beat_music(PM_DUR), wav)
     fr = pm_frame(items, pairs)
     encode(lambda t: fr, int(PM_DUR * FPS), wav, out, static=True)
+    fr.convert("RGB").save(out.replace(".mp4", "_cover.jpg"), quality=92)
     os.remove(wav)
     folder = os.path.join(OUT_DIR, f"carousel_9pm_{d0}")
     n = carousel(items, folder)

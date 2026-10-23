@@ -11517,30 +11517,38 @@ def write_caption(data, path):
                    f"✅ असली पेपर सवाल का सही जवाब: {npq['ans']}) {npq['opts']['ABCD'.index(npq['ans'])]}"
                    + (f"  [पूछा गया: {ex_}]" if ex_ else ""),
                    f"📩 FREE PDF चाहिए? कमेंट करें: {PDF_KEYWORD}"]
+    bh = data.get("bharosa") or {}
+    if bh:                                              # v23 bharosa format: trick + MOCK + follow
+        tail = ["🎨 रोज़ शाम 5 बजे: PO Guide का एक नियम चित्रों + ट्रिक से, Clause-wise (कोई नियम नहीं छूटेगा)",
+                "🌅 सुबह 8 बजे: 5 सेकंड में 7 असली PYQ  •  📒 रात 9 बजे: 7 PYQ की revision list"] + \
+               ([f"🧠 याद रखने की ट्रिक: {bh['trick']}"] if bh.get("trick") else []) + \
+               ["", HASHTAGS, "", "----- PIN करने वाला पहला कमेंट -----",
+                "🧠 ट्रिक याद हो गई? कमेंट में लिखो: याद ✅",
+                f"🎯 FREE मॉक टेस्ट (असली परीक्षा जैसे सवाल) चाहिए? कमेंट करो: {MOCK_KEYWORD}",
+                "📌 अगला नियम कल शाम 5 बजे — फॉलो करो, पूरी तैयारी FREE!"]
+    else:
+        tail = ["🎨 रोज़ शाम 5 बजे: PO Guide का एक नियम चित्रों से आसान भाषा में",
+                "🌅 सुबह 8 बजे: 5 सेकंड में 7 असली PYQ  •  📒 रात 9 बजे: 7 PYQ की revision list"] + \
+               (["📝 इसी नियम पर पूछे गए असली पेपर के सवाल: अगली रील में 👉"] if data.get("naya") and PYQ_COMPANION else []) + \
+               ["", HASHTAGS, "", "----- PIN करने वाला पहला कमेंट -----",
+                "📮 Postal Wala भैया पूछ रहे हैं: आप होते तो क्या करते? A / B / C / D लिखो 👇",
+                "📌 सबसे पहले सही जवाब + सही वजह लिखने वाले का कमेंट PIN होगा!",
+                f"Your answer? Comment A / B / C / D  |  Free Mock Test: {MOCK_KEYWORD}"] + pyq_pin
+    bh_ex = (bh.get("pyq") or {}).get("exams") or []
     lines = [
         # v20: pehli line search ke shabd (EP number naye dekhne wale ko "beech ki series" lagta tha)
         f"GDS से MTS / Postman परीक्षा | {data['question']} | PO Guide Part I Clause {data['clause_no']}",
     ] + ([f"🇬🇧 {en_q} (Answer in the reel 👀)"] if en_q else []) + [
         "",
         "सही उत्तर जानने के लिए पूरी रील देखें 👀",
-        ] + pyq_top + [
+        ] + ([f"📝 ये सवाल असली पेपर में आया: {', '.join(bh_ex[:3])}"] if bh_ex else []) + pyq_top + [
         f"📘 स्रोत: PO Guide Part I, Clause {data['clause_no']}"
         + ("  (नया नियम - PO Guide 1985 के बाद बदला)" if data.get("basis") == "notes" else ""),
         f"🎯 FREE MOCK TEST चाहिए? कमेंट करें: {MOCK_KEYWORD}  |  Want a FREE MOCK TEST? Comment {MOCK_KEYWORD}",
         "📤 जो दोस्त ये गलत करेगा, उसे ये रील भेजो!",
         ] + ([f"🎁 बोनस सवाल (रील के आखिर में): {data['bonus']['q']}  —  जवाब कमेंट करें!"] if data.get("bonus") else []) + [
         "✅ 100% Exam Oriented | GDS से MTS / Postman / PA परीक्षा के लिए",
-        "🎨 रोज़ शाम 5 बजे: PO Guide का एक नियम चित्रों से आसान भाषा में",
-        "🌅 रोज़ सुबह 9 बजे: पिछले साल के असली पेपर (PYQ) के 3 सवाल - जवाब कमेंट में",
-        ] + (["📝 इसी नियम पर पूछे गए असली पेपर के सवाल: अगली रील में 👉"] if data.get("naya") and PYQ_COMPANION else []) + [
-        "",
-        HASHTAGS,
-        "",
-        "----- PIN करने वाला पहला कमेंट -----",
-        "📮 Postal Wala भैया पूछ रहे हैं: आप होते तो क्या करते? A / B / C / D लिखो 👇",
-        "📌 सबसे पहले सही जवाब + सही वजह लिखने वाले का कमेंट PIN होगा!",
-        f"Your answer? Comment A / B / C / D  |  Free Mock Test: {MOCK_KEYWORD}",
-    ] + pyq_pin
+        ] + tail
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
