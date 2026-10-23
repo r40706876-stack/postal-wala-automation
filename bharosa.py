@@ -149,8 +149,7 @@ def paper_scan(pyq):
         pdf = os.path.join(P.PAPER_DIR, fn)
         if not os.path.exists(pdf):
             return None
-        qtext = next((c["text"] for c in P.paper_index() if c["file"] == fn and int(c["no"]) == no), "") or \
-            pyq.get("q_en") or ""
+        qtext = pyq.get("q_en") or next((c["text"] for c in P.paper_index() if c["file"] == fn and int(c["no"]) == no), "")
         want = [_norm(w) for w in qtext.split()[:9] if len(_norm(w)) >= 3][:5]
         if len(want) < 2:
             return None
@@ -158,7 +157,7 @@ def paper_scan(pyq):
             for i, w in enumerate(ws):
                 if not _qtok(no).match(w[4]):
                     continue
-                nxt = [_norm(x[4]) for x in ws[i + 1:i + 15]]
+                nxt = [_norm(x[4]) for x in ws[i + 1:i + 40]]
                 if sum(1 for t in want if t in nxt) < max(2, len(want) - 2):
                     continue
                 j = next((k for k in range(i + 1, min(len(ws), i + 170)) if _qtok(no + 1).match(ws[k][4])), None)
@@ -187,7 +186,7 @@ def paper_scan(pyq):
                 if cr.height > 900 or cr.height < 120:
                     return None
                 ty = lambda v: (v * k - box[1]) * sc
-                return {"img": cr,
+                return {"img": cr, "clause_level": bool(pyq.get("clause_level")),
                         "q": (ty(min(s[1] for s in seg[:ia])), ty(max(s[3] for s in seg[:ia]))),
                         "a": (ty(min(s[1] for s in seg[il:inx])), ty(max(s[3] for s in seg[il:inx]))),
                         "label": (P.paper_label(fn), no), "letter": pyq["ans"]}
@@ -195,6 +194,62 @@ def paper_scan(pyq):
     except Exception as exc:
         print("  Paper scan nahi bana (PO Guide saboot chalega):", str(exc)[:140])
         return None
+
+
+CLAUSE_PYQ_PROMPT = """Below are REAL questions from India Post departmental exam papers (GDS to MTS / Postman), found by
+keyword search for PO Guide Part I, Clause {num}: "{title}".
+Clause text (start): {clause}
+
+Pick the questions that are truly about THIS clause's subject (the same rule area), not just sharing a word.
+Ignore garbage text that belongs to a previous question (e.g. "PAPER - 1 D. ..." before the real question).
+For each picked question give "q_en": the clean English question sentence exactly as printed (without options).
+CANDIDATES:
+{cands}
+Return ONLY JSON: {{"items": [{{"id": "", "q_en": ""}}]}}  (best first, max 3; empty list if none fits)"""
+
+
+def clause_pyq(plan):
+    """Isi CLAUSE ka asli paper sawal (niyam ka exact na mile tab). Jawab = paper ki answer key. Plan me cache."""
+    cv = plan.get("clause_pyq_v") if isinstance(plan.get("clause_pyq_v"), dict) else {}
+    if cv.get("v") == 1:
+        return cv.get("item")
+    if M.DRY_RUN:
+        return None
+    import pyq_reel as P
+    e = {"guide_line": " ".join((plan.get("clause_text_en") or "").split())[:1500],
+         "en_question": plan.get("title_en", ""), "en_fact": "", "source_quote": "", "trap_quote": ""}
+    cands = []
+    for c in P.candidates(e, k=10):
+        if c.get("trust") and P.key_map(c["file"]).get(int(c["no"])) in ("A", "B", "C", "D"):
+            cands.append(c)
+    item = None
+    if cands:
+        try:
+            js = M._llm_json(CLAUSE_PYQ_PROMPT.format(
+                num=plan.get("clause_no"), title=plan.get("title_en", ""),
+                clause=" ".join((plan.get("clause_text_en") or "").split())[:900],
+                cands="\n".join(f'[{c["id"]}] {c["exam"]} Q{c["no"]}: {c["text"][:400]}' for c in cands)),
+                only="gemini" if M.GEMINI_API_KEY else None)
+            by = {c["id"]: c for c in cands}
+            for x in (js or {}).get("items") or []:
+                c = by.get(str(x.get("id")))
+                if not c:
+                    continue
+                cand = {"src": f'{c["file"]}#Q{c["no"]}', "ans": P.key_map(c["file"])[int(c["no"])],
+                        "exams": c.get("exams") or [c["exam"]], "q_en": " ".join(str(x.get("q_en") or "").split())}
+                if paper_scan(cand):                 # scan ban sake tabhi (asli panna dikhna chahiye)
+                    item = cand
+                    break
+        except Exception as exc:
+            print("  Clause PYQ jaanch nahi hui (agli run me):", str(exc)[:140])
+            return None
+    plan["clause_pyq_v"] = {"v": 1, "item": item}
+    try:
+        M.save_plan(plan)
+    except Exception:
+        pass
+    print("  Clause-level asli PYQ:", (item or {}).get("src") or "nahi mila")
+    return item
 
 
 def scan_card(scan, t_hl, t_ring):
@@ -315,8 +370,12 @@ class Bharosa(N.Reel):
         d = ImageDraw.Draw(cv)
         d.rounded_rectangle((300, 70, 780, 134), 32, fill=GOLD)
         d.text((540, 102), "GDS से MTS / Postman", font=F(40), fill=NAVY, anchor="mm")
-        stroke(d, (540, 240), "ये सवाल असली पेपर में", F(84), (255, 255, 255))
-        stroke(d, (540, 345), "पूछा जा चुका है!", F(96), (255, 214, 40), 8)
+        if self.scan.get("clause_level"):
+            stroke(d, (540, 240), f"इसी Clause {self.cno} से", F(84), (255, 255, 255))
+            stroke(d, (540, 345), "पेपर में सवाल आया!", F(96), (255, 214, 40), 8)
+        else:
+            stroke(d, (540, 240), "ये सवाल असली पेपर में", F(84), (255, 255, 255))
+            stroke(d, (540, 345), "पूछा जा चुका है!", F(96), (255, 214, 40), 8)
         k = ease(t / 0.35)
         card = scan_card(self.scan, (t - 0.45) / 0.6, 0)
         cv.alpha_composite(card, (60, int(1080 + (1 - k) * 700) - card.height // 2))
@@ -326,7 +385,8 @@ class Bharosa(N.Reel):
             a = ease((t - 1.5) / 0.3)
             y = int(1500 + (1 - a) * 60)
             d.rounded_rectangle((70, y, 1010, y + 120), 30, fill=RED)
-            d.text((540, y + 60), "सही जवाब इसी रील में — ध्यान से देखो!", font=F(50), fill="white", anchor="mm")
+            d.text((540, y + 60), ("इसलिए ये नियम ध्यान से देखो!" if self.scan.get("clause_level")
+                                   else "सही जवाब इसी रील में — ध्यान से देखो!"), font=F(50), fill="white", anchor="mm")
         return cv
 
     def sc_guide(self, sc, t):                       # scan nahi -> PO Guide panna + syllabus ka sach
@@ -337,6 +397,47 @@ class Bharosa(N.Reel):
         stroke(d, (540, 215), "इसी PO Guide से!", F(86), (255, 214, 40), 8)
         if t > 0.6:
             paste(cv, self.stamp, 540, 420, 1.0 + 0.5 * (1 - ease((t - 0.6) / 0.18)))
+        return cv
+
+    def sc_sawal(self, sc, t):
+        """Bada saaf sawal + chaaron option + 3-2-1 (jawab baad me chitron se)."""
+        cv = N.blurred_bg(self.story[0], dark=0.68)
+        self.strip(cv, "सवाल")
+        d = ImageDraw.Draw(cv)
+        paste(cv, N.pill("रुको! पहले सोचो", 54, (255, 255, 255), RED), 540, 255, back(t / 0.3))
+        q = " ".join((self.data.get("question") or "").split())
+        f, s_, ls = M.fit_lines(q, 900, 4, 68, 44)
+        step = int(s_ * 1.28)
+        h = 90 + len(ls) * step
+        y0 = 340
+        k = ease((t - 0.1) / 0.3)
+        if k > 0:
+            d.rounded_rectangle((60, y0, 1020, y0 + h), 34, fill=(255, 255, 255), outline=GOLD, width=6)
+            for i, ln in enumerate(ls):
+                d.text((540, y0 + 45 + step / 2 + i * step - 8), " ".join(ln), font=f, fill=INK, anchor="mm")
+        oy = y0 + h + 40
+        for j, (L, txt) in enumerate(self.data.get("options") or []):
+            kj = back((t - 0.35 - 0.12 * j) / 0.3)
+            if kj <= 0.02:
+                continue
+            fo, so, lo = M.fit_lines(txt, 760, 2, 50, 34)
+            bh = max(110, 40 + len(lo) * int(so * 1.2))
+            card = Image.new("RGBA", (960, bh), (0, 0, 0, 0))
+            cd = ImageDraw.Draw(card)
+            cd.rounded_rectangle((0, 0, 959, bh - 1), 30, fill=(255, 255, 255, 235), outline=(220, 224, 235), width=3)
+            cd.ellipse((24, bh / 2 - 34, 92, bh / 2 + 34), fill=NAVY)
+            cd.text((58, bh / 2), L, font=F(40), fill=GOLD, anchor="mm")
+            for i, ln in enumerate(lo):
+                cd.text((122, bh / 2 + (i - (len(lo) - 1) / 2) * int(so * 1.2)), " ".join(ln), font=fo, fill=INK,
+                        anchor="lm")
+            paste(cv, card, 540, oy + bh / 2, kj)
+            oy += bh + 22
+        cd0 = sc["cd0"]
+        if t >= cd0:
+            n = 3 - min(2, int((t - cd0) / N.CD_STEP))
+            kk = back((t - cd0 - (3 - n) * N.CD_STEP) / 0.18)
+            paste(cv, N.countdown(n), 960, 255, max(0.05, 1.3 - 0.3 * kk))
+        stroke(d, (540, min(oy + 70, 1780)), "सोचो... जवाब इसी रील में!", F(52), (255, 214, 40), 6)
         return cv
 
     def sc_kathin(self, sc, t):
@@ -503,6 +604,8 @@ class Bharosa(N.Reel):
     def render(self, tl, si, t):
         sc = tl[si]
         n = sc["name"]
+        if n == "ruko":
+            return self.sc_sawal(sc, t)
         fn = {"paper": self.sc_paper, "guide": self.sc_guide, "kathin": self.sc_kathin, "raasta": self.sc_raasta,
               "ans": self.sc_ans, "trick": self.sc_trick, "pans": self.sc_paper_ans, "end": self.sc_end}.get(n)
         if fn:
@@ -565,6 +668,10 @@ def build(data, out, plan=None, part=None):
         except Exception as exc:
             print("  PYQ nahi juda:", str(exc)[:140])
     scan = paper_scan(pyq) if (pyq and rel) else None
+    if not scan and plan is not None:                 # niyam ka exact nahi -> isi Clause ka asli paper sawal
+        cp = clause_pyq(plan)
+        if cp:
+            scan = paper_scan(dict(cp, clause_level=True))
     print("  Saboot:", f"asli paper scan {scan['label']}" if scan else "PO Guide panna + syllabus line")
     proof = None
     if not scan and plan is not None and part is not None:
@@ -578,9 +685,12 @@ def build(data, out, plan=None, part=None):
     ep = int(data.get("episode") or 0)
     specs = []
     if scan:
-        specs.append({"name": "paper", "segs": [("p", f"GDS साथियो! ये सवाल {scan['label'][0]} के पेपर में आया था!")]})
+        specs.append({"name": "paper", "segs": [("p", (f"GDS साथियो! इसी क्लॉज़ से {scan['label'][0]} के पेपर में सवाल आया!"
+                                                       if scan.get("clause_level") else
+                                                       f"GDS साथियो! ये सवाल {scan['label'][0]} के पेपर में आया था!"))]})
     else:
         specs.append({"name": "guide", "segs": [("p", "GDS साथियो! पेपर के पचास में से तीस सवाल, इसी PO Guide से!")]})
+    specs.append({"name": "ruko", "segs": [("r", "रुको! पहले सोचो, " + N.ruko_q(data))]})
     if guide_en:
         specs.append({"name": "kathin", "segs": [("k", "किताब कठिन है, हम चित्रों से आसान बनाते हैं!")]})
     if syl:
@@ -590,12 +700,12 @@ def build(data, out, plan=None, part=None):
     specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
     if trick:
         specs.append({"name": "trick", "segs": [("t", "याद रखने की ट्रिक! " + trick["text"])]})
-    if scan:
+    if scan and not scan.get("clause_level"):
         specs.append({"name": "pans", "segs": [("q", f"इसलिए पेपर का सही जवाब, {LETTER_HI[scan['letter']]}!")]})
     specs.append({"name": "end", "segs": [("e", END_VOICE)]})
     print(f"BHAROSA FORMAT ({VERSION.split(':')[0]}): awaaz ({len(specs)} tukde)...")
     voices = M.make_voices(specs)
-    mins = {"paper": 2.8, "guide": 2.8, "kathin": 2.4, "raasta": 2.6, "trick": 2.6, "pans": 2.0, "end": 3.0, "ans": 1.8}
+    mins = {"paper": 2.8, "guide": 2.8, "kathin": 2.0, "raasta": 2.2, "trick": 2.4, "pans": 1.8, "end": 2.8, "ans": 1.6}
     tl, cur = [], 0.0
     for sp, v in zip(specs, voices):
         a = clean_voice(v[0])
@@ -605,6 +715,10 @@ def build(data, out, plan=None, part=None):
         dur = max(mins.get(nm, 1.6), lead + vd + 0.22)
         sc = {"name": nm, "start": cur, "dur": dur, "lead": lead, "vd": vd, "audio": a,
               "text": " ".join(t for _, t in sp["segs"])}
+        if nm == "ruko":
+            cd0 = max(0.9, lead + vd - 0.9)
+            sc["cd0"] = cd0
+            sc["dur"] = dur = max(cd0 + 3 * N.CD_STEP + 0.1, lead + vd + 0.2)
         if nm.startswith("s") and nm[1:].isdigit():
             sc["wrong"] = story[int(nm[1:])].get("mark") == "wrong"
         tl.append(sc)
