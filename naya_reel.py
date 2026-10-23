@@ -28,7 +28,7 @@ from PIL import Image, ImageDraw, ImageFilter
 M = None            # main module (init se) - main.py ke globals (chuni hui awaaz waghaira) wahi rahen
 W, H, FPS = 1080, 1920, 30
 
-NAYA_VERSION = "v21.4-naya (2026-10-15): TRAP hata + ant ke sawal pe 'जवाब कमेंट करो, पाओ FREE PDF' + koi line dohraayi nahi + v21.1 format wahi, sirf lambai kam (awaaz 15% tez, khaali intezaar kam) + asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल ant + alag PYQ reel"
+NAYA_VERSION = "v22-naya (2026-10-23): shuru me asli-paper mohar (PYQ mila to raajya+saal, warna परीक्षा का पक्का नियम) + v21.4: TRAP hata + ant ke sawal pe 'जवाब कमेंट करो, पाओ FREE PDF' + koi line dohraayi nahi + v21.1 format wahi, sirf lambai kam (awaaz 15% tez, khaali intezaar kam) + asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल ant + alag PYQ reel"
 
 POV_LINE = "POV: आप डाकघर में हो"
 PROOF_VOICE = "GDS साथियों! PO Guide की ये एक लाइन याद रखो!"
@@ -36,6 +36,7 @@ END_VOICE = "उस साथी को भेजो, जो ये गलती
 PYQ_VOICE = "इस सवाल का जवाब कमेंट करो, और पाओ इसकी फ्री PDF!"   # v21.4: user ki line (sawal padha nahi jaata)
 RULE_SAME_VOICE = "PO Guide का नियम भी यही कहता है!"            # niyam wahi baat jo kahani me boli ja chuki
 SHOW_TRAP = False           # v21.4: user ne TRAP hataya
+PROOF_BADGE = os.getenv("PROOF_BADGE", "1") != "0"   # v22: shuru ke panne pe asli-paper mohar
 
 
 _STOP = {"पर", "से", "है", "हैं", "और", "हो", "होता", "होती", "जाता", "जाती", "का", "की", "के", "में", "को", "ये", "यह",
@@ -442,8 +443,9 @@ def proof_assets(plan, part, data):
 
 
 class Proof:
-    def __init__(self, a, clause_no, ep):
+    def __init__(self, a, clause_no, ep, badge=None):
         self.a, self.clause_no, self.ep = a, clause_no, ep
+        self.badge = badge                           # v22: "असली पेपर में आया: राज्य साल" / "परीक्षा का पक्का नियम"
         img = Image.open(a["png"]).convert("RGB")
         self.k = img.width / a["pw"]                 # px per pt
         pad = int(300 * self.k)
@@ -529,6 +531,8 @@ class Proof:
         put(ov, pill(f"GDS की गलती #{self.ep}", 40, (25, 25, 25), GOLD), W / 2, 125)
         lab = f"असली PO Guide  •  Part I  •  Clause {self.clause_no}"
         put(ov, pill(lab, 38, (255, 255, 255), RED_C), W / 2, 230)
+        if self.badge:                               # v22: asli-paper mohar (sach: answer-key se mila PYQ)
+            put(ov, stamp_badge(*self.badge), W / 2, 1392, scale=0.92, angle=-4)
         d = ImageDraw.Draw(ov)
         stroke_text(d, (W / 2, 1540), "PO Guide की ये 1 लाइन", font(88), (255, 214, 40), 8)
         stroke_text(d, (W / 2, 1655), "याद रखो !", font(88), (255, 255, 255), 8)
@@ -573,6 +577,30 @@ class Proof:
 PDF_LINE = "पाओ FREE PDF"
 PYQ_SAY_MAX = 16                                     # isse lamba sawal bola nahi jaata (reel ~30s rahe)
 PYQ_SHORT_VOICE = "असली पेपर का सवाल! पढ़ो और जवाब कमेंट करो!"
+
+
+def stamp_badge(top, sub=""):
+    """v22: rubber-stamp jaisi laal mohar (safed kaagaz, laal dohri kinaari)."""
+    f1, f2 = font(64), font(44)
+    w = int(max(f1.getlength(top), f2.getlength(sub) if sub else 0)) + 110
+    h = 112 + (66 if sub else 0)
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((4, 4, w - 5, h - 5), 26, fill=(255, 244, 240), outline=RED_C, width=10)
+    d.rounded_rectangle((20, 20, w - 21, h - 21), 18, outline=RED_C, width=3)
+    d.text((w / 2, 62), top, font=f1, fill=RED_C, anchor="mm")
+    if sub:
+        d.text((w / 2, 126), sub, font=f2, fill=(25, 35, 70), anchor="mm")
+    return im
+
+
+def proof_badge(pyq, rel):
+    """Mohar ka text - sirf sach: isi niyam ka PYQ answer key ke saath mila tab raajya/saal, warna aam line."""
+    ex = [e for e in ((pyq or {}).get("exams") or []) if e] if (pyq and rel) else []
+    if ex:
+        sub = " • ".join(ex[:2]) + (f"  +{len(ex) - 2}" if len(ex) > 2 else "")
+        return ("असली पेपर में आया", sub)
+    return ("परीक्षा का पक्का नियम", "")
 
 
 def pyq_for(plan, part, data):
@@ -1129,17 +1157,20 @@ def build(data, out, plan=None, part=None):
     M.resolve_font()
     panels = data["chitra"]["panels"]
     story, ans_pn = story_split(panels)
-    proof = None
-    if plan is not None and part is not None:
-        a = proof_assets(plan, part, data)
-        if a:
-            proof = Proof(a, data.get("clause_no"), int(data.get("episode") or 0))
     pyq, pyq_rel = None, False
     if plan is not None and part is not None:
         try:
             pyq, pyq_rel = pyq_for(plan, part, data)
         except Exception as exc:
             print("  Ant ka asli paper sawal nahi juda (reel bina iske):", str(exc)[:140])
+    proof = None
+    if plan is not None and part is not None:
+        a = proof_assets(plan, part, data)
+        if a:
+            bd = proof_badge(pyq, pyq_rel) if PROOF_BADGE else None
+            if bd:
+                print("  Hook mohar:", " | ".join(x for x in bd if x))
+            proof = Proof(a, data.get("clause_no"), int(data.get("episode") or 0), badge=bd)
     if pyq:
         print(f"  Ant me asli paper sawal ({'isi niyam ka' if pyq_rel else 'bank se'}): {pyq['q'][:80]} | jawab {pyq['ans']}")
         data["naya_pyq"] = {"q": pyq["q"], "opts": pyq["opts"], "ans": pyq["ans"], "exams": pyq.get("exams") or [],

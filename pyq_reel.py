@@ -938,6 +938,8 @@ if __name__ == "__main__":
         import traceback
         traceback.print_exc()
         print(f"Saathi PYQ reel nahi bani ({type(exc).__name__}: {str(exc)[:200]}) - agli run me dobara")
+    if "--daily" not in sys.argv[1:]:             # v22: roz ki PYQ reel ab pyq_daily.py (8 AM / 9 PM) banata hai
+        sys.exit(0)
     try:
         run(force="--force" in sys.argv[1:])
     except Exception as exc:                      # shaam wali series kabhi na ruke

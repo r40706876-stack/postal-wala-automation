@@ -2456,6 +2456,15 @@ bags, vans etc. very well, but it CANNOT write any text and does not know India 
   and the picture then fails. Every picture shows the postman and/or the customer DOING something with the object.
 - Each picture must look clearly DIFFERENT from the one before (a new action, a new place in the office, a closer or
   wider view, a different expression), not the same frame with one small change.
+- CAMERA SHOT (v22 - viewers scroll away when every picture looks like the same counter photo): give every picture a
+  "shot", and NEVER the same shot twice in a row:
+    "wide"     = whole place visible: counter/window, letter box or van, both people small-to-medium, lots of setting;
+    "closeup"  = very close on the hands and the main object (the mistake or the right way is huge and obvious),
+                 faces only partly visible at the edge;
+    "reaction" = close on ONE face showing a strong feeling (shocked / relieved / proud), the object held up near it;
+    "over"     = over-the-shoulder from behind the customer, looking at the postman explaining with the object.
+  Picture 1 is usually "wide"; the WRONG picture is usually "closeup"; the last RIGHT picture is "over" or
+  "reaction". Write the prompt to match its shot (do not ask for "medium shot from waist up" in closeup/reaction).
 - For a rule about TIME (late / early / after hours / closing time): show a big plain round wall clock WITHOUT numbers
   next to the people, the hands pointing late (or early), plus a clear consequence the viewer sees (a letter left
   behind in an empty mail bag tray after the van left, the van driving away, the customer worried).
@@ -2492,6 +2501,7 @@ For each picture give:
 - "text": Hindi caption, ONE complete sentence of 5-12 words (count them!), spoken aloud (what happens + why). Spell
   rule words exactly as in the rule/question. Simple natural Hindi, no English.
 - "mark": "none" (picture 1 only), "wrong" or "right".
+- "shot": "wide", "closeup", "reaction" or "over" (see CAMERA SHOT; never the same as the picture before).
 - "say": what ONE person in the picture says, shown as a comic speech bubble: {{"who": "postman" or "customer",
   "text": "Hindi, 2-7 words, natural spoken style, with feeling"}}. This makes the story alive and funny. The
   customer sounds like a real village customer (e.g. "भैया, ये डाल दूँ इसमें?", "अरे! ये तो फँस गया!"); the postman
@@ -2519,10 +2529,10 @@ BEFORE ANSWERING, CHECK EVERY POINT (fix anything that fails):
 [ ] nothing is shown or said that the official source does not say; no signs, boards or writing in any "prompt"
 [ ] if the rule is about WRITING on an article, the wrong/right pictures have a "card" that shows the writing
 {feedback}
-Return ONLY JSON: {{"scene":"","lesson":"","panels":[{{"prompt":"","target":"","tag":"","tag_color":"dark","text":"","desc":"","mark":"none"}},
-{{"prompt":"","target":"","tag":"","tag_color":"red","text":"","desc":"","mark":"wrong"}},
+Return ONLY JSON: {{"scene":"","lesson":"","panels":[{{"prompt":"","target":"","tag":"","tag_color":"dark","text":"","desc":"","mark":"none","shot":"wide"}},
+{{"prompt":"","target":"","tag":"","tag_color":"red","text":"","desc":"","mark":"wrong","shot":"closeup"}},
 ... (more "wrong"/"right" pictures only if the rule has more finer points) ...,
-{{"prompt":"","target":"","tag":"","tag_color":"green","text":"","desc":"","mark":"right"}}]}}
+{{"prompt":"","target":"","tag":"","tag_color":"green","text":"","desc":"","mark":"right","shot":"over"}}]}}
 """
 
 PHOTO_PLAN_FIX_PROMPT = """Fix ONLY the listed problems in these Hindi captions ("text") and tags of a picture story
@@ -3179,6 +3189,35 @@ def _keep_clear(part):
                 pass
 
 
+SHOT_TEXT = {     # v22: har chitra alag camera-drishya (ek jaisi counter photo baar-baar = skip)
+    "wide": "Wide establishing shot of the whole place, both people visible with lots of setting around them. ",
+    "closeup": "Extreme close-up on the hands and the main object, filling most of the frame, faces only partly "
+               "visible at the edge. ",
+    "reaction": "Close-up portrait of one person's face showing a strong expression, the main object held up "
+                "near the face. ",
+    "over": "Over-the-shoulder view from behind the customer, looking at the postman who explains with the "
+            "main object. ",
+}
+SHOT_ORDER = ("wide", "closeup", "over", "reaction")
+
+
+def _fix_shots(panels):
+    """Shot na ho / pichhle jaisa ho -> code khud alag chun le (AI dobara nahi - credit bachat)."""
+    prev = None
+    for i, p_ in enumerate(panels):
+        sh = p_.get("shot") if p_.get("shot") in SHOT_TEXT else ""
+        if not sh:
+            sh = "wide" if i == 0 else ("closeup" if p_.get("mark") == "wrong" else
+                                        ("over" if i == len(panels) - 1 else "reaction"))
+        if sh == prev:
+            sh = next(x for x in SHOT_ORDER if x != prev)
+        p_["shot"], prev = sh, sh
+
+
+def _shot_text(p_):
+    return SHOT_TEXT.get(p_.get("shot") or "", "")
+
+
 def _photo_attempt(part, feedback=""):
     """Kahani (text AI) -> 3 chitra (Cloudflare) -> aankh-jaanch + box -> parchi lagao -> andhi-jaanch -> examiner."""
     import io
@@ -3210,7 +3249,8 @@ def _photo_attempt(part, feedback=""):
                            "text": " ".join(str(x.get("text") or "").split()),
                            "desc": " ".join(str(x.get("desc") or "").split()),
                            "mark": _panel_mark(x.get("mark"), i, N), "card": _parse_card(x.get("card")),
-                           "say": _parse_say(x.get("say"))})
+                           "say": _parse_say(x.get("say")), "shot": str(x.get("shot") or "").strip().lower()})
+        _fix_shots(panels)
         errs = photo_plan_errors(panels, part)
         for fx_i in range(2):                               # galti mili -> AI sirf wahi line sudhaare (chitra-kharch nahi)
             if not errs:
@@ -3259,7 +3299,7 @@ def _photo_attempt(part, feedback=""):
     pre0 = (CHAR_REF_TEXT + char_text()) if crefs else ""
     for rnd in range(0 if boxes[0] is not None else PHOTO_ROUNDS):
         try:
-            imgs[0] = _cf_image(f"{pre0}{scene} {panels[0]['prompt']}{_fix_text(0)} {PHOTO_STYLE}"
+            imgs[0] = _cf_image(f"{pre0}{_shot_text(panels[0])}{scene} {panels[0]['prompt']}{_fix_text(0)} {PHOTO_STYLE}"
                                 + (" Friendly, everyday scene." if rnd else ""), ref=crefs)
         except PhotoFlagged as exc:
             print("  Chitra (photo) khaana 1:", exc)
@@ -3283,7 +3323,7 @@ def _photo_attempt(part, feedback=""):
         for i in todo:
             try:
                 imgs[i] = _cf_image(f"{(CHAR_REF_TEXT + char_text()) if crefs else PHOTO_REF_TEXT}"
-                                    f"{panels[i]['prompt']}{_fix_text(i)} {PHOTO_STYLE}"
+                                    f"{_shot_text(panels[i])}{panels[i]['prompt']}{_fix_text(i)} {PHOTO_STYLE}"
                                     + (" Friendly, everyday scene." if rnd else ""), ref=ref)
             except ProviderBusy:                     # quota/budget beech me khatam -> ab tak ke sahi sambhalo
                 _keep_put(part, scene, panels, imgs, boxes, seed0, [j for j in range(N) if boxes[j] is None])
@@ -4296,9 +4336,9 @@ def plan_path(num):
 # RESTART_ROUND badhao + RESTART_FROM_CLAUSE likho -> agli run clause RESTART_FROM_CLAUSE part 1 se shuru.
 # Us clause aur aage ke purane daur me publish hue parts "baaki" maane jaate hain (dobara naye format me banenge);
 # unka purana record "published_prev" me rehta hai (mitaya nahi jaata). Pichhle clauses nahi chhede jaate.
-RESTART_ROUND = int(os.getenv("RESTART_ROUND", "23"))          # v21.4: TRAP hata + FREE PDF line + dohraav nahi - Clause 24 Part 2 se dobara
-RESTART_FROM_CLAUSE = int(os.getenv("RESTART_FROM_CLAUSE", "24"))
-RESTART_FROM_PART = int(os.getenv("RESTART_FROM_PART", "2"))   # is clause ke isse pehle ke parts = post ho chuke (user ne daale)
+RESTART_ROUND = int(os.getenv("RESTART_ROUND", "24"))          # v22: naya hook (asli-paper mohar + alag shot) - Clause 25 Part 1 se dobara
+RESTART_FROM_CLAUSE = int(os.getenv("RESTART_FROM_CLAUSE", "25"))
+RESTART_FROM_PART = int(os.getenv("RESTART_FROM_PART", "1"))   # is clause ke isse pehle ke parts = post ho chuke (user ne daale)
 
 
 def _apply_round(plan):
@@ -9862,7 +9902,7 @@ NAYA_FORMAT = os.getenv("NAYA_FORMAT", "1") != "0"
 # har niyam reel ke baad usi niyam ke ASLI pichhle paper ke sawal ki alag reel (pyq_reel.py wala step banata hai)
 PYQ_COMPANION = os.getenv("PYQ_COMPANION", "1") != "0"
 PYQ_QUEUE = os.path.join(OUTPUT_DIR, "pyq", "companion_queue.json")
-ENGINE_VERSION = "v21.4 (2026-10-15): TRAP hata + ant ke sawal pe jawab kamment/FREE PDF awaaz + koi line dohraayi nahi + v21.3: v21.1 format wapas (user ki video jaisa), sirf lambai kam + PYQ jawab answer key se jaancha + Clause 24 Part 2 se dobara + v21 (2026-10-14): naya format (asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल) + har niyam reel ke saath asli PYQ reel + clause 24 part 2 se dobara + v20.3:chitra me camera-harkat + chamak + gubbara uchhle + tez zoom + PYQ sawal bole + rotation se female awaaz hati (sirf purush) + fallback Madhur + Gemini 3 mauke + v20.2: andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
+ENGINE_VERSION = "v22 (2026-10-23): har chitra alag camera-shot (wide/closeup/reaction/over) + shuru me asli-paper mohar + v21.4 (2026-10-15): TRAP hata + ant ke sawal pe jawab kamment/FREE PDF awaaz + koi line dohraayi nahi + v21.3: v21.1 format wapas (user ki video jaisa), sirf lambai kam + PYQ jawab answer key se jaancha + Clause 24 Part 2 se dobara + v21 (2026-10-14): naya format (asli PO Guide panna shuru me + POV kahani + रुको/3-2-1 + jawab ✓ + niyam card ke baad TRAP ❌/✓ + share/कल) + har niyam reel ke saath asli PYQ reel + clause 24 part 2 se dobara + v20.3:chitra me camera-harkat + chamak + gubbara uchhle + tez zoom + PYQ sawal bole + rotation se female awaaz hati (sirf purush) + fallback Madhur + Gemini 3 mauke + v20.2: andhi-jaanch sirf niyam ki samajh (akshar/badge/same background par number nahi kate) + fail pe sirf kamzor khaana badle + part par roz 30 chitra seema + khaali drishya band + v20.1: bigda khaana hi dobara (sahi chitra sambhale, run ke paar bhi) + part-budget 18 + v20-hook-saaf: hook me jawab-parchi nahi + frame 0 se galti chitra + same रुको!/पीली पट्टी hati + awaaz punch line + ~20s + jawab aakhir me + pehle pal 3-6 shabd + yaad+bonus ek screen + card LABEL/parchi takraav theek + clause 22 part 2 se + run-budget 40 chitra + aaj ki reel pehle + backup Cloudflare account + Bhaiya ke bhaav + naam + chitra me dialogue gubbare + Golu grahak + demo wale Bhaiya+ladka pakke + rangeen India Post style + pakke kirdaar (Bhaiya/Ramu) + flip-book pal + camera pan + Bhaiya sawal poochhe + tez elimination + frame 0 se poori screen chitra + रुको! + hook + GDS→MTS pehchaan + clause 20 part 1 dobara + kuch bhi ek-doosre ke upar nahi + spotlight + ❌/✓ camera-jhatka + push badlav + गलत vs सही tulna + niyam/yaad me chitra + clause 20 part 1 se + sawal ke saath bada chitra + option-chitra (jab saaf alag dikhein) + 3-5 chitra ki kahani (niyam ki baarik baatein) + 1024px behtar chitra + 8/10 aankh + clause 19 part 2 se + ghatna->रुको!->sawal hook + awaaz dheemi/saaf + bonus sirf pichhla + clause 19 p1 + clause 19 part 1 dobara + parchi chehre par nahi + hook saaf transition + yaad beech me + chitra-background + hook jhatka + clause 19 part 1 se + pehle pal asli chitra (visual hook) + chhoti reel + galti agle chitra me sudhaar + seekh-file (purani galtiyan yaad) + card chhota+kone me + likhai-card (PIN/pata) + Groq-jawab samajh + fizool fail band + chitra ke bina reel nahi + pehli koshish me sahi (self-check + chhoti galti ka turant sudhaar) + Gemini fail->Swara + chitra 5 koshish + pichhli galti yaad + PIN/QMS chalein + parchi 6 shabd + Gemini awaaz intezaar/zaroori + top3 awaaz + 768px quota-bachat + flag-retry + aasan cheezein + blur band + 100% exam badge + GDS se MTS line + niyam dohraav na bole + bonus sawal + roz ki reel chalu + niyam-milan nyaay + caption-sudhaar (chitra wahi) + log saaf dikhen + bhaav + parchi bagal me + FLUX.2 klein + wahi kirdaar + bina-board background + blur + Groq aankh + Cloudflare FLUX asli chitra + Hindi parchi/ghera + andhi-jaanch"
 
 
 def place_flip(canvas, front, back, cx, cy, p, scale=1.0):

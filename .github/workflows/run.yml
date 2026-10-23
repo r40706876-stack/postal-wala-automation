@@ -2,12 +2,17 @@ name: Postal Wala Daily Reel Automation
 
 on:
   workflow_dispatch:
+    inputs:
+      job:
+        description: "Kaunsi reel banani hai"
+        type: choice
+        options: [series, am, pm]
+        default: series
   schedule:
-    # 4 Daily Peak Slots (IST): 09:00 AM, 01:15 PM, 06:00 PM, 08:45 PM
-    - cron: '30 3 * * *'   # 09:00 AM IST
-    - cron: '45 7 * * *'   # 01:15 PM IST
-    - cron: '30 12 * * *'  # 06:00 PM IST
-    - cron: '15 15 * * *'  # 08:45 PM IST
+    # v22: din ke 3 slot (IST) - reel post ke time se ~30 min pehle taiyar
+    - cron: '0 2 * * *'    # 07:30 AM IST -> 8 AM wali 7 PYQ quiz reel
+    - cron: '0 11 * * *'   # 04:30 PM IST -> 5 PM wali clause series reel (+ saathi PYQ)
+    - cron: '0 15 * * *'   # 08:30 PM IST -> 9 PM wali 7 PYQ copy-panna reel + carousel
 
 # ek run khatam hone se pehle doosra shuru na ho (state kharab na ho)
 concurrency:
@@ -16,7 +21,8 @@ concurrency:
 
 jobs:
   build-and-post:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04          # pakka version (ubuntu-latest Oct 2026 se badal raha hai)
+    timeout-minutes: 45            # atka run minute na khaaye
 
     permissions:
       contents: write
@@ -24,6 +30,20 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Aaj ka kaam (job) tay karo
+        id: job
+        run: |
+          JOB="${{ github.event.inputs.job }}"
+          if [ -z "$JOB" ]; then
+            case "${{ github.event.schedule }}" in
+              "0 2 * * *")  JOB=am ;;
+              "0 15 * * *") JOB=pm ;;
+              *)            JOB=series ;;
+            esac
+          fi
+          echo "job=$JOB" >> "$GITHUB_OUTPUT"
+          echo "Aaj ka kaam: $JOB"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -41,7 +61,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests pypdf pillow numpy edge-tts
 
-      - name: Run Automation Script
+      - name: Series reel (shaam 5 baje wali)
+        if: steps.job.outputs.job == 'series'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -49,13 +70,27 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: python main.py
 
-      - name: PYQ Test Reel (subah 9 baje wali, din me ek - fail ho to bhi series nahi rukti)
-        if: always()
+      - name: Saathi PYQ reel (series ke saath - fail ho to bhi series nahi rukti)
+        if: always() && steps.job.outputs.job == 'series'
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python pyq_reel.py
+
+      - name: 8 AM - 7 PYQ quiz reel
+        if: steps.job.outputs.job == 'am'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python pyq_daily.py am
+
+      - name: 9 PM - 7 PYQ copy-panna reel + carousel
+        if: steps.job.outputs.job == 'pm'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python pyq_daily.py pm
 
       - name: Save and Commit Generated Reels & Progress
         if: always()
@@ -63,7 +98,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           mkdir -p generated_reels clause_plans
-          git add progress_state.json generated_reels/ clause_plans/
+          git add progress_state.json generated_reels/ clause_plans/ pyq_papers/pyq_bank.json
           git diff --staged --quiet || git commit -m "Add generated reels and update progress state [skip ci]"
           git pull --rebase origin main || echo "Rebase not needed"
           git push origin main || git push
