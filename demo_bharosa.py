@@ -17,6 +17,7 @@ PAPER_PDF = os.path.join("pyq_papers", "HR-MTS-PM-MG-2022.pdf")
 PAPER_PAGE, PAPER_Q = 4, "Q20."
 PAPER_LABEL = ("असली पेपर में आया", "हरियाणा 2022  •  प्रश्न 20")
 ANS = "B"
+CLAUSE, SYL_POS, SYL_TOTAL = 26, 25, 71     # syllabus_clauses(): 71 clause, Clause 26 = 25vaan
 
 M.resolve_font()
 EB = M.resolve_font()
@@ -210,6 +211,8 @@ def trust_strip(cv, piece):
     d.text((275, 76), "100% परीक्षा वाला नियम", font=F(EB, 38), fill="white", anchor="mm")
     d.rounded_rectangle((550, 40, 1050, 112), 36, fill=GOLD)
     d.text((800, 76), f"चित्रों से आसान • टुकड़ा {piece}", font=F(EB, 36), fill=NAVY, anchor="mm")
+    d.text((540, 136), f"सिलेबस: PO Guide Part I  •  Clause {CLAUSE}  •  {SYL_POS}/{SYL_TOTAL}", font=F(MD, 26),
+           fill=(190, 200, 225), anchor="mm")
 
 
 def stamp_img(top, sub):
@@ -329,6 +332,77 @@ def sc_kathin(t, dur):
     return cv
 
 
+def sc_syllabus(t, dur):
+    """Bharosa: syllabus ke hisaab se, clause-wise - koi niyam nahi chhootega."""
+    cv = BG.copy(); trust_strip(cv, "शुरू"); d = ImageDraw.Draw(cv)
+    stroke_c(d, (540, 250), "सिलेबस के हिसाब से,", F(EB, 76), (255, 255, 255))
+    stroke_c(d, (540, 350), "Clause-wise पूरा PO Guide", F(EB, 76), (255, 214, 40))
+    # rasta: 71 bindu (6 line), kiye hue hare, aaj sunehra
+    cols, r, gx, gy, x0, y0 = 12, 26, 78, 92, 112, 470
+    k = ease(t / 1.0)
+    shown = int(SYL_TOTAL * k)
+    for i in range(SYL_TOTAL):
+        cx, cy = x0 + (i % cols) * gx, y0 + (i // cols) * gy
+        if i >= shown:
+            col, txt = (60, 70, 100), None
+        elif i < SYL_POS - 1:
+            col = GRN
+        elif i == SYL_POS - 1:
+            col = GOLD
+        else:
+            col = (90, 100, 135)
+        rr = r + (8 if i == SYL_POS - 1 and t > 1.0 else 0)
+        d.ellipse((cx - rr, cy - rr, cx + rr, cy + rr), fill=col)
+        if i == SYL_POS - 1 and t > 1.0:
+            d.text((cx, cy), str(CLAUSE), font=F(EB, 30), fill=NAVY, anchor="mm")
+    if t > 1.0:
+        cx, cy = x0 + ((SYL_POS - 1) % cols) * gx, y0 + ((SYL_POS - 1) // cols) * gy
+        d.rounded_rectangle((cx - 95, cy - 108, cx + 95, cy - 50), 28, fill=GOLD)
+        d.text((cx, cy - 79), "आज यहाँ", font=F(EB, 34), fill=NAVY, anchor="mm")
+    d.text((540, 1060), f"हरा = हो चुका  •  {SYL_TOTAL} Clause, एक-एक करके", font=F(MD, 40), fill=(210, 220, 240), anchor="mm")
+    if t > 1.3:
+        a = ease((t - 1.3) / 0.3); y = int(1150 + (1 - a) * 60)
+        d.rounded_rectangle((60, y, 1020, y + 130), 34, fill=(255, 255, 255))
+        d.text((540, y + 65), "कोई नियम नहीं छूटेगा!", font=F(EB, 64), fill=RED, anchor="mm")
+        d.text((540, y + 210), "पेपर के 50 में से 30 सवाल इसी PO Guide से (सिलेबस)", font=F(EB, 40), fill=(255, 214, 40),
+               anchor="mm")
+    return cv
+
+
+def mock_icon():
+    im = Image.new("RGBA", (300, 380), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((10, 10, 290, 370), 20, fill=(255, 255, 255), outline=(200, 200, 210), width=4)
+    d.rounded_rectangle((10, 10, 290, 80), 20, fill=RED)
+    d.text((150, 45), "MOCK TEST", font=F(EB, 36), fill="white", anchor="mm")
+    for i in range(5):
+        y = 110 + i * 50
+        d.ellipse((34, y, 64, y + 30), outline=NAVY, width=4)
+        if i in (0, 2, 3):
+            d.line((40, y + 15, 48, y + 24, 60, y + 6), fill=GRN, width=5)
+        d.rounded_rectangle((80, y + 8, 260 - (i % 2) * 40, y + 22), 7, fill=(215, 220, 230))
+    return im
+
+
+MOCK = mock_icon()
+
+
+def sc_cta(t, dur):
+    cv = BG.copy(); d = ImageDraw.Draw(cv)
+    stroke_c(d, (540, 230), "सारी रीलें देखो + फॉलो करो", F(EB, 70), (255, 255, 255))
+    stroke_c(d, (540, 340), "= पूरी तैयारी, बिल्कुल FREE", F(EB, 76), (255, 214, 40))
+    if t > 0.4:
+        paste_scaled(cv, MOCK, 540, 700, back((t - 0.4) / 0.35))
+    if t > 0.8:
+        a = ease((t - 0.8) / 0.3); y = int(950 + (1 - a) * 60)
+        d.rounded_rectangle((60, y, 1020, y + 250), 40, fill=(255, 255, 255), outline=GOLD, width=8)
+        d.text((540, y + 70), "कमेंट करो:  MOCK", font=F(EB, 76), fill=RED, anchor="mm")
+        d.text((540, y + 175), "FREE मॉक टेस्ट — असली परीक्षा जैसे सवाल", font=F(EB, 44), fill=NAVY, anchor="mm")
+    if t > 1.2:
+        d.rounded_rectangle((200, 1300, 880, 1400), 50, fill=GRN)
+        d.text((540, 1350), "+ FOLLOW  @postal_wala", font=F(EB, 50), fill="white", anchor="mm")
+    return cv
+
+
 PANEL1 = Image.open(os.path.join(OUT, "panel1.jpg")).convert("RGBA")
 MASK = round_mask(PW, PH, 30)
 
@@ -424,22 +498,22 @@ def sc_end(t, dur):
     d.rounded_rectangle((70, 930, 1010, 1130), 40, fill=GOLD)
     d.text((540, 990), "Postal Wala की गारंटी", font=F(EB, 62), fill=NAVY, anchor="mm")
     d.text((540, 1070), "अब ये नियम कभी नहीं भूलोगे!", font=F(EB, 54), fill=RED, anchor="mm")
-    if t > 0.5:
-        d.rounded_rectangle((170, 1200, 910, 1320), 60, fill=GRN)
-        d.text((540, 1260), "SAVE करो  •  साथी को भेजो", font=F(EB, 54), fill="white", anchor="mm")
-        d.text((540, 1420), "रोज़ एक नियम — चित्र + ट्रिक के साथ", font=F(MD, 44), fill=(220, 225, 240), anchor="mm")
+    if t > 0.4:
+        d.text((540, 1220), "SAVE करो  •  साथी को भेजो", font=F(EB, 54), fill=(255, 255, 255), anchor="mm")
     return cv
 
 
 SCENES = [
-    ("proof", sc_proof, 3.0, "GDS साथियो! ये सवाल हरियाणा दो हज़ार बाईस के पेपर में आया था!"),
-    ("kathin", sc_kathin, 3.2, "किताब की भाषा कठिन है, हम इसे एक चित्र से आसान बनाते हैं!"),
-    ("p1", sc_p1, 2.4, "ग्राहक सोच रहा है, अपना पता कहाँ लिखूँ?"),
-    ("wrong", sc_wrong, 2.9, "ऊपर दाएँ कोने में? नहीं! वहाँ तो टिकट लगता है।"),
-    ("right", sc_right, 4.4, "भेजने वाले का पता, पते वाली साइड पर, नीचे बाएँ कोने में!"),
-    ("trick", sc_trick, 3.0, "ट्रिक याद रखो! टिकट ऊपर दाएँ, प्रेषक नीचे बाएँ, दोनों तिरछे आमने-सामने!"),
-    ("answer", sc_answer, 2.2, "इसलिए हरियाणा पेपर का सही जवाब, बी!"),
-    ("end", sc_end, 2.4, "Postal Wala की गारंटी, अब ये नियम कभी नहीं भूलोगे!"),
+    ("proof", sc_proof, 2.8, "GDS साथियो! ये सवाल हरियाणा दो हज़ार बाईस के पेपर में आया था!"),
+    ("kathin", sc_kathin, 2.6, "किताब की भाषा कठिन है, हम इसे चित्रों से आसान बनाते हैं!"),
+    ("syllabus", sc_syllabus, 2.8, "और सिलेबस के हिसाब से, क्लॉज़ वाइज़, ताकि कोई नियम न छूटे!"),
+    ("p1", sc_p1, 2.0, "ग्राहक सोच रहा है, अपना पता कहाँ लिखूँ?"),
+    ("wrong", sc_wrong, 2.6, "ऊपर दाएँ कोने में? नहीं! वहाँ तो टिकट लगता है।"),
+    ("right", sc_right, 3.8, "भेजने वाले का पता, पते वाली साइड पर, नीचे बाएँ कोने में!"),
+    ("trick", sc_trick, 2.8, "ट्रिक! टिकट ऊपर दाएँ, प्रेषक नीचे बाएँ, दोनों तिरछे आमने-सामने!"),
+    ("answer", sc_answer, 2.0, "इसलिए पेपर का सही जवाब, बी!"),
+    ("end", sc_end, 1.8, "Postal Wala की गारंटी, ये कभी नहीं भूलोगे!"),
+    ("cta", sc_cta, 2.8, "फॉलो करो, पूरी तैयारी फ्री में! और कमेंट में मॉक लिखो, फ्री मॉक टेस्ट पाओ!"),
 ]
 
 
@@ -450,13 +524,13 @@ def main():
     if not M.DRY_RUN:
         try:
             voices = [v[0] for v in M.make_voices(specs)]
-            voices = [M.speed_voice(v, 1.08) for v in voices]
+            voices = [M.speed_voice(v, 1.17) for v in voices]
         except Exception as exc:
             print("Awaaz nahi bani (demo bina awaaz):", str(exc)[:160])
     tl, t = [], 0.0
     for i, (n, fn, mn, _) in enumerate(SCENES):
         vd = len(voices[i]) / M.SR if voices else 0
-        dur = max(mn, vd + 0.35)
+        dur = max(mn, vd + 0.2)
         tl.append((n, fn, t, dur, voices[i] if voices else None))
         t += dur
     total = t
@@ -484,7 +558,7 @@ def main():
     wav = os.path.join(OUT, "_a.wav")
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "s16le", "-ar", str(M.SR), "-ac", "1", "-i", "-", wav],
                    input=(np.clip(buf, -1, 1) * 32767).astype(np.int16).tobytes(), check=True)
-    out = os.path.join(OUT, "demo_bharosa_clause26_part6.mp4")
+    out = os.path.join(OUT, "demo_bharosa_v2_clause26_part6.mp4")
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
            "-i", "-", "-i", wav, "-map", "0:v:0", "-map", "1:a:0", "-c:v", "libx264", "-preset", "medium", "-crf", "21",
            "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out]
