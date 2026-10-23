@@ -252,5 +252,22 @@ def run(job):
             save_log(lg)
 
 
+def check():
+    """Bina post kiye jaanch: token chalu hai? kaunsa account? publish ki ijaazat?"""
+    if not IG_ACCESS_TOKEN or not IG_USER_ID:
+        print("CHECK FAIL: IG_ACCESS_TOKEN / IG_USER_ID secrets nahi mile")
+        return
+    r = requests.get(f"{GRAPH}{IG_USER_ID}", params={"fields": "username,name,media_count,followers_count",
+                                                       "access_token": IG_ACCESS_TOKEN}, timeout=30).json()
+    if "error" in r:
+        print("CHECK FAIL (token/user id):", r["error"].get("message", r))
+        return
+    print(f"CHECK OK: account @{r.get('username')} | posts {r.get('media_count')} | followers {r.get('followers_count')}")
+    q = requests.get(f"{GRAPH}{IG_USER_ID}/content_publishing_limit",
+                     params={"fields": "quota_usage,config", "access_token": IG_ACCESS_TOKEN}, timeout=30).json()
+    print("CHECK publish ijaazat:", "OK" if "data" in q else f"FAIL {q.get('error', {}).get('message', q)}", str(q)[:200])
+
+
 if __name__ == "__main__":
-    run((sys.argv[1] if len(sys.argv) > 1 else "").lower())
+    arg = (sys.argv[1] if len(sys.argv) > 1 else "").lower()
+    check() if arg == "check" else run(arg)
