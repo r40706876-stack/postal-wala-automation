@@ -582,6 +582,432 @@
    "exams": [
     "तमिलनाडु 2020"
    ]
+  },
+  {
+   "id": "p_61b7a4cc6a",
+   "q": "लेटर बॉक्स में किस प्रकार की वस्तुएं पोस्ट नहीं की जा सकती हैं?",
+   "opts": [
+    "मशीन फ्रैंक्ड वस्तुएं",
+    "पोस्टकार्ड",
+    "अंतर्देशीय पत्र कार्ड (ILC)",
+    "पत्र"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ],
+   "q_en": "Which type of articles can’t be posted in letter box:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q9",
+    "DL-MTS-PM-MG-2022.pdf#Q10"
+   ],
+   "list_q": "लेटर बॉक्स में कौन सी वस्तुएं नहीं डाली जा सकतीं?",
+   "list_a": "मशीन फ्रैंक्ड वस्तुएं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_924352ddac",
+   "q": "माई स्टाम्प (My Stamp) की एक शीट की कीमत क्या है?",
+   "opts": [
+    "250 रुपये",
+    "300 रुपये",
+    "350 रुपये",
+    "375 रुपये"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ],
+   "q_en": "What is the cost of one sheet of My stamp:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q21",
+    "DL-MTS-PM-MG-2022.pdf#Q15"
+   ],
+   "list_q": "माई स्टाम्प की एक शीट की कीमत क्या है?",
+   "list_a": "300 रुपये",
+   "auto": "v22"
+  },
+  {
+   "id": "p_bb3d876cc1",
+   "q": "भारतीय डाक द्वारा अंध साहित्य पैकेट (Blind Literature Packets) का निःशुल्क प्रसारण कितनी सीमा तक अनुमत है?",
+   "opts": [
+    "7 किग्रा",
+    "8 किग्रा",
+    "9 किग्रा",
+    "10 किग्रा"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2021",
+    "दिल्ली 2022"
+   ],
+   "q_en": "India post allows free transmission of blind literature packets upto",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q18",
+    "DL-MTS-PM-MG-2022.pdf#Q3"
+   ],
+   "list_q": "ब्लाइंड लिटरेचर पैकेट की निःशुल्क सीमा क्या है?",
+   "list_a": "7 किग्रा",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0105be0e35",
+   "q": "किसी भी डाक वस्तु को किसके द्वारा पुनर्निर्देशित (Redirect) किया जा सकता है?",
+   "opts": [
+    "पोस्टिंग के कार्यालय द्वारा",
+    "गंतव्य कार्यालय द्वारा",
+    "किसी भी मध्यवर्ती कार्यालय द्वारा",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2022"
+   ],
+   "q_en": "Any postal articles can be redirected",
+   "src": [
+    "BH-MTS-PM-MG-2022.pdf#Q20"
+   ],
+   "list_q": "डाक वस्तु का पुनर्निर्देशन किसके द्वारा किया जाता है?",
+   "list_a": "गंतव्य कार्यालय द्वारा",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0370028659",
+   "q": "सरकारी अधिकारी और उनके कार्यालय के बीच भेजे जाने वाले कार्यालयी दस्तावेज किसके विकल्प पर पत्र, पैकेट या पार्सल के रूप में डाक द्वारा भेजे जा सकते हैं?",
+   "opts": [
+    "प्रेषक (Sender)",
+    "पाने वाला (Addressee)",
+    "संदेशवाहक (Messenger)",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "राजस्थान 2021"
+   ],
+   "q_en": "Office files containing notes and orders or draft letters and fair coples exchanged between Government Officer and his office may be sent by post as letters, packets or parcels at the option of the",
+   "src": [
+    "16. Rajasthan MTS 2021.docx.pdf#Q6"
+   ],
+   "list_q": "सरकारी फाइलें किसके विकल्प पर डाक द्वारा भेजी जा सकती हैं?",
+   "list_a": "प्रेषक",
+   "auto": "v22"
+  },
+  {
+   "id": "p_05fe1298a1",
+   "q": "सिक्किम राज्य किस डाक सर्किल का हिस्सा है?",
+   "opts": [
+    "पश्चिम बंगाल",
+    "असम",
+    "उत्तर पूर्व (नॉर्थ ईस्ट)",
+    "बिहार"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Sikkim state is part of which postal circle:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q2"
+   ],
+   "list_q": "सिक्किम राज्य किस डाक सर्किल में आता है?",
+   "list_a": "पश्चिम बंगाल",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0697fa5f93",
+   "q": "अधिकृत सरकारी कर्मचारियों द्वारा भेजी जाने वाली सरकारी डाक पर क्या लिखा होता है?",
+   "opts": [
+    "भारत सरकार की सेवा में (On India Government Service)",
+    "पंजीकृत सेवा (Registered Service)",
+    "सेवा में (In service)",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "What is written on government mail sent by authorized government employees?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q27"
+   ],
+   "list_q": "सरकारी डाक पर क्या लिखा होता है?",
+   "list_a": "On India Govt Service",
+   "auto": "v22"
+  },
+  {
+   "id": "p_07d9e98a54",
+   "q": "लेटर कार्ड (Inland Letter Card) का अधिकतम वजन कितने से अधिक नहीं होना चाहिए?",
+   "opts": [
+    "3 ग्राम",
+    "10 ग्राम",
+    "20 ग्राम",
+    "2 ग्राम"
+   ],
+   "ans": "A",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "Weight of a letter card should not exceed",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q28"
+   ],
+   "list_q": "लेटर कार्ड का अधिकतम वजन कितना हो सकता है?",
+   "list_a": "3 ग्राम",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0907af453f",
+   "q": "पहले से भुगतान किए गए किराए की अवधि समाप्त होने के कितने दिनों के भीतर पोस्ट बॉक्स के किराए के नवीनीकरण का आवेदन स्वीकार किया जा सकता है?",
+   "opts": [
+    "10 दिन",
+    "15 दिन",
+    "20 दिन",
+    "30 दिन"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2022"
+   ],
+   "q_en": "Withing how many days an application for the renewal of the rental of a post box may be entertained after the expiry of the period of rent already paid:",
+   "src": [
+    "BH-MTS-PM-MG-2022.pdf#Q23"
+   ],
+   "list_q": "पोस्ट बॉक्स किराया नवीनीकरण आवेदन कितने दिनों में दिया जा सकता है?",
+   "list_a": "15 दिन",
+   "auto": "v22"
+  },
+  {
+   "id": "p_09e9c21276",
+   "q": "चीफ PMG महाराष्ट्र सर्किल के प्रशासनिक नियंत्रण में कौन-सा राज्य आता है?",
+   "opts": [
+    "महाराष्ट्र सर्किल",
+    "गोवा",
+    "गुजरात और गोवा",
+    "महाराष्ट्र और गोवा"
+   ],
+   "ans": "D",
+   "exams": [
+    "महाराष्ट्र 2022"
+   ],
+   "q_en": "Which state comes under administrative control of chief PMG Maharashtra circle?",
+   "src": [
+    "MH-MTS-PM-MG-2022.pdf#Q20"
+   ],
+   "list_q": "चीफ PMG महाराष्ट्र सर्किल के प्रशासनिक नियंत्रण में कौन आता है?",
+   "list_a": "महाराष्ट्र और गोवा",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0a58cee848",
+   "q": "एक वित्तीय वर्ष के लिए पोस्ट बॉक्स और पोस्ट बैग दोनों का किराया कितने रुपये है?",
+   "opts": [
+    "50",
+    "150",
+    "100",
+    "250"
+   ],
+   "ans": "D",
+   "exams": [
+    "आंध्र प्रदेश 2020"
+   ],
+   "q_en": "The rent for a post box and post bag for one financial year is Rs__",
+   "src": [
+    "AP-MTS-PM-MG-2020.pdf#Q3"
+   ],
+   "list_q": "पोस्ट बॉक्स और पोस्ट बैग का वार्षिक किराया कितना है?",
+   "list_a": "250 रुपये",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0d7b8824a3",
+   "q": "शाखा डाकघर (BO) में बुक या उसके लिए प्रेषित रजिस्टर्ड पार्सल का वजन कितने किलोग्राम से अधिक नहीं होना चाहिए?",
+   "opts": [
+    "9",
+    "10",
+    "11",
+    "12"
+   ],
+   "ans": "B",
+   "exams": [
+    "दिल्ली 2022"
+   ],
+   "q_en": "The weight of a registered parcel should not exceed ___ kg if posted at or addressed to, a branch post office:",
+   "src": [
+    "DL-MTS-PM-MG-2022.pdf#Q18"
+   ],
+   "list_q": "शाखा डाकघर के लिए रजिस्टर्ड पार्सल का अधिकतम वजन कितना है?",
+   "list_a": "10 किग्रा",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0def57d9c7",
+   "q": "ग्रामीण डाक जीवन बीमा (RPLI) की संपूर्ण जीवन बीमा (सुरक्षा) पॉलिसी के तहत अधिकतम कितनी बीमा राशि ली जा सकती है?",
+   "opts": [
+    "20 लाख रुपये",
+    "30 लाख रुपये",
+    "50 लाख रुपये",
+    "10 लाख रुपये"
+   ],
+   "ans": "D",
+   "exams": [
+    "असम 2022"
+   ],
+   "q_en": "The maximum limit for which an insurant can be insured under whole life assurance rural postal life insurance policy is",
+   "src": [
+    "ASM-MTS-PM-MG-2022.pdf#Q21"
+   ],
+   "list_q": "RPLI में होल लाइफ एश्योरेंस की अधिकतम सीमा क्या है?",
+   "list_a": "10 लाख रुपये",
+   "auto": "v22"
+  },
+  {
+   "id": "p_0fe8c807ae",
+   "q": "वरिष्ठ नागरिक बचत योजना (SCSS) के तहत खोले गए खाते को समय से पहले बंद (Premature closure) करने की अनुमति कब है?",
+   "opts": [
+    "खाता खोलने की तिथि से 1 वर्ष बाद",
+    "किसी भी समय",
+    "खाता खोलने की तिथि से 2 वर्ष बाद",
+    "खाता खोलने की तिथि से 3 वर्ष बाद"
+   ],
+   "ans": "B",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "Premature closure of an account opened under senior citizens savings Scheme is allowed",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q9"
+   ],
+   "list_q": "SCSS खाता समय से पहले कब बंद किया जा सकता है?",
+   "list_a": "किसी भी समय",
+   "auto": "v22"
+  },
+  {
+   "id": "p_1312e68d32",
+   "q": "सर्किल बैग ऑफिस कहाँ स्थित होता है?",
+   "opts": [
+    "सर्किल ऑफिस",
+    "क्षेत्रीय कार्यालय",
+    "मंडल कार्यालय",
+    "पोस्टल स्टोर्स डिपॉट"
+   ],
+   "ans": "D",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Circle bag offices is situated at:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q27"
+   ],
+   "list_q": "सर्किल बैग ऑफिस कहाँ स्थित होता है?",
+   "list_a": "पोस्टल स्टोर्स डिपॉट",
+   "auto": "v22"
+  },
+  {
+   "id": "p_13be76fcf8",
+   "q": "मशीन फ्रेंक किए गए लेख कहाँ पोस्ट किए जा सकते हैं?",
+   "opts": [
+    "किसी भी डाकघर",
+    "किसी भी डाकघर / RMS कार्यालय",
+    "केवल एक निर्दिष्ट कार्यालय",
+    "दो से अधिक निर्दिष्ट कार्यालय नहीं"
+   ],
+   "ans": "D",
+   "exams": [
+    "असम 2020"
+   ],
+   "q_en": "Machine franked articles can be posted at",
+   "src": [
+    "ASM-MTS-PM-MG-2020.pdf#Q29"
+   ],
+   "list_q": "मशीन फ्रेंक लेख कहाँ पोस्ट किए जा सकते हैं?",
+   "list_a": "दो से अधिक निर्दिष्ट कार्यालय नहीं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_13d417ffa4",
+   "q": "रविवार, डाक छुट्टियों और सामान्य कार्य समय के बाद भी खुले रहने वाले डाकघरों को क्या कहा जाता है?",
+   "opts": [
+    "असामान्य डाकघर",
+    "छुट्टियों का डाकघर",
+    "प्रधान डाकघर",
+    "नाईट पोस्ट ऑफिस"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "The post offices which remain open on Sundays, postal holidays and beyond normal working hours are known as what?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q10"
+   ],
+   "list_q": "रात में भी खुले रहने वाले डाकघर क्या कहलाते हैं?",
+   "list_a": "नाईट पोस्ट ऑफिस",
+   "auto": "v22"
+  },
+  {
+   "id": "p_13deeb09cc",
+   "q": "डाक जीवन बीमा (PLI) किस वर्ष शुरू किया गया था?",
+   "opts": [
+    "1864",
+    "1874",
+    "1884",
+    "1894"
+   ],
+   "ans": "C",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "In which years postal life insurance was introduced?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q3"
+   ],
+   "list_q": "डाक जीवन बीमा (PLI) किस वर्ष शुरू हुआ?",
+   "list_a": "1884",
+   "auto": "v22"
+  },
+  {
+   "id": "p_168f47c313",
+   "q": "शाखा डाकघरों (BO) के लिए अधिकतम कार्य घंटे क्या हैं?",
+   "opts": [
+    "3 घंटे",
+    "4 घंटे",
+    "5 घंटे",
+    "8 घंटे"
+   ],
+   "ans": "C",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "What are the maximum working hours from Branch Post Offices?",
+   "src": [
+    "4. CHHATTISGARH MTS 2021.pdf#Q11"
+   ],
+   "list_q": "शाखा डाकघरों (BO) के अधिकतम कार्य घंटे क्या हैं?",
+   "list_a": "5 घंटे",
+   "auto": "v22"
+  },
+  {
+   "id": "p_1714c78363",
+   "q": "डाक शुल्क का भुगतान सामान्यतः निम्नलिखित में से किससे प्रभावित नहीं होता है?",
+   "opts": [
+    "डाक टिकट",
+    "राजस्व टिकट (रेवेन्यू स्टाम्प)",
+    "फ्रैंकिंग मशीन की छाप",
+    "उपरोक्त सभी"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Payment of postage is normally not affected by which of the following",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q19"
+   ],
+   "list_q": "डाक शुल्क भुगतान किससे प्रभावित नहीं होता है?",
+   "list_a": "राजस्व टिकट",
+   "auto": "v22"
   }
  ],
  "sets": [
@@ -645,5 +1071,23 @@
    "official_deficiency",
    "fictitious_stamp"
   ]
+ ],
+ "rejected": [
+  "p_00526326dd",
+  "p_02c2ed0d71",
+  "p_0455fe417d",
+  "p_05099854ba",
+  "p_0798695e25",
+  "p_082c1bf869",
+  "p_0abf5e5df7",
+  "p_0e760200fc",
+  "p_0ff366f0fc",
+  "p_101a7d8612",
+  "p_102a6716df",
+  "p_115454a2bd",
+  "p_116fe8f420",
+  "p_12aadf896c",
+  "p_14bfc35bc6",
+  "p_16a83037d1"
  ]
 }
