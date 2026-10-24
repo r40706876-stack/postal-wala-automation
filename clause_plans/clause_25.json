@@ -403,7 +403,7 @@
       },
       "opt_pics": {
         "none": true,
-        "ref": "clause_plans/chitra_img/b831de21bc_39907841_1.jpg"
+        "ref": "clause_plans/chitra_img/b831de21bc_60852626_1.jpg"
       },
       "trap_v": {
         "tries": 2,
@@ -420,7 +420,18 @@
         "items": [],
         "searched": true,
         "v": 2
-      }
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "ज्यादा छोटे टिकट लगाओगे, मुद्रण शुल्क अधिक और स्टैंप पेपर बर्बाद पाओगे!",
+        "key": [
+          "मुद्रण शुल्क अधिक"
+        ],
+        "why": ""
+      },
+      "published": "2026-10-24",
+      "published_round": 24
     },
     {
       "basis": "notes",
@@ -591,5 +602,9 @@
       "style_v": "2026-09-26c"
     }
   ],
-  "clause_text_en": "25. Use of the minimum number of postage stamps . –  The public are advised to use the \nminimum number of stamps while prepaying postage charges by using st amps of the appropriate \nhigher denominations.  The use of a large number of low -value stamps takes up unnecessary space \non the postal articles, leaving less room for the address and other indications.  It also, increases the \nwork of the Post Office staff and entails waste of valuable stamp paper and printing charges. \n \nMETHOD OF ADDRESS"
+  "clause_text_en": "25. Use of the minimum number of postage stamps . –  The public are advised to use the \nminimum number of stamps while prepaying postage charges by using st amps of the appropriate \nhigher denominations.  The use of a large number of low -value stamps takes up unnecessary space \non the postal articles, leaving less room for the address and other indications.  It also, increases the \nwork of the Post Office staff and entails waste of valuable stamp paper and printing charges. \n \nMETHOD OF ADDRESS",
+  "clause_pyq_v": {
+    "v": 1,
+    "item": null
+  }
 }
