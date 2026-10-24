@@ -1365,6 +1365,405 @@
    "list_q": "डाकघर को कितने वर्गों में बांटा गया है?",
    "list_a": "तीन",
    "auto": "v22"
+  },
+  {
+   "id": "p_238c4d4004",
+   "q": "गोवा राज्य किस डाक परिमंडल (Postal Circle) के अधिकार क्षेत्र में आता है?",
+   "opts": [
+    "गुजरात",
+    "महाराष्ट्र",
+    "कर्नाटक",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Goa state come under the jurisdiction of which postal circle?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q16"
+   ],
+   "list_q": "गोवा राज्य किस डाक परिमंडल के अंतर्गत आता है?",
+   "list_a": "महाराष्ट्र",
+   "auto": "v22"
+  },
+  {
+   "id": "p_23b12813fc",
+   "q": "निम्नलिखित कथनों पर विचार करें: I. कोई भी अश्लील या आपत्तिजनक मुद्रण, पेंटिंग, तस्वीर, लिथोग्राफ, पुस्तक या कार्ड डाक द्वारा प्रसारण के लिए निषिद्ध वस्तु मानी जाती है। II. विस्फोटक या ज्वलनशील पदार्थ यदि ठीक से पैक किए जाएं तो डाक द्वारा भेजे जा सकते हैं। सही विकल्प चुनें:",
+   "opts": [
+    "केवल कथन I सही है",
+    "केवल कथन II सही है",
+    "कथन I और II दोनों सही हैं",
+    "कथन I और II दोनों गलत हैं"
+   ],
+   "ans": "A",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "Consider the following statements I. Any indecent or obscene printing, painting, photograph, lithograph, engraving book or card any other indecent or obscene article is considered as prohibited article for transmission through post. II. Explosive or inflammable substances f packed properly can be transmitted of through post. Choose the correct option",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q13"
+   ],
+   "list_q": "अश्लील सामग्री और विस्फोटक डाक प्रसारण नियम संबंधी सही कथन:",
+   "list_a": "केवल कथन I सही",
+   "auto": "v22"
+  },
+  {
+   "id": "p_24a037ffcb",
+   "q": "निम्नलिखित में से कौन सा राज्य उत्तर पूर्व डाक परिमंडल (North East Circle) के अंतर्गत नहीं आता है?",
+   "opts": [
+    "अरुणाचल प्रदेश",
+    "मणिपुर",
+    "असम",
+    "त्रिपुरा"
+   ],
+   "ans": "C",
+   "exams": [
+    "हरियाणा 2022"
+   ],
+   "q_en": "Which one of the following states does not comes under north east postal circle?",
+   "src": [
+    "HR-MTS-PM-MG-2022.pdf#Q22"
+   ],
+   "list_q": "कौन-सा राज्य उत्तर पूर्व डाक परिमंडल के अंतर्गत नहीं आता?",
+   "list_a": "असम",
+   "auto": "v22"
+  },
+  {
+   "id": "p_26503bd08b",
+   "q": "ग्रामीण डाक जीवन बीमा (RPLI) किस समिति की सिफारिशों के आधार पर शुरू किया गया था?",
+   "opts": [
+    "मलहोत्रा समिति",
+    "सुब्रमण्यम समिति",
+    "कमलेश्वर प्रसाद समिति",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Rural postal life insurance was introduced based on the recommendations of which committee?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q4"
+   ],
+   "list_q": "RPLI किस समिति की सिफारिशों पर शुरू की गई थी?",
+   "list_a": "मलहोत्रा समिति",
+   "auto": "v22"
+  },
+  {
+   "id": "p_27220c4a25",
+   "q": "निम्नलिखित में से किसके लिए पंजीकरण (Registration) अनिवार्य है?",
+   "opts": [
+    "बुक और पैटर्न पैकेट",
+    "ब्लाइंड लिटरेचर पैकेट",
+    "4 किग्रा से कम वजन का कोई भी पार्सल",
+    "कोई भी बीमित वस्तु (Insured article)"
+   ],
+   "ans": "D",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Registration is compulsory for which of the following?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q28"
+   ],
+   "list_q": "डाक में पंजीकरण (Registration) किसके लिए अनिवार्य है?",
+   "list_a": "कोई भी बीमित वस्तु",
+   "auto": "v22"
+  },
+  {
+   "id": "p_28aeedc046",
+   "q": "लेबल वाले बंडल के शीर्ष पर बांधे जाने वाले लेबल को क्या कहा जाता है?",
+   "opts": [
+    "लेबल",
+    "स्टेशन लेबल",
+    "बंडल कार्ड",
+    "चेक स्लिप"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "A label tied to the top of the labelled bundle is called",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q8"
+   ],
+   "list_q": "लेबल वाले बंडल के शीर्ष पर बंधा लेबल क्या कहलाता है?",
+   "list_a": "चेक स्लिप",
+   "auto": "v22"
+  },
+  {
+   "id": "p_2b3788958f",
+   "q": "फिलाटैलिक जमा खाता (Philatelic Deposit Account) कहाँ खोला जा सकता है?",
+   "opts": [
+    "किसी भी प्रधान डाकघर में",
+    "फिलाटैलिक ब्यूरो",
+    "परिमंडल/क्षेत्रीय कार्यालय",
+    "डाक भंडार डिपो"
+   ],
+   "ans": "B",
+   "exams": [
+    "हरियाणा 2022"
+   ],
+   "q_en": "Philatelic Deposit Accounts can be opened at?",
+   "src": [
+    "HR-MTS-PM-MG-2022.pdf#Q8"
+   ],
+   "list_q": "फिलाटैलिक डिपॉजिट खाता कहाँ खोला जा सकता है?",
+   "list_a": "फिलाटैलिक ब्यूरो",
+   "auto": "v22"
+  },
+  {
+   "id": "p_2b8f949e32",
+   "q": "अकाउंट बैग (Account bag) का आदान-प्रदान किसके बीच होता है?",
+   "opts": [
+    "उप डाकघर और शाखा डाकघर",
+    "प्रधान डाकघर और उप डाकघर",
+    "मंडल कार्यालय और उप डाकघर",
+    "मंडल कार्यालय और प्रधान डाकघर"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Account bag is exchanged between:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q29"
+   ],
+   "list_q": "अकाउंट बैग का आदान-प्रदान किसके बीच होता है?",
+   "list_a": "HO और SO",
+   "auto": "v22"
+  },
+  {
+   "id": "p_2c3ea444bf",
+   "q": "एक अनुभाग के सेट द्वारा अपनी गश्त के एक छोर से दूसरे छोर तक की गई 'ट्रिप' के बारे में निम्नलिखित कथनों पर विचार करें: I. सेट के मुख्यालय से उसके बाहरी स्टेशन (out station) की यात्रा को 'इन-ट्रिप' कहा जाता है II. सेट के बाहरी स्टेशन से उसके मुख्यालय की ओर की यात्रा को 'आउट-ट्रिप' कहा जाता है सही विकल्प चुनें:",
+   "opts": [
+    "कथन I सही है",
+    "कथन II सही है",
+    "कथन I और II दोनों सही हैं",
+    "कथन I और II दोनों गलत हैं"
+   ],
+   "ans": "D",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "Consider the following statements about ‘trip’' performed by a set of a section travelling from one end of its beat to the other I. The trip form head quarter of the set to its out station is called ‘in-trip’ II. The trip of the set toward its head quarter from its out station is called ‘out-trip’ Choose the correct option",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q1"
+   ],
+   "list_q": "मुख्यालय से आउट स्टेशन की यात्रा इन-ट्रिप कहलाती है?",
+   "list_a": "दोनों कथन गलत हैं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_2c521ffebf",
+   "q": "बीमाकृत बैग (Insured bag) के संबंध में कौन सा सही नहीं है?",
+   "opts": [
+    "बीमाकृत पार्सल को सुरक्षा प्रदान करता है",
+    "पार्सल बैग/मेल बैग के अंदर कभी बंद नहीं किया जाता",
+    "ये ड्यू बैग (due bags) नहीं हैं",
+    "इनमें सामग्रियों की कोई सूची नहीं होती"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Which of not true regarding insured bag",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q18"
+   ],
+   "list_q": "बीमाकृत बैग (Insured bag) के संबंध में क्या गलत है?",
+   "list_a": "पार्सल/मेल बैग में न रखना",
+   "auto": "v22"
+  },
+  {
+   "id": "p_2d57c9e454",
+   "q": "अंडमान और निकोबार द्वीप समूह किस पोस्टल सर्कल के अधिकार क्षेत्र में आता है?",
+   "opts": [
+    "उत्तर पूर्वी सर्कल",
+    "पश्चिम बंगाल सर्कल",
+    "केरल सर्कल",
+    "तमिलनाडु सर्कल"
+   ],
+   "ans": "B",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "Andaman and Nicobar Islands comes under the jurisdiction of",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q29"
+   ],
+   "list_q": "अंडमान-निकोबार किस डाक सर्कल के अधीन है?",
+   "list_a": "पश्चिम बंगाल सर्कल",
+   "auto": "v22"
+  },
+  {
+   "id": "p_2e98e2f7e4",
+   "q": "प्रसारण के दौरान प्रत्येक पत्र, पैकेट या पार्सल पर कम से कम कितने डाकघरों की तारीख की मुहर लगनी चाहिए?",
+   "opts": [
+    "आठ डाकघर",
+    "पांच डाकघर",
+    "तीन डाकघर",
+    "दो डाकघर"
+   ],
+   "ans": "D",
+   "exams": [
+    "बिहार 2022"
+   ],
+   "q_en": "During transmission every letter, packet or parcel has to be stamped with the date stamps of at least:",
+   "src": [
+    "BH-MTS-PM-MG-2022.pdf#Q16"
+   ],
+   "list_q": "पत्र या पार्सल पर कम से कम कितने डाकघरों की तारीख मुहर लगती है?",
+   "list_a": "दो डाकघर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_30a45d5849",
+   "q": "ट्रांजिट मेल अनुभाग (Transit mail section) के सेट का प्रभारी अधिकारी कौन होता है?",
+   "opts": [
+    "SSRM",
+    "प्रधान अभिलेख अधिकारी (HRO)",
+    "मेल गार्ड",
+    "डाकिया"
+   ],
+   "ans": "C",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Officer in charge of set of transit mail section is",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q16"
+   ],
+   "list_q": "ट्रांजिट मेल अनुभाग के सेट का प्रभारी कौन होता है?",
+   "list_a": "मेल गार्ड",
+   "auto": "v22"
+  },
+  {
+   "id": "p_30e9bcfd30",
+   "q": "\"गोवा\" राज्य किस डाक सर्कल के अंतर्गत आता है?",
+   "opts": [
+    "गुजरात",
+    "महाराष्ट्र",
+    "कर्नाटक",
+    "राजस्थान"
+   ],
+   "ans": "B",
+   "exams": [
+    "असम 2021"
+   ],
+   "q_en": "“Goa” state comes under which of the post circle?",
+   "src": [
+    "ASM-MTS-PM-MG-2021.pdf#Q21"
+   ],
+   "list_q": "गोवा राज्य किस डाक सर्कल के अंतर्गत आता है?",
+   "list_a": "महाराष्ट्र",
+   "auto": "v22"
+  },
+  {
+   "id": "p_345e5e5bac",
+   "q": "RMS डिवीज़न का प्रभारी किसे कहा जाता है?",
+   "opts": [
+    "RMS के वरिष्ठ / अधीक्षक",
+    "उप-मंडलीय ASRM",
+    "HRO",
+    "SRO"
+   ],
+   "ans": "A",
+   "exams": [
+    "उत्तराखंड 2020"
+   ],
+   "q_en": "The in charge of a RMS division is called",
+   "src": [
+    "16. Uttarakhan Mts 2020.docx.pdf#Q8"
+   ],
+   "list_q": "RMS डिवीज़न का प्रभारी कौन होता है?",
+   "list_a": "RMS का वरिष्ठ/अधीक्षक",
+   "auto": "v22"
+  },
+  {
+   "id": "p_36506f8fba",
+   "q": "सेंट्रल बैगिंग यूनिट किस कार्यालय का भाग है?",
+   "opts": [
+    "RMS कार्यालय",
+    "डाक मंडल",
+    "डाक भंडार डिपो",
+    "प्रधान डाकघर"
+   ],
+   "ans": "A",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Central bagging unit is part of which office?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q11"
+   ],
+   "list_q": "सेंट्रल बैगिंग यूनिट किस कार्यालय का हिस्सा है?",
+   "list_a": "RMS कार्यालय",
+   "auto": "v22"
+  },
+  {
+   "id": "p_36877d1376",
+   "q": "लेटर बॉक्स चपरासी का मुख्य कर्तव्य क्या है?",
+   "opts": [
+    "पत्रों का वितरण",
+    "BO बैगों का आदान-प्रदान",
+    "लेटर बॉक्स की निकासी",
+    "मनी ऑर्डर का भुगतान"
+   ],
+   "ans": "C",
+   "exams": [
+    "तमिलनाडु 2020"
+   ],
+   "q_en": "The main duty of Letter Box peon is",
+   "src": [
+    "13. Tamil Nadu MTS 2020.pdf#Q16"
+   ],
+   "list_q": "लेटर बॉक्स चपरासी का मुख्य कार्य क्या है?",
+   "list_a": "लेटर बॉक्स की निकासी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_36a8aec289",
+   "q": "प्रत्येक पत्र पर कम से कम कितने डाकघरों की तारीख की मोहर होनी चाहिए?",
+   "opts": [
+    "एक",
+    "दो",
+    "तीन",
+    "चार"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Every letter has to be stamped with the date stamp of at least how many posts office?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q22"
+   ],
+   "list_q": "पत्र पर कम से कम कितने डाकघरों की मोहर होनी चाहिए?",
+   "list_a": "दो",
+   "auto": "v22"
+  },
+  {
+   "id": "p_38b5a73164",
+   "q": "वह कार्यालय जो लावारिस, अस्वीकृत और अधूरे या अपठनीय पते वाली वस्तुओं को संभालता है, कहलाता है?",
+   "opts": [
+    "रिटर्न्ड लेटर ऑफिस",
+    "नोडल पोस्ट ऑफिस",
+    "ट्रांसमिशन सेंटर",
+    "ट्रांजिट ऑफिस"
+   ],
+   "ans": "A",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "The office which deals with unclaimed articles, refused article, and articles with incomplete or undecipherable address is called",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q3"
+   ],
+   "list_q": "अस्वीकृत और अपठनीय पत्रों का निपटान कौन करता है?",
+   "list_a": "रिटर्न्ड लेटर ऑफिस",
+   "auto": "v22"
   }
  ],
  "sets": [
@@ -1452,6 +1851,23 @@
   "p_1e75cd227a",
   "p_20cf360e57",
   "p_21b850abd6",
-  "p_22719a1673"
+  "p_22719a1673",
+  "p_23b44acfb5",
+  "p_23c39f1f84",
+  "p_24d75bdf23",
+  "p_252bc64ebf",
+  "p_2a9a5fdef5",
+  "p_2c7039fdae",
+  "p_2d675085f0",
+  "p_2d8f8c62cc",
+  "p_2fac1a6545",
+  "p_304ce87bb0",
+  "p_312f6f78dd",
+  "p_33985f1d9b",
+  "p_343584da3a",
+  "p_34dbecfe92",
+  "p_36f37dfe05",
+  "p_36fab7b597",
+  "p_3956697ebe"
  ]
 }
