@@ -37,6 +37,20 @@ MAX_PAUSE = 0.14
 GOLD, NAVY, RED, GRN, INK = (255, 205, 40), (16, 24, 52), (210, 30, 45), (22, 150, 70), (30, 40, 80)
 SYL_LINE = "पेपर के 50 में से 30 सवाल इसी PO Guide से!"      # DoP patra 17-08/2018-SPB-I (10.05.2019) Paper-I Part-A
 LETTER_HI = {"A": "ए", "B": "बी", "C": "सी", "D": "डी"}
+# Shuru ki awaaz (hook) - instagram-agent-skill ke Hindi hook formulas se, roz badalti (ek hi template se skip badhta hai).
+# Har line SACH hai: saboot (scan/PO Guide) wahi rehta hai, sirf bolne ka dhaancha badalta hai. (formula id, line)
+OPEN_EXACT = [(14, "GDS साथियो! ये सवाल {L} के पेपर में आया था!"),
+              (2, "ये नियम मत छोड़ना! {L} के पेपर में ये सवाल आया था!"),
+              (3, "कोई नहीं बताता, ये सवाल {L} के पेपर में आ चुका है!"),
+              (10, "MTS, पोस्टमैन की तैयारी है? ये सवाल {L} के पेपर में आया था!")]
+OPEN_CLAUSE = [(14, "GDS साथियो! इसी क्लॉज़ से {L} के पेपर में सवाल आया!"),
+               (2, "ये क्लॉज़ मत छोड़ना! इससे {L} के पेपर में सवाल आया!"),
+               (3, "कोई नहीं बताता, इसी क्लॉज़ से {L} के पेपर में सवाल आया!"),
+               (10, "MTS, पोस्टमैन की तैयारी है? इसी क्लॉज़ से {L} में सवाल आया!")]
+OPEN_GUIDE = [(23, "GDS साथियो! पेपर के पचास में से तीस सवाल, इसी PO Guide से!"),
+              (20, "मोटी किताबें छोड़ो! पचास में से तीस सवाल, इसी PO Guide से!"),
+              (3, "कोई नहीं बताता, पचास में से तीस सवाल इसी PO Guide से!"),
+              (14, "MTS, पोस्टमैन वालों! पचास में से तीस सवाल, इसी PO Guide से!")]
 RAASTA_VOICES = ["सिलेबस के हिसाब से, क्लॉज़ वाइज़, कोई नियम नहीं छूटेगा!",
                  "पूरा PO Guide, क्लॉज़ वाइज़, एक भी नियम नहीं छूटेगा!",
                  "सिलेबस के हिसाब से चल रहे हैं, कोई नियम नहीं छूटेगा!"]
@@ -685,11 +699,14 @@ def build(data, out, plan=None, part=None):
     ep = int(data.get("episode") or 0)
     specs = []
     if scan:
-        specs.append({"name": "paper", "segs": [("p", (f"GDS साथियो! इसी क्लॉज़ से {scan['label'][0]} के पेपर में सवाल आया!"
-                                                       if scan.get("clause_level") else
-                                                       f"GDS साथियो! ये सवाल {scan['label'][0]} के पेपर में आया था!"))]})
+        L0 = scan['label'][0]
+        pool = OPEN_CLAUSE if scan.get("clause_level") else OPEN_EXACT
+        fid, line = pool[ep % len(pool)]
+        specs.append({"name": "paper", "segs": [("p", line.format(L=L0))]})
     else:
-        specs.append({"name": "guide", "segs": [("p", "GDS साथियो! पेपर के पचास में से तीस सवाल, इसी PO Guide से!")]})
+        fid, line = OPEN_GUIDE[ep % len(OPEN_GUIDE)]
+        specs.append({"name": "guide", "segs": [("p", line)]})
+    print(f"  Hook formula #{fid}: {specs[-1]['segs'][0][1]}")
     specs.append({"name": "ruko", "segs": [("r", "रुको! पहले सोचो, " + N.ruko_q(data))]})
     if guide_en:
         specs.append({"name": "kathin", "segs": [("k", "किताब कठिन है, हम चित्रों से आसान बनाते हैं!")]})

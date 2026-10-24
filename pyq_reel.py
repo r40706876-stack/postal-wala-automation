@@ -565,7 +565,7 @@ def write_caption(data, path):
         "🔖 SAVE करो - परीक्षा से पहले दोहराना",
         f"🎯 FREE MOCK TEST चाहिए? कमेंट करें: {M.MOCK_KEYWORD}",
         "",
-        M.HASHTAGS + " #gdsexam #pyq #postalexam",
+        "#gdstomts #mtsexam #postmanexam #gdsexam #pyq",   # Instagram: max 5 hashtag
         "",
         "----- PIN करने वाला पहला कमेंट (reel डालने के 1 घंटे बाद पिन करें) -----",
         f"✅ सही जवाब: {pin}",
@@ -842,7 +842,7 @@ def write_saathi_caption(data, path, entry, related):
         "📝 स्रोत: विभागीय परीक्षा प्रश्नपत्र (" + ", ".join(ex_all[:8]) + (" ..." if len(ex_all) > 8 else "") + ")",
         "🎨 ये नियम चित्रों से: पिछली रील में", "🔖 SAVE करो - परीक्षा से पहले दोहराना",
         f"🎯 FREE MOCK TEST चाहिए? कमेंट करें: {M.MOCK_KEYWORD}", "",
-        M.HASHTAGS + " #gdsexam #pyq #postalexam", "",
+        "#gdstomts #mtsexam #postmanexam #gdsexam #pyq", "",   # Instagram: max 5 hashtag
         "----- PIN करने वाला पहला कमेंट (reel डालने के 1 घंटे बाद पिन करें) -----",
         f"✅ सही जवाब: {pin}",
         *[f"{k + 1}. {it['q']} → {it['ans']}) {ans_text(it)}  [पूछा गया: {exams_line(it.get('exams') or [], 3)}]"
