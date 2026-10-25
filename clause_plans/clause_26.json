@@ -64,122 +64,119 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "The customer stands at the post office counter holding a plain white envelope, looking confused.",
-            "target": "the white envelope in customer hands",
+            "prompt": "The customer in a light blue checked shirt holds a plain white letter over the wooden counter while the postman in khaki uniform listens attentively.",
+            "target": "the white envelope held over the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "डाक लेख भेजने के लिए क्या सही तरीका अपनाना चाहिए?",
-            "desc": "The customer stands at the post office counter holding a plain white envelope, looking confused.",
+            "text": "ग्राहक लिफाफे पर डाक टिकट लगाने के लिए सलाह लेता है।",
+            "desc": "The customer and postman discuss ticket placement across the clean post office counter.",
             "mark": "none",
             "card": null,
             "say": {
               "who": "customer",
-              "text": "भैया, इस लिफाफे पर टिकट कहाँ लगाएं?"
+              "text": "भैया, टिकट कहाँ पर चिपकाऊँ?"
             },
-            "img": "clause_plans/chitra_img/443e206721_77074105_1.jpg",
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/443e206721_99460078_1.jpg",
             "box": [
-              0.526,
-              0.591,
-              0.663,
-              0.715
+              0.377,
+              0.588,
+              0.601,
+              0.709
             ],
-            "bg_text": true,
+            "bg_text": false,
             "badge": [
-              0.394,
-              0.478,
-              0.461,
-              0.529
+              0.342,
+              0.511,
+              0.392,
+              0.548
             ],
             "face": [
-              0.528,
-              0.148,
-              0.891,
-              0.999
+              0.61,
+              0.199,
+              0.766,
+              0.395
             ],
             "pan": "lr"
           },
           {
-            "prompt": "The customer places postage stamps right at the very top edge of the envelope with no space left.",
-            "target": "the postage stamps on the envelope",
-            "tag": "कम जगह छोड़ना गलत है",
+            "prompt": "A close-up shot of hands sticking a square coloured sticker directly at the extreme top border of a plain white letter without leaving any space.",
+            "target": "the top edge of the letter with sticker",
+            "tag": "बिना जगह छोड़े",
             "tag_color": "red",
-            "text": "शीर्ष पर कम जगह छोड़ना बिल्कुल गलत है।",
-            "desc": "The customer places postage stamps right at the very top edge of the envelope with no space left, marked with the tag 'कम जगह छोड़ना गलत है'.",
+            "text": "शीर्ष पर जगह न छोड़कर टिकट चिपकाना गलत तरीका है।",
+            "desc": "Close view showing a sticker placed right at the top edge of the letter with a red tag indicating the error.",
             "mark": "wrong",
             "card": null,
             "say": {
               "who": "customer",
-              "text": "मैंने तो ऊपर ही टिकट चिपका दिए।"
+              "text": "अरे! एकदम ऊपर ही चिपका दिया!"
             },
-            "img": "clause_plans/chitra_img/443e206721_77074105_2.jpg",
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/443e206721_99460078_2.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.428,
+              0.386,
+              0.572,
+              0.498
             ],
             "bg_text": false,
-            "face": [
-              0.577,
-              0.147,
-              0.771,
-              0.375
-            ],
             "frames": [
-              "clause_plans/chitra_img/443e206721_77074105_2f1.jpg",
-              "clause_plans/chitra_img/443e206721_77074105_2f2.jpg"
+              "clause_plans/chitra_img/443e206721_99460078_2f1.jpg",
+              "clause_plans/chitra_img/443e206721_99460078_2f2.jpg"
             ]
           },
           {
-            "prompt": "The postman points his finger clearly at the top of the white envelope, showing a wide margin for stamps.",
-            "target": "the top margin of the white envelope",
-            "tag": "कम से कम 3 सेमी",
+            "prompt": "An over-the-shoulder shot from behind the customer as the postman holds a wooden ruler against the top margin of the white envelope to demonstrate the required space.",
+            "target": "the measured top margin of the letter",
+            "tag": "कम से कम 3 सेमी जगह",
             "tag_color": "green",
             "text": "डाक लेख के शीर्ष पर कम से कम 3 सेमी जगह छोड़ें।",
-            "desc": "The postman points his finger clearly at the top of the white envelope, showing a wide margin for stamps, marked with the tag 'कम से कम 3 सेमी'.",
+            "desc": "Over-the-shoulder view showing the postman measuring a clear 3 cm top space on the envelope with a ruler.",
             "mark": "right",
             "card": null,
-            "say": {
-              "who": "postman",
-              "text": "रुko भाई, ऊपर तीन सेंटीमीटर जगह छोड़नी चाहिए।"
-            },
-            "img": "clause_plans/chitra_img/443e206721_77074105_3.jpg",
+            "say": null,
+            "shot": "over",
+            "img": "clause_plans/chitra_img/443e206721_99460078_3.jpg",
             "box": [
-              0.483,
-              0.471,
-              0.658,
-              0.617
+              0.403,
+              0.492,
+              0.655,
+              0.679
             ],
             "bg_text": false,
             "face": [
-              0.59,
-              0.151,
-              0.786,
-              0.377
+              0.582,
+              0.201,
+              0.778,
+              0.396
             ],
-            "pan": "rl"
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/443e206721_99460078_3f1.jpg"
+            ]
           }
         ],
         "caps": [
-          "डाक लेख भेजने के लिए क्या सही तरीका अपनाना चाहिए?",
-          "शीर्ष पर कम जगह छोड़ना बिल्कुल गलत है।",
+          "ग्राहक लिफाफे पर डाक टिकट लगाने के लिए सलाह लेता है।",
+          "शीर्ष पर जगह न छोड़कर टिकट चिपकाना गलत तरीका है।",
           "डाक लेख के शीर्ष पर कम से कम 3 सेमी जगह छोड़ें।"
         ],
-        "score": 7.0,
-        "lesson": "Leave at least 3 cm of space at the top of postal articles.",
+        "score": 10.0,
+        "lesson": "Leave at least 3 cm of space at the top of a postal article when affixing postage stamps.",
         "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 1
+        "attempt": 3
       },
-      "published_prev": "2026-10-11",
-      "published_round_prev": 19,
+      "published_prev": "2026-10-17",
+      "published_round_prev": 23,
       "punch_v": {
         "ok": true,
         "text": "टिकट लगाने की जगह नहीं?"
       },
       "cf_spent": {
-        "2026-10-17": 6
+        "2026-10-25": 16
       },
       "trap_v": {
         "tries": 2,
@@ -187,7 +184,7 @@
       },
       "opt_pics": {
         "none": true,
-        "ref": "clause_plans/chitra_img/443e206721_77074105_1.jpg"
+        "ref": "clause_plans/chitra_img/443e206721_99460078_1.jpg"
       },
       "guide_line_v": {
         "v": 1,
@@ -218,8 +215,18 @@
         "searched": true,
         "v": 2
       },
-      "published": "2026-10-17",
-      "published_round": 23
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "डाक के माथे पर 3 सेमी जगह छोड़ो",
+        "key": [
+          "माथे पर",
+          "3 सेमी"
+        ],
+        "why": ""
+      },
+      "published": "2026-10-25",
+      "published_round": 24
     },
     {
       "basis": "guide",
@@ -275,143 +282,15 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "kit": "photo",
-        "panels": [
-          {
-            "prompt": "The customer stands at the post office counter handing a white envelope to the postman, both looking down curiously.",
-            "target": "the white envelope on the counter",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "ग्राहक ने पत्र पर पता लिखकर पोस्टमैन को थमाया।",
-            "desc": "The customer hands the white envelope to the postman at the counter.",
-            "mark": "none",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "पटना 800001"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "say": {
-              "who": "customer",
-              "text": "भैया, इसे जल्दी भेज दीजिए।"
-            },
-            "img": "clause_plans/chitra_img/d99eb5f581_94172131_1.jpg",
-            "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
-            ],
-            "bg_text": false,
-            "badge": [
-              0.368,
-              0.454,
-              0.41,
-              0.493
-            ],
-            "face": [
-              0.529,
-              0.116,
-              0.893,
-              0.992
-            ],
-            "pan": "lr"
-          },
-          {
-            "prompt": "The postman points at the envelope on the counter with a worried expression, while the customer looks confused.",
-            "target": "the small lowercase town name on the envelope",
-            "tag": "छोटे अक्षरों में",
-            "tag_color": "red",
-            "text": "छोटे अक्षरों में लिखा शहर का नाम गलत है।",
-            "desc": "The postman points at the small lowercase town name marked in red.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "say": {
-              "who": "postman",
-              "text": "अरे भाई, ऐसे छोटे अक्षर नहीं चलेंगे।"
-            },
-            "img": "clause_plans/chitra_img/d99eb5f581_94172131_2.jpg",
-            "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
-            ],
-            "bg_text": false,
-            "face": [
-              0.292,
-              0.188,
-              0.467,
-              0.353
-            ],
-            "frames": [
-              "clause_plans/chitra_img/d99eb5f581_94172131_2f1.jpg",
-              "clause_plans/chitra_img/d99eb5f581_94172131_2f2.jpg"
-            ]
-          },
-          {
-            "prompt": "The postman smiles warmly and points his finger at the clearly corrected town name on the envelope.",
-            "target": "the large underlined town name on the envelope",
-            "tag": "बड़े अक्षरों में और रेखांकित",
-            "tag_color": "green",
-            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में और रेखांकित होना चाहिए।",
-            "desc": "The postman points to the correct town name written in block letters and underlined, marked in green.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "say": {
-              "who": "postman",
-              "text": "हमेशा बड़े अक्षरों में लिखकर रेखांकित करें।"
-            },
-            "img": "clause_plans/chitra_img/d99eb5f581_94172131_3.jpg",
-            "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
-            ],
-            "bg_text": false,
-            "face": [
-              0.285,
-              0.188,
-              0.465,
-              0.362
-            ],
-            "pan": "rl"
-          }
-        ],
-        "caps": [
-          "ग्राहक ने पत्र पर पता लिखकर पोस्टमैन को थमाया।",
-          "छोटे अक्षरों में लिखा शहर का नाम गलत है।",
-          "पोस्ट टाउन का नाम बड़े अक्षरों में और रेखांकित होना चाहिए।"
-        ],
-        "score": 7.0,
-        "lesson": "Write the post town name in block letters and underline it on a letter address.",
-        "pv": 4,
-        "ok": true,
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; View is not from behind the customer looking at the postman, and the postman is not pointing at an underlined city name in block letters on the envelo",
         "v": 9,
-        "attempt": 1
+        "kit_try": "photo3"
       },
-      "published_prev": "2026-10-12",
-      "published_round_prev": 19,
+      "published_prev": "2026-10-17",
+      "published_round_prev": 23,
       "cf_spent": {
-        "2026-10-17": 6
+        "2026-10-25": 19
       },
       "punch_v": {
         "ok": true,
@@ -435,8 +314,83 @@
         "searched": true,
         "v": 2
       },
-      "published": "2026-10-17",
-      "published_round": 23
+      "chitra_keep": {
+        "scene": "A clean wooden postal service counter in a brightly lit post office with a plain wall in the background.",
+        "seed0": 2772330,
+        "files": {
+          "0": "clause_plans/chitra_img/d99eb5f581_keep_2772330_1.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.431,
+            0.53,
+            0.566,
+            0.627
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.363,
+              0.465,
+              0.412,
+              0.495
+            ],
+            "face": [
+              0.534,
+              0.181,
+              0.866,
+              1.0
+            ]
+          }
+        },
+        "bgt": {
+          "0": false
+        },
+        "fixes": {
+          "1": "Make it clearly show: the envelope with small letters - saaf nahi",
+          "2": "Over-the-shoulder view from behind the customer looking at the postman, who points his finger directly at the underlined city name in block letters on the envelope."
+        },
+        "panels": [
+          {
+            "prompt": "The postman and the customer standing at the wooden postal counter, looking at a plain white envelope held between them.",
+            "target": "the plain white envelope on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक पत्र पर पोस्‍ट टाउन का नाम लिख रहा है।",
+            "desc": "The customer stands at the post office counter holding a plain white envelope.",
+            "mark": "none",
+            "card": null,
+            "say": null,
+            "shot": "wide"
+          },
+          {
+            "prompt": "Close-up on the envelope held by hands, showing the city name written in small letters without any underline.",
+            "target": "the envelope with small letters",
+            "tag": "छोटे अक्षरों में",
+            "tag_color": "red",
+            "text": "पोस्‍ट टाउन का नाम छोटे अक्षरों में लिखना गलत है।",
+            "desc": "The envelope shows the city name written in small letters and not underlined.",
+            "mark": "wrong",
+            "card": null,
+            "say": null,
+            "shot": "closeup"
+          },
+          {
+            "prompt": "Over-the-shoulder view from behind the customer looking at the postman, who points his finger directly at the underlined city name in block letters on the envelope.",
+            "target": "the envelope with block letters",
+            "tag": "बड़े अक्षरों में और रेखांकित",
+            "tag_color": "green",
+            "text": "पोस्‍ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित करना चाहिए।",
+            "desc": "The postman points at the envelope where the post town name is written in block letters and underlined.",
+            "mark": "right",
+            "card": null,
+            "say": null,
+            "shot": "over"
+          }
+        ],
+        "reuse_n": 0
+      }
     },
     {
       "basis": "notes",

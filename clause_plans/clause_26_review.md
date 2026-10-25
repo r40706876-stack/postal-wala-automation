@@ -5,7 +5,7 @@ English title: Particulars to be furnished
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish: 2026-10-17]
+## Part 1  [PASS | publish: 2026-10-25]
 **Source (PO Guide):** leaving a clear margin at least 3 centimeter at the top for the postage stamps and labels
 
 **Niyam:** डाक लेख के शीर्ष पर टिकटों व लेबलों हेतु कम से कम 3 सेंटीमीटर जगह छोड़ें।
@@ -19,7 +19,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** शीर्ष मार्जिन = 3 सेंटीमीटर
 **Hook:** काउंटर पर लिफाफा आया, टिकट के लिए ऊपर कितनी जगह छोड़नी होगी?
 
-## Part 2  [PASS | publish: 2026-10-17]
+## Part 2  [PASS | publish baaki]
 **Source (PO Guide):** The Post town should be noted in block letter and according to the approved spelling in the List of Post Offices (Part III of this Guide). It should, also be underlined.
 
 **Niyam:** पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।
