@@ -2550,7 +2550,8 @@ PHOTO_CHECK_PROMPT = """You check AI-generated illustrations for a Hindi educati
 order:
 {items}
 Judge ONLY whether the key object and the main action that teach the rule are clearly there and look natural.
-Do NOT fail an image for: which person does the action or points, pose, facial expression, small background
+Do NOT fail an image for: camera angle / shot type / framing (wide, close-up, over-the-shoulder - any view is fine
+if the key object and action are clear), which person does the action or points, pose, facial expression, small background
 problems, or missing writing / address / PIN / labels (the reel adds all writing itself afterwards). Do NOT judge
 whether people look the same across images (each image is judged alone).
 For EACH image answer honestly:
