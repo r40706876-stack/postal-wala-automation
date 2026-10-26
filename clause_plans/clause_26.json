@@ -282,15 +282,15 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; View is not from behind the customer looking at the postman, and the postman is not pointing at an underlined city name in block letters on the envelo",
+        "tries": 2,
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
         "v": 9,
         "kit_try": "photo3"
       },
       "published_prev": "2026-10-17",
       "published_round_prev": 23,
       "cf_spent": {
-        "2026-10-25": 19
+        "2026-10-26": 19
       },
       "punch_v": {
         "ok": true,
@@ -315,32 +315,27 @@
         "v": 2
       },
       "chitra_keep": {
-        "scene": "A clean wooden postal service counter in a brightly lit post office with a plain wall in the background.",
-        "seed0": 2772330,
+        "scene": "Inside a busy post office service hall with a wooden counter, a plain wall behind, and warm indoor light.",
+        "seed0": 40362518,
         "files": {
-          "0": "clause_plans/chitra_img/d99eb5f581_keep_2772330_1.jpg"
+          "0": "clause_plans/chitra_img/d99eb5f581_keep_40362518_1.jpg"
         },
         "boxes": {
           "0": [
-            0.431,
-            0.53,
-            0.566,
-            0.627
+            0.542,
+            0.575,
+            0.694,
+            0.678
           ]
         },
         "extra": {
           "0": {
-            "badge": [
-              0.363,
-              0.465,
-              0.412,
-              0.495
-            ],
+            "badge": null,
             "face": [
-              0.534,
-              0.181,
-              0.866,
-              1.0
+              0.619,
+              0.204,
+              0.788,
+              0.401
             ]
           }
         },
@@ -348,44 +343,69 @@
           "0": false
         },
         "fixes": {
-          "1": "Make it clearly show: the envelope with small letters - saaf nahi",
-          "2": "Over-the-shoulder view from behind the customer looking at the postman, who points his finger directly at the underlined city name in block letters on the envelope."
+          "1": "Make it clearly show: the small lowercase city name on the envelope - saaf nahi",
+          "2": "Make it clearly show: the underlined block letter city name on the envelope - saaf nahi"
         },
         "panels": [
           {
-            "prompt": "The postman and the customer standing at the wooden postal counter, looking at a plain white envelope held between them.",
-            "target": "the plain white envelope on the counter",
+            "prompt": "Wide shot of the postman and the customer standing at the wooden post office counter, the customer holding a white letter envelope to ask about addressing.",
+            "target": "the white letter envelope on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक पत्र पर पोस्‍ट टाउन का नाम लिख रहा है।",
-            "desc": "The customer stands at the post office counter holding a plain white envelope.",
+            "text": "ग्राहक ने पत्र पर डाकघर का पता लिखना शुरू किया।",
+            "desc": "The customer is asking the postman about addressing the letter correctly.",
             "mark": "none",
             "card": null,
-            "say": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, पते में शहर का नाम कैसे लिखूँ?"
+            },
             "shot": "wide"
           },
           {
-            "prompt": "Close-up on the envelope held by hands, showing the city name written in small letters without any underline.",
-            "target": "the envelope with small letters",
+            "prompt": "Closeup of the customer's hands holding the white envelope with the post town written in small lowercase letters without any underline.",
+            "target": "the small lowercase city name on the envelope",
             "tag": "छोटे अक्षरों में",
             "tag_color": "red",
-            "text": "पोस्‍ट टाउन का नाम छोटे अक्षरों में लिखना गलत है।",
-            "desc": "The envelope shows the city name written in small letters and not underlined.",
+            "text": "छोटे अक्षरों में लिखा गया नाम गलत माना जाता है।",
+            "desc": "The envelope shows the city name written in small lowercase letters without underlining.",
             "mark": "wrong",
-            "card": null,
-            "say": null,
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "रुको! ऐसे छोटे अक्षरों में मत लिखो।"
+            },
             "shot": "closeup"
           },
           {
-            "prompt": "Over-the-shoulder view from behind the customer looking at the postman, who points his finger directly at the underlined city name in block letters on the envelope.",
-            "target": "the envelope with block letters",
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman, who is pointing his finger directly at the post town name on the envelope written in big block letters and underlined.",
+            "target": "the underlined block letter city name on the envelope",
             "tag": "बड़े अक्षरों में और रेखांकित",
             "tag_color": "green",
-            "text": "पोस्‍ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित करना चाहिए।",
-            "desc": "The postman points at the envelope where the post town name is written in block letters and underlined.",
+            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।",
+            "desc": "The postman points at the post town written in block letters and underlined on the envelope.",
             "mark": "right",
-            "card": null,
-            "say": null,
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "हमेशा बड़े अक्षरों में लिखकर रेखांकित करो।"
+            },
             "shot": "over"
           }
         ],

@@ -1,6 +1,4 @@
 [
- "chitra saaf nahi bana (khaana 2, 3, 4): The parcel has no label placed on it.; The parcel is plain white with no address or label hiding it.; saaf nahi",
- "chitra saaf nahi bana (khaana 2, 3): Postman does not point at the postal code line.; saaf nahi",
  "chitra saaf nahi bana (khaana 2): The postman points at the customer instead of pointing directly at the envelope's address area.",
  "chitra saaf nahi bana (khaana 2): The customer is writing on a paper on the counter instead of holding the white envelope with both hands.",
  "chitra saaf nahi bana (khaana 2): The envelope is not being held in the hands; it is lying flat on the counter.",
@@ -10,5 +8,7 @@
  "chitra saaf nahi bana (khaana 2): safety-chhalni ne roka - saral, saaf drishya likho",
  "chitra saaf nahi bana (khaana 3): The postman is holding the envelope instead of pointing at the underlined city name as requested.",
  "chitra saaf nahi bana (khaana 3): Viewpoint is wrong, showing front/side view instead of over-the-shoulder from behind the customer.",
- "chitra saaf nahi bana (khaana 2, 3): saaf nahi; View is not from behind the customer looking at the postman, and the postman is not pointing at an underlined city name in block let"
+ "chitra saaf nahi bana (khaana 2, 3): saaf nahi; View is not from behind the customer looking at the postman, and the postman is not pointing at an underlined city name in block let",
+ "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
+ "chitra saaf nahi bana (khaana 2, 3): saaf nahi; The postman is not pointing at the envelope, and the perspective is not from behind the customer."
 ]
