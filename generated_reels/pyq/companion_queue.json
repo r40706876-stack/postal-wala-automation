@@ -207,5 +207,20 @@
     "done": true,
     "pyq_reel": "pyq_clause_26_part_1_v2.mp4",
     "related": true
+  },
+  {
+    "clause": 26,
+    "part_index": 2,
+    "part_no": 2,
+    "reel": "reel_clause_26_part_2_v3.mp4",
+    "question": "ग्रामीण पते में तालुका या तहसील का नाम कब आवश्यक नहीं होता?",
+    "fact": "सही पिन कोड लिखे होने पर ग्रामीण पते में तालुका या तहसील आवश्यक नहीं।",
+    "answer": "सही पिन कोड लिखने पर",
+    "en_question": "When is the name of the Taluk or Tahsil not necessary in a rural address?",
+    "en_fact": "Name of the Taluk or Tahsil is not necessary if the correct PIN is written.",
+    "source_quote": "तालुका या तिसील का नाम ( यकि सिी PIN कोड कलखा िै तो इसकी आवश्यक निीां िै)",
+    "trap_quote": "",
+    "guide_line": "This is not necessary if correct PIN is written.",
+    "done": "skip"
   }
 ]

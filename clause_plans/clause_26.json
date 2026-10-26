@@ -282,15 +282,15 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 2,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
+        "tries": 3,
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; Shot is too wide, not an over-the-shoulder shot pointing at the envelope name.",
         "v": 9,
         "kit_try": "photo3"
       },
       "published_prev": "2026-10-17",
       "published_round_prev": 23,
       "cf_spent": {
-        "2026-10-26": 19
+        "2026-10-26": 31
       },
       "punch_v": {
         "ok": true,
@@ -313,103 +313,6 @@
         "items": [],
         "searched": true,
         "v": 2
-      },
-      "chitra_keep": {
-        "scene": "Inside a busy post office service hall with a wooden counter, a plain wall behind, and warm indoor light.",
-        "seed0": 40362518,
-        "files": {
-          "0": "clause_plans/chitra_img/d99eb5f581_keep_40362518_1.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.542,
-            0.575,
-            0.694,
-            0.678
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": null,
-            "face": [
-              0.619,
-              0.204,
-              0.788,
-              0.401
-            ]
-          }
-        },
-        "bgt": {
-          "0": false
-        },
-        "fixes": {
-          "1": "Make it clearly show: the small lowercase city name on the envelope - saaf nahi",
-          "2": "Make it clearly show: the underlined block letter city name on the envelope - saaf nahi"
-        },
-        "panels": [
-          {
-            "prompt": "Wide shot of the postman and the customer standing at the wooden post office counter, the customer holding a white letter envelope to ask about addressing.",
-            "target": "the white letter envelope on the counter",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "ग्राहक ने पत्र पर डाकघर का पता लिखना शुरू किया।",
-            "desc": "The customer is asking the postman about addressing the letter correctly.",
-            "mark": "none",
-            "card": null,
-            "say": {
-              "who": "customer",
-              "text": "भैया, पते में शहर का नाम कैसे लिखूँ?"
-            },
-            "shot": "wide"
-          },
-          {
-            "prompt": "Closeup of the customer's hands holding the white envelope with the post town written in small lowercase letters without any underline.",
-            "target": "the small lowercase city name on the envelope",
-            "tag": "छोटे अक्षरों में",
-            "tag_color": "red",
-            "text": "छोटे अक्षरों में लिखा गया नाम गलत माना जाता है।",
-            "desc": "The envelope shows the city name written in small lowercase letters without underlining.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "PIN 800001"
-              ],
-              "corner": "",
-              "hl": 2
-            },
-            "say": {
-              "who": "postman",
-              "text": "रुको! ऐसे छोटे अक्षरों में मत लिखो।"
-            },
-            "shot": "closeup"
-          },
-          {
-            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman, who is pointing his finger directly at the post town name on the envelope written in big block letters and underlined.",
-            "target": "the underlined block letter city name on the envelope",
-            "tag": "बड़े अक्षरों में और रेखांकित",
-            "tag_color": "green",
-            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।",
-            "desc": "The postman points at the post town written in block letters and underlined on the envelope.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "PIN 800001"
-              ],
-              "corner": "",
-              "hl": 2
-            },
-            "say": {
-              "who": "postman",
-              "text": "हमेशा बड़े अक्षरों में लिखकर रेखांकित करो।"
-            },
-            "shot": "over"
-          }
-        ],
-        "reuse_n": 0
       }
     },
     {
@@ -467,15 +370,122 @@
       "web_sources": [],
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 2,
-        "last_err": "chitra saaf nahi bana (khaana 2): The envelope is not being held in the hands; it is lying flat on the counter.",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "The postman and the customer stand at the post office counter holding a plain white envelope together, looking confused about the address details.",
+            "target": "the white envelope held in hands",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्रामीण पते में तालुका या तहसील लिखने को लेकर असमंजस है।",
+            "desc": "The postman and the customer are holding a plain white envelope at the post office counter.",
+            "mark": "none",
+            "card": null,
+            "say": null,
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/1d4db3180e_35588946_1.jpg",
+            "box": [
+              0.452,
+              0.509,
+              0.584,
+              0.597
+            ],
+            "bg_text": false,
+            "face": [
+              0.606,
+              0.246,
+              0.755,
+              0.427
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Close-up on hands holding a plain white envelope where the customer is anxiously pointing at the missing tehsil name on the address.",
+            "target": "the white envelope in hands",
+            "tag": "तालुका या तहसील",
+            "tag_color": "red",
+            "text": "ग्रामीण पते में तालुका या तहसील लिखना हमेशा आवश्यक है।",
+            "desc": "A close-up of hands holding the envelope where the customer points at the missing tehsil name.",
+            "mark": "wrong",
+            "card": null,
+            "say": null,
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/1d4db3180e_35588946_2.jpg",
+            "box": [
+              0.303,
+              0.52,
+              0.692,
+              0.742
+            ],
+            "bg_text": false,
+            "badge": [
+              0.141,
+              0.564,
+              0.261,
+              0.637
+            ],
+            "face": [
+              0.034,
+              0.038,
+              0.205,
+              0.322
+            ],
+            "frames": [
+              "clause_plans/chitra_img/1d4db3180e_35588946_2f1.jpg"
+            ]
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman, who is pointing a finger directly at the correct PIN code on the envelope.",
+            "target": "the white envelope in hands",
+            "tag": "सही पिन कोड",
+            "tag_color": "green",
+            "text": "सही पिन कोड लिखे होने पर ग्रामीण पते में तालुका या तहसील आवश्यक नहीं।",
+            "desc": "Over-the-shoulder view from behind the customer as the postman points at the correct PIN code on the envelope.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "गांधी नगर, पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": null,
+            "shot": "over",
+            "img": "clause_plans/chitra_img/1d4db3180e_35588946_3.jpg",
+            "box": [
+              0.447,
+              0.508,
+              0.6,
+              0.646
+            ],
+            "bg_text": false,
+            "face": [
+              0.631,
+              0.228,
+              0.789,
+              0.425
+            ],
+            "pan": "rl"
+          }
+        ],
+        "caps": [
+          "ग्रामीण पते में तालुका या तहसील लिखने को लेकर असमंजस है।",
+          "ग्रामीण पते में तालुका या तहसील लिखना हमेशा आवश्यक है।",
+          "सही पिन कोड लिखे होने पर ग्रामीण पते में तालुका या तहसील आवश्यक नहीं।"
+        ],
+        "score": 10.0,
+        "lesson": "When addressing rural mail, do not include the taluka or tehsil if the correct PIN code is already written on the article.",
+        "pv": 4,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 2
       },
       "published_prev": "2026-10-13",
       "published_round_prev": 19,
       "cf_spent": {
-        "2026-10-17": 30
+        "2026-10-26": 9
       },
       "punch_v": {
         "ok": true,
@@ -489,136 +499,28 @@
         "none": true,
         "v": 3
       },
-      "chitra_keep": {
-        "scene": "A village post office with a simple wooden counter and a plain grey wall in the background under soft warm indoor light.",
-        "seed0": 6535885,
-        "files": {
-          "0": "clause_plans/chitra_img/1d4db3180e_keep_6535885_1.jpg",
-          "2": "clause_plans/chitra_img/1d4db3180e_keep_6535885_3.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.368,
-            0.701,
-            0.608,
-            0.779
-          ],
-          "2": [
-            0.381,
-            0.723,
-            0.614,
-            0.804
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": [
-              0.36,
-              0.489,
-              0.42,
-              0.526
-            ],
-            "face": [
-              0.568,
-              0.147,
-              0.777,
-              0.381
-            ]
-          },
-          "2": {
-            "badge": [
-              0.377,
-              0.496,
-              0.437,
-              0.541
-            ],
-            "face": [
-              0.604,
-              0.207,
-              0.765,
-              0.393
-            ]
-          }
-        },
-        "bgt": {
-          "0": false,
-          "2": false
-        },
-        "fixes": {
-          "1": "The customer holds a white envelope in both hands in front of the counter."
-        },
-        "panels": [
-          {
-            "prompt": "The customer stands at the wooden counter holding a pen over a blank white envelope, looking confused. The postman stands behind the counter observing him with a patient expression, warm light focused on the counter.",
-            "target": "the white envelope on the counter",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "ग्राहक ग्रामीण पते पर पत्र भेजने आया है।",
-            "desc": "The customer stands at the wooden counter holding a pen over an envelope, looking confused.",
-            "mark": "none",
-            "card": {
-              "lines": [
-                "श्री मोहन लाल",
-                "ग्राम रामपुर",
-                "जिला वाराणसी"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "say": {
-              "who": "customer",
-              "text": "भैया, पूरा पता कैसे लिखूँ?"
-            }
-          },
-          {
-            "prompt": "The customer holds the white envelope with both hands across the counter looking unsure. The postman stands behind the counter, shaking his head with an open palm raised in a gentle stopping gesture.",
-            "target": "the white envelope in hands",
-            "tag": "तहसील और पिन कोड गायब",
-            "tag_color": "red",
-            "text": "बिना पिन कोड तहसील छोड़ना गलत है।",
-            "desc": "The customer shows the envelope without PIN code or taluka, and the postman stops him with an open palm.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री मोहन लाल",
-                "ग्राम रामपुर",
-                "जिला वाराणसी",
-                "उत्तर प्रदेश"
-              ],
-              "corner": "",
-              "hl": 2
-            },
-            "say": {
-              "who": "postman",
-              "text": "नहीं भाई, पिन कोड कहाँ है?"
-            }
-          },
-          {
-            "prompt": "The customer places the white envelope flat on the wooden counter, smiling with relief. The postman behind the counter smiles warmly and gives a cheerful thumbs up.",
-            "target": "the white envelope on the counter",
-            "tag": "सही पिन कोड",
-            "tag_color": "green",
-            "text": "सही पिन कोड होने पर तहसील जरूरी नहीं।",
-            "desc": "The envelope shows the correct 6-digit PIN code line highlighted, with the postman giving an approving thumbs up.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "श्री मोहन लाल",
-                "ग्राम रामपुर",
-                "जिला वाराणसी",
-                "PIN 221001"
-              ],
-              "corner": "",
-              "hl": 3
-            },
-            "say": {
-              "who": "postman",
-              "text": "अब बिल्कुल सही है!"
-            }
-          }
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "This is not necessary if correct PIN is written.",
+        "kind": "line"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "पिन कोड सही, तहसील नहीं!",
+        "key": [
+          "पिन कोड सही",
+          "तहसील नहीं"
         ],
-        "reuse_n": 2
-      }
+        "why": "The memory trick accurately reflects the verified rule that if the PIN code is correct, the tehsil/taluka is not required in a rural address, without adding any"
+      },
+      "published": "2026-10-26",
+      "published_round": 24
     },
     {
       "basis": "guide",
@@ -1614,5 +1516,16 @@
       "published_round_prev": 19
     }
   ],
-  "clause_text_en": "26. Particulars to be furnished  –  (1) The prompt delivery of a postal article is greatly \nfacilitated if it is addressed in the correct manner.  Delay to correspondence and mistakes in \n\n\ndelivery often result from an incorrect or incomplete postal address.  The address should, \ntherefore, be complete and definite enough to ensure the easy transmission of the article and its \ndelivery at destination to the addressee without any el aborate enquiry.  The public can help the \nPost Office by keeping the following points in mind while addressing their correspondence: \n \n(a) The address should be written parallel to the length of the cover and in the lower half \nand towards the right-hand side of the front of the article, leaving a clear margin at least \n3 centimeter at the top for the postage stamps and labels, postmarks and other \nindications.  \n \n(b) The Post town should be noted in block letter and according to the approved spelling in \nthe List of Post Offices (Part III of this Guide).  It should, also be underlined.  The PIN \nCode of the post town should be noted below. \n \n(c) The following particulars should generally be furnished in the address and in the same \norder as noted below :- \n \nIn the case of articles for delivery in the urban \nareas \n \nIn the case of articles for delivery in the rural \nareas \n(i) Name of addressee \n \n(i) Name of addressee \n(ii) Profession, if any \n(iii)  \n(ii)Father’s or husbands’ name \n(iv) Number and/or name of the House, \nand name of the street or Road. \n(v)  \n(iii) Profession, if any \n(vi) Name of the locality or Mohall (iv) No. of house, if any along with the name \nof street if any. \n \n(v) Post Box No., if any. (v) Name of the village and Thana Firka, Hobli, \netc. \n \n(vi) Name of the Post Town and Pin -\nCode \n(vi) Name of the Post Office of delivery and the \nPIN-Code. \n \n(vii) Name of the District and State Pin -\nCode \n \n(vii) Name of the Taluk or Tahsil.  This is not \nnecessary if correct PIN is written. \n (viii) Name of the District and State  \n         This is not necessary if correct PIN is \nwritten. \n \n(d) It is particularly important to note the District in cases where there is more than one \nPost town bearing the same name and if PIN is not noted.  If the name of the district is \n\n\nthe same as that of the Post town, the name of the State should be noted.  I ndications of \nroute like ‘via’ should not be given. \n \n(e) In the case of articles addressed to foreign countries, the address should be written in \nRoman letters and in Arabic figures. \n \n(f) It is desirable to note the sender’s address preferable in the lower left -hand corner on \nthe address side or failing that on the reverse of the article.  There should be an \nindication from to obviate its being mistaken for the addressee’s particulars. \n \n(g) In the case of articles entitled to concessional rates of postage or to be tran smitted free \nof postage, the class of the articles, e.g., ‘Book -Post’, ‘Blind Literature’ should be \nclearly noted on the top of the address side of the article.  The indication ‘Letter’ should \nbe given on the address -side of bulky letter packets, which, on  account of their size or \nmake up, might be mistaken for other classes of packets. \n \n(h) The President, Prime Minister and other Ministers of the Government of India and \ncertain High government Officers are allowed the facility of delivery of their mails to \nthem wherever they may happen to be on tour within India.  A list of the high officers \nentitled to this privilege will be found in Clause 206.  Articles intended for delivery in \ncamp to such officers should not be addressed to any Post Town but only to their camp \nas indicated in Clause 206. \n \n \n(2)  A few examples of correct and complete addresses are given below :- \n \n(1)  ABC, \nEngineer, \nMandir Marg, \nGole Market, \nNew Delhi-110001. \n(2) Lakshmi, \nWife of Chikka Ramudu Dhobi, \nBukkapatnam Village, \nBUKKAPATNAM –  515144 \nPennukonda Taluq \nAnantpur District. \n \n(3)  Govindaswamy, \nSon of Kumaraswamy, \nHead Gangman \nQuarter No. T/23 \nKurumalai R.S., S.R., \nIdaiseval P.O., \nNallatinaputhur-627716. \n(Tirunelveli District) \nTamil Nadu. \n(4) Private Secretary to the Prime Minister of \nIndia, \nPrime Minister’s Camp"
+  "clause_text_en": "26. Particulars to be furnished  –  (1) The prompt delivery of a postal article is greatly \nfacilitated if it is addressed in the correct manner.  Delay to correspondence and mistakes in \n\n\ndelivery often result from an incorrect or incomplete postal address.  The address should, \ntherefore, be complete and definite enough to ensure the easy transmission of the article and its \ndelivery at destination to the addressee without any el aborate enquiry.  The public can help the \nPost Office by keeping the following points in mind while addressing their correspondence: \n \n(a) The address should be written parallel to the length of the cover and in the lower half \nand towards the right-hand side of the front of the article, leaving a clear margin at least \n3 centimeter at the top for the postage stamps and labels, postmarks and other \nindications.  \n \n(b) The Post town should be noted in block letter and according to the approved spelling in \nthe List of Post Offices (Part III of this Guide).  It should, also be underlined.  The PIN \nCode of the post town should be noted below. \n \n(c) The following particulars should generally be furnished in the address and in the same \norder as noted below :- \n \nIn the case of articles for delivery in the urban \nareas \n \nIn the case of articles for delivery in the rural \nareas \n(i) Name of addressee \n \n(i) Name of addressee \n(ii) Profession, if any \n(iii)  \n(ii)Father’s or husbands’ name \n(iv) Number and/or name of the House, \nand name of the street or Road. \n(v)  \n(iii) Profession, if any \n(vi) Name of the locality or Mohall (iv) No. of house, if any along with the name \nof street if any. \n \n(v) Post Box No., if any. (v) Name of the village and Thana Firka, Hobli, \netc. \n \n(vi) Name of the Post Town and Pin -\nCode \n(vi) Name of the Post Office of delivery and the \nPIN-Code. \n \n(vii) Name of the District and State Pin -\nCode \n \n(vii) Name of the Taluk or Tahsil.  This is not \nnecessary if correct PIN is written. \n (viii) Name of the District and State  \n         This is not necessary if correct PIN is \nwritten. \n \n(d) It is particularly important to note the District in cases where there is more than one \nPost town bearing the same name and if PIN is not noted.  If the name of the district is \n\n\nthe same as that of the Post town, the name of the State should be noted.  I ndications of \nroute like ‘via’ should not be given. \n \n(e) In the case of articles addressed to foreign countries, the address should be written in \nRoman letters and in Arabic figures. \n \n(f) It is desirable to note the sender’s address preferable in the lower left -hand corner on \nthe address side or failing that on the reverse of the article.  There should be an \nindication from to obviate its being mistaken for the addressee’s particulars. \n \n(g) In the case of articles entitled to concessional rates of postage or to be tran smitted free \nof postage, the class of the articles, e.g., ‘Book -Post’, ‘Blind Literature’ should be \nclearly noted on the top of the address side of the article.  The indication ‘Letter’ should \nbe given on the address -side of bulky letter packets, which, on  account of their size or \nmake up, might be mistaken for other classes of packets. \n \n(h) The President, Prime Minister and other Ministers of the Government of India and \ncertain High government Officers are allowed the facility of delivery of their mails to \nthem wherever they may happen to be on tour within India.  A list of the high officers \nentitled to this privilege will be found in Clause 206.  Articles intended for delivery in \ncamp to such officers should not be addressed to any Post Town but only to their camp \nas indicated in Clause 206. \n \n \n(2)  A few examples of correct and complete addresses are given below :- \n \n(1)  ABC, \nEngineer, \nMandir Marg, \nGole Market, \nNew Delhi-110001. \n(2) Lakshmi, \nWife of Chikka Ramudu Dhobi, \nBukkapatnam Village, \nBUKKAPATNAM –  515144 \nPennukonda Taluq \nAnantpur District. \n \n(3)  Govindaswamy, \nSon of Kumaraswamy, \nHead Gangman \nQuarter No. T/23 \nKurumalai R.S., S.R., \nIdaiseval P.O., \nNallatinaputhur-627716. \n(Tirunelveli District) \nTamil Nadu. \n(4) Private Secretary to the Prime Minister of \nIndia, \nPrime Minister’s Camp",
+  "clause_pyq_v": {
+    "v": 1,
+    "item": {
+      "src": "HR-MTS-PM-MG-2020.pdf#Q23",
+      "ans": "D",
+      "exams": [
+        "हरियाणा 2020"
+      ],
+      "q_en": "What is the information one should mention while writing address for urban are?"
+    }
+  }
 }
