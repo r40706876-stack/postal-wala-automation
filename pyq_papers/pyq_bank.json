@@ -1764,6 +1764,510 @@
    "list_q": "अस्वीकृत और अपठनीय पत्रों का निपटान कौन करता है?",
    "list_a": "रिटर्न्ड लेटर ऑफिस",
    "auto": "v22"
+  },
+  {
+   "id": "p_3b72783778",
+   "q": "शाखा डाकघर को संबोधित पंजीकृत पार्सल का अधिकतम वजन कितना होता है?",
+   "opts": [
+    "5 किलोग्राम",
+    "7 किलोग्राम",
+    "10 किलोग्राम",
+    "20 किलोग्राम"
+   ],
+   "ans": "C",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "The Maximum weight of registered parcels addressed to a branch post office is",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q4"
+   ],
+   "list_q": "शाखा डाकघर के पंजीकृत पार्सल की अधिकतम वजन सीमा क्या है?",
+   "list_a": "10 किलोग्राम",
+   "auto": "v22"
+  },
+  {
+   "id": "p_3e0758d68d",
+   "q": "प्रत्येक पत्र, पैकेट या पार्सल पर कम से कम कितने डाकघरों की तारीख की मोहर लगी होनी चाहिए?",
+   "opts": [
+    "दो डाकघर",
+    "नाइट डाकघर",
+    "छंटाई डाकघर",
+    "मेल डाकघर"
+   ],
+   "ans": "A",
+   "exams": [
+    "दिल्ली 2022"
+   ],
+   "q_en": "Every letter, packet or parcel has to be stamped with the date stamps of at least?",
+   "src": [
+    "DL-MTS-PM-MG-2022.pdf#Q4"
+   ],
+   "list_q": "प्रत्येक डाक वस्तु पर कम से कम कितने डाकघरों की मोहर लगनी चाहिए?",
+   "list_a": "दो डाकघर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_3f70629c4a",
+   "q": "यदि पूरे वित्तीय वर्ष की अवधि के लिए पोस्ट बॉक्स या पोस्ट बैग अलग से लिया जाता है, तो उसका किराया कितना है?",
+   "opts": [
+    "रु. 100",
+    "रु. 150",
+    "रु. 250",
+    "रु. 80"
+   ],
+   "ans": "B",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "The rent for post boxes/bags if taken separately for a period of full financial year is",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q13"
+   ],
+   "list_q": "पूरे वित्तीय वर्ष हेतु पोस्ट बॉक्स का अलग किराया कितना है?",
+   "list_a": "रु. 150",
+   "auto": "v22"
+  },
+  {
+   "id": "p_3f764d2eba",
+   "q": "'प्रधान अभिलेख कार्यालय' (Head Record Office) निम्नलिखित में से किस इकाई से संबंधित है?",
+   "opts": [
+    "डाक भंडार डिपो",
+    "प्रधान डाकघर",
+    "रेलवे मेल सर्विस",
+    "डाक मंडल"
+   ],
+   "ans": "C",
+   "exams": [
+    "असम 2020"
+   ],
+   "q_en": "“Head Record Office” is associated with which of the following units",
+   "src": [
+    "ASM-MTS-PM-MG-2020.pdf#Q24"
+   ],
+   "list_q": "प्रधान अभिलेख कार्यालय (HRO) किस इकाई से संबंधित है?",
+   "list_a": "रेलवे मेल सर्विस",
+   "auto": "v22"
+  },
+  {
+   "id": "p_4154bc3c00",
+   "q": "RMS की वह शाखा जहां बंद थैले प्राप्त किए जाते हैं और भेजे जाते हैं, उसे क्या कहा जाता है?",
+   "opts": [
+    "ट्रांजिट ऑफिस",
+    "TMO",
+    "CRC",
+    "PMPC"
+   ],
+   "ans": "B",
+   "exams": [
+    "केरल 2020"
+   ],
+   "q_en": "A branch of RMS where closed bags are received and dispatched is called_",
+   "src": [
+    "9. Kerala MTS 2020.docx.pdf#Q23"
+   ],
+   "list_q": "RMS की वह शाखा जहां बंद थैले प्राप्त होते हैं, क्या कहलाती है?",
+   "list_a": "TMO",
+   "auto": "v22"
+  },
+  {
+   "id": "p_421c590201",
+   "q": "उप-डाकघर और उसके प्रधान डाकघर के बीच नकद थैले, खातों से संबंधित दस्तावेज़ और पत्राचार भेजने के लिए इस्तेमाल किए जाने वाले थैले को क्या कहा जाता है?",
+   "opts": [
+    "कैश बैग",
+    "स्पेशल बैग",
+    "अकाउंट बैग",
+    "ट्रांजिट बैग"
+   ],
+   "ans": "C",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "The bag used between a sub office and its head office to enclose cash bags and articles documents etc. connected with accounts as well as correspondence unconnected with accounts is called as",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q22"
+   ],
+   "list_q": "उप-डाकघर और प्रधान डाकघर के बीच प्रयुक्त थैला क्या कहलाता है?",
+   "list_a": "अकाउंट बैग",
+   "auto": "v22"
+  },
+  {
+   "id": "p_421f2b63aa",
+   "q": "अंतर्देशीय डाक द्वारा भेजने के लिए निम्नलिखित में से कौन सी वस्तु प्रतिबंधित है?",
+   "opts": [
+    "कोई भी शालीन तस्वीर/चित्रकला",
+    "कोई भी शालीन पुस्तक",
+    "लॉटरी से संबंधित टिकट, प्रस्ताव या विज्ञापन",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "Which one is prohibited articles for the purpose of transmission by inland post?",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q9"
+   ],
+   "list_q": "अंतर्देशीय डाक द्वारा भेजने के लिए इनमें से क्या प्रतिबंधित है?",
+   "list_a": "लॉटरी संबंधी टिकट",
+   "auto": "v22"
+  },
+  {
+   "id": "p_42c16b1a98",
+   "q": "सार्वजनिक कार्य-समय (public business hours) किस बात को ध्यान में रखकर तय किए जाते हैं?",
+   "opts": [
+    "मंडल कार्यालय का कामकाज",
+    "प्रधान डाकघर का कामकाज",
+    "स्थानीय सुविधा और डाक के आने/जाने का समय",
+    "रेलवे सेवा का कामकाज"
+   ],
+   "ans": "C",
+   "exams": [
+    "हरियाणा 2022"
+   ],
+   "q_en": "The public business hours are fixed with regard to___",
+   "src": [
+    "HR-MTS-PM-MG-2022.pdf#Q21"
+   ],
+   "list_q": "सार्वजनिक कार्य-समय किस आधार पर तय होते हैं?",
+   "list_a": "स्थानीय सुविधा/डाक समय",
+   "auto": "v22"
+  },
+  {
+   "id": "p_440c670844",
+   "q": "निम्नलिखित में से कौन सा ट्रायल कार्ड (trial card) से संबंधित नहीं है?",
+   "opts": [
+    "सर्विस पोस्ट कार्ड",
+    "वैकल्पिक डाक मार्ग का लाभ",
+    "वस्तुओं के रुकने का कारण",
+    "अवैतनिक वस्तु (Unpaid article)"
+   ],
+   "ans": "D",
+   "exams": [
+    "महाराष्ट्र 2022"
+   ],
+   "q_en": "Following is not related with trial cards",
+   "src": [
+    "MH-MTS-PM-MG-2022.pdf#Q27"
+   ],
+   "list_q": "इनमें से कौन ट्रायल कार्ड से संबंधित नहीं है?",
+   "list_a": "अवैतनिक वस्तु",
+   "auto": "v22"
+  },
+  {
+   "id": "p_45c93d4eba",
+   "q": "RD खाता खोलने के लिए जमा राशि की अधिकतम सीमा क्या है?",
+   "opts": [
+    "10000 रुपये",
+    "12000 रुपये",
+    "20000 रुपये",
+    "ऐसी कोई सीमा नहीं है"
+   ],
+   "ans": "D",
+   "exams": [
+    "हरियाणा 2022"
+   ],
+   "q_en": "What is the maximum limit of denomination amount for opening an RD account?",
+   "src": [
+    "HR-MTS-PM-MG-2022.pdf#Q1"
+   ],
+   "list_q": "RD खाते में जमा की अधिकतम सीमा क्या है?",
+   "list_a": "कोई सीमा नहीं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_45e322b8cf",
+   "q": "शहरी क्षेत्र के लिए पता लिखते समय किस जानकारी का उल्लेख करना चाहिए?",
+   "opts": [
+    "प्राप्तकर्ता का नाम",
+    "व्यवसाय, फ्लैट नंबर",
+    "मोहल्ला, पिन कोड आदि",
+    "उपरोक्त सभी"
+   ],
+   "ans": "D",
+   "exams": [
+    "हरियाणा 2020"
+   ],
+   "q_en": "What is the information one should mention while writing address for urban are?",
+   "src": [
+    "HR-MTS-PM-MG-2020.pdf#Q23"
+   ],
+   "list_q": "शहरी क्षेत्र का पता लिखते समय क्या लिखना चाहिए?",
+   "list_a": "उपरोक्त सभी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_467760db42",
+   "q": "पोस्ट बैग (Post bag) प्रणाली कहाँ उपलब्ध है?",
+   "opts": [
+    "सभी गैर-वितरण डाकघरों में",
+    "सभी वितरण डाकघरों में",
+    "केवल प्रधान डाकघरों में",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Post bag system is available at:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q12"
+   ],
+   "list_q": "पोस्ट बैग प्रणाली कहाँ उपलब्ध होती है?",
+   "list_a": "सभी वितरण डाकघरों में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_48e95a468d",
+   "q": "सेट के मुख्यालय से उसके बाहरी स्टेशन (out-station) की ओर की यात्रा को क्या कहा जाता है?",
+   "opts": [
+    "इन-ट्रिप (In-trip)",
+    "आउट-ट्रिप (Out-trip)",
+    "स्टेशन-ट्रिप (Station-trip)",
+    "हेडक्वार्टर-ट्रिप (Headquarter-trip)"
+   ],
+   "ans": "B",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "The trip from the headquarters of the set towards its out-station is called as what?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q20"
+   ],
+   "list_q": "मुख्यालय से आउट-स्टेशन की यात्रा क्या कहलाती है?",
+   "list_a": "आउट-ट्रिप",
+   "auto": "v22"
+  },
+  {
+   "id": "p_4a0a459ded",
+   "q": "RMS की वह शाखा जहाँ बंद बैग प्राप्त और प्रेषित किए जाते हैं, लेकिन पत्रों की छंटाई नहीं की जाती, उसे क्या कहते हैं?",
+   "opts": [
+    "प्रधान डाकघर",
+    "शाखा डाकघर",
+    "ट्रांजिट मेल ऑफिस (TMO)",
+    "मंडल कार्यालय"
+   ],
+   "ans": "C",
+   "exams": [
+    "हरियाणा 2020"
+   ],
+   "q_en": "A branch of RMS where closed bags are received and dispatched, sorting of letter is not done in this unit is called?",
+   "src": [
+    "HR-MTS-PM-MG-2020.pdf#Q14"
+   ],
+   "list_q": "RMS की वह शाखा जहाँ छंटाई नहीं होती, क्या कहलाती है?",
+   "list_a": "ट्रांजिट मेल ऑफिस",
+   "auto": "v22"
+  },
+  {
+   "id": "p_4a34c3345d",
+   "q": "भारत के भीतर डाकघर को किसे ले जाने का विशेषाधिकार (exclusive privilege) प्राप्त है?",
+   "opts": [
+    "पत्र और पोस्टकार्ड",
+    "पत्र और पैकेट",
+    "पत्र और पार्सल",
+    "पत्र, पोस्टकार्ड और पार्सल"
+   ],
+   "ans": "A",
+   "exams": [
+    "गुजरात 2020"
+   ],
+   "q_en": "The post office within India has the exclusive privilege of carrying",
+   "src": [
+    "GJ-MTS-PM-MG-2020.pdf#Q29"
+   ],
+   "list_q": "डाकघर को किसे ले जाने का विशेषाधिकार प्राप्त है?",
+   "list_a": "पत्र और पोस्टकार्ड",
+   "auto": "v22"
+  },
+  {
+   "id": "p_4d9db377f5",
+   "q": "निम्नलिखित में से किस प्रकार की वस्तु पोस्ट बॉक्स के माध्यम से वितरित की जाती है?",
+   "opts": [
+    "पंजीकृत (Registered)",
+    "बीमाकृत (Insured)",
+    "पंजीकृत समाचार पत्र",
+    "मनी ऑर्डर"
+   ],
+   "ans": "C",
+   "exams": [
+    "महाराष्ट्र 2022"
+   ],
+   "q_en": "Following class of articles are delivered through post box.",
+   "src": [
+    "MH-MTS-PM-MG-2022.pdf#Q13"
+   ],
+   "list_q": "इनमें से कौन सी वस्तु पोस्ट बॉक्स से वितरित होती है?",
+   "list_a": "पंजीकृत समाचार पत्र",
+   "auto": "v22"
+  },
+  {
+   "id": "p_4e00923f8c",
+   "q": "डाक वस्तु पर प्रेषक (sender) का पता अधिमानतः कहाँ लिखा जाना चाहिए?",
+   "opts": [
+    "डाक वस्तु पर कहीं भी",
+    "पता वाली ओर निचले बाएं कोने में",
+    "डाक वस्तु के ऊपरी दाएं कोने में",
+    "प्रेषक का पता लिखने की आवश्यकता नहीं है"
+   ],
+   "ans": "B",
+   "exams": [
+    "हरियाणा 2022"
+   ],
+   "q_en": "It is desirable to note the sender ‘s address preferable in the ____",
+   "src": [
+    "HR-MTS-PM-MG-2022.pdf#Q20"
+   ],
+   "list_q": "डाक वस्तु पर प्रेषक का पता कहाँ लिखना चाहिए?",
+   "list_a": "निचले बाएं कोने में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_4fae49f633",
+   "q": "रिटर्न्ड लेटर ऑफिस (RLO) कहाँ स्थापित किया जाता है?",
+   "opts": [
+    "पोस्टल सर्किल के मुख्यालय में",
+    "प्रत्येक डाक मंडल में",
+    "केवल डाक भवन में",
+    "प्रत्येक RMS कार्यालय में"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Returned letter office is established at",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q15"
+   ],
+   "list_q": "RLO कहाँ स्थापित किया जाता है?",
+   "list_a": "पोस्टल सर्किल मुख्यालय में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_50a7f5a55f",
+   "q": "निम्नलिखित कथनों पर विचार करें: I. प्रधान डाकघर और उप डाकघर मेल संबंधी सेवाओं के साथ-साथ बचत बैंक संबंधी सेवाएं भी प्रदान करते हैं। II. शाखा डाकघर केवल मेल संबंधी सेवा प्रदान करता है। सही विकल्प चुनें:",
+   "opts": [
+    "कथन I और II दोनों सही हैं",
+    "कथन I और II दोनों गलत हैं",
+    "केवल कथन I सही है",
+    "केवल कथन II सही है"
+   ],
+   "ans": "C",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "Consider the following statements I. Head post office and sub post offices provide mail related service as well as savings bank related services. II. Branch post office provides only mail related service. Choose the correct option",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q7"
+   ],
+   "list_q": "क्या शाखा डाकघर (BO) केवल मेल सेवा देता है?",
+   "list_a": "नहीं, कथन I सही",
+   "auto": "v22"
+  },
+  {
+   "id": "p_519c829ba5",
+   "q": "ड्यू मेल (Due mails) में क्या शामिल होता है?",
+   "opts": [
+    "पार्सल मेल",
+    "पैकेट मेल",
+    "विशेष मेल",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "D",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "Due mails comprise",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q2"
+   ],
+   "list_q": "ड्यू मेल (Due mail) में क्या शामिल होता है?",
+   "list_a": "इनमें से कोई नहीं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_537adfa5e2",
+   "q": "सिक्के और कीमती पत्थर किस रूप में भेजे जा सकते हैं?",
+   "opts": [
+    "पंजीकृत पत्र (Registered letter)",
+    "पंजीकृत पार्सल (Registered Parcel)",
+    "बीमाकृत पत्र / पार्सल (Insured letter / parcel)",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "गुजरात 2020"
+   ],
+   "q_en": "Coins and precious stones can be sent as",
+   "src": [
+    "GJ-MTS-PM-MG-2020.pdf#Q24"
+   ],
+   "list_q": "सिक्के और कीमती सामान कैसे भेजे जाने चाहिए?",
+   "list_a": "बीमाकृत पत्र/पार्सल",
+   "auto": "v22"
+  },
+  {
+   "id": "p_53a633b9b9",
+   "q": "अंतर्राष्ट्रीय ट्रैक किए गए पैकेट सेवा (ITPS) की विशेषता के बारे में कौन सा सही है?",
+   "opts": [
+    "5 किग्रा तक के पैकेट भेजे जा सकते हैं",
+    "केवल एशिया प्रशांत देशों के लिए उपलब्ध है",
+    "ट्रैक एंड ट्रेस सुविधा उपलब्ध नहीं है",
+    "सीमा शुल्क निकासी की आवश्यकता नहीं है"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Which is true regarding feature of international tracked packet service (ITPS)",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q14"
+   ],
+   "list_q": "ITPS के संबंध में कौन-सा कथन सही है?",
+   "list_a": "एशिया प्रशांत देशों हेतु",
+   "auto": "v22"
+  },
+  {
+   "id": "p_53b0c0d876",
+   "q": "MMC का पूर्ण रूप (Abbreviation) क्या है?",
+   "opts": [
+    "मास मेलिंग सेंटर (Mass mailing centre)",
+    "मेल मॉनिटरिंग सेल (Mail monitoring cell)",
+    "मेल मोटर सेंटर (Mail motor centre)",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "The abbreviation of MMC",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q6"
+   ],
+   "list_q": "MMC का फुल फॉर्म क्या है?",
+   "list_a": "Mass Mailing Centre",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5433bfb56c",
+   "q": "डाकघर में डुप्लीकेट पासबुक जारी करने का शुल्क ___ रुपये है:",
+   "opts": [
+    "2",
+    "10",
+    "50",
+    "निःशुल्क"
+   ],
+   "ans": "C",
+   "exams": [
+    "आंध्र प्रदेश 2020"
+   ],
+   "q_en": "Fee charged to issue a duplicate pass book in post office is Rs___",
+   "src": [
+    "AP-MTS-PM-MG-2020.pdf#Q6"
+   ],
+   "list_q": "डुप्लीकेट पासबुक जारी करने का शुल्क कितना है?",
+   "list_a": "50 रुपये",
+   "auto": "v22"
   }
  ],
  "sets": [
@@ -1868,6 +2372,18 @@
   "p_34dbecfe92",
   "p_36f37dfe05",
   "p_36fab7b597",
-  "p_3956697ebe"
+  "p_3956697ebe",
+  "p_3ac8b4632d",
+  "p_3c1245d697",
+  "p_3de7c0b380",
+  "p_3e7d88ac19",
+  "p_4272319016",
+  "p_43a5284c35",
+  "p_47c06109e9",
+  "p_4d027340f8",
+  "p_4f4a1803c7",
+  "p_5004e8ea5e",
+  "p_5149161364",
+  "p_52bd08477c"
  ]
 }
