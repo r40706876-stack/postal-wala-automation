@@ -12400,7 +12400,36 @@ def run_daily():
                   f"wajah: {str(cvs.get('last_err', '-'))[:160]}). Bina chitra ki reel nahi - agli run me galti sudhaar ke dobara.")
             if tries_ >= CHITRA_WARN_RUNS:
                 print(f"CHETAVNI: ye part {tries_} runs se atka hai - ye log Claude ko bhejiye (niyam ka chitra mushkil hai).")
-            return
+            # v23.1: din khaali na jaaye - isi clause ka agla part jiska chitra TAIYAR hai, aaj wo; atka part agli
+            # run me dobara koshish (chhootega nahi, bas thoda baad me aayega)
+            if tries_ >= 2:
+                try:
+                    _keep_clear(part)                  # 2 run se atka: agli baar bilkul nayi kahani (wahi mushkil drishya nahi)
+                except Exception:
+                    pass
+            alt = None
+            for p_ in usable_parts(plan):
+                if p_.get("published") or p_ is part:
+                    continue
+                if not chitra_ready(p_.get("chitra_v")):
+                    try:
+                        print(f"  Aaj ke liye agla part try: {str(p_.get('question', ''))[:60]}")
+                        ensure_chitra(plan, p_)
+                        save_plan(plan)
+                    except ProviderBusy as exc:
+                        print("  Chitra quota/AI busy:", str(exc)[:120])
+                        break
+                    except Exception as exc:
+                        print("  Agle part ka chitra nahi bana:", str(exc)[:120])
+                if chitra_ready(p_.get("chitra_v")):
+                    alt = p_
+                    break
+            if alt is None:
+                return
+            print(f"AAJ KHAALI NAHI: Part {part_no} ka chitra atka -> isi clause ka taiyar chitra wala agla part aaj "
+                  f"(atka part agli run me dobara).")
+            part = alt
+            cvs = part.get("chitra_v") or {}
         print(f"Chitra {CHITRA_MAX_RUNS} runs me nahi bana - is part ki reel 'आपके काम में' line ke saath.")
     try:
         if HOOK_MODE == "pro" and not (SHOW_CHITRA and chitra_ready(part.get("chitra_v"))):
