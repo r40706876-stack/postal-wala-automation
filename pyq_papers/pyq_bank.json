@@ -2268,6 +2268,531 @@
    "list_q": "डुप्लीकेट पासबुक जारी करने का शुल्क कितना है?",
    "list_a": "50 रुपये",
    "auto": "v22"
+  },
+  {
+   "id": "p_551c5082cc",
+   "q": "डाक विभाग किस मंत्रालय के अंतर्गत आता है?",
+   "opts": [
+    "इलेक्ट्रॉनिक्स और सूचना प्रौद्योगिकी मंत्रालय",
+    "संचार मंत्रालय",
+    "वाणिज्य मंत्रालय",
+    "रेल मंत्रालय"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Department of posts comes under which ministry",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q1"
+   ],
+   "list_q": "डाक विभाग किस मंत्रालय के अंतर्गत आता है?",
+   "list_a": "संचार मंत्रालय",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5525055840",
+   "q": "निम्नलिखित कथनों पर विचार करें: I. पोस्ट बॉक्स सभी डाकघरों में निःशुल्क उपलब्ध हैं। II. जो व्यक्ति पोस्ट बॉक्स की सुविधा लेना चाहता है, उसे संबंधित पोस्टमास्टर को लिखित आवेदन देना होगा। सही विकल्प चुनें:",
+   "opts": [
+    "केवल कथन I सही है",
+    "केवल कथन II सही है",
+    "कथन I और II दोनों सही हैं",
+    "कथन I और II दोनों गलत हैं"
+   ],
+   "ans": "B",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "Consider the following statements I. Post boxes are available at all post offices free of cost. II. Any person who desires to avail the facility of post box should submit an application in writing to the postmaster concerned. Choose the correct option",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q12"
+   ],
+   "list_q": "पोस्ट बॉक्स के संबंध में सही कथन कौन सा है?",
+   "list_a": "केवल कथन II सही",
+   "auto": "v22"
+  },
+  {
+   "id": "p_554af1a26a",
+   "q": "'A' ऑर्डर (A Orders) किसमें परिवर्तन का निर्देश देते हैं?",
+   "opts": [
+    "ड्यू मेल",
+    "सॉर्टिंग मेल",
+    "कार्य का वितरण",
+    "कार्यालय आदेश"
+   ],
+   "ans": "B",
+   "exams": [
+    "पंजाब 2021"
+   ],
+   "q_en": "'A' Orders directs changes in",
+   "src": [
+    "15. Punjab MTS 2021.pdf#Q30"
+   ],
+   "list_q": "'A' ऑर्डर किसमें परिवर्तन का निर्देश देते हैं?",
+   "list_a": "सॉर्टिंग मेल",
+   "auto": "v22"
+  },
+  {
+   "id": "p_55b4efba3f",
+   "q": "किस श्रेणी की डाक वस्तुओं के लिए पंजीकरण (रजिस्ट्रेशन) अनिवार्य है?",
+   "opts": [
+    "पोस्टकार्ड",
+    "बुक और पैटर्न पैकेट",
+    "बीमाकृत वस्तुएं",
+    "पत्र"
+   ],
+   "ans": "C",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "For which category of articles, registration is mandatory:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q19"
+   ],
+   "list_q": "किस श्रेणी की वस्तु का पंजीकरण अनिवार्य है?",
+   "list_a": "बीमाकृत वस्तुएं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_56e17f72dc",
+   "q": "खाता खोलने के लिए किस योजना में न्यूनतम जमा राशि 1000 रुपये नहीं है?",
+   "opts": [
+    "मासिक आय योजना (MIS)",
+    "वरिष्ठ नागरिक बचत योजना (SCSS)",
+    "सावधि जमा (TD)",
+    "पब्लिक प्रोविडेंट फंड (PPF)"
+   ],
+   "ans": "D",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "In which scheme, minimum deposit amount is not Rs 1000/- for opening of account?",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q20"
+   ],
+   "list_q": "किस योजना में खाता 1000 रुपये से कम में खुलता है?",
+   "list_a": "पब्लिक प्रोविडेंट फंड",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5733e9fb01",
+   "q": "संतोष (Endowment Assurance) योजना के तहत बोनस की पात्रता हेतु PLI पॉलिसी की न्यूनतम अवधि क्या है?",
+   "opts": [
+    "5 वर्ष",
+    "3 वर्ष",
+    "1 वर्ष",
+    "6 महीने"
+   ],
+   "ans": "A",
+   "exams": [
+    "महाराष्ट्र 2022"
+   ],
+   "q_en": "What is the minimum period of completion of PLI policy to eligible for bonus under endowment Assurance plan?",
+   "src": [
+    "MH-MTS-PM-MG-2022.pdf#Q25"
+   ],
+   "list_q": "PLI में बोनस हेतु न्यूनतम पॉलिसी अवधि क्या है?",
+   "list_a": "5 वर्ष",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5b55ce6537",
+   "q": "डाक वस्तु का वह भाग जिस पर पता लिखा जाता है, क्या कहलाता है?",
+   "opts": [
+    "रियर (Rear)",
+    "फेस (Face)",
+    "रेस (Race)",
+    "मास्क (Mask)"
+   ],
+   "ans": "B",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "The side on which the address is written on a post article is called",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q5"
+   ],
+   "list_q": "डाक वस्तु का पता लिखा भाग क्या कहलाता है?",
+   "list_a": "फेस (Face)",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5c3133a1f8",
+   "q": "पोस्ट बॉक्स के किराये की अवधि कब से शुरू होती है?",
+   "opts": [
+    "उस महीने के पहले दिन से जिसमें पोस्ट बॉक्स आवंटित किया गया है",
+    "उस महीने के विशेष दिन से जिसमें पोस्ट बॉक्स आवंटित किया गया है",
+    "A या B में से कोई भी जिसे आवेदक चुन सकता है",
+    "अगले महीने के पहले दिन से जिसमें पोस्ट बॉक्स आवंटित किया गया है"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2022"
+   ],
+   "q_en": "The period of rental of a post box commences from the?",
+   "src": [
+    "BH-MTS-PM-MG-2022.pdf#Q24"
+   ],
+   "list_q": "पोस्ट बॉक्स के किराये की अवधि कब से शुरू होती है?",
+   "list_a": "आवंटन महीने के पहले दिन से",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5d07a4e1d7",
+   "q": "निम्नलिखित में से कौन सा डाक शुल्क के भुगतान का साधन नहीं है?",
+   "opts": [
+    "फ्रैंकिंग मशीन की छाप",
+    "नकद के रूप में",
+    "आवश्यक मूल्य के डाक टिकट के रूप में",
+    "रेवेन्यू स्टैम्प (राजस्व टिकट) के रूप में"
+   ],
+   "ans": "D",
+   "exams": [
+    "असम 2021"
+   ],
+   "q_en": "Which of the following is not means of payment of postage stamp?",
+   "src": [
+    "ASM-MTS-PM-MG-2021.pdf#Q3"
+   ],
+   "list_q": "इनमें से कौन सा डाक शुल्क भुगतान का साधन नहीं है?",
+   "list_a": "रेवेन्यू स्टैम्प के रूप में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5d8d0c90b0",
+   "q": "अवैतनिक (unpaid) आधिकारिक डाक वस्तु के वितरण पर कितना देय डाक शुल्क लिया जाता है?",
+   "opts": [
+    "डाक शुल्क की कमी का दोगुना",
+    "डाक शुल्क की एकल कमी के बराबर",
+    "प्रति वस्तु ₹2 अतिरिक्त डाक शुल्क",
+    "कोई शुल्क वसूलने की आवश्यकता नहीं है"
+   ],
+   "ans": "B",
+   "exams": [
+    "आंध्र प्रदेश 2020"
+   ],
+   "q_en": "The postage dues chargeable on the delivery of “unpaid official postal article” is",
+   "src": [
+    "AP-MTS-PM-MG-2020.pdf#Q5"
+   ],
+   "list_q": "अवैतनिक आधिकारिक डाक वस्तु पर कितना देय शुल्क लिया जाता है?",
+   "list_a": "डाक शुल्क की एकल कमी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5dba6a6151",
+   "q": "लेटर बॉक्स में पोस्ट की गई मशीन फ्रैंक्ड वस्तुओं को क्या माना जाएगा?",
+   "opts": [
+    "पूर्ण भुगतान (Fully paid)",
+    "अवैतनिक (Unpaid)",
+    "आंशिक भुगतान (Partially paid)",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "B",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "Machine franked articles posted in letter boxes will be treated as",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q14"
+   ],
+   "list_q": "लेटर बॉक्स में डाली गई मशीन फ्रैंक्ड वस्तुओं को क्या माना जाता है?",
+   "list_a": "अवैतनिक (Unpaid)",
+   "auto": "v22"
+  },
+  {
+   "id": "p_5e64786c66",
+   "q": "लेटर बॉक्स खाली करने की जिम्मेदारी किसकी होती है?",
+   "opts": [
+    "डाकिया (Postman)",
+    "पोस्टमास्टर (Postmaster)",
+    "लेटर बॉक्स चपरासी (LB peon)",
+    "एसएसपी (SSP)"
+   ],
+   "ans": "C",
+   "exams": [
+    "हरियाणा 2020"
+   ],
+   "q_en": "Who has the responsibility to clear the letter box?",
+   "src": [
+    "HR-MTS-PM-MG-2020.pdf#Q8"
+   ],
+   "list_q": "लेटर बॉक्स खाली करने की जिम्मेदारी किसकी होती है?",
+   "list_a": "लेटर बॉक्स चपरासी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_609a05a8a6",
+   "q": "यदि किसी वस्तु पर ऐसे टिकट लगे हों जो पहले उपयोग में थे लेकिन अब मान्य नहीं हैं, तो क्या कार्रवाई की जाएगी?",
+   "opts": [
+    "गंतव्य कार्यालय को भेजा जाएगा",
+    "RLO को भेजा जाएगा",
+    "प्रेषक को वापस लौटा दिया जाएगा",
+    "सुरक्षित अभिरक्षा के लिए जमा में रखा जाएगा"
+   ],
+   "ans": "C",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "An action will be taken if an article bearing any stamps which were at any time but is not now in use for payment of postage?",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q25"
+   ],
+   "list_q": "अमान्य/पुराने डाक टिकट लगी वस्तु के साथ क्या किया जाता है?",
+   "list_a": "प्रेषक को वापस लौटाना",
+   "auto": "v22"
+  },
+  {
+   "id": "p_61399c15e5",
+   "q": "पोस्ट बैग की सुविधा कहाँ उपलब्ध होती है?",
+   "opts": [
+    "सभी शाखा डाकघरों में",
+    "सभी उप डाकघरों में",
+    "सभी वितरण डाकघरों में",
+    "सभी RMS कार्यालयों में"
+   ],
+   "ans": "C",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Post bags are available in",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q5"
+   ],
+   "list_q": "पोस्ट बैग सुविधा किन डाकघरों में उपलब्ध है?",
+   "list_a": "सभी वितरण डाकघरों में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_61a72a01ae",
+   "q": "लेटर बॉक्स चपरासी (LB Peon) का मुख्य कर्तव्य क्या है?",
+   "opts": [
+    "कार्यालय के कार्य समय के दौरान PA/APM की सहायता करना",
+    "BO बैग बंद करना",
+    "बाहर के सभी लेटर बॉक्स खाली करना",
+    "पत्रों का वितरण करना"
+   ],
+   "ans": "C",
+   "exams": [
+    "आंध्र प्रदेश 2020"
+   ],
+   "q_en": "The main duty of a letter Box peon is",
+   "src": [
+    "AP-MTS-PM-MG-2020.pdf#Q4"
+   ],
+   "list_q": "लेटर बॉक्स चपरासी का मुख्य कर्तव्य क्या है?",
+   "list_a": "बाहर के लेटर बॉक्स खाली करना",
+   "auto": "v22"
+  },
+  {
+   "id": "p_625fa8c823",
+   "q": "INS जहाजों में सेवा दे रहे नौसेना कर्मियों की डाक किसके पते पर भेजी जानी चाहिए?",
+   "opts": [
+    "c/o संबंधित शहर के पोस्टमास्टर",
+    "c/o फ्लीट मेल ऑफिस, मुंबई",
+    "c/o नेवी पर्सनेल ऑफिसर",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "Mails for navy personnel serving in INS ships should be addressed to whom?",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q21"
+   ],
+   "list_q": "नौसेना जहाजों के कर्मियों की डाक किस पते पर भेजी जाती है?",
+   "list_a": "c/o फ्लीट मेल ऑफिस, मुंबई",
+   "auto": "v22"
+  },
+  {
+   "id": "p_62c078acc5",
+   "q": "सीमा पर स्थित वह विदेश डाक कार्यालय (Office of exchange) जो केवल भारत के अन्य विदेश डाक कार्यालयों को या उनसे प्राप्त बंद थैलों को प्राप्त और प्रेषित करता है, उसे क्या कहा जाता है?",
+   "opts": [
+    "ट्रांजिट मेल ऑफिस (Transit mail office)",
+    "ट्रांजिट ऑफिस (Transit Office)",
+    "ऑफिस ऑफ एक्सचेंज ऑफ ट्रांजिट (Office of exchange of transit)",
+    "रिटर्न्ड लेटर ऑफिस (Returned letter office)"
+   ],
+   "ans": "C",
+   "exams": [
+    "महाराष्ट्र 2022"
+   ],
+   "q_en": "An office of exchange on the border which only receives and despatches closed bags addressed to or received from other offices of exchange in Indian is known as……",
+   "src": [
+    "MH-MTS-PM-MG-2022.pdf#Q19"
+   ],
+   "list_q": "सीमा पर बंद थैले प्राप्त/प्रेषित करने वाला विदेश कार्यालय क्या है?",
+   "list_a": "ऑफिस ऑफ एक्सचेंज ऑफ ट्रांजिट",
+   "auto": "v22"
+  },
+  {
+   "id": "p_635a9101e1",
+   "q": "किस डाकघर में किराये पर पोस्ट बॉक्स की सुविधा उपलब्ध होती है?",
+   "opts": [
+    "सभी डाकघर",
+    "प्रधान डाकघर",
+    "कुछ चयनित डाकघर",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "In which post office, post box facility is available on rent?",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q14"
+   ],
+   "list_q": "पोस्ट बॉक्स की सुविधा किस डाकघर में उपलब्ध होती है?",
+   "list_a": "कुछ चयनित डाकघर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_635fe4cb1e",
+   "q": "बिना पते वाले डाक लेखों का व्यवसाय किस श्रेणी में आता है?",
+   "opts": [
+    "डायरेक्ट पोस्ट (Direct post)",
+    "मीडिया पोस्ट (Media post)",
+    "बिजनेस पोस्ट (Business post)",
+    "लॉजिस्टिक्स पोस्ट (Logistic posts)"
+   ],
+   "ans": "A",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "The business of unaddressed postal article falls under which category?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q7"
+   ],
+   "list_q": "बिना पते वाले डाक लेख किस श्रेणी में आते हैं?",
+   "list_a": "डायरेक्ट पोस्ट",
+   "auto": "v22"
+  },
+  {
+   "id": "p_64a2c31dcb",
+   "q": "स्पीड पोस्ट के तहत एक खेप (consignment) की अधिकतम वजन सीमा क्या है?",
+   "opts": [
+    "20 किग्रा",
+    "25 किग्रा",
+    "30 किग्रा",
+    "35 किग्रा"
+   ],
+   "ans": "D",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "The maximum weight limit for a consignment under speed post is?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q26"
+   ],
+   "list_q": "स्पीड पोस्ट के तहत अधिकतम वजन सीमा क्या है?",
+   "list_a": "35 किग्रा",
+   "auto": "v22"
+  },
+  {
+   "id": "p_64c565d569",
+   "q": "छंटाई कार्यालय में काम का बोझ अधिक होने पर केवल कुछ घंटों के लिए सहायता करने वाले छंटाई सहायक को क्या कहा जाता है?",
+   "opts": [
+    "छंटाई सहायक (Sorting Assistant)",
+    "अस्थायी छंटाई सहायक (Temporary Sorting Assistant)",
+    "सहायक छंटाई सहायक (Subsidiary Sorting Assistant)",
+    "अंशकालिक छंटाई सहायक (Part time sorting Assistant)"
+   ],
+   "ans": "C",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "A Sorting Assistant who works with a sorting office over only a portion of its working hours to assist the set where the work is heavy is called",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q4"
+   ],
+   "list_q": "भारी काम में मदद करने वाले छंटाई सहायक को क्या कहते हैं?",
+   "list_a": "सहायक छंटाई सहायक",
+   "auto": "v22"
+  },
+  {
+   "id": "p_651d1a2849",
+   "q": "फ्रैंकिंग मशीन क्या है?",
+   "opts": [
+    "स्टैम्पिंग मशीन",
+    "फोटोकॉपी मशीन",
+    "कैश काउंटिंग मशीन",
+    "वजन करने की मशीन"
+   ],
+   "ans": "A",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "What is franking machine?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q21"
+   ],
+   "list_q": "फ्रैंकिंग मशीन क्या होती है?",
+   "list_a": "स्टैम्पिंग मशीन",
+   "auto": "v22"
+  },
+  {
+   "id": "p_65266445fc",
+   "q": "विदेशों के लिए भेजे जाने वाले लेखों का पता किन अक्षरों में लिखा जाना चाहिए?",
+   "opts": [
+    "अरबी (Arabic)",
+    "रोमन (Roman)",
+    "देवनागरी (Devnagri)",
+    "मंदारिन (Mandarin)"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Article meant to foreign countries, addressed should be written in which letters?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q23"
+   ],
+   "list_q": "विदेशी डाक पर पता किन अक्षरों में लिखा जाना चाहिए?",
+   "list_a": "रोमन अक्षर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_664579864f",
+   "q": "लेटर बॉक्स में पाए जाने वाले किसी भी पार्सल को क्या माना जाएगा और किस रूप में शुल्क लिया जाएगा?",
+   "opts": [
+    "पंजीकृत पार्सल (Registered parcels)",
+    "गैर-पंजीकृत पार्सल (Unregistered parcels)",
+    "स्पीड पोस्ट (Speed post)",
+    "बीमाकृत पार्सल (Insured parcels)"
+   ],
+   "ans": "A",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "Any Parcels found in a letter box will be treated and charged as",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q18"
+   ],
+   "list_q": "लेटर बॉक्स में मिला पार्सल कैसा माना जाता है?",
+   "list_a": "पंजीकृत पार्सल",
+   "auto": "v22"
+  },
+  {
+   "id": "p_66b8e5c019",
+   "q": "अतिरिक्त विभागीय एजेंटों (GDS) के प्रभारी डाकघर अधिकतम कितने घंटों की अवधि के लिए खुले रखे जाते हैं?",
+   "opts": [
+    "8",
+    "7",
+    "12",
+    "5"
+   ],
+   "ans": "D",
+   "exams": [
+    "तमिलनाडु 2020"
+   ],
+   "q_en": "Post offices in charge of extra departmental agents (GDS) are kept open for a period of maximum ___hours only.",
+   "src": [
+    "13. Tamil Nadu MTS 2020.pdf#Q30"
+   ],
+   "list_q": "जीडीएस (GDS) डाकघर अधिकतम कितने घंटे खुले रहते हैं?",
+   "list_a": "5 घंटे",
+   "auto": "v22"
   }
  ],
  "sets": [
@@ -2384,6 +2909,17 @@
   "p_4f4a1803c7",
   "p_5004e8ea5e",
   "p_5149161364",
-  "p_52bd08477c"
+  "p_52bd08477c",
+  "p_55f8481c55",
+  "p_5716e3c96b",
+  "p_5744bcf1a4",
+  "p_57ef9509a4",
+  "p_59416dfcaf",
+  "p_5b799e8754",
+  "p_5e434d6795",
+  "p_60687da516",
+  "p_650dd9e7b0",
+  "p_666da86f72",
+  "p_668d95d6a6"
  ]
 }
