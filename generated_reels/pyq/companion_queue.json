@@ -222,5 +222,20 @@
     "trap_quote": "",
     "guide_line": "This is not necessary if correct PIN is written.",
     "done": "skip"
+  },
+  {
+    "clause": 26,
+    "part_index": 1,
+    "part_no": 3,
+    "reel": "reel_clause_26_part_3_v2.mp4",
+    "question": "पोस्‍ट टाउन का नाम किस प्रकार लिखा जाना चाहिए?",
+    "fact": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित किया जाना चाहिए।",
+    "answer": "बड़े अक्षरों में और रेखांकित",
+    "en_question": "How should the Post town name be written?",
+    "en_fact": "The Post town name should be written in block letters and underlined.",
+    "source_quote": "The Post town should be noted in block letter and according to the approved spelling in the List of Post Offices (Part III of this Guide). It should, also be underlined.",
+    "trap_quote": "",
+    "guide_line": "The Post town should be noted in block letter and according to the approved spelling in the List of Post Offices (Part III of this Guide). It should, also be underlined.",
+    "done": "skip"
   }
 ]

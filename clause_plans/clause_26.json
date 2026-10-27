@@ -282,15 +282,149 @@
       "simple": true,
       "style_v": "2026-09-26c",
       "chitra_v": {
-        "tries": 3,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; Shot is too wide, not an over-the-shoulder shot pointing at the envelope name.",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A wide shot inside a bright post office, where the customer in a light blue checked shirt holds a plain blank white envelope across the wooden counter toward the postman in a khaki uniform.",
+            "target": "the plain white envelope on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "डाक लिफाफे पर पोस्ट टाउन का नाम लिखना जरूरी है।",
+            "desc": "Wide shot of customer asking postman how to write post town name on the envelope.",
+            "mark": "none",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "customer",
+              "text": "भैया, पोस्ट टाउन का नाम कैसे लिखूं?"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/d99eb5f581_35908785_1.jpg",
+            "box": [
+              0.351,
+              0.699,
+              0.526,
+              0.764
+            ],
+            "bg_text": true,
+            "badge": [
+              0.365,
+              0.545,
+              0.432,
+              0.583
+            ],
+            "face": [
+              0.258,
+              0.232,
+              0.41,
+              0.436
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "A closeup shot focused sharply on hands holding a plain blank white envelope on the wooden counter.",
+            "target": "the plain white envelope held by hands",
+            "tag": "छोटे अक्षर और बिना अंडरलाइन",
+            "tag_color": "red",
+            "text": "छोटे अक्षरों में लिखना गलत तरीका है।",
+            "desc": "Closeup of envelope showing lowercase post town without underline, marked wrong.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "customer",
+              "text": "मैंने तो छोटे अक्षरों में लिख दिया!"
+            },
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/d99eb5f581_35908785_2.jpg",
+            "box": [
+              0.276,
+              0.465,
+              0.792,
+              0.882
+            ],
+            "bg_text": false,
+            "badge": [
+              0.399,
+              0.399,
+              0.498,
+              0.458
+            ],
+            "face": [
+              0.192,
+              0.0,
+              0.461,
+              0.194
+            ],
+            "frames": [
+              "clause_plans/chitra_img/d99eb5f581_35908785_2f1.jpg",
+              "clause_plans/chitra_img/d99eb5f581_35908785_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "An over-the-shoulder shot from behind the customer looking at the postman across the counter, as the postman points his index finger directly at a plain blank white envelope.",
+            "target": "the plain white envelope on the counter",
+            "tag": "बड़े अक्षर और रेखांकित",
+            "tag_color": "green",
+            "text": "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित करें।",
+            "desc": "Over-the-shoulder shot of postman pointing at envelope with block letter underlined post town name, marked right.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "uPATNA/u",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "हमेशा बड़े अक्षरों में लिखें और रेखांकित करें!"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/d99eb5f581_35908785_3.jpg",
+            "box": [
+              0.497,
+              0.552,
+              0.676,
+              0.712
+            ],
+            "bg_text": false,
+            "pan": "rl"
+          }
+        ],
+        "caps": [
+          "डाक लिफाफे पर पोस्ट टाउन का नाम लिखना जरूरी है।",
+          "छोटे अक्षरों में लिखना गलत तरीका है।",
+          "पोस्ट टाउन का नाम बड़े अक्षरों में लिखकर रेखांकित करें।"
+        ],
+        "score": 7.0,
+        "lesson": "When writing an address on a postal envelope, the name of the post town must be written in capital letters and underlined.",
+        "pv": 4,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 1
       },
       "published_prev": "2026-10-17",
       "published_round_prev": 23,
       "cf_spent": {
-        "2026-10-26": 31
+        "2026-10-27": 12
       },
       "punch_v": {
         "ok": true,
@@ -301,8 +435,9 @@
         "v": 3
       },
       "opt_pics": {
-        "none": true,
-        "ref": "clause_plans/chitra_img/d99eb5f581_94172131_1.jpg"
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/d99eb5f581_35908785_1.jpg",
+        "err": "option-chitra jaanch fail: A, B, C, D"
       },
       "guide_line_v": {
         "v": 1,
@@ -313,7 +448,19 @@
         "items": [],
         "searched": true,
         "v": 2
-      }
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "पोस्ट टाउन लिखो BADA-BADA, भूल न जाना, नीचे रेखा खींच कर आना!",
+        "key": [
+          "BADA-BADA",
+          "रेखा"
+        ],
+        "why": ""
+      },
+      "published": "2026-10-27",
+      "published_round": 24
     },
     {
       "basis": "notes",
@@ -574,148 +721,13 @@
       "check_errors": [],
       "simple": true,
       "chitra_v": {
-        "kit": "photo",
-        "panels": [
-          {
-            "prompt": "Medium shot of the customer standing at a wooden post office counter holding a blank white envelope and a pen, asking the postman seated behind the counter, warm natural light.",
-            "target": "the blank white envelope in customer hands",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "ग्राहक डाक पत्र पर पता लिखने के बारे में पूछता है।",
-            "desc": "The customer shows a blank white envelope to the postman at the counter.",
-            "mark": "none",
-            "card": null,
-            "say": {
-              "who": "customer",
-              "text": "भैया, इस पर पूरा रास्ता लिख दूँ?"
-            },
-            "img": "clause_plans/chitra_img/2fde91ee0e_68194712_1.jpg",
-            "box": [
-              0.483,
-              0.591,
-              0.65,
-              0.719
-            ],
-            "bg_text": true,
-            "badge": [
-              0.35,
-              0.54,
-              0.429,
-              0.58
-            ],
-            "face": [
-              0.616,
-              0.184,
-              0.785,
-              0.375
-            ],
-            "pan": "lr"
-          },
-          {
-            "prompt": "Close medium shot of the customer holding the white envelope with writing on it, looking worried as the postman raises a hand to stop him, soft indoor lighting.",
-            "target": "the white envelope with address",
-            "tag": "वाया (मार्ग संकेत) वर्जित",
-            "tag_color": "red",
-            "text": "पते में वाया जैसे मार्ग संकेत कभी नहीं लिखने चाहिए।",
-            "desc": "The postman warns against writing route indications like 'वाया' on the envelope address.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी मार्ग",
-                "वाया हाजीपुर",
-                "पटना 800001"
-              ],
-              "corner": "",
-              "hl": 2
-            },
-            "say": {
-              "who": "postman",
-              "text": "रुको! पते में वाया कभी मत लिखना!"
-            },
-            "img": "clause_plans/chitra_img/2fde91ee0e_68194712_2.jpg",
-            "box": [
-              0.485,
-              0.603,
-              0.649,
-              0.725
-            ],
-            "bg_text": true,
-            "badge": [
-              0.355,
-              0.544,
-              0.436,
-              0.587
-            ],
-            "face": [
-              0.235,
-              0.169,
-              0.429,
-              0.41
-            ]
-          },
-          {
-            "prompt": "Medium shot of the customer smiling and holding up a neatly addressed white envelope while the postman nods approvingly with a thumbs up, bright clear light.",
-            "target": "the neatly addressed envelope",
-            "tag": "सही पता",
-            "tag_color": "green",
-            "text": "पते में सही स्थान और पिन कोड ही लिखना चाहिए।",
-            "desc": "The postman approves the correct address without any route indications.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी मार्ग",
-                "पटना",
-                "PIN 800001"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "say": {
-              "who": "postman",
-              "text": "शाबाश! यह बिल्कुल सही पता है।"
-            },
-            "img": "clause_plans/chitra_img/2fde91ee0e_68194712_3.jpg",
-            "box": [
-              0.485,
-              0.572,
-              0.642,
-              0.701
-            ],
-            "bg_text": true,
-            "badge": [
-              0.361,
-              0.516,
-              0.437,
-              0.558
-            ],
-            "face": [
-              0.219,
-              0.151,
-              0.423,
-              0.377
-            ],
-            "pan": "rl",
-            "frames": [
-              "clause_plans/chitra_img/2fde91ee0e_68194712_3f1.jpg"
-            ]
-          }
-        ],
-        "caps": [
-          "ग्राहक डाक पत्र पर पता लिखने के बारे में पूछता है।",
-          "पते में वाया जैसे मार्ग संकेत कभी नहीं लिखने चाहिए।",
-          "पते में सही स्थान और पिन कोड ही लिखना चाहिए।"
-        ],
-        "score": 10.0,
-        "lesson": "A customer must write the correct location and PIN code on a postal letter without including route indicators like 'via'.",
-        "pv": 4,
-        "ok": true,
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 2): saaf nahi",
         "v": 9,
-        "attempt": 1
+        "kit_try": "photo3"
       },
       "cf_spent": {
-        "2026-10-12": 7
+        "2026-10-27": 19
       },
       "style_v": "2026-09-26c",
       "punch_v": {
@@ -731,7 +743,118 @@
         "v": 3
       },
       "published_prev": "2026-10-13",
-      "published_round_prev": 19
+      "published_round_prev": 19,
+      "chitra_keep": {
+        "scene": "A clean wooden post office counter with a plain wall behind, warm indoor lighting, featuring a postal worker and a customer holding a letter.",
+        "seed0": 22217186,
+        "files": {
+          "0": "clause_plans/chitra_img/2fde91ee0e_keep_22217186_1.jpg",
+          "2": "clause_plans/chitra_img/2fde91ee0e_keep_22217186_3.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.22,
+            0.3,
+            0.78,
+            0.86
+          ],
+          "2": [
+            0.22,
+            0.3,
+            0.78,
+            0.86
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": null,
+            "face": null
+          },
+          "2": {
+            "badge": null,
+            "face": null
+          }
+        },
+        "bgt": {
+          "0": false,
+          "2": false
+        },
+        "fixes": {
+          "1": "Make it clearly show: the route indication - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "Wide shot of the post office counter where the customer stands holding a plain white envelope and the postman looks at it attentively.",
+            "target": "the white envelope",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक ने पत्र पर पता लिखकर डाकघर में जमा कराया।",
+            "desc": "The customer stands at the post office counter holding a plain white envelope.",
+            "mark": "none",
+            "card": {
+              "lines": [
+                "श्री रमेश कुमार",
+                "मकान नंबर 45",
+                "पटना"
+              ],
+              "corner": "PIN 800001",
+              "hl": -1
+            },
+            "say": {
+              "who": "customer",
+              "text": "भैया, इस पत्र को भेजना है।"
+            },
+            "shot": "wide"
+          },
+          {
+            "prompt": "Closeup of the envelope on the counter with a finger pointing at the route indication written on it.",
+            "target": "the route indication",
+            "tag": "via (वाया)",
+            "tag_color": "red",
+            "text": "पते में via जैसे मार्ग संकेत लिखना गलत है।",
+            "desc": "Closeup of the envelope showing the incorrect route indication via marked in red.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री रमेश कुमार",
+                "गया मार्ग",
+                "पटना"
+              ],
+              "corner": "PIN 800001",
+              "hl": 1
+            },
+            "say": {
+              "who": "postman",
+              "text": "रुको भाई! पते में वाया मत लिखो।"
+            },
+            "shot": "closeup"
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman pointing at the corrected envelope without any route indication.",
+            "target": "the corrected envelope",
+            "tag": "सही पता",
+            "tag_color": "green",
+            "text": "पते में मार्ग संकेत नहीं होने चाहिए।",
+            "desc": "Over-the-shoulder view of the postman pointing at the corrected envelope without route indications tagged as सही पता in green.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री रमेश कुमार",
+                "मकान नंबर 45",
+                "पटना"
+              ],
+              "corner": "PIN 800001",
+              "hl": -1
+            },
+            "say": {
+              "who": "postman",
+              "text": "अब यह पता एकदम सही है।"
+            },
+            "shot": "over"
+          }
+        ],
+        "reuse_n": 1
+      }
     },
     {
       "basis": "guide",
