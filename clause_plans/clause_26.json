@@ -721,13 +721,13 @@
       "check_errors": [],
       "simple": true,
       "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 2): saaf nahi",
+        "tries": 2,
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
         "v": 9,
         "kit_try": "photo3"
       },
       "cf_spent": {
-        "2026-10-27": 19
+        "2026-10-28": 23
       },
       "style_v": "2026-09-26c",
       "punch_v": {
@@ -743,118 +743,7 @@
         "v": 3
       },
       "published_prev": "2026-10-13",
-      "published_round_prev": 19,
-      "chitra_keep": {
-        "scene": "A clean wooden post office counter with a plain wall behind, warm indoor lighting, featuring a postal worker and a customer holding a letter.",
-        "seed0": 22217186,
-        "files": {
-          "0": "clause_plans/chitra_img/2fde91ee0e_keep_22217186_1.jpg",
-          "2": "clause_plans/chitra_img/2fde91ee0e_keep_22217186_3.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.22,
-            0.3,
-            0.78,
-            0.86
-          ],
-          "2": [
-            0.22,
-            0.3,
-            0.78,
-            0.86
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": null,
-            "face": null
-          },
-          "2": {
-            "badge": null,
-            "face": null
-          }
-        },
-        "bgt": {
-          "0": false,
-          "2": false
-        },
-        "fixes": {
-          "1": "Make it clearly show: the route indication - saaf nahi"
-        },
-        "panels": [
-          {
-            "prompt": "Wide shot of the post office counter where the customer stands holding a plain white envelope and the postman looks at it attentively.",
-            "target": "the white envelope",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "ग्राहक ने पत्र पर पता लिखकर डाकघर में जमा कराया।",
-            "desc": "The customer stands at the post office counter holding a plain white envelope.",
-            "mark": "none",
-            "card": {
-              "lines": [
-                "श्री रमेश कुमार",
-                "मकान नंबर 45",
-                "पटना"
-              ],
-              "corner": "PIN 800001",
-              "hl": -1
-            },
-            "say": {
-              "who": "customer",
-              "text": "भैया, इस पत्र को भेजना है।"
-            },
-            "shot": "wide"
-          },
-          {
-            "prompt": "Closeup of the envelope on the counter with a finger pointing at the route indication written on it.",
-            "target": "the route indication",
-            "tag": "via (वाया)",
-            "tag_color": "red",
-            "text": "पते में via जैसे मार्ग संकेत लिखना गलत है।",
-            "desc": "Closeup of the envelope showing the incorrect route indication via marked in red.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री रमेश कुमार",
-                "गया मार्ग",
-                "पटना"
-              ],
-              "corner": "PIN 800001",
-              "hl": 1
-            },
-            "say": {
-              "who": "postman",
-              "text": "रुको भाई! पते में वाया मत लिखो।"
-            },
-            "shot": "closeup"
-          },
-          {
-            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman pointing at the corrected envelope without any route indication.",
-            "target": "the corrected envelope",
-            "tag": "सही पता",
-            "tag_color": "green",
-            "text": "पते में मार्ग संकेत नहीं होने चाहिए।",
-            "desc": "Over-the-shoulder view of the postman pointing at the corrected envelope without route indications tagged as सही पता in green.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "श्री रमेश कुमार",
-                "मकान नंबर 45",
-                "पटना"
-              ],
-              "corner": "PIN 800001",
-              "hl": -1
-            },
-            "say": {
-              "who": "postman",
-              "text": "अब यह पता एकदम सही है।"
-            },
-            "shot": "over"
-          }
-        ],
-        "reuse_n": 1
-      }
+      "published_round_prev": 19
     },
     {
       "basis": "guide",
@@ -1060,7 +949,7 @@
         "attempt": 1
       },
       "cf_spent": {
-        "2026-10-13": 8
+        "2026-10-28": 8
       },
       "punch_v": {
         "ok": true,
@@ -1075,7 +964,109 @@
         "v": 3
       },
       "published_prev": "2026-10-13",
-      "published_round_prev": 19
+      "published_round_prev": 19,
+      "chitra_keep": {
+        "scene": "A clean, modern post office service counter with plain walls and no signage, featuring the postman in his khaki uniform and the customer in his blue checked shirt.",
+        "seed0": 89005653,
+        "files": {
+          "0": "clause_plans/chitra_img/ca635a18ed_keep_89005653_1.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.317,
+            0.518,
+            0.622,
+            0.725
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.331,
+              0.454,
+              0.366,
+              0.487
+            ],
+            "face": [
+              0.246,
+              0.23,
+              0.363,
+              0.353
+            ]
+          }
+        },
+        "bgt": {
+          "0": false
+        },
+        "fixes": {
+          "1": "Make it clearly show: the handwritten address on the parcel - saaf nahi",
+          "2": "Make it clearly show: the rewritten address on the parcel - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "The postman stands behind the service counter, watching as the customer places a large international parcel on the desk. The scene is bright and professional with a wide view showing the counter setup.",
+            "target": "the parcel",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "विदेश भेजने के लिए ग्राहक पार्सल लेकर डाकघर पहुँचा है।",
+            "desc": "The customer arrives at the post office with an international parcel to send.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, यह पार्सल विदेश भेजना है।"
+            },
+            "shot": "wide"
+          },
+          {
+            "prompt": "A close-up shot focusing on the customer's handwritten address on the parcel in Devanagari script, while the postman frowns and points at the writing. The parcel is clear and the writing is prominent.",
+            "target": "the handwritten address on the parcel",
+            "tag": "देवनागरी लिपि",
+            "tag_color": "red",
+            "text": "विदेशी पते पर स्थानीय भाषा या देवनागरी नहीं चलेगी।",
+            "desc": "The postman identifies that the address is written incorrectly in Devanagari script.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्रीमान राहुल",
+                "एवेन्यू स्ट्रीट 12",
+                "लंदन",
+                "यूके"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "नहीं भाई, यह पता मान्य नहीं होगा।"
+            },
+            "shot": "closeup"
+          },
+          {
+            "prompt": "An over-the-shoulder shot from behind the customer, showing the postman pointing at the address rewritten correctly in Roman letters and Arabic figures on the parcel. The postman's expression is helpful and the customer looks satisfied.",
+            "target": "the rewritten address on the parcel",
+            "tag": "रोमन अक्षर और अरबी अंक",
+            "tag_color": "green",
+            "text": "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखें।",
+            "desc": "The postman shows the correctly written address in Roman letters and Arabic figures.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "12",
+                "UK"
+              ],
+              "corner": "",
+              "hl": 1
+            },
+            "say": {
+              "who": "postman",
+              "text": "अब यह बिल्कुल सही है।"
+            },
+            "shot": "over"
+          }
+        ],
+        "reuse_n": 1
+      }
     },
     {
       "basis": "guide",
@@ -1263,7 +1254,7 @@
         "attempt": 1
       },
       "cf_spent": {
-        "2026-10-13": 7
+        "2026-10-28": 0
       },
       "punch_v": {
         "ok": true,
@@ -1336,7 +1327,7 @@
       "style_v": "2026-09-26c",
       "simple_rebuilds": 1,
       "cf_spent": {
-        "2026-10-14": 16
+        "2026-10-28": 0
       },
       "chitra_v": {
         "kit": "photo",
@@ -1621,7 +1612,7 @@
         "attempt": 4
       },
       "cf_spent": {
-        "2026-10-14": 18
+        "2026-10-28": 0
       },
       "punch_v": {
         "ok": true,
