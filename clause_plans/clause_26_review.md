@@ -47,7 +47,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** सही पिन = तहसील अनावश्यक
 **Hook:** ग्रामीण पार्सल पर सही पिन है, क्या तहसील लिखना जरूरी है?
 
-## Part 4  [PASS | publish baaki]
+## Part 4  [PASS | publish: 2026-10-28]
 **Source (PO Guide):** Indications of route like ‘via’ should not be given.
 
 **Niyam:** पते में 'वाया' (via) जैसे मार्ग संकेत नहीं दिए जाने चाहिए।

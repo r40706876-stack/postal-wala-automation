@@ -237,5 +237,20 @@
     "trap_quote": "",
     "guide_line": "The Post town should be noted in block letter and according to the approved spelling in the List of Post Offices (Part III of this Guide). It should, also be underlined.",
     "done": "skip"
+  },
+  {
+    "clause": 26,
+    "part_index": 3,
+    "part_no": 4,
+    "reel": "reel_clause_26_part_4_v2.mp4",
+    "question": "पते में मार्ग संकेत के रूप में किस शब्द का प्रयोग नहीं करना चाहिए?",
+    "fact": "पते में 'वाया' (via) जैसे मार्ग संकेत नहीं दिए जाने चाहिए।",
+    "answer": "via (वाया)",
+    "en_question": "Which route indication should not be given in the postal address?",
+    "en_fact": "Indications of route like 'via' should not be given.",
+    "source_quote": "Indications of route like ‘via’ should not be given.",
+    "trap_quote": "",
+    "guide_line": "Indications of route like ‘via’ should not be given.",
+    "done": "skip"
   }
 ]

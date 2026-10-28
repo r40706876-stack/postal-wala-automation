@@ -721,13 +721,158 @@
       "check_errors": [],
       "simple": true,
       "chitra_v": {
-        "tries": 2,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "A wide shot inside a post office showing the customer holding a plain white envelope across a wooden counter, looking curiously at the postman. Soft warm lighting.",
+            "target": "the plain white envelope held by the customer",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "ग्राहक पोस्टमैन भैया से चिट्ठी पर पता पूछ रहा है।",
+            "desc": "The customer is asking the postman about writing the correct address on a white envelope at the counter.",
+            "mark": "none",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": {
+              "who": "customer",
+              "text": "भैया, इस लिफाफे पर पता कैसे लिखूँ?"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/2fde91ee0e_66103585_1.jpg",
+            "box": [
+              0.483,
+              0.59,
+              0.622,
+              0.694
+            ],
+            "bg_text": false,
+            "badge": [
+              0.364,
+              0.457,
+              0.436,
+              0.496
+            ],
+            "face": [
+              0.593,
+              0.238,
+              0.764,
+              0.617
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "A closeup shot focusing on the customer's hands holding a plain white envelope over the wooden counter. Bright daylight with sharp focus on the envelope.",
+            "target": "the address with route written on the envelope",
+            "tag": "वाया का गलत प्रयोग",
+            "tag_color": "red",
+            "text": "पते में वाया जैसे मार्ग संकेत लिखना गलत होता है।",
+            "desc": "A closeup of the envelope showing an address with 'via' included as a route indication, marked with a red tag as incorrect.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "वाया दानापुर, गांधी नगर",
+                "पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": 1
+            },
+            "say": {
+              "who": "customer",
+              "text": "अरे! क्या वाया लिखना गलत है?"
+            },
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/2fde91ee0e_66103585_2.jpg",
+            "box": [
+              0.239,
+              0.443,
+              0.75,
+              0.786
+            ],
+            "bg_text": false,
+            "badge": [
+              0.252,
+              0.353,
+              0.375,
+              0.42
+            ],
+            "frames": [
+              "clause_plans/chitra_img/2fde91ee0e_66103585_2f1.jpg",
+              "clause_plans/chitra_img/2fde91ee0e_66103585_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "An over-the-shoulder shot from behind the customer looking at the smiling postman, who is pointing gently at the plain white envelope on the counter. Soft indoor lighting.",
+            "target": "the clean address without route indications on the envelope",
+            "tag": "सही पता (बिना वाया)",
+            "tag_color": "green",
+            "text": "पते में वाया जैसे मार्ग संकेत नहीं दिए जाने चाहिए।",
+            "desc": "An over-the-shoulder view of the postman explaining that route indications like 'via' should never be written in the address.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "श्री राम कुमार",
+                "मकान 12, गांधी नगर",
+                "पटना",
+                "PIN 800001"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": {
+              "who": "postman",
+              "text": "हाँ भाई! वाया जैसे शब्द कभी मत लिखना!"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/2fde91ee0e_66103585_3.jpg",
+            "box": [
+              0.432,
+              0.542,
+              0.608,
+              0.759
+            ],
+            "bg_text": false,
+            "badge": [
+              0.368,
+              0.453,
+              0.434,
+              0.483
+            ],
+            "face": [
+              0.574,
+              0.224,
+              0.891,
+              0.995
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/2fde91ee0e_66103585_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "ग्राहक पोस्टमैन भैया से चिट्ठी पर पता पूछ रहा है।",
+          "पते में वाया जैसे मार्ग संकेत लिखना गलत होता है।",
+          "पते में वाया जैसे मार्ग संकेत नहीं दिए जाने चाहिए।"
+        ],
+        "score": 9.0,
+        "lesson": "Do not include routing indicators like 'via' in addresses on postal articles.",
+        "pv": 4,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 1
       },
       "cf_spent": {
-        "2026-10-28": 23
+        "2026-10-28": 29
       },
       "style_v": "2026-09-26c",
       "punch_v": {
@@ -735,15 +880,28 @@
         "text": "पता लिखने का सही तरीका?"
       },
       "opt_pics": {
-        "none": true,
-        "ref": "clause_plans/chitra_img/2fde91ee0e_68194712_1.jpg"
+        "tries": 1,
+        "ref": "clause_plans/chitra_img/2fde91ee0e_66103585_1.jpg",
+        "err": "option-chitra jaanch fail: A, C"
       },
       "trap_v": {
         "none": true,
         "v": 3
       },
       "published_prev": "2026-10-13",
-      "published_round_prev": 19
+      "published_round_prev": 19,
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "Indications of route like ‘via’ should not be given.",
+        "kind": "line"
+      },
+      "published": "2026-10-28",
+      "published_round": 24
     },
     {
       "basis": "guide",
@@ -949,7 +1107,7 @@
         "attempt": 1
       },
       "cf_spent": {
-        "2026-10-28": 8
+        "2026-10-28": 14
       },
       "punch_v": {
         "ok": true,
@@ -1065,7 +1223,7 @@
             "shot": "over"
           }
         ],
-        "reuse_n": 1
+        "reuse_n": 2
       }
     },
     {
