@@ -760,7 +760,30 @@ class Bharosa(N.Reel):
             cv = ImageChops.offset(cv, int(a_ * math.sin(t * 90)), int(a_ * math.cos(t * 70)))
         return cv
 
+    def b3d_frame(self, t):
+        """v24.6 demo: Blender ka 3D shot (B3D_ANS = PNG frames ka folder, 24 fps) - na ho to None."""
+        d_ = os.environ.get("B3D_ANS", "")
+        if not d_ or not os.path.isdir(d_):
+            return None
+        fs = self._fx.get("b3d_files")
+        if fs is None:
+            fs = self._fx["b3d_files"] = sorted(f for f in os.listdir(d_) if f.endswith(".png"))
+        if not fs:
+            return None
+        f = fs[min(len(fs) - 1, int(t * 24))]
+        return Image.open(os.path.join(d_, f)).convert("RGB").resize((W, H), Image.LANCZOS).convert("RGBA")
+
     def sc_ans(self, sc, t):                         # v24.5: sahi jawab par jashn (confetti + Golu khush)
+        b3 = self.b3d_frame(t) if V2 else None
+        if b3 is not None:                           # 3D shot: lifaafa + globe + ✓ (Blender)
+            cv = b3
+            p = (t - sc["lead"]) / max(0.3, sc["vd"])
+            N.caption(cv, sc["text"], p, cy=1560)
+            self.strip(cv, f"टुकड़ा {self.piece_n}/{self.piece_n}", cover=196)
+            N.put(cv, N.pill("सही जवाब", 42, (255, 255, 255), N.GREEN_C), W / 2, 228,
+                  scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
+            confetti(cv, t - 2.1)
+            return cv
         cv = super().sc_ans(sc, t)
         self.strip(cv, f"टुकड़ा {self.piece_n}/{self.piece_n}", cover=196)
         N.put(cv, N.pill("सही जवाब", 42, (255, 255, 255), N.GREEN_C), W / 2, 228,
