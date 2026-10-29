@@ -45,41 +45,68 @@ cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s
        "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", out]
 proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
 missing = []
+import rang_text as RT
+
+
+def card_img(rel, w):
+    im = Image.open(os.path.join(JOB, rel)).convert("RGBA")
+    return im.resize((w, int(im.height * w / im.width)), Image.LANCZOS)
+
+
+def put_pop(cv, im, cx, cy, t, t0):
+    k = RT.ease_back((t - t0) / 0.3)
+    if k <= 0.02:
+        return
+    im2 = im.resize((max(1, int(im.width * k)), max(1, int(im.height * k))), Image.BICUBIC)
+    cv.alpha_composite(im2, (int(cx - im2.width / 2), int(cy - im2.height / 2)))
+
+
 for i, sc in enumerate(scenes):
     fd = os.path.join(JOB, f"frames_{i}")
-    files = sorted(f for f in os.listdir(fd) if f.endswith(".png")) if os.path.isdir(fd) else []
-    if not files:
+    have = {}
+    if os.path.isdir(fd):
+        for f in os.listdir(fd):
+            if f.endswith(".png") and f[2:6].isdigit():
+                have[int(f[2:6])] = os.path.join(fd, f)
+    if not have:
         missing.append(sc["name"])
     n = int(sc["frames"])
-    k_story = 0
+    kind = sc["kind"]
+    words = len(sc["text"].split())
+    rate = max(0.08, sc["vd"] / max(1, words) * 0.9)
+    cards = None
+    if kind == "end":
+        cards = [(card_img(sc["notes"], 920), 430, 0.05), (card_img(sc["share"], 880), 760, 0.45),
+                 (card_img(sc["mock"], 840), 975, 0.9), (card_img(sc["follow"], 600), 1145, 1.3)]
+    last = None
     for f_i in range(n):
         t = f_i / FPS
-        if files:
-            cv = Image.open(os.path.join(fd, files[min(len(files) - 1, f_i)])).convert("RGB").resize((W, H),
-                                                                                             Image.LANCZOS)
-            cv = cv.convert("RGBA")
+        fn = have.get(f_i + 1)
+        if fn is None and have:                               # tukda chhoota -> paas wala frame
+            fn = have[min(have, key=lambda k: abs(k - (f_i + 1)))]
+        if fn:
+            cv = Image.open(fn).convert("RGB").resize((W, H), Image.LANCZOS).convert("RGBA")
         else:
             cv = B.bg().copy()
-        kind = sc["kind"]
         piece = {"ruko": "सवाल", "galti": "गलती", "ans": f"टुकड़ा {PIECE}/{PIECE}", "guide": "सबूत",
                  "end": "याद"}.get(kind, f"टुकड़ा {int(sc.get('idx', 0)) + 1}/{PIECE}")
-        p = (t - sc["lead"]) / max(0.3, sc["vd"])
+        cy = {"galti": 1180, "end": 1720}.get(kind, 1690)
+        if kind != "end":
+            RT.words_frame(cv, sc["text"], t, W / 2, cy, 960, 92, rate, color_seed=i * 3, start=sc["lead"])
         if kind == "ruko":
-            N.caption(cv, sc["text"], p, cy=1700, size=70)
-        elif kind == "story":
-            N.caption(cv, sc["text"], p, cy=1720, size=72)
-        elif kind == "galti":
-            N.caption(cv, sc["text"], p, cy=1500)
+            put_pop(cv, RT.badge("रुको! पहले सोचो", 56, (255, 80, 90), (200, 20, 50)), W / 2, 220, t, 0.05)
         elif kind == "ans":
-            N.caption(cv, sc["text"], p, cy=1720, size=72)
-            N.put(cv, N.pill("सही जवाब", 46, (255, 255, 255), N.GREEN_C), W / 2, 230,
-                  scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
-            B.confetti(cv, t - 1.75)
+            put_pop(cv, RT.badge("सही जवाब!", 60, (70, 230, 130), (0, 150, 70)), W / 2, 230, t, 0.0)
+            B.confetti(cv, t - 1.15)
+        elif kind == "galti":
+            if t > 1.45:
+                put_pop(cv, RT.badge("गलती!", 70, (255, 80, 80), (190, 10, 30)), W / 2, 240, t, 1.45)
         elif kind == "guide":
-            N.put(cv, N.pill("देखो! PO Guide में यहीं लिखा है", 50, B.NAVY, B.GOLD), W / 2, 260,
-                  scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
-        if not files:
-            N.caption(cv, sc["text"], 1.0, cy=960)
+            put_pop(cv, RT.badge("देखो! PO Guide में यहीं लिखा है", 46, (255, 210, 60), (255, 140, 0), (50, 20, 0)),
+                    W / 2, 250, t, 0.0)
+        elif kind == "end":
+            for im, y, t0 in cards:
+                put_pop(cv, im, W / 2, y, t, t0)
         strip(cv, piece)
         proc.stdin.write(cv.convert("RGB").tobytes())
 proc.stdin.close()

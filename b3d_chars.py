@@ -1,5 +1,5 @@
 """
-Postal Wala ke 3D KIRDAAR (Blender, v26 2026-10-29) - cartoon (chibi) style, cel-shading + kaala outline.
+Postal Wala ke 3D KIRDAAR (Blender, v27 2026-10-29) - stylized-asli anupaat, naram roshni + patli rekha.
   build_bhaiya(x, y)  -> Postal Wala Bhaiya: khaki vardi, topi, ghani moonchh, bhoora jhola + patta
   build_golu(x, y)    -> Golu: neeli check shirt, kaale khade baal, laal jhola
 Har kirdaar ek dict (rig): root / head empty / baahen (kandha -> kohni -> haath) / aankh / bhauhen / munh.
@@ -55,7 +55,7 @@ def cel(name, color, outline=True):
         ramp = nt.nodes.new("ShaderNodeValToRGB")
         em = nt.nodes.new("ShaderNodeEmission")
         cr = ramp.color_ramp
-        cr.interpolation = "CONSTANT"
+        cr.interpolation = "EASE"
         sh = (color[0] * 0.55, color[1] * 0.5, min(1.0, color[2] * 0.62 + 0.04))       # thandi chhaaya
         cr.elements[0].position = 0.0
         cr.elements[0].color = sh + (1,)
@@ -109,7 +109,7 @@ def checker(name, c1, c2, scale=18.0):
         s2r = nt.nodes.new("ShaderNodeShaderToRGB")
         ramp = nt.nodes.new("ShaderNodeValToRGB")
         cr = ramp.color_ramp
-        cr.interpolation = "CONSTANT"
+        cr.interpolation = "EASE"
         cr.elements[0].position = 0.0
         cr.elements[0].color = (0.62, 0.66, 0.8, 1)
         cr.elements[1].position = 0.18
@@ -197,7 +197,7 @@ def ball(name, r, mat, parent, loc, scale=(1, 1, 1), rot=(0, 0, 0), line=True, s
     o.parent = parent
     o.location, o.scale, o.rotation_euler = loc, scale, rot
     if line:
-        outline(o, 0.012 / max(0.3, min(scale)))          # duniya me ~0.012 moti rekha
+        outline(o, 0.0065 / max(0.3, min(scale)))          # duniya me ~0.012 moti rekha
     return o
 
 
@@ -213,7 +213,7 @@ def cyl(name, r, depth, mat, parent, loc, scale=(1, 1, 1), rot=(0, 0, 0), r2=Non
     o.parent = parent
     o.location, o.scale, o.rotation_euler = loc, scale, rot
     if line:
-        outline(o, 0.018)
+        outline(o, 0.007)
     return o
 
 
@@ -232,7 +232,7 @@ def cube(name, mat, parent, loc, scale, rot=(0, 0, 0), bevel=0.0, line=True):
     o.parent = parent
     o.location, o.scale, o.rotation_euler = loc, scale, rot
     if line:
-        outline(o, 0.015)
+        outline(o, 0.006)
     return o
 
 
@@ -281,202 +281,251 @@ def text3d(name, txt, size, mat, parent, loc, rot=(R(90), 0, 0), depth=0.02):
     return o
 
 
-# ======================================================================= kirdaar
-SKIN_BH = (0.74, 0.47, 0.32)
-SKIN_GO = (0.84, 0.6, 0.43)
-KHAKI = (0.78, 0.66, 0.43)
-KHAKI_D = (0.62, 0.51, 0.31)
-BROWN = (0.42, 0.22, 0.09)
-HAIR = (0.06, 0.05, 0.06)
+# ======================================================================= kirdaar (v27: zyada asli anupaat)
+# Lambai ~2.95: sir ~1/3.8 (stylized-asli, Pixar jaisa), lambi baahen/taangen. Pehchaan (unique):
+#   Bhaiya: mudi hui handlebar moonchh, kanpatti par safed baal, seene par laal "POSTAL WALA" badge, jeb me pen,
+#           laal patti wali khaki topi + sunehra badge, jhole par "PW"
+#   Golu:   gol kaala chashma, khade baal, neeli check shirt, laal jhola, safed joote
+SKIN_BH = (0.66, 0.41, 0.27)
+SKIN_GO = (0.78, 0.53, 0.37)
+KHAKI = (0.76, 0.64, 0.42)
+KHAKI_D = (0.6, 0.5, 0.31)
+BROWN = (0.4, 0.21, 0.08)
+HAIR = (0.05, 0.04, 0.05)
 NAVY = (0.08, 0.12, 0.32)
 GOLD = (1.0, 0.75, 0.15)
-RED = (0.85, 0.12, 0.12)
+RED = (0.84, 0.13, 0.16)
+SH_X, SH_Z, L1, L2 = 0.43, 1.97, 0.42, 0.4
+HEAD_Z, FACE_R = 2.15, 0.36
 
 
-def _face(c, head, skin, eye_y=-0.47, big=1.0):
-    """Aankhen (safed + putli + chamak), bhauhen, naak, kaan, munh ke saare roop."""
-    white = flat("aankh_safed", (1, 1, 1))
-    black = flat("putli", (0.03, 0.03, 0.05))
-    shine = flat("chamak", (1, 1, 1), 1.4)
+def _face(c, f, skin, big=1.0):
+    """f = chehre ka beech (sir ke gole ka kendra). Aankh: safed + bhoori iris + putli + chamak."""
+    white = flat("aankh_safed", (0.98, 0.97, 0.95))
+    iris = cel("iris", (0.36, 0.2, 0.1))
+    black = flat("putli", (0.02, 0.02, 0.03))
+    shine = flat("chamak", (1, 1, 1), 1.5)
     c["eyes"], c["pupils"] = [], []
     for s in (-1, 1):
-        e = ball(f"aankh{s}", 0.125 * big, white, head, (0.19 * s, eye_y, 0.07), (1, 0.55, 1.18), line=True)
-        p = ball(f"putli{s}", 0.075 * big, black, e, (0.0, -0.12, -0.01), (1, 0.6, 1.1), line=False)
-        ball(f"chamak{s}", 0.028 * big, shine, p, (0.03, -0.05, 0.035), line=False, seg=16)
+        e = ball(f"aankh{s}", 0.068 * big, white, f, (0.125 * s, -0.3, 0.045), (1, 0.6, 1.08), line=True)
+        p = ball(f"iris{s}", 0.042 * big, iris, e, (0.0, -0.085, -0.003), (1, 0.55, 1.0), line=False, seg=24)
+        ball(f"putli{s}", 0.022 * big, black, p, (0, -0.03, 0), (1, 0.6, 1), line=False, seg=16)
+        ball(f"chamak{s}", 0.011 * big, shine, p, (0.014, -0.045, 0.016), line=False, seg=12)
         c["eyes"].append(e)
         c["pupils"].append(p)
     hair = flat("bhauh", HAIR)
     c["brows"] = []
     for s in (-1, 1):
-        bw = empty(f"bhauh_e{s}", head, (0.19 * s, -0.46, 0.27 * big ** 0.5))
-        tube(f"bhauh{s}", arc(0.2, -0.035), 0.026, hair, bw)
+        bw = empty(f"bhauh_e{s}", f, (0.13 * s, -0.31, 0.15))
+        tube(f"bhauh{s}", arc(0.15, -0.022), 0.022 * big, hair, bw)
         c["brows"].append(bw)
-    ball("naak", 0.075, cel("twacha_n", skin), head, (0, -0.56, -0.07), (1, 0.9, 0.9))
+    sk_n = cel("twacha_n", skin)
+    ball("naak", 0.055, sk_n, f, (0, -0.35, -0.04), (0.85, 0.9, 1.2))
     for s in (-1, 1):
-        ball(f"kaan{s}", 0.1, cel("twacha_k", skin), head, (0.53 * s, 0.02, -0.02), (0.6, 1, 1))
-    # munh ke roop (scale 0 / 1 se badalte)
-    lip = flat("hont", (0.35, 0.05, 0.07))
-    mz = -0.3
+        ball(f"nathuna{s}", 0.03, sk_n, f, (0.035 * s, -0.345, -0.075), line=False, seg=16)
+        ball(f"kaan{s}", 0.07, cel("twacha_k", skin), f, (0.335 * s, 0.02, -0.01), (0.55, 0.9, 1.1))
+    lip = flat("hont", (0.4, 0.08, 0.1))
+    ink_l = flat("rekha", (0.22, 0.06, 0.06))
+    mz = -0.17
     m = {}
-    m["smile"] = tube("m_smile", arc(0.24, 0.07), 0.022, flat("rekha", (0.2, 0.05, 0.06)), empty("m_s", head, (0, -0.46, mz)))
-    m["frown"] = tube("m_frown", arc(0.2, -0.06), 0.022, flat("rekha", (0.2, 0.05, 0.06)), empty("m_f", head, (0, -0.46, mz - 0.03)))
-    m["flat"] = tube("m_flat", [(-0.08, 0, 0), (0, 0, 0.005), (0.08, 0, 0)], 0.02, flat("rekha", (0.2, 0.05, 0.06)),
-                     empty("m_l", head, (0, -0.46, mz)))
-    og = empty("m_open", head, (0, -0.47, mz - 0.03))
-    ball("munh_khula", 0.14, lip, og, (0, 0, 0), (1, 0.35, 0.62), line=True)
-    cube("daant", flat("daant", (1, 1, 1)), og, (0, -0.045, 0.045), (0.18, 0.02, 0.04), line=False)
+    m["smile"] = tube("m_smile", arc(0.15, 0.04), 0.014, ink_l, empty("m_s", f, (0, -0.327, mz)))
+    m["frown"] = tube("m_frown", arc(0.12, -0.035), 0.014, ink_l, empty("m_f", f, (0, -0.325, mz - 0.02)))
+    m["flat"] = tube("m_flat", [(-0.05, 0, 0), (0, 0, 0.003), (0.05, 0, 0)], 0.013, ink_l, empty("m_l", f, (0, -0.327, mz)))
+    og = empty("m_open", f, (0, -0.312, mz - 0.02))
+    ball("munh_khula", 0.08, lip, og, (0, 0, 0), (1, 0.35, 0.6), line=True)
+    cube("daant", flat("daant", (1, 1, 1)), og, (0, -0.026, 0.026), (0.1, 0.012, 0.022), line=False)
     m["open"] = og
-    oo = empty("m_O", head, (0, -0.48, mz - 0.03))
-    ball("munh_O", 0.075, lip, oo, (0, 0, 0), (1, 0.4, 1.3), line=True)
+    oo = empty("m_O", f, (0, -0.315, mz - 0.025))
+    ball("munh_O", 0.045, lip, oo, (0, 0, 0), (1, 0.4, 1.3), line=True)
     m["O"] = oo
     c["mouths"] = m
     for k, o in m.items():
         o.scale = (1, 1, 1) if k == "smile" else (0.001, 0.001, 0.001)
-    # gaal ki laali
-    blush = flat("laali", (1.0, 0.45, 0.45), 0.9)
+    blush = flat("laali", (1.0, 0.5, 0.48), 0.8)
     c["blush"] = []
     for s in (-1, 1):
-        b = ball(f"laali{s}", 0.07, blush, head, (0.31 * s, -0.43, -0.13), (1.2, 0.3, 0.7), line=False, seg=16)
+        b = ball(f"laali{s}", 0.045, blush, f, (0.2 * s, -0.27, -0.09), (1.2, 0.3, 0.7), line=False, seg=16)
         b.scale = (0.001, 0.001, 0.001)
         c["blush"].append(b)
 
 
-def _arms(c, body, skin, sleeve, sleeve_len=0.22, sx=0.43, sz=1.2, hand_r=0.1):
+def _arms(c, body, skin, sleeve, sleeve_len=0.24, cuff=None):
     c["arms"] = []
     sk = cel("twacha_b", skin)
     for s in (-1, 1):
-        sh = empty(f"kandha{s}", body, (sx * s, 0, sz))
-        cyl(f"aasteen{s}", 0.115, sleeve_len, sleeve, sh, (0, 0, -sleeve_len / 2 + 0.02))
-        ball(f"baanh{s}", 0.085, sk, sh, (0, 0, -0.2), (1, 1, 2.3))
-        el = empty(f"kohni{s}", sh, (0, 0, -0.36))
-        ball(f"kalaai{s}", 0.075, sk, el, (0, 0, -0.15), (1, 1, 2.2))
-        hd = empty(f"haath_e{s}", el, (0, 0, -0.33))
-        ball(f"haath{s}", hand_r, sk, hd, (0, 0, 0), (1, 0.8, 1.05))
+        sh = empty(f"kandha{s}", body, (SH_X * s, 0, SH_Z))
+        ball(f"kandha_gol{s}", 0.13, sleeve, sh, (0, 0, -0.02))
+        cyl(f"aasteen{s}", 0.11, sleeve_len, sleeve, sh, (0, 0, -sleeve_len / 2 - 0.02), r2=0.1)
+        if cuff:
+            cyl(f"mod{s}", 0.104, 0.05, cuff, sh, (0, 0, -sleeve_len - 0.02))
+        ball(f"baanh{s}", 0.075, sk, sh, (0, 0, -L1 / 2 - 0.02), (1, 1, 2.9))
+        el = empty(f"kohni{s}", sh, (0, 0, -L1))
+        ball(f"kalaai{s}", 0.065, sk, el, (0, 0, -L2 / 2), (1, 1, 3.1))
+        hd = empty(f"haath_e{s}", el, (0, 0, -L2))
+        ball(f"haath{s}", 0.075, sk, hd, (0, -0.005, -0.03), (0.9, 0.62, 1.15))
+        ball(f"angootha_chhota{s}", 0.025, sk, hd, (0.045 * -s, -0.04, -0.01), (1, 1, 1.8), (R(-20), 0, 0))
         th = empty(f"angootha_e{s}", hd, (0, -0.02, -0.02))          # shabaash: duniya me upar (hisaab se)
-        th.rotation_euler = (R(148), R(-26 * s), 0)
-        ball(f"angootha{s}", 0.04, sk, th, (0, 0, 0.08), (1, 1, 2.2))
-        fi = empty(f"ungli_e{s}", hd, (0, -0.01, -0.07))             # batata: kalaai ki disha me
-        ball(f"ungli{s}", 0.035, sk, fi, (0, 0, -0.09), (1, 1, 2.8))
+        th.rotation_euler = (R(130), 0, 0)
+        ball(f"angootha{s}", 0.03, sk, th, (0, 0, 0.065), (1, 1, 2.3))
+        fi = empty(f"ungli_e{s}", hd, (0, -0.01, -0.08))             # batata: kalaai ki disha me
+        ball(f"ungli{s}", 0.022, sk, fi, (0, 0, -0.06), (1, 1, 3.0))
         th.scale = fi.scale = (0.001, 0.001, 0.001)
         c["arms"].append({"s": s, "sh": sh, "el": el, "hand": hd, "thumb": th, "finger": fi})
 
 
-def _legs(c, root, trouser, shoe, hip=0.55):
+def _legs(c, root, trouser, shoe, sole=None):
+    c["legs"] = []
     for s in (-1, 1):
-        lg = empty(f"taang_e{s}", root, (0.17 * s, 0, hip))
-        ball(f"taang{s}", 0.13, trouser, lg, (0, 0, -0.24), (1, 1, 2.1))
-        ball(f"joota{s}", 0.13, shoe, lg, (0, -0.07, -0.5), (1, 1.5, 0.55))
-        c.setdefault("legs", []).append(lg)
+        lg = empty(f"taang_e{s}", root, (0.16 * s, 0, 1.05))
+        ball(f"jaangh{s}", 0.14, trouser, lg, (0, 0, -0.26), (1, 1, 1.95))
+        ball(f"pindli{s}", 0.115, trouser, lg, (0, 0, -0.74), (1, 1, 2.25))
+        ball(f"joota{s}", 0.11, shoe, lg, (0, -0.08, -1.0), (1, 1.65, 0.55))
+        if sole:
+            cube(f"tala{s}", sole, lg, (0, -0.08, -1.045), (0.2, 0.34, 0.03), bevel=0.01)
+        c["legs"].append(lg)
 
 
 def build_bhaiya(x=0.0, y=0.0, face=0.0):
-    """Postal Wala Bhaiya: khaki vardi, topi (sunehra badge), ghani moonchh, bhoora patta + jhola."""
     c = {"name": "bhaiya"}
     root = empty("bhaiya", None, (x, y, 0))
     root.rotation_euler = (0, 0, R(face))
     c["root"] = root
     khaki, khaki_d = cel("khaki", KHAKI), cel("khaki_d", KHAKI_D)
     brown, skin = cel("bhoora", BROWN), cel("twacha", SKIN_BH)
-    _legs(c, root, khaki_d, cel("joota", (0.1, 0.07, 0.06)))
+    _legs(c, root, khaki_d, cel("joota", (0.08, 0.06, 0.05)))
     body = empty("dhad", root, (0, 0, 0))
     c["body"] = body
-    ball("pet", 0.5, khaki, body, (0, 0, 0.98), (0.86, 0.66, 0.92))
-    cyl("belt", 0.32, 0.08, brown, body, (0, 0, 0.66), (1, 0.76, 1))
-    cube("bakkal", flat("pital", GOLD), body, (0, -0.25, 0.66), (0.11, 0.03, 0.08), line=True)
-    for s in (-1, 1):                                                       # jeb + bataan + kandhe ki patti
-        cube(f"jeb{s}", khaki_d, body, (0.18 * s, -0.31, 1.06), (0.16, 0.03, 0.15), bevel=0.01)
-        cube(f"epaulet{s}", khaki_d, body, (0.32 * s, 0.0, 1.38), (0.2, 0.18, 0.03))
-    for z in (0.78, 0.92, 1.06, 1.2):
-        ball(f"bataan{z}", 0.02, flat("pital_b", GOLD), body, (0, -0.33, z), line=False, seg=12)
-    cube("naam_patti", flat("navy", NAVY), body, (0.18, -0.335, 1.2), (0.17, 0.01, 0.05), line=False)
-    tube("patta", [(-0.33, -0.3, 1.36), (-0.1, -0.36, 1.12), (0.15, -0.36, 0.88), (0.36, -0.28, 0.68)], 0.032,
+    ball("kamar", 0.3, khaki_d, body, (0, 0, 1.1), (1.2, 0.85, 0.6))
+    ball("seena", 0.5, khaki, body, (0, 0, 1.58), (0.8, 0.54, 0.98))
+    cyl("belt", 0.33, 0.07, brown, body, (0, 0, 1.14), (1, 0.75, 1))
+    cube("bakkal", flat("pital", GOLD), body, (0, -0.25, 1.14), (0.09, 0.02, 0.065))
+    for s in (-1, 1):
+        cube(f"jeb{s}", khaki_d, body, (0.17 * s, -0.26, 1.72), (0.14, 0.03, 0.13), bevel=0.01)
+        cube(f"epaulet{s}", khaki_d, body, (0.3 * s, 0.0, 2.04), (0.18, 0.16, 0.025))
+    for z in (1.3, 1.45, 1.6, 1.75, 1.9):
+        ball(f"bataan{z}", 0.016, flat("pital_b", GOLD), body, (0, -0.275, z), line=False, seg=12)
+    # pehchaan: laal "POSTAL WALA" badge (daayen seene) + jeb me pen
+    bd = empty("badge_e", body, (-0.17, -0.285, 1.86))
+    cube("badge", cel("badge_laal", RED), bd, (0, 0, 0), (0.2, 0.012, 0.055), bevel=0.006)
+    t = text3d("badge_text", "POSTAL WALA", 0.034, flat("badge_akshar", (1, 1, 1), 1.2), bd, (0, -0.008, -0.002),
+               depth=0.002)
+    cyl("pen", 0.012, 0.13, flat("pen_neela", (0.1, 0.25, 0.85)), body, (0.22, -0.27, 1.78))
+    cyl("pen_dhakkan", 0.013, 0.03, flat("pital_p", GOLD), body, (0.22, -0.27, 1.85), line=False)
+    tube("patta", [(-0.33, -0.25, 2.0), (-0.1, -0.29, 1.72), (0.15, -0.29, 1.42), (0.36, -0.22, 1.18)], 0.026,
          brown, body)
-    bag = empty("jhola_e", body, (0.46, -0.08, 0.6))
-    cube("jhola", brown, bag, (0, 0, 0), (0.15, 0.3, 0.26), bevel=0.03)
-    cube("jhola_dhakkan", cel("bhoora_d", (0.32, 0.16, 0.06)), bag, (-0.005, -0.02, 0.07), (0.16, 0.31, 0.13),
+    bag = empty("jhola_e", body, (0.44, -0.06, 1.1))
+    cube("jhola", brown, bag, (0, 0, 0), (0.13, 0.3, 0.26), bevel=0.03)
+    cube("jhola_dhakkan", cel("bhoora_d", (0.3, 0.15, 0.05)), bag, (-0.004, -0.02, 0.07), (0.14, 0.31, 0.13),
          bevel=0.02)
+    text3d("jhola_pw", "PW", 0.09, flat("pw_peela", GOLD, 1.2), bag, (-0.075, -0.02, 0.06), rot=(R(90), 0, R(-90)),
+           depth=0.004)
     c["bag"] = bag
     _arms(c, body, SKIN_BH, khaki)
-    head = empty("sir", body, (0, 0, 1.4))
+    cyl("gardan", 0.1, 0.2, skin, body, (0, 0, 2.1))
+    cube("kalar", khaki_d, body, (0, -0.1, 2.06), (0.3, 0.2, 0.05), (R(-12), 0, 0))
+    head = empty("sir", body, (0, 0, HEAD_Z))
     c["head"] = head
-    ball("chehra", 0.55, skin, head, (0, 0, 0.36), (1, 0.95, 0.98))
-    ball("baal", 0.53, cel("baal", HAIR), head, (0, 0.08, 0.5), (1.02, 0.97, 0.8))
-    f = empty("chehra_e", head, (0, 0, 0.36))
+    f = empty("chehra_e", head, (0, 0, 0.38))
+    ball("chehra", FACE_R, skin, f, (0, 0, 0), (0.92, 0.98, 1.1))
+    ball("jabda", 0.25, skin, f, (0, -0.06, -0.17), (1.1, 0.95, 0.75))
+    hair = cel("baal", HAIR)
+    ball("baal", 0.35, hair, f, (0, 0.06, 0.08), (0.95, 0.95, 0.95))
+    grey = cel("safed_baal", (0.78, 0.78, 0.8))
+    for s in (-1, 1):                                                        # kanpatti par safed baal
+        ball(f"kanpatti{s}", 0.07, grey, f, (0.305 * s, -0.06, 0.02), (0.45, 0.9, 1.2), line=False)
     _face(c, f, SKIN_BH)
-    must = cel("moonchh", HAIR)                                            # ghani moonchh (pehchaan)
+    must = cel("moonchh", (0.06, 0.05, 0.05))                                # handlebar moonchh (pehchaan)
+    ball("moonchh_beech", 0.06, must, f, (0, -0.335, -0.11), (1.5, 0.6, 0.6))
     for s in (-1, 1):
-        ball(f"moonchh{s}", 0.1, must, f, (0.1 * s, -0.53, -0.17), (1.45, 0.55, 0.62), (0, R(-18 * s), 0))
-    cap = empty("topi_e", head, (0, 0, 0.82))
-    cyl("topi", 0.47, 0.32, khaki, cap, (0, 0.02, 0.1), r2=0.56)
-    cyl("topi_patti", 0.5, 0.09, brown, cap, (0, 0.02, -0.02), line=True)
-    cyl("chhajja", 0.42, 0.045, cel("chhajja", (0.14, 0.09, 0.05)), cap, (0, -0.32, -0.06), (1, 0.62, 1),
-        (R(-14), 0, 0))
-    cyl("topi_badge", 0.07, 0.02, flat("pital_c", GOLD), cap, (0, -0.47, 0.12), rot=(R(90), 0, 0))
+        tube(f"moonchh{s}", [(0.0, 0, 0), (0.07 * s, -0.005, -0.03), (0.13 * s, 0.01, -0.02), (0.165 * s, 0.03, 0.025),
+                             (0.15 * s, 0.045, 0.06)], 0.026, must, f, (0, -0.33, -0.1))
+    cap = empty("topi_e", head, (0, 0, 0.66))
+    cyl("topi", 0.33, 0.2, khaki, cap, (0, 0.02, 0.06), r2=0.39)
+    cyl("topi_patti", 0.345, 0.06, cel("topi_laal", RED), cap, (0, 0.02, -0.02))
+    cyl("chhajja", 0.3, 0.03, cel("chhajja", (0.12, 0.08, 0.05)), cap, (0, -0.24, -0.05), (1, 0.6, 1), (R(-12), 0, 0))
+    cyl("topi_badge", 0.045, 0.015, flat("pital_c", GOLD, 1.2), cap, (0, -0.335, 0.07), rot=(R(80), 0, 0))
     c["cap"] = cap
     pose(c, "rest", 0.0)
     return c
 
 
 def build_golu(x=0.0, y=0.0, face=0.0):
-    """Golu (grahak): neeli check shirt, kaale khade baal, laal jhola, gehri patloon."""
     c = {"name": "golu"}
     root = empty("golu", None, (x, y, 0))
     root.rotation_euler = (0, 0, R(face))
     c["root"] = root
-    shirt = checker("check_shirt", (0.55, 0.75, 1.0), (0.85, 0.93, 1.0), 22.0)
+    shirt = checker("check_shirt", (0.5, 0.72, 1.0), (0.85, 0.93, 1.0), 26.0)
     skin = cel("twacha_g", SKIN_GO)
-    _legs(c, root, cel("patloon", (0.12, 0.13, 0.2)), cel("joota_g", (0.35, 0.2, 0.1)), hip=0.6)
-    body = empty("dhad", root, (0, 0, 0.05))
+    jeans = cel("jeans", (0.16, 0.24, 0.45))
+    _legs(c, root, jeans, cel("joota_g", (0.95, 0.95, 0.97)), sole=cel("tala_g", (0.85, 0.2, 0.2)))
+    body = empty("dhad", root, (0, 0, 0))
     c["body"] = body
-    ball("pet", 0.48, shirt, body, (0, 0, 0.98), (0.8, 0.62, 0.92))
-    for z in (0.8, 0.95, 1.1, 1.25):
-        ball(f"bataan{z}", 0.018, flat("bataan_g", (0.95, 0.95, 1.0)), body, (0, -0.3, z), line=False, seg=12)
-    cube("kalar", cel("kalar", (0.75, 0.87, 1.0)), body, (0, -0.15, 1.36), (0.32, 0.22, 0.05), (R(-15), 0, 0))
-    tube("laal_patta", [(0.33, -0.28, 1.36), (0.1, -0.33, 1.12), (-0.15, -0.33, 0.88), (-0.36, -0.25, 0.7)], 0.03,
+    ball("kamar", 0.29, jeans, body, (0, 0, 1.1), (1.15, 0.85, 0.6))
+    ball("seena", 0.48, shirt, body, (0, 0, 1.58), (0.78, 0.52, 0.98))
+    for z in (1.3, 1.45, 1.6, 1.75, 1.9):
+        ball(f"bataan{z}", 0.014, flat("bataan_g", (0.95, 0.95, 1.0)), body, (0, -0.26, z), line=False, seg=12)
+    cube("kalar", cel("kalar", (0.7, 0.84, 1.0)), body, (0, -0.1, 2.06), (0.3, 0.2, 0.045), (R(-15), 0, 0))
+    tube("laal_patta", [(0.33, -0.24, 2.0), (0.1, -0.28, 1.72), (-0.15, -0.28, 1.42), (-0.36, -0.2, 1.2)], 0.024,
          cel("laal", RED), body)
-    bag = empty("jhola_e", body, (-0.45, -0.05, 0.62))
-    cube("laal_jhola", cel("laal_j", RED), bag, (0, 0, 0), (0.13, 0.28, 0.3), bevel=0.04)
+    bag = empty("jhola_e", body, (-0.42, -0.03, 1.12))
+    cube("laal_jhola", cel("laal_j", RED), bag, (0, 0, 0), (0.12, 0.27, 0.3), bevel=0.04)
     c["bag"] = bag
-    _arms(c, body, SKIN_GO, shirt, sleeve_len=0.26, sx=0.41)
-    head = empty("sir", body, (0, 0, 1.4))
+    _arms(c, body, SKIN_GO, shirt, sleeve_len=0.3, cuff=cel("mod_g", (0.42, 0.62, 0.95)))
+    cyl("gardan", 0.095, 0.2, skin, body, (0, 0, 2.1))
+    head = empty("sir", body, (0, 0, HEAD_Z))
     c["head"] = head
-    ball("chehra", 0.54, skin, head, (0, 0, 0.36), (0.97, 0.95, 1.0))
+    f = empty("chehra_e", head, (0, 0, 0.38))
+    ball("chehra", FACE_R * 0.97, skin, f, (0, 0, 0), (0.9, 0.97, 1.08))
+    ball("jabda", 0.23, skin, f, (0, -0.06, -0.17), (1.05, 0.92, 0.72))
     hair = cel("baal_g", HAIR)
-    ball("baal", 0.53, hair, head, (0, 0.07, 0.52), (1.03, 0.98, 0.78))
-    for i, (hx, hz, rx) in enumerate(((-0.28, 0.78, 25), (-0.1, 0.84, 18), (0.1, 0.85, 12), (0.27, 0.79, 6),
-                                       (0.0, 0.7, 40))):
-        cyl(f"lat{i}", 0.13, 0.32, hair, head, (hx, -0.12 - (0.12 if i == 4 else 0), hz + 0.05), r2=0.0,
-            rot=(R(rx), R(hx * 30), 0))
-    f = empty("chehra_e", head, (0, 0, 0.36))
-    _face(c, f, SKIN_GO, big=1.08)
+    ball("baal", 0.345, hair, f, (0, 0.05, 0.1), (0.97, 0.98, 0.9))
+    for i, (hx, hz, rx, ry) in enumerate(((-0.2, 0.3, 30, -25), (-0.08, 0.36, 22, -10), (0.06, 0.37, 15, 8),
+                                          (0.19, 0.31, 10, 25), (0.0, 0.25, 45, 0), (-0.13, 0.22, 55, -15),
+                                          (0.13, 0.22, 55, 15))):
+        cyl(f"lat{i}", 0.085, 0.22, hair, f, (hx, -0.07 - (0.1 if i >= 4 else 0), hz), r2=0.0, rot=(R(rx), R(ry), 0))
+    _face(c, f, SKIN_GO, big=1.05)
+    # pehchaan: gol kaala chashma
+    frame = cel("chashma", (0.05, 0.05, 0.07))
+    for s in (-1, 1):
+        bpy.ops.mesh.primitive_torus_add(major_radius=0.085, minor_radius=0.011, location=(0, 0, 0),
+                                         rotation=(R(90), 0, 0))
+        o = bpy.context.object
+        o.name = f"chashma{s}"
+        o.data.materials.append(frame)
+        o.parent = f
+        o.location = (0.125 * s, -0.372, 0.045)
+        cyl(f"dandi{s}", 0.008, 0.3, frame, f, (0.215 * s, -0.2, 0.06), rot=(R(90), 0, R(8 * s)), line=False)
+    cyl("chashma_pul", 0.009, 0.08, frame, f, (0, -0.38, 0.06), rot=(0, R(90), 0), line=False)
     pose(c, "rest", 0.0)
     return c
 
 
 # ======================================================================= mudra (pose) + bhaav
-# baanh: (aage-peeche rx, bahar ry) kandha + kohni rx;  s = +1 daayi (x+) / -1 baayi
-POSES = {   # s: ((aage rx, bahar out, andar in), kohni rx) - haath kahan pahunchta hai, hisaab se jaancha
-    "rest":     {+1: ((5, 9, 0), -12), -1: ((5, 9, 0), -12)},
-    "khush":    {+1: ((-10, 38, 0), -35), -1: ((-10, 38, 0), -35)},
-    "shabaash": {+1: ((-70, 22, 0), -75), -1: ((5, 9, 0), -12)},           # haath seene ke aage, angootha upar
-    "batata":   {+1: ((-60, 30, 0), -100), -1: ((5, 9, 0), -15)},          # ungli upar, kandhe ki oonchai
-    "sochta":   {+1: ((-60, 0, 30), -125), -1: ((-25, 18, 0), -95)},       # haath jabde/thodi par
-    "chauka":   {+1: ((-20, 75, 0), -100), -1: ((-20, 75, 0), -100)},      # dono haath "arre!"
-    "udaas":    {+1: ((8, 2, 0), -5), -1: ((8, 2, 0), -5)},
-    "gussa":    {+1: ((-20, 28, 0), -110), -1: ((-20, 28, 0), -110)},
-    "wave":     {+1: ((-10, 150, 0), -30), -1: ((5, 9, 0), -12)},
-    "dikhao":   {+1: ((-80, 28, 0), -20), -1: ((5, 9, 0), -12)},           # haath aage - kuch dikhaana
+# s: ((aage rx, bahar out, andar in), kohni rx) - naye anupaat ke liye ganit se nikaale (haath kahan pahunchta)
+POSES = {
+    "rest":     {+1: ((15, 5, -10), -30), -1: ((15, 5, -10), -30)},
+    "khush":    {+1: ((15, 50, 5), -80), -1: ((15, 50, 5), -80)},
+    "shabaash": {+1: ((-30, 0, 15), -100), -1: ((15, 5, -10), -30)},
+    "batata":   {+1: ((-55, 35, -5), -115), -1: ((15, 5, -10), -30)},
+    "sochta":   {+1: ((-65, 15, 35), -105), -1: ((30, 0, 10), -70)},
+    "chauka":   {+1: ((-50, -10, -20), -110), -1: ((-50, -10, -20), -110)},
+    "udaas":    {+1: ((5, 0, 20), 0), -1: ((5, 0, 20), 0)},
+    "gussa":    {+1: ((30, 0, 10), -70), -1: ((30, 0, 10), -70)},
+    "wave":     {+1: ((-5, 155, -20), -30), -1: ((15, 5, -10), -30)},
+    "dikhao":   {+1: ((-70, -10, 5), -10), -1: ((15, 5, -10), -30)},
 }
 EMO = {   # bhauh (ghumaav deg, oonchai), munh, aankh (scale), putli, sir (jhukaav, tedha), laali, mudra
-    "khush":    ((-6, 0.03), "open", 1.0, 1.0, (-4, 0), True, "khush"),
-    "shabaash": ((-8, 0.04), "open", 0.9, 1.0, (-6, 5), True, "shabaash"),
-    "batata":   ((-4, 0.03), "smile", 1.0, 1.0, (-3, -4), False, "batata"),
-    "sochta":   ((14, 0.05), "flat", 1.0, 0.85, (-2, 9), False, "sochta"),
-    "chauka":   ((-14, 0.09), "O", 1.3, 0.62, (-8, 0), False, "chauka"),
-    "udaas":    ((24, 0.0), "frown", 0.92, 1.0, (14, -6), False, "udaas"),
-    "gussa":    ((-24, -0.03), "frown", 0.95, 0.9, (5, 0), False, "gussa"),
+    "khush":    ((-6, 0.02), "open", 1.0, 1.0, (-4, 0), True, "khush"),
+    "shabaash": ((-8, 0.025), "open", 0.92, 1.0, (-6, 5), True, "shabaash"),
+    "batata":   ((-4, 0.015), "smile", 1.0, 1.0, (-3, -4), False, "batata"),
+    "sochta":   ((14, 0.03), "flat", 1.0, 0.9, (-2, 9), False, "sochta"),
+    "chauka":   ((-14, 0.05), "O", 1.25, 0.75, (-8, 0), False, "chauka"),
+    "udaas":    ((22, 0.0), "frown", 0.95, 1.0, (12, -6), False, "udaas"),
+    "gussa":    ((-22, -0.02), "frown", 0.95, 0.95, (5, 0), False, "gussa"),
     "rest":     ((0, 0.0), "smile", 1.0, 1.0, (0, 0), False, "rest"),
+    "dikhao":   ((-4, 0.015), "smile", 1.0, 1.0, (-3, 0), False, "dikhao"),
 }
+BROW_Z = 0.15
 
 
 def pose(c, name, sec):
@@ -501,13 +550,13 @@ def emotion(c, name, sec, hold=None):
         s = -1 if i == 0 else 1
         K(b, "rotation_euler", sec, (0, R(bro * s), 0))
         base = b.location
-        K(b, "location", sec, (base[0], base[1], (0.27 if c["name"] == "bhaiya" else 0.28) + bz))
+        K(b, "location", sec, (base[0], base[1], BROW_Z + bz))
     for k, o in c["mouths"].items():
         K(o, "scale", sec, (1, 1, 1) if k == mouth else (0.001, 0.001, 0.001))
     for e_ in c["eyes"]:
-        K(e_, "scale", sec, (eye, 0.55, 1.18 * eye))
+        K(e_, "scale", sec, (eye, 0.6, 1.08 * eye))
     for p in c["pupils"]:
-        K(p, "scale", sec, (pup, 0.6, 1.1 * pup))
+        K(p, "scale", sec, (pup, 0.55, pup))
     for b in c["blush"]:
         K(b, "scale", sec, (1.2, 0.3, 0.7) if blush else (0.001, 0.001, 0.001))
     K(c["head"], "rotation_euler", sec, (R(hx), 0, R(hz)))
@@ -518,9 +567,9 @@ def emotion(c, name, sec, hold=None):
 def blink(c, sec):
     eye = EMO.get(c.get("emo", "rest"), EMO["rest"])[2]
     for e_ in c["eyes"]:
-        K(e_, "scale", sec, (eye, 0.55, 1.18 * eye))
-        K(e_, "scale", sec + 0.06, (eye, 0.55, 0.08))
-        K(e_, "scale", sec + 0.13, (eye, 0.55, 1.18 * eye))
+        K(e_, "scale", sec, (eye, 0.6, 1.08 * eye))
+        K(e_, "scale", sec + 0.06, (eye, 0.6, 0.08))
+        K(e_, "scale", sec + 0.13, (eye, 0.6, 1.08 * eye))
 
 
 def talk(c, t0, t1, rate=7.0):
@@ -549,7 +598,7 @@ def idle(c, t0, t1, phase=0.0):
     """Zinda: saans (dhad upar-neeche) + halka jhoolna + har ~2.5s palak."""
     t = t0
     while t <= t1:
-        K(c["body"], "location", t, (0, 0, (0.05 if c["name"] == "golu" else 0) + 0.015 * math.sin(t * 2.6 + phase)))
+        K(c["body"], "location", t, (0, 0, 0.012 * math.sin(t * 2.6 + phase)))
         K(c["body"], "rotation_euler", t, (0, R(1.5 * math.sin(t * 1.6 + phase)), 0))
         t += 0.25
     t = t0 + 0.8 + phase % 1.0

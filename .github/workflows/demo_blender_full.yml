@@ -1,4 +1,4 @@
-name: Demo - POORI reel Blender me (Clause 26 Part 5, ek baar)
+name: Demo - POORI reel Blender me (3D kirdaar, Clause 26 Part 5)
 
 # User (2026-10-29): "sari chize blender se animate karwao". Kuch post nahi hota, series state nahi badalta.
 # 1) taiyaari: Golu ke bhaav + awaaz + likhai-tasveeren  2) har drishya alag runner par Blender render
@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scene: [0, 1, 2, 3, 4, 5, 6, 7]
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -83,20 +83,21 @@ jobs:
           sudo apt-get install -y --no-install-recommends libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 \
             libxfixes3 libxrender1 libxkbcommon0 libsm6
           "$RUNNER_TEMP/blender/blender" --version | head -n 2
-      - name: Drishya ${{ matrix.scene }} render
+      - name: Tukda ${{ matrix.chunk }} render (3D kirdaar)
+        timeout-minutes: 40
         run: |
           set -o pipefail
-          B3D_JOB=b3d_job B3D_SCENE=${{ matrix.scene }} xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 2 \
-            --python b3d_reel.py 2>&1 | grep -E "B3D_|Error|error|Traceback|Fra:1 |Append frame 1$|Saved" | tail -n 60
-          touch b3d_job/.m${{ matrix.scene }}
-          ls b3d_job/frames_${{ matrix.scene }} 2>/dev/null | wc -l
+          B3D_JOB=b3d_job B3D_CHUNK=${{ matrix.chunk }} xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 2 \
+            --python b3d_reel3d.py 2>&1 | grep -E "B3D_|Error|error|Traceback|CEL_|OUTLINE_|CHECKER_" | tail -n 60
+          touch b3d_job/.m${{ matrix.chunk }}
+          ls -d b3d_job/frames_* 2>/dev/null; ls b3d_job/frames_*/ 2>/dev/null | wc -l
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: b3d-frames-${{ matrix.scene }}
+          name: b3d-frames-${{ matrix.chunk }}
           path: |
-            b3d_job/frames_${{ matrix.scene }}/
-            b3d_job/.m${{ matrix.scene }}
+            b3d_job/frames_*/
+            b3d_job/.m${{ matrix.chunk }}
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 3
