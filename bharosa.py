@@ -56,6 +56,18 @@ RAASTA_VOICES = ["सिलेबस के हिसाब से, क्लॉ
                  "सिलेबस के हिसाब से चल रहे हैं, कोई नियम नहीं छूटेगा!"]
 END_VOICE = "फॉलो करो, पूरी तैयारी फ्री! कमेंट में मॉक लिखो, फ्री मॉक टेस्ट पाओ!"
 
+# ---- v24 (2026-10-29) "sawal pehle" ----
+# Data: bharosa (v23) se series skip 65% -> 90%. Wajah: pehle ~5-8 sec saboot/prachar scene (paper/guide ->
+# kathin -> raasta), sawal der se, saboot screen 2-5 sec bilkul ruki. v24: 0 sec par hi bada sawal + laal mohar
+# (saboot sawal ke upar, alag scene nahi), kathin/raasta hata ke unki baat ant me, PO Guide ki line JAWAB ke
+# baad ("देखो, PO Guide में यही लिखा है"). Chitra/animation/trick/MOCK wahi. BHAROSA_V2=0 -> purana v23.
+V2 = os.getenv("BHAROSA_V2", "0") == "1"
+V2_OPEN_EXACT = "{L} के पेपर का सवाल!"
+V2_OPEN_CLAUSE = "इसी क्लॉज़ से {L} में सवाल आया!"
+V2_OPEN_GUIDE = "PO Guide का पक्का नियम!"
+V2_GUIDE_VOICE = "देखो, PO Guide में यही लिखा है!"
+V2_END_VOICE = "क्लॉज़ वाइज़ पूरा सिलेबस, कोई नियम नहीं छूटेगा! फॉलो करो, पूरी तैयारी फ्री! कमेंट में मॉक लिखो, फ्री मॉक टेस्ट पाओ!"
+
 
 def init(mod):
     global M
@@ -418,20 +430,40 @@ class Bharosa(N.Reel):
         cv = N.blurred_bg(self.story[0], dark=0.68)
         self.strip(cv, "सवाल")
         d = ImageDraw.Draw(cv)
-        paste(cv, N.pill("रुको! पहले सोचो", 54, (255, 255, 255), RED), 540, 255, back(t / 0.3))
+        if V2:      # saboot ki mohar pehle frame se (thump + halki dhadkan -> screen kabhi ruki nahi)
+            s = 1.25 - 0.25 * ease(t / 0.2) + 0.03 * math.sin(t * 6.0)
+            paste(cv, self.stamp, 470, 262, s * 0.78)
+        else:
+            paste(cv, N.pill("रुको! पहले सोचो", 54, (255, 255, 255), RED), 540, 255, back(t / 0.3))
         q = " ".join((self.data.get("question") or "").split())
         f, s_, ls = M.fit_lines(q, 900, 4, 68, 44)
         step = int(s_ * 1.28)
         h = 90 + len(ls) * step
-        y0 = 340
-        k = ease((t - 0.1) / 0.3)
+        y0 = 400 if V2 else 340
+        k = 1.0 if V2 else ease((t - 0.1) / 0.3)           # v24: sawal 0 sec se poora dikhe
         if k > 0:
             d.rounded_rectangle((60, y0, 1020, y0 + h), 34, fill=(255, 255, 255), outline=GOLD, width=6)
-            for i, ln in enumerate(ls):
-                d.text((540, y0 + 45 + step / 2 + i * step - 8), " ".join(ln), font=f, fill=INK, anchor="mm")
+            if V2:      # v24: awaaz ke saath shabd laal hote jaayein (screen kabhi ruki nahi, aankh padhti rahe)
+                nw = sum(len(l) for l in ls)
+                tw = len(sc["text"].split())               # pehle mohar wali line boli jaati hai
+                pre = sc["vd"] * max(0.15, min(0.5, (tw - nw) / max(1, tw)))
+                p = (t - sc["lead"] - pre) / max(0.3, sc["vd"] - pre)
+                shown = int(nw * min(1.0, max(0.0, p))) if t > sc["lead"] + pre else 0
+                cnt, sp_ = 0, f.getlength(" ")
+                for i, ln in enumerate(ls):
+                    wz = [f.getlength(w_) for w_ in ln]
+                    x = 540 - (sum(wz) + sp_ * (len(ln) - 1)) / 2
+                    yy = y0 + 45 + step / 2 + i * step - 8
+                    for w_, z in zip(ln, wz):
+                        d.text((x, yy), w_, font=f, fill=(RED if cnt < shown else INK), anchor="lm")
+                        x += z + sp_
+                        cnt += 1
+            else:
+                for i, ln in enumerate(ls):
+                    d.text((540, y0 + 45 + step / 2 + i * step - 8), " ".join(ln), font=f, fill=INK, anchor="mm")
         oy = y0 + h + 40
         for j, (L, txt) in enumerate(self.data.get("options") or []):
-            kj = back((t - 0.35 - 0.12 * j) / 0.3)
+            kj = back((t - (0.12 if V2 else 0.35) - (0.08 if V2 else 0.12) * j) / 0.25)
             if kj <= 0.02:
                 continue
             fo, so, lo = M.fit_lines(txt, 760, 2, 50, 34)
@@ -452,6 +484,15 @@ class Bharosa(N.Reel):
             kk = back((t - cd0 - (3 - n) * N.CD_STEP) / 0.18)
             paste(cv, N.countdown(n), 960, 255, max(0.05, 1.3 - 0.3 * kk))
         stroke(d, (540, min(oy + 70, 1780)), "सोचो... जवाब इसी रील में!", F(52), (255, 214, 40), 6)
+        return cv
+
+    def sc_guide2(self, sc, t):                      # v24: jawab ke baad saboot - PO Guide ki asli line
+        cv = self.guide_proof.frame(t, sc["dur"])
+        d = ImageDraw.Draw(cv)
+        d.rectangle((0, 0, W, 300), fill=(8, 12, 30, 255))
+        stroke(d, (540, 110), "देखो! PO Guide में", F(80), (255, 255, 255))
+        stroke(d, (540, 215), "यहीं लिखा है", F(90), (255, 214, 40), 8)
+        paste(cv, M.check_sprite(120), 930, 160, back((t - 0.25) / 0.3))
         return cv
 
     def sc_kathin(self, sc, t):
@@ -613,6 +654,9 @@ class Bharosa(N.Reel):
             d.rounded_rectangle((200, 1290, 880, 1390), 50, fill=GRN)
             d.text((540, 1340), "+ FOLLOW  @postal_wala", font=F(50), fill="white", anchor="mm")
             d.text((540, 1460), "SAVE करो  •  साथी को भेजो", font=F(46), fill=(230, 235, 250), anchor="mm")
+        if V2:      # v24: raasta scene ki baat yahan (beech se hata)
+            stroke(d, (540, 1600), "Clause-wise पूरा PO Guide", F(54), (255, 214, 40), 5)
+            stroke(d, (540, 1690), "कोई नियम नहीं छूटेगा!", F(54), (255, 255, 255), 5)
         return cv
 
     def render(self, tl, si, t):
@@ -620,7 +664,8 @@ class Bharosa(N.Reel):
         n = sc["name"]
         if n == "ruko":
             return self.sc_sawal(sc, t)
-        fn = {"paper": self.sc_paper, "guide": self.sc_guide, "kathin": self.sc_kathin, "raasta": self.sc_raasta,
+        fn = {"paper": self.sc_paper, "guide": self.sc_guide, "guide2": self.sc_guide2,
+              "kathin": self.sc_kathin, "raasta": self.sc_raasta,
               "ans": self.sc_ans, "trick": self.sc_trick, "pans": self.sc_paper_ans, "end": self.sc_end}.get(n)
         if fn:
             return fn(sc, t)
@@ -688,7 +733,8 @@ def build(data, out, plan=None, part=None):
             scan = paper_scan(dict(cp, clause_level=True))
     print("  Saboot:", f"asli paper scan {scan['label']}" if scan else "PO Guide panna + syllabus line")
     proof = None
-    if not scan and plan is not None and part is not None:
+    need_proof = (not scan or scan.get("clause_level")) if V2 else not scan   # v24: exact scan nahi -> PO Guide line jawab ke baad
+    if need_proof and plan is not None and part is not None:
         a = N.proof_assets(plan, part, data)
         if a:
             proof = N.Proof(a, data.get("clause_no"), int(data.get("episode") or 0), badge=None)
@@ -698,31 +744,49 @@ def build(data, out, plan=None, part=None):
     syl = data.get("syllabus") if data.get("syllabus") and data["syllabus"][0] else None
     ep = int(data.get("episode") or 0)
     specs = []
-    if scan:
-        L0 = scan['label'][0]
-        pool = OPEN_CLAUSE if scan.get("clause_level") else OPEN_EXACT
-        fid, line = pool[ep % len(pool)]
-        specs.append({"name": "paper", "segs": [("p", line.format(L=L0))]})
-    else:
-        fid, line = OPEN_GUIDE[ep % len(OPEN_GUIDE)]
-        specs.append({"name": "guide", "segs": [("p", line)]})
-    print(f"  Hook formula #{fid}: {specs[-1]['segs'][0][1]}")
-    specs.append({"name": "ruko", "segs": [("r", "रुको! पहले सोचो, " + N.ruko_q(data))]})
-    if guide_en:
-        specs.append({"name": "kathin", "segs": [("k", "किताब कठिन है, हम चित्रों से आसान बनाते हैं!")]})
-    if syl:
-        specs.append({"name": "raasta", "segs": [("r", RAASTA_VOICES[ep % len(RAASTA_VOICES)])]})
-    for i, pn in enumerate(story):
-        specs.append({"name": f"s{i}", "segs": [(f"c{i}", pn.get("text") or "")]})
-    specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
-    if trick:
-        specs.append({"name": "trick", "segs": [("t", "याद रखने की ट्रिक! " + trick["text"])]})
-    if scan and not scan.get("clause_level"):
-        specs.append({"name": "pans", "segs": [("q", f"इसलिए पेपर का सही जवाब, {LETTER_HI[scan['letter']]}!")]})
-    specs.append({"name": "end", "segs": [("e", END_VOICE)]})
+    if V2:
+        if scan:
+            op = (V2_OPEN_CLAUSE if scan.get("clause_level") else V2_OPEN_EXACT).format(L=scan['label'][0])
+        else:
+            op = V2_OPEN_GUIDE
+        print("  v24 sawal-pehle | shuru:", op)
+        specs.append({"name": "ruko", "segs": [("r", op + " " + N.ruko_q(data))]})
+        for i, pn in enumerate(story):
+            specs.append({"name": f"s{i}", "segs": [(f"c{i}", pn.get("text") or "")]})
+        specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
+        if proof is not None:
+            specs.append({"name": "guide2", "segs": [("g", V2_GUIDE_VOICE)]})
+        if scan and not scan.get("clause_level"):
+            specs.append({"name": "pans", "segs": [("q", f"इसलिए पेपर का सही जवाब, {LETTER_HI[scan['letter']]}!")]})
+        if trick:
+            specs.append({"name": "trick", "segs": [("t", "याद रखने की ट्रिक! " + trick["text"])]})
+        specs.append({"name": "end", "segs": [("e", V2_END_VOICE)]})
+    else:                                            # v23 (purana) kram
+        if scan:
+            L0 = scan['label'][0]
+            pool = OPEN_CLAUSE if scan.get("clause_level") else OPEN_EXACT
+            fid, line = pool[ep % len(pool)]
+            specs.append({"name": "paper", "segs": [("p", line.format(L=L0))]})
+        else:
+            fid, line = OPEN_GUIDE[ep % len(OPEN_GUIDE)]
+            specs.append({"name": "guide", "segs": [("p", line)]})
+        print(f"  Hook formula #{fid}: {specs[-1]['segs'][0][1]}")
+        specs.append({"name": "ruko", "segs": [("r", "रुको! पहले सोचो, " + N.ruko_q(data))]})
+        if guide_en:
+            specs.append({"name": "kathin", "segs": [("k", "किताब कठिन है, हम चित्रों से आसान बनाते हैं!")]})
+        if syl:
+            specs.append({"name": "raasta", "segs": [("r", RAASTA_VOICES[ep % len(RAASTA_VOICES)])]})
+        for i, pn in enumerate(story):
+            specs.append({"name": f"s{i}", "segs": [(f"c{i}", pn.get("text") or "")]})
+        specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
+        if trick:
+            specs.append({"name": "trick", "segs": [("t", "याद रखने की ट्रिक! " + trick["text"])]})
+        if scan and not scan.get("clause_level"):
+            specs.append({"name": "pans", "segs": [("q", f"इसलिए पेपर का सही जवाब, {LETTER_HI[scan['letter']]}!")]})
+        specs.append({"name": "end", "segs": [("e", END_VOICE)]})
     print(f"BHAROSA FORMAT ({VERSION.split(':')[0]}): awaaz ({len(specs)} tukde)...")
     voices = M.make_voices(specs)
-    mins = {"paper": 2.8, "guide": 2.8, "kathin": 2.0, "raasta": 2.2, "trick": 2.4, "pans": 1.8, "end": 2.8, "ans": 1.6}
+    mins = {"paper": 2.8, "guide": 2.8, "guide2": 1.5, "kathin": 2.0, "raasta": 2.2, "trick": 2.4, "pans": 1.8, "end": 2.8, "ans": 1.6}
     tl, cur = [], 0.0
     for sp, v in zip(specs, voices):
         a = clean_voice(v[0])

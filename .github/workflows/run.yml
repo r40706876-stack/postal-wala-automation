@@ -8,13 +8,9 @@ on:
         type: choice
         options: [series, am, pm, check]
         default: series
-  schedule:
-    # v22: din ke 3 slot (IST) - reel post ke time se ~30 min pehle taiyar
-    # ghante ke beech ka minute (GitHub :00 wale schedule aksar der se chalata/chhod deta hai); reel banke
-    # post ke time tak run rukta hai
-    - cron: '13 1 * * *'   # 06:43 AM IST -> 8 AM wali 7 PYQ quiz reel
-    - cron: '13 10 * * *'  # 03:43 PM IST -> 5 PM wali clause series reel (+ saathi PYQ)
-    - cron: '13 14 * * *'  # 07:43 PM IST -> 9 PM wali 7 PYQ copy-panna reel + carousel
+  # v24 (2026-10-29): yahan ka apna schedule HATAYA. GitHub ise ~5 ghante der se chalata tha -> 9 PM wali
+  # reel raat 1 baje aur series raat 10:30 baje post ho rahi thi (skip rate 90%). Ab sirf timer.yml
+  # theek samay par (06:43 am / 15:43 series / 19:43 pm IST) is workflow ko chalata hai.
 
 # ek run khatam hone se pehle doosra shuru na ho (state kharab na ho)
 concurrency:
@@ -129,6 +125,7 @@ jobs:
           git push origin main || git push
 
       - name: Post ke time tak ruko (8 AM / 5 PM / 9 PM IST)
+        id: wait
         if: always() && steps.job.outputs.job != 'check'
         run: |
           case "${{ steps.job.outputs.job }}" in
@@ -137,10 +134,19 @@ jobs:
           NOW=$(TZ=Asia/Kolkata date +%s)
           TGT=$(TZ=Asia/Kolkata date -d "today $T" +%s)
           W=$((TGT-NOW))
-          if [ $W -gt 0 ] && [ $W -lt 9000 ]; then echo "$W sec ruk rahe hain ($T IST)"; sleep $W; else echo "turant post"; fi
+          if [ $W -gt 0 ] && [ $W -lt 9000 ]; then echo "$W sec ruk rahe hain ($T IST)"; sleep $W; fi
+          # v24: der se post = galat audience = skip badhta hai. 60 min se zyada late, ya raat 11 - subah 7
+          # ke beech -> post NAHI (reel repo me rehti hai, haath se daal sakte ho)
+          NOW=$(TZ=Asia/Kolkata date +%s); LATE=$((NOW-TGT)); HR=$(TZ=Asia/Kolkata date +%-H)
+          if [ $LATE -gt 3600 ] || [ $HR -ge 23 ] || [ $HR -lt 7 ]; then
+            echo "post=no" >> "$GITHUB_OUTPUT"
+            echo "POST ROKA: $T ka slot $((LATE/60)) min pehle nikal gaya / raat ka samay ($HR baje). Reel repo me hai."
+          else
+            echo "post=yes" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Instagram pe post (title + description + hashtag + cover)
-        if: always() && steps.job.outputs.job != 'check'
+        if: always() && steps.job.outputs.job != 'check' && steps.wait.outputs.post == 'yes'
         continue-on-error: true
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
