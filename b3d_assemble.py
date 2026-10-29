@@ -17,6 +17,7 @@ import main as M
 import bharosa as B
 
 B.init(M)
+print("Font:", M.resolve_font())
 N = B.N
 W, H = 1080, 1920
 JOB = os.environ.get("B3D_JOB", "b3d_job")

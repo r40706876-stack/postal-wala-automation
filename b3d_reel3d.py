@@ -154,14 +154,14 @@ if kind == "ruko":
     K(st, "location", 0.22, (-0.1, -0.9, 2.95))
     K(st, "rotation_euler", 0.22, (R(86), 0, R(-6)))
     bh = C.build_bhaiya(1.35, 0.55, face=-22)
-    go = C.build_golu(-1.55, -1.3, face=25)
+    go = C.build_golu(-1.3, -1.3, face=25)
     C.emotion(bh, "sochta", 0.0)
     C.emotion(go, "chauka", 0.05)
     C.emotion(go, "sochta", 1.2)
     C.idle(bh, 0, T, 0.4)
     C.idle(go, 0, T, 1.6)
     C.talk(bh, lead, lead + vd)
-    cam = camera([(0, (0.0, -6.2, 2.25), (0.0, -0.6, 1.95)), (T, (0.1, -5.4, 2.15), (0.0, -0.6, 1.95))], lens=33)
+    cam = camera([(0, (0.0, -7.0, 2.35), (0.0, -0.6, 2.0)), (T, (0.1, -6.2, 2.25), (0.0, -0.6, 2.0))], lens=31)
     shake(cam, 0.23)
 
 elif kind == "story":
@@ -176,12 +176,12 @@ elif kind == "story":
         C.emotion(bh, "batata", 0.05)
         C.emotion(go, "sochta" if wrong else "khush", 0.1)
         C.talk(bh, lead, lead + vd)
-        bubble(SC["bubble"], 1.0, 3.35)
+        bubble(SC["bubble"], 0.55, 3.45)
     else:
         C.emotion(go, "dikhao", 0.05)
         C.emotion(bh, "sochta", 0.15)
         C.talk(go, lead, lead + vd)
-        bubble(SC["bubble"], -0.9, 3.3)
+        bubble(SC["bubble"], -0.3, 3.45)
     lf = A.lifaafa(P(SC["env"]), None, (-0.1, -0.75, 1.4), w=0.95)
     lf.rotation_euler = (R(-6), 0, R(4))
     pop(lf, 0.2, 0.3, 1.15)
@@ -197,8 +197,8 @@ elif kind == "story":
         C.emotion(bh, "shabaash", tm)
         C.emotion(go, "khush", tm + 0.05)
     side = 1 if who == "postman" else -1
-    camera([(0, (-side * 0.6, -6.4, 2.3), (-0.05, -0.5, 1.95)),
-            (T, (side * 0.45, -5.6, 2.2), (side * 0.2, -0.5, 2.0))], lens=33)
+    camera([(0, (-side * 0.4, -7.6, 2.4), (-0.05, -0.5, 2.05)),
+            (T, (side * 0.3, -6.9, 2.35), (side * 0.15, -0.5, 2.05))], lens=30)
 
 elif kind == "galti":
     bh = C.build_bhaiya(*BH_POS[:2], face=-20)
@@ -229,8 +229,8 @@ elif kind == "galti":
     C.jump(bh, T_HIT + 0.02, 0.25, 0.4)
     C.emotion(go, "udaas", T_HIT + 0.15)
     C.talk(bh, lead, lead + vd)
-    cam = camera([(0, (0.1, -5.2, 2.05), (0, -0.8, 1.7)), (T_HIT, (0.0, -4.9, 2.0), (0, -0.8, 1.7)),
-                  (T, (0.0, -6.0, 2.3), (0, -0.4, 1.95))], lens=33)
+    cam = camera([(0, (0.1, -6.0, 2.15), (0, -0.8, 1.8)), (T_HIT, (0.0, -5.6, 2.1), (0, -0.8, 1.8)),
+                  (T, (0.0, -7.0, 2.4), (0, -0.4, 2.0))], lens=31)
     shake(cam, T_HIT, 0.09)
 
 elif kind == "ans":
@@ -260,8 +260,8 @@ elif kind == "ans":
     C.jump(go, 1.3, 0.4, 0.5)
     C.jump(go, 1.9, 0.3, 0.45)
     C.talk(bh, lead, lead + vd)
-    camera([(0, (0.4, -6.0, 2.3), (0, -0.7, 1.9)), (1.1, (0.2, -5.3, 2.1), (0, -0.8, 1.75)),
-            (T, (0.0, -5.0, 2.05), (0, -0.8, 1.8))], lens=33)
+    camera([(0, (0.4, -7.0, 2.4), (0, -0.7, 2.0)), (1.1, (0.2, -6.3, 2.25), (0, -0.8, 1.9)),
+            (T, (0.0, -6.0, 2.2), (0, -0.8, 1.9))], lens=31)
 
 elif kind == "guide":
     # khuli PO Guide kitaab counter par, Bhaiya ungli se dikhate

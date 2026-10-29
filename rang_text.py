@@ -20,19 +20,24 @@ _FC = {}
 
 def font(sz):
     if sz not in _FC:
-        for p in (os.getenv("FONT_FILE", "Mukta-ExtraBold.ttf"), "Mukta-Bold.ttf",
+        try:                                   # main.py ka font (download karke) - sabse pehle
+            import main as _M
+            _mp = _M.resolve_font()
+        except Exception:
+            _mp = ""
+        for p in (_mp, os.getenv("FONT_FILE", "Mukta-ExtraBold.ttf"), "Mukta-Bold.ttf",
                   "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Black.ttf",
                   "/usr/share/fonts/truetype/noto/NotoSansDevanagari-Bold.ttf",
                   "/usr/share/fonts/truetype/lohit-devanagari/Lohit-Devanagari.ttf",
                   "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf"):
-            if os.path.exists(p) and os.path.getsize(p) > 50000:
+            if p and os.path.exists(p) and os.path.getsize(p) > 50000:
                 try:
                     _FC[sz] = ImageFont.truetype(p, sz, layout_engine=ImageFont.Layout.RAQM)
                 except Exception:
                     _FC[sz] = ImageFont.truetype(p, sz)
                 break
         else:
-            _FC[sz] = ImageFont.load_default()
+            raise RuntimeError("rang_text: Hindi (Devanagari) font nahi mila - Mukta-ExtraBold.ttf chahiye")
     return _FC[sz]
 
 
