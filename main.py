@@ -2783,6 +2783,54 @@ def ensure_expressions():
         print(f"  Bhaiya ka bhaav bana: {k}")
 
 
+# v24.4 (2026-10-29): Golu (grahak) ke bhaav - galti-drama ke liye (wahi chehra, wahi 2D style)
+GRAHAK_EXPR = {
+    "udaas": "sad and disappointed, shoulders dropped, holding a returned white envelope in one hand, eyebrows down",
+    "chauka": "shocked and confused, eyes wide, both palms on his cheeks, mouth open",
+    "khush": "very happy, big smile, giving a thumbs up to the camera",
+    "sochta": "confused, scratching his head with one hand, puzzled look",
+}
+
+
+def ensure_grahak_expressions():
+    """Golu ke 4 bhaav - ek baar (reference = grahak.jpg). Jaanch fail -> agli run me. Na bane to drama sada chehra."""
+    import io
+    if not (USE_CHARACTERS and USE_PHOTO and os.path.exists(char_path("grahak"))):
+        print("  Golu ke bhaav: Cloudflare/grahak.jpg nahi - chhoda")
+        return
+    buf = io.BytesIO()
+    Image.open(char_path("grahak")).convert("RGB").save(buf, "PNG")
+    ref = _ref_png(buf.getvalue())
+    for k, how in GRAHAK_EXPR.items():
+        p = char_path(f"grahak_{k}")
+        if os.path.exists(p):
+            continue
+        for _t in range(3):
+            try:
+                b = _cf_image(CHAR_REF_TEXT + "Character portrait of " + CHAR_LOOKS["grahak"] + ", waist-up, facing the "
+                              "camera, " + how + ". Plain light warm background, nothing else. " + CHAR_STYLE, ref=ref,
+                              seed=_t + 1)
+            except PhotoFlagged:
+                continue
+            except ProviderBusy:
+                print("  Golu ke bhaav: quota/busy - agli run me")
+                return
+            try:
+                r_ = as_dict(_gemini_vision(CHAR_CHECK_PROMPT.format(look=CHAR_LOOKS["grahak"] + ", " + how), [b]))
+                if not _truthy(r_.get("match")) or r_.get("faces_ok") in (False, "false") or _truthy(r_.get("text")):
+                    print(f"  Golu bhaav '{k}' jaanch fail ({str(r_.get('problem'))[:80]}) - dobara")
+                    continue
+            except ProviderBusy:
+                return
+            except Exception:
+                pass
+            im = Image.open(io.BytesIO(b)).convert("RGB")
+            im.thumbnail((768, 768), Image.LANCZOS)
+            im.save(p, "JPEG", quality=90)
+            print(f"  Golu ka bhaav bana: {k}")
+            break
+
+
 def host_img(expr=None):
     p = char_path(f"bhaiya_{expr}") if expr else ""
     return p if (p and os.path.exists(p)) else char_path("bhaiya")
@@ -12371,6 +12419,8 @@ def run_daily():
                 try:
                     if left_() >= 8:
                         ensure_expressions()     # Bhaiya ke bhaav - sirf jab budget bacha ho (ek baar banke hamesha)
+                    if left_() >= 14:
+                        ensure_grahak_expressions()   # v24.4: Golu ke bhaav (galti-drama), ek baar
                 except Exception as exc:
                     print("  Bhaav abhi nahi bane:", str(exc)[:100])
             if cur_ok and not CHITRA_PREVIEW and left_() >= 10:

@@ -74,7 +74,24 @@ V2_OPEN_GUIDE = ["ऐसे सवाल पेपर में आते है
                  "PO Guide का पक्का नियम! इस पर लोग अक्सर गलती करते हैं!",
                  "ये नियम पेपर में आता है, और जल्दी में लोग यहीं फँसते हैं!"]
 V2_GUIDE_VOICE = "देखो, PO Guide में यही लिखा है!"
-V2_END_VOICE = "क्लॉज़ वाइज़ पूरा सिलेबस, कोई नियम नहीं छूटेगा! फॉलो करो, पूरी तैयारी फ्री! कमेंट में मॉक लिखो, फ्री मॉक टेस्ट पाओ!"
+V2_END_VOICE = ("उस साथी को भेजो, जो ये गलती करता है! फॉलो करो, कोई नियम नहीं छूटेगा! "
+                "कमेंट में मॉक लिखो, फ्री मॉक टेस्ट पाओ!")
+# v24.4 (user: "log poora dekh ke bhi like/share nahi karte"): galti ka chhota DRAMA - galat likha lifaafa ud ke
+# laut aata hai, mohar "गलती!", Golu udaas + Bhaiya chauka (cutout, hilte-dulte) + awaaz effect; ant me
+# "1 लाइन नोट्स" (screenshot/SAVE) + "उस साथी को भेजो" (share ki wajah). Nateeja wali line AI se (niyam se
+# seedhe nikle tabhi), warna sach wali aam line (pareeksha me number).
+V2_DRAMA = os.getenv("BHAROSA_DRAMA", "1") != "0"
+GALTI_FALLBACK = ["यही गलती पेपर में की, तो नंबर कटेगा!",
+                  "ऐसे लिखा, तो ये गलती पड़ेगी भारी!",
+                  "ये गलती काम में भी, पेपर में भी - मत करना!"]
+GALTI_PROMPT = """India Post rule (verified): {fact}
+WRONG way (shown in our reel): {wrong}
+Write ONE short Hindi line (max 10 words, Devanagari, simple spoken GDS language) saying what REALISTICALLY happens
+in post office work if someone does the WRONG way - only a consequence that clearly and directly follows from this
+rule (e.g. article cannot be read/delivered, delay, sent back). No invented penalties, no fines, no numbers,
+no suspension/notice, no exaggeration. If no such consequence clearly follows, return empty line.
+Return ONLY JSON: {{"line": ""}}"""
+_BAD_GALTI = ("जुर्माना", "निलंब", "नोटिस", "सज़ा", "सजा", "जेल", "नौकरी", "रुपये", "%")
 
 
 def init(mod):
@@ -137,6 +154,83 @@ def stamp_img(top, sub=""):
     if sub:
         d.text((w / 2, 128), sub, font=f2, fill=NAVY, anchor="mm")
     return im.rotate(-5, expand=True, resample=Image.BICUBIC)
+
+
+_CUT = {}
+
+
+def cutout(path, h):
+    """Kirdaar ki tasveer se background hatao: kinaron (rekha/rang-badlav) tak, kinare se jude saade hisse = background.
+    (pehle wala flood-fill halka gola chhod deta tha). -> RGBA, unchai h."""
+    key = (path, h)
+    if key in _CUT:
+        return _CUT[key]
+    im = Image.open(path).convert("RGB")
+    im = im.resize((int(im.width * h / im.height), h), Image.LANCZOS)
+    a = np.array(im.filter(ImageFilter.GaussianBlur(1.2))).astype(np.float32)
+    gx = np.abs(np.diff(a, axis=1, prepend=a[:, :1])).sum(2)
+    gy = np.abs(np.diff(a, axis=0, prepend=a[:1])).sum(2)
+    edge = (np.maximum(gx, gy) > 10) | (a.mean(2) < 80)
+    work = Image.fromarray(np.where(edge, 0, 255).astype("uint8")).filter(ImageFilter.MinFilter(3))  # rekha mot
+    w_, h_ = work.size
+    seeds = [(x, 0) for x in range(0, w_, 6)] + [(0, y) for y in range(0, h_, 6)] + [(w_ - 1, y) for y in range(0, h_, 6)]
+    for sx, sy in seeds:
+        if work.getpixel((sx, sy)) == 255:
+            ImageDraw.floodfill(work, (sx, sy), 128)
+    fg = (np.array(work) != 128).astype("uint8") * 255
+    mask = Image.fromarray(fg).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1.0))
+    out = im.convert("RGBA")
+    out.putalpha(mask)
+    _CUT[key] = out
+    return out
+
+
+def char_file(name, expr):
+    for p in (os.path.join("clause_plans", "characters", f"{name}_{expr}.jpg"),
+              os.path.join("clause_plans", "characters", f"{name}.jpg")):
+        if os.path.exists(p):
+            return p
+    return None
+
+
+def lifaafa(lines):
+    """Galat likha lifaafa (PIL) - Hindi likhai yahin (Blender/FLUX me Hindi bigadti hai)."""
+    im = Image.new("RGBA", (760, 470), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((10, 10, 750, 460), 22, fill=(252, 250, 244), outline=(180, 170, 150), width=4)
+    d.line((10, 10, 380, 230), fill=(225, 218, 200), width=4)
+    d.line((750, 10, 380, 230), fill=(225, 218, 200), width=4)
+    d.rectangle((600, 40, 710, 160), fill=(214, 60, 60), outline=(255, 255, 255), width=5)
+    d.text((655, 100), "₹", font=F(56), fill="white", anchor="mm")
+    y = 260
+    for ln in (lines or [])[:3]:
+        f, s_, ls = M.fit_lines(str(ln), 620, 1, 46, 30)
+        d.text((80, y), " ".join(ls[0]), font=f, fill=(30, 40, 90), anchor="lm")
+        y += int(s_ * 1.35)
+    return im.rotate(-4, expand=True, resample=Image.BICUBIC)
+
+
+def galti_line(part, data, wrong_pn):
+    """Galti ka nateeja (AI, niyam se seedha nikle tabhi) - part me cache. Na bane -> sach wali aam line."""
+    gv = part.get("galti_v") if isinstance(part, dict) and isinstance(part.get("galti_v"), dict) else {}
+    if gv.get("v") == 1:
+        ln = gv.get("line") or ""
+    else:
+        ln = ""
+        try:
+            js = M._llm_json(GALTI_PROMPT.format(fact=data.get("fact", ""), wrong=wrong_pn.get("text", "")),
+                             only="gemini" if M.GEMINI_API_KEY else None)
+            ln = " ".join(str((js or {}).get("line") or "").split())
+            if len(ln.split()) > 12 or any(b in ln for b in _BAD_GALTI) or re.search(r"[0-9०-९]", ln):
+                ln = ""
+            if isinstance(part, dict) and not M.DRY_RUN:
+                part["galti_v"] = {"v": 1, "line": ln}
+        except Exception as exc:
+            print("  Galti-line AI se nahi bani (aam line):", str(exc)[:100])
+    if not ln:
+        ln = GALTI_FALLBACK[int(data.get("episode") or 0) % len(GALTI_FALLBACK)]
+    print("  Galti-drama line:", ln)
+    return ln
 
 
 # ============================================================ asli paper ka scan
@@ -506,6 +600,87 @@ class Bharosa(N.Reel):
         paste(cv, M.check_sprite(120), 930, 160, back((t - 0.25) / 0.3))
         return cv
 
+    def sc_galti(self, sc, t):                       # v24.4: galti ka drama (~2.6s)
+        pn = sc["pn"]
+        cv = N.blurred_bg(pn, dark=0.5).convert("RGBA")
+        self.strip(cv, "गलती")
+        d = ImageDraw.Draw(cv)
+        env = self._env if hasattr(self, "_env") else None
+        if env is None:
+            env = self._env = lifaafa((pn.get("card") or {}).get("lines") or [])
+        # lifaafa: pop (0-0.4) -> ud ke bahar (0.5-0.95) -> laut ke (1.0-1.45) -> mohar 1.5
+        cx, cy, rot, s = 540, 720, 0.0, back(t / 0.35)
+        if 0.5 <= t < 0.95:
+            k = ease((t - 0.5) / 0.45)
+            cx, rot = 540 + 1000 * k, -25 * k
+        elif 0.95 <= t < 1.45:
+            k = ease((t - 0.95) / 0.5)
+            cx, rot = 1540 - 1000 * k, 18 * (1 - k)
+        if t >= 1.45:
+            cx += int(14 * math.sin(t * 40) * max(0.0, 1 - (t - 1.45) / 0.3))        # jhatka
+        e2 = env.rotate(rot, expand=True, resample=Image.BICUBIC) if abs(rot) > 0.5 else env
+        paste(cv, e2, cx, cy, max(0.05, s))
+        if 0.95 <= t < 1.45:
+            stroke(d, (540, 380), "वापस आ गया!", F(76), (255, 214, 40), 7)
+        if t >= 1.5:
+            stp = stamp_img("गलती!")
+            paste(cv, stp, 560, 760, 1.5 + 0.8 * (1 - ease((t - 1.5) / 0.16)))
+        # kirdaar: Golu (udaas) baayen se, Bhaiya (chauka) daayen se - hilte-dulte
+        if t >= 1.55:
+            k = back((t - 1.55) / 0.35)
+            g = char_file("grahak", "udaas")
+            b = char_file("bhaiya", "chauka")
+            if g:
+                gi = cutout(g, 760)
+                paste(cv, gi, 250, int(1580 + (1 - k) * 600 + 8 * math.sin(t * 5)), 1.0)
+            if b:
+                bi = cutout(b, 700)
+                paste(cv, bi, 830, int(1590 + (1 - k) * 600 + 8 * math.sin(t * 5 + 1.3)), 1.0)
+        p = (t - sc["lead"]) / max(0.3, sc["vd"])
+        N.caption(cv, sc["text"], p, cy=1180)
+        return cv
+
+    def sc_end2(self, sc, t):                        # v24.4: 1 लाइन नोट्स (SAVE) + साथी को भेजो (share)
+        cv = bg()
+        d = ImageDraw.Draw(cv)
+        k0 = back(t / 0.3)
+        card = Image.new("RGBA", (960, 470), (0, 0, 0, 0))
+        cd = ImageDraw.Draw(card)
+        cd.rounded_rectangle((0, 0, 959, 469), 34, fill=(255, 248, 230), outline=GOLD, width=8)
+        cd.rounded_rectangle((30, -2, 470, 74), 30, fill=NAVY)
+        cd.text((250, 36), "1 लाइन नोट्स", font=F(46), fill=GOLD, anchor="mm")
+        f, s_, ls = M.fit_lines(self.data.get("fact") or "", 860, 3, 62, 40)
+        yy = 110
+        for ln in ls:
+            cd.text((480, yy + s_ // 2), " ".join(ln), font=f, fill=INK, anchor="mm")
+            yy += int(s_ * 1.3)
+        cd.text((480, 425), "SAVE करो  •  स्क्रीनशॉट लो", font=F(40), fill=RED, anchor="mm")
+        paste(cv, card, 540, 370, k0)
+        if t > 0.35:
+            k = back((t - 0.35) / 0.3)
+            sh = Image.new("RGBA", (960, 250), (0, 0, 0, 0))
+            sd = ImageDraw.Draw(sh)
+            sd.rounded_rectangle((0, 0, 959, 249), 40, fill=GRN)
+            sd.polygon([(220, 125), (140, 60), (140, 95), (70, 95), (70, 155), (140, 155), (140, 190)], fill="white")
+            sd.text((590, 85), "उस GDS साथी को भेजो", font=F(58), fill="white", anchor="mm")
+            sd.text((590, 168), "जो ये गलती करता है!", font=F(58), fill=(255, 235, 120), anchor="mm")
+            paste(cv, sh, 540, 780, k * (1.0 + 0.025 * math.sin(t * 6)))
+        if t > 0.9:
+            a = ease((t - 0.9) / 0.3)
+            y = int(980 + (1 - a) * 60)
+            d.rounded_rectangle((60, y, 1020, y + 200), 40, fill=(255, 255, 255), outline=GOLD, width=8)
+            d.text((540, y + 65), f"कमेंट करो:  {M.MOCK_KEYWORD}", font=F(70), fill=RED, anchor="mm")
+            d.text((540, y + 150), "FREE मॉक टेस्ट — असली परीक्षा जैसे सवाल", font=F(42), fill=NAVY, anchor="mm")
+        if t > 1.3:
+            d.rounded_rectangle((90, 1250, 760, 1350), 50, fill=RED)
+            d.text((425, 1300), "+ FOLLOW  @postal_wala", font=F(48), fill="white", anchor="mm")
+            stroke(d, (425, 1440), "Clause-wise पूरा PO Guide", F(50), (255, 214, 40), 5)
+            stroke(d, (425, 1520), "कोई नियम नहीं छूटेगा!", F(50), (255, 255, 255), 5)
+            b = char_file("bhaiya", "shabaash")
+            if b:
+                paste(cv, cutout(b, 560), 880, int(1640 + 10 * math.sin(t * 5)), back((t - 1.3) / 0.35))
+        return cv
+
     def sc_kathin(self, sc, t):
         cv = bg()
         self.strip(cv, "शुरू")
@@ -675,7 +850,9 @@ class Bharosa(N.Reel):
         n = sc["name"]
         if n == "ruko":
             return self.sc_sawal(sc, t)
-        fn = {"paper": self.sc_paper, "guide": self.sc_guide, "guide2": self.sc_guide2,
+        if n == "end" and V2 and V2_DRAMA:
+            return self.sc_end2(sc, t)
+        fn = {"paper": self.sc_paper, "guide": self.sc_guide, "guide2": self.sc_guide2, "galti": self.sc_galti,
               "kathin": self.sc_kathin, "raasta": self.sc_raasta,
               "ans": self.sc_ans, "trick": self.sc_trick, "pans": self.sc_paper_ans, "end": self.sc_end}.get(n)
         if fn:
@@ -754,6 +931,14 @@ def build_audio(tl, total, path):
             M.add_at(buf, M.sfx_whoosh(0.3, 0.3), max(0.0, s - 0.12), 0.9)
         if nm in ("paper", "guide"):
             M.add_at(buf, M.sfx_thud(0.6), s + 0.75)
+        elif nm == "galti":                               # v24.4 drama ki awaazein
+            M.add_at(buf, M.sfx_pop(0.45), s + 0.05)
+            M.add_at(buf, M.sfx_whoosh(0.35, 0.55), s + 0.5, 1.0)
+            M.add_at(buf, M.sfx_whoosh(0.35, 0.55), s + 0.95, 1.0)
+            M.add_at(buf, M.sfx_thud(0.75), s + 1.5)
+            M.add_at(buf, M.sfx_buzz(0.35), s + 1.58)
+        elif nm == "ruko" and V2:
+            M.add_at(buf, M.sfx_thud(0.55), s + 0.05)
         elif nm == "ans":
             M.add_at(buf, M.sfx_ding(0.5), s + 0.3)
         elif nm == "pans":
@@ -811,8 +996,11 @@ def build(data, out, plan=None, part=None):
         op = pool[ep % len(pool)].format(L=scan['label'][0] if scan else "")
         print("  v24 sawal-pehle | hook awaaz:", op)
         specs.append({"name": "ruko", "segs": [("r", op)]})          # sawal screen par, awaaz me hook
+        wrong_i = max([i for i, pn in enumerate(story) if pn.get("mark") == "wrong"], default=None)
         for i, pn in enumerate(story):
             specs.append({"name": f"s{i}", "segs": [(f"c{i}", pn.get("text") or "")]})
+            if V2_DRAMA and i == wrong_i:
+                specs.append({"name": "galti", "pn": pn, "segs": [("x", galti_line(part, data, pn))]})
         specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
         if proof is not None:
             specs.append({"name": "guide2", "segs": [("g", V2_GUIDE_VOICE)]})
@@ -846,7 +1034,7 @@ def build(data, out, plan=None, part=None):
         specs.append({"name": "end", "segs": [("e", END_VOICE)]})
     print(f"BHAROSA FORMAT ({VERSION.split(':')[0]}): awaaz ({len(specs)} tukde)...")
     voices = M.make_voices(specs)
-    mins = {"paper": 2.8, "guide": 2.8, "guide2": 1.5, "kathin": 2.0, "raasta": 2.2, "trick": 2.4, "pans": 1.8, "end": 2.8, "ans": 1.6}
+    mins = {"paper": 2.8, "guide": 2.8, "guide2": 1.5, "galti": 2.6, "kathin": 2.0, "raasta": 2.2, "trick": 2.4, "pans": 1.8, "end": 2.8, "ans": 1.6}
     tl, cur = [], 0.0
     for sp, v in zip(specs, voices):
         a = clean_voice(v[0])
@@ -867,6 +1055,10 @@ def build(data, out, plan=None, part=None):
                 sc["dur"] = dur = max(dur, cd0 + 3 * N.CD_STEP + 0.1)
         if nm.startswith("s") and nm[1:].isdigit():
             sc["wrong"] = story[int(nm[1:])].get("mark") == "wrong"
+        if nm == "galti":
+            sc["pn"] = sp["pn"]
+            sc["lead"] = 1.6                                 # pehle lifaafa ka drama, fir line
+            sc["dur"] = dur = max(2.6, 1.6 + vd + 0.25)
         tl.append(sc)
         cur += dur
     total = cur

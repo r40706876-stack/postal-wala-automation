@@ -1,4 +1,4 @@
-name: Demo - v24 sawal pehle (ek baar)
+name: Demo - v24 sawal pehle + galti drama (ek baar)
 
 on:
   workflow_dispatch:
@@ -26,6 +26,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests pypdf pillow numpy edge-tts
+      - name: Golu ke naye bhaav (Cloudflare FLUX.2, ek baar - bane hon to chhod deta hai)
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: python -c "import main; main.ensure_grahak_expressions()"
       - name: Demo reel banao (asli awaaz ke saath, kuch post nahi hota)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -36,7 +44,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add demo_out/bharosa_v24/
+          git add demo_out/bharosa_v24/ clause_plans/characters/
           git diff --staged --quiet || git commit -m "Demo: v24 sawal pehle (Clause 26 Part 5) [skip ci]"
           git pull --rebase origin main || true
           git push origin main || git push

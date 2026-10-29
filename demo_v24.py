@@ -1,5 +1,5 @@
 """
-DEMO (ek baar, 2026-10-29): bharosa v24 "sawal pehle" - Clause 26 Part 5 (videshi pata), ASLI awaaz ke saath.
+DEMO (ek baar, 2026-10-29): bharosa v24 "sawal pehle" - Clause 26 Part 5 (videshi pata), ASLI awaaz ke saath + v24.4 galti-drama.
 Kuch post nahi hota, state/progress nahi badalta. Chalana: Actions -> "Demo - v24 sawal pehle" -> Run workflow.
 Nateeja: demo_out/bharosa_v24/demo_v24_clause26_part5.mp4
 Pasand aaye -> main.py me BHAROSA_V2 chalu (bharosa.py me V2 default "1").
