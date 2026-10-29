@@ -39,7 +39,8 @@ def strip(cv, piece):
     d.text((800, 72), f"चित्रों से आसान • {piece}", font=B.F(36), fill=B.NAVY, anchor="mm")
 
 
-out = os.path.join(OUT_DIR, f"blender_reel_clause{plan['clause']}_part{plan['part']}.mp4")
+out = os.environ.get("B3D_OUT_MP4") or os.path.join(OUT_DIR, f"blender_reel_clause{plan['clause']}_part{plan['part']}.mp4")
+os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
 audio = os.path.join(JOB, "audio.wav")
 cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
        "-i", "-", "-i", audio, "-map", "0:v:0", "-map", "1:a:0", "-c:v", "libx264", "-preset", "medium",
@@ -93,7 +94,7 @@ for i, sc in enumerate(scenes):
                  "end": "याद"}.get(kind, f"टुकड़ा {int(sc.get('idx', 0)) + 1}/{PIECE}")
         cy = {"galti": 1180, "end": 1720}.get(kind, 1690)
         if kind != "end":
-            RT.words_frame(cv, sc["text"], t, W / 2, cy, 960, 92, rate, color_seed=i * 3, start=sc["lead"])
+            RT.words_frame(cv, sc["text"], t, W / 2, cy, 880, 84, rate, color_seed=i * 3, start=sc["lead"])
         if kind == "ruko":
             put_pop(cv, RT.badge("रुको! पहले सोचो", 56, (255, 80, 90), (200, 20, 50)), W / 2, 220, t, 0.05)
         elif kind == "ans":
@@ -114,7 +115,10 @@ proc.stdin.close()
 if proc.wait() != 0:
     raise SystemExit("ffmpeg (jodna) fail")
 subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", out, "-vf", "fps=0.5,scale=216:384,tile=7x2", "-frames:v", "1",
-                os.path.join(OUT_DIR, "blender_reel_contact.jpg")], check=False)
+                out.replace(".mp4", "_contact.jpg")], check=False)
 print("B3D_REEL_DONE", out, f"{plan['total']:.1f}s")
 if missing:
     print("CHETAVNI: in drishyon ke Blender frame nahi mile (saada parda laga):", ", ".join(missing))
+    if os.getenv("B3D_STRICT") == "1":                 # series: adhoori 3D reel post nahi - purani reel jaayegi
+        os.remove(out)
+        raise SystemExit("B3D_STRICT: drishya adhoore - 3D reel nahi")

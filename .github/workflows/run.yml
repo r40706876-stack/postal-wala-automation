@@ -25,6 +25,10 @@ jobs:
     permissions:
       contents: write
 
+    outputs:
+      job: ${{ steps.job.outputs.job }}
+      b3d: ${{ steps.prep3d.outputs.ok }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -124,9 +128,34 @@ jobs:
           git pull --rebase origin main || echo "Rebase not needed"
           git push origin main || git push
 
+      # v28 (2026-10-29): series reel 3D kirdaaron (Blender) se. Purani (bharosa) reel upar ban chuki = bachaav.
+      # Taiyaari yahan; render agle job me (tukdon me, kai runner); jodna + post 'post3d' job me.
+      - name: 3D reel taiyaari (series) - fail ho to purani reel post hogi
+        id: prep3d
+        if: steps.job.outputs.job == 'series' && vars.SERIES_3D != '0'      # band karna ho: repo variable SERIES_3D=0
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -e
+          TODAY=$(TZ=Asia/Kolkata date +%F)
+          python -c "import json,sys; d=json.load(open('generated_reels/series_today.json')); sys.exit(0 if d.get('date')=='$TODAY' else 3)" \
+            || { echo "Aaj series reel nahi bani - 3D bhi nahi"; exit 3; }
+          python b3d_prep.py
+          echo "ok=yes" >> "$GITHUB_OUTPUT"
+
+      - name: 3D taiyaari bhejo (render job ke liye)
+        if: steps.prep3d.outputs.ok == 'yes'
+        uses: actions/upload-artifact@v4
+        with:
+          name: b3d-job
+          path: b3d_job/
+          retention-days: 2
+
       - name: Post ke time tak ruko (8 AM / 5 PM / 9 PM IST)
         id: wait
-        if: always() && steps.job.outputs.job != 'check'
+        if: always() && steps.job.outputs.job != 'check' && steps.prep3d.outputs.ok != 'yes'
         run: |
           case "${{ steps.job.outputs.job }}" in
             am) T="08:00" ;; series) T="17:00" ;; pm) T="21:00" ;;
@@ -154,9 +183,136 @@ jobs:
         run: python ig_post.py ${{ steps.job.outputs.job }}
 
       - name: Post ka hisaab save karo
-        if: always() && steps.job.outputs.job != 'check'
+        if: always() && steps.job.outputs.job != 'check' && steps.prep3d.outputs.ok != 'yes'
         run: |
           git add generated_reels/ig_posted.json 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Instagram post log [skip ci]"
           git pull --rebase origin main || true
           git push origin main || git push
+
+  render3d:
+    needs: build-and-post
+    if: needs.build-and-post.outputs.b3d == 'yes'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: b3d-job
+          path: b3d_job
+      - name: Blender 4.2
+        timeout-minutes: 12
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/blender"
+          curl -fL --retry 3 --retry-delay 3 --connect-timeout 25 -o "$RUNNER_TEMP/blender.tar.xz" \
+            "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+          tar -xJf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP/blender" --strip-components=1
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 \
+            libxfixes3 libxrender1 libxkbcommon0 libsm6
+      - name: Tukda ${{ matrix.chunk }} render
+        timeout-minutes: 28
+        run: |
+          B3D_JOB=b3d_job B3D_CHUNK=${{ matrix.chunk }} xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 2 \
+            --python b3d_reel3d.py 2>&1 | { grep -E "B3D_|Error|Traceback" || true; } | tail -n 40
+          touch b3d_job/.m${{ matrix.chunk }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b3d-frames-${{ matrix.chunk }}
+          path: |
+            b3d_job/frames_*/
+            b3d_job/.m${{ matrix.chunk }}
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 2
+
+  post3d:
+    needs: [build-and-post, render3d]
+    if: always() && needs.build-and-post.outputs.b3d == 'yes'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core libraqm0 poppler-utils
+          pip install requests pypdf pillow numpy edge-tts
+      - uses: actions/download-artifact@v4
+        with:
+          name: b3d-job
+          path: b3d_job
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: b3d-frames-*
+          path: b3d_job
+          merge-multiple: true
+      - name: 3D reel jodo -> aaj ki series reel (fail = purani reel hi jaayegi)
+        id: asm
+        continue-on-error: true
+        run: |
+          set -e
+          F=$(python -c "import json; print(json.load(open('generated_reels/series_today.json'))['file'])")
+          N3="${F%.mp4}_3d.mp4"
+          B3D_STRICT=1 B3D_OUT_MP4="generated_reels/$N3" python b3d_assemble.py
+          cp "generated_reels/${F%.mp4}_caption.txt" "generated_reels/${N3%.mp4}_caption.txt" 2>/dev/null || true
+          cp "generated_reels/${F%.mp4}_cover.jpg" "generated_reels/${N3%.mp4}_cover.jpg" 2>/dev/null || true
+          python - "$N3" <<'PY'
+          import json, sys
+          p = "generated_reels/series_today.json"
+          d = json.load(open(p))
+          d["file_old"], d["file"] = d["file"], sys.argv[1]
+          json.dump(d, open(p, "w"))
+          print("Aaj ki series reel ab 3D:", d)
+          PY
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add generated_reels/
+          git commit -m "3D series reel ($N3) [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done
+      - name: Post ke time tak ruko (5 PM IST)
+        id: wait
+        run: |
+          NOW=$(TZ=Asia/Kolkata date +%s)
+          TGT=$(TZ=Asia/Kolkata date -d "today 17:00" +%s)
+          W=$((TGT-NOW))
+          if [ $W -gt 0 ] && [ $W -lt 9000 ]; then echo "$W sec ruk rahe hain"; sleep $W; fi
+          NOW=$(TZ=Asia/Kolkata date +%s); LATE=$((NOW-TGT)); HR=$(TZ=Asia/Kolkata date +%-H)
+          if [ $LATE -gt 3600 ] || [ $HR -ge 23 ] || [ $HR -lt 7 ]; then
+            echo "post=no" >> "$GITHUB_OUTPUT"; echo "POST ROKA: der ($((LATE/60)) min) / raat"
+          else
+            echo "post=yes" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Instagram pe post (3D ya purani reel)
+        if: steps.wait.outputs.post == 'yes'
+        continue-on-error: true
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: |
+          git pull --rebase -X theirs origin main || true
+          python ig_post.py series
+      - name: Post ka hisaab save karo
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add generated_reels/ig_posted.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Instagram post log [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done

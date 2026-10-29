@@ -234,9 +234,12 @@ elif kind == "galti":
     shake(cam, T_HIT, 0.09)
 
 elif kind == "ans":
-    gr, gl = A.globe(None, (-2.35, 0.2, 1.06), 0.38)
-    K(gl, "rotation_euler", 0, (0, 0, 0))
-    K(gl, "rotation_euler", T, (0, 0, R(160)))
+    if SC.get("foreign", True):                       # videshi niyam -> ghoomta globe
+        gr, gl = A.globe(None, (-2.35, 0.2, 1.06), 0.38)
+        K(gl, "rotation_euler", 0, (0, 0, 0))
+        K(gl, "rotation_euler", T, (0, 0, R(160)))
+    else:
+        A.letter_box(None, (-2.6, 0.6, 0))
     bh = C.build_bhaiya(*BH_POS[:2], face=-20)
     go = C.build_golu(*GO_POS[:2], face=24)
     C.idle(bh, 0, T, 0.4)
@@ -287,7 +290,7 @@ elif kind == "end":
     C.emotion(go, "khush", 0.0)
     C.jump(go, 0.6, 0.3, 0.45)
     C.talk(bh, lead, lead + vd)
-    camera([(0, (0.0, -6.8, 3.3), (-0.3, -0.4, 3.0)), (T, (0.0, -6.2, 3.2), (-0.3, -0.4, 2.95))], lens=33)  # upar card (jodne me)
+    camera([(0, (0.0, -6.0, 3.1), (-0.3, -0.4, 2.85)), (T, (0.0, -5.5, 3.0), (-0.3, -0.4, 2.8))], lens=33)  # upar card (jodne me)
 
 os.makedirs(OUT, exist_ok=True)
 print("B3D_RENDER", IDX, S.frame_start, S.frame_end, S.render.engine)

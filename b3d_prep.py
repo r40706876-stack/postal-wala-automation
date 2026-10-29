@@ -24,7 +24,20 @@ FPS = 24
 JOB = "b3d_job"
 TEX = os.path.join(JOB, "tex")
 os.makedirs(TEX, exist_ok=True)
-CLAUSE, PART = 26, 4                      # Part 5 (0 se ginti)
+# Kaunsa part: env B3D_CLAUSE + B3D_PART (1 se ginti), warna aaj ki series reel (series_today.json) ka
+def _which():
+    import re
+    if os.getenv("B3D_CLAUSE") and os.getenv("B3D_PART"):
+        return int(os.environ["B3D_CLAUSE"]), int(os.environ["B3D_PART"]) - 1
+    st = json.load(open(os.path.join("generated_reels", "series_today.json"), encoding="utf-8"))
+    m = re.search(r"clause_(\d+)_part_(\d+)", st.get("file", ""))
+    if not m:
+        raise SystemExit("B3D: aaj ki series reel ka clause/part nahi mila")
+    return int(m.group(1)), int(m.group(2)) - 1
+
+
+CLAUSE, PART = _which()
+print("B3D_PREP Clause", CLAUSE, "Part", PART + 1)
 
 B.init(M)
 N = B.N
@@ -63,11 +76,17 @@ for pn in part["chitra_v"]["panels"]:
         c = (sorted(glob.glob(f"{base}f1.jpg")) + sorted(glob.glob(f"clause_plans/chitra_img/{key}_keep_*_{idx}.jpg"))
              + sorted(glob.glob(f"clause_plans/chitra_img/{key}_*{idx}f*.jpg"))
              + sorted(glob.glob(f"clause_plans/chitra_img/{key}_*.jpg")))
-        pn["img"] = c[0]
+        if c:
+            pn["img"] = c[0]
 data_in = dict(part)
 data_in["title"] = plan.get("title_hi") or plan.get("title_en", "")
-data = M.prepare_data(data_in, CLAUSE, PART + 1, total_parts=len(plan["parts"]), next_title="", syllabus=(25, 71))
-data["episode"] = 100
+data = M.prepare_data(data_in, CLAUSE, PART + 1, total_parts=len(plan["parts"]), next_title="", syllabus=None)
+try:
+    data["episode"] = int(json.load(open("progress_state.json", encoding="utf-8")).get("episode", 0))
+except Exception:
+    data["episode"] = 0
+_en = " ".join(str(v) for v in (data.get("en") or {}).values()) if isinstance(data.get("en"), dict) else ""
+FOREIGN = ("विदेश" in (data.get("fact", "") + data.get("question", ""))) or ("foreign" in _en.lower())
 story, ans_pn = N.story_split(data["chitra"]["panels"])
 
 # ---------------- kirdaar cutout (PNG, alpha) ----------------
@@ -192,7 +211,7 @@ def mark(kind):
 
 
 # ---------------- awaaz + timeline (bharosa v24 jaisa) ----------------
-ep = 100
+ep = data["episode"]
 specs = [{"name": "ruko", "segs": [("r", B.V2_OPEN_GUIDE[ep % len(B.V2_OPEN_GUIDE)])]}]
 wrong_i = max([i for i, pn in enumerate(story) if pn.get("mark") == "wrong"], default=None)
 for i, pn in enumerate(story):
@@ -256,12 +275,15 @@ for sc in tl:
         item.update(kind="galti", env=save(env_tex((pn.get("card") or {}).get("lines") or []), "env_galti.png"),
                     stamp=tex_galti, bhaiya=ch("bhaiya", "chauka"), golu=ch("grahak", "udaas", "base"))
     elif nm == "ans":
-        import b3d_texture
         lines = [l for l in ((ans_pn.get("card") or {}).get("lines") or []) if l]
-        lines = lines if len(lines) >= 3 else ["To,", "Mr. John Smith", "123, Main Road", "London, UK"]
-        tp = os.path.join(TEX, "env_airmail.png")
-        b3d_texture.make(tp, lines)
-        item.update(kind="ans", env="tex/env_airmail.png", bhaiya=ch("bhaiya", "shabaash"),
+        if FOREIGN:                                   # videshi niyam -> Air Mail lifaafa + globe
+            import b3d_texture
+            lines = lines if len(lines) >= 3 else ["To,", "Mr. John Smith", "123, Main Road", "London, UK"]
+            b3d_texture.make(os.path.join(TEX, "env_ans.png"), lines)
+            env_rel = "tex/env_ans.png"
+        else:
+            env_rel = save(env_tex(lines), "env_ans.png")
+        item.update(kind="ans", env=env_rel, foreign=FOREIGN, bhaiya=ch("bhaiya", "shabaash"),
                     golu=ch("grahak", "khush", "base"))
     elif nm == "guide2":
         item.update(kind="guide", page=save(guide_page(), "guide_page.png"))
