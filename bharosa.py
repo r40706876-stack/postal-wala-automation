@@ -678,6 +678,52 @@ class Bharosa(N.Reel):
         return self.sc_story(sc, t, int(n[1:]))
 
 
+THUMB_POINTS = [("चित्र", "पूरा वीडियो चित्रों से — बहुत आसानी से"),
+                ("सिलेबस", "Clause-wise — कोई भी टॉपिक नहीं छूटेगा"),
+                ("पेपर", "पेपर के 50 में से 30 सवाल इसी PO Guide से"),   # DoP syllabus 2019 (SYL_LINE) - sach
+                ("FREE", "सब कुछ FREE  +  साथ में FREE नोट्स")]
+
+
+def make_thumb(data, pn, scan, path):
+    """v24.2 (user): har series reel ka cover. Upar Clause/Part -> kis paper/saal me aaya -> chitra ->
+    Postal Wala ke vaade. Sab zaroori cheezein beech ke 1080x1440 (profile grid 3:4) me."""
+    cv = N.blurred_bg(pn, dark=0.72).convert("RGBA")
+    d = ImageDraw.Draw(cv)
+    d.rectangle((0, 0, W, 250), fill=(8, 12, 30))
+    d.rectangle((0, H - 250, W, H), fill=(8, 12, 30))
+    # 1) Clause + Part
+    tp = data.get("total_parts")
+    txt = f"Clause {data.get('clause_no')}  •  Part {data.get('part_no')}" + (f"/{tp}" if tp else "")
+    d.rounded_rectangle((90, 268, 990, 388), 60, fill=GOLD)
+    d.text((540, 328), txt, font=F(72), fill=NAVY, anchor="mm")
+    # 2) chitra + 3) paper/saal mohar
+    try:
+        im = N.panel_full(pn, 0.6, 1.0, 0.0, 0.0, 0.0).convert("RGB").crop((40, 330, 1040, 1010)).resize((900, 612))
+        frame = Image.new("RGBA", (924, 636), GOLD)
+        frame.paste(im, (12, 12))
+        cv.alpha_composite(frame, (78, 420))
+    except Exception as exc:
+        print("  Cover chitra nahi laga:", str(exc)[:100])
+    if scan:
+        st = stamp_img(f"{scan['label'][0]} के पेपर में आया", f"प्रश्न {scan['label'][1]}  •  असली पेपर")
+    else:
+        st = stamp_img("परीक्षा का पक्का नियम", "PO Guide Part I")
+    paste(cv, st, 540, 1030, min(1.0, 980 / max(1, st.width)))
+    # 4) vaade
+    y = 1170
+    for tag, line in THUMB_POINTS:
+        d.rounded_rectangle((70, y - 52, 1010, y + 52), 26, fill=(255, 255, 255, 240))
+        d.rounded_rectangle((70, y - 52, 270, y + 52), 26, fill=(RED if tag == "FREE" else GRN))
+        d.text((170, y), tag, font=F(44), fill="white", anchor="mm")
+        f, s_, ls = M.fit_lines(line, 700, 1, 44, 30)
+        d.text((290, y), " ".join(ls[0]), font=f, fill=INK, anchor="lm")
+        y += 122
+    d.text((540, 1690), "@postal_wala  •  GDS से MTS / Postman / PA", font=F(40), fill=(230, 235, 250), anchor="mm")
+    cv.convert("RGB").save(path, quality=92)
+    print("Cover (thumbnail):", path)
+    return path
+
+
 def build_audio(tl, total, path):
     n = int(total * M.SR) + M.SR
     vt = np.zeros(n, dtype=np.float32)
@@ -855,4 +901,8 @@ def build(data, out, plan=None, part=None):
     data["bharosa"] = {"scan": bool(scan), "trick": (trick or {}).get("text", ""),
                        "pyq": ({"q": pyq["q"], "ans": pyq["ans"], "exams": pyq.get("exams") or []} if (pyq and rel) else None)}
     print(f"COMPLETE (bharosa format): {out} ({total:.2f}s)")
+    try:                                     # cover fail ho to bhi reel nahi rukti
+        make_thumb(data, story[0], scan, out.replace(".mp4", "_cover.jpg"))
+    except Exception as exc:
+        print("  Cover nahi bana (reel theek hai):", str(exc)[:160])
     return total
