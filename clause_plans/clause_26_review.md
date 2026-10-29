@@ -61,7 +61,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** पता → मार्ग संकेत → via (वाया) नहीं
 **Hook:** ग्राहक पते में 'वाया स्टेशन' लिख रहा है, क्या यह सही है?
 
-## Part 5  [PASS | publish baaki]
+## Part 5  [PASS | publish: 2026-10-29]
 **Source (PO Guide):** In the case of articles addressed to foreign countries, the address should be written in Roman letters and in Arabic figures.
 
 **Niyam:** विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।

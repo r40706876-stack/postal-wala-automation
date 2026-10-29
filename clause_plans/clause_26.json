@@ -960,154 +960,148 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "Medium shot at a bright post office counter. The customer holds a plain white envelope towards the postman, looking curious.",
-            "target": "the white envelope held by the customer",
-            "tag": "विदेशी पता लिखना",
+            "prompt": "The customer at the post office counter holds out a blank white envelope towards the postman, looking curious and asking a question. Warm bright lighting on the wooden counter desk, plain background.",
+            "target": "the white envelope",
+            "tag": "",
             "tag_color": "dark",
-            "text": "विदेशी देश भेजने वाले लेख पर पता सही लिखना ज़रूरी है।",
-            "desc": "The customer shows a white envelope at the post office counter while asking how to address foreign mail.",
+            "text": "ग्राहक विदेशी देश भेजने के लिए लिफाफा लेकर आता है।",
+            "desc": "The customer shows an envelope addressed abroad to the postman at the post office counter.",
             "mark": "none",
-            "card": {
-              "lines": [
-                "To,",
-                "London, UK"
-              ],
-              "corner": "",
-              "hl": -1
-            },
+            "card": null,
             "say": {
               "who": "customer",
-              "text": "भैया, विदेश चिट्ठी का पता कैसे लिखूँ?"
+              "text": "भैया, यह चिट्ठी विदेश भेजनी है!"
             },
-            "img": "clause_plans/chitra_img/ca635a18ed_73495299_1.jpg",
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/ca635a18ed_32635117_1.jpg",
             "box": [
-              0.456,
-              0.516,
-              0.638,
-              0.657
+              0.442,
+              0.498,
+              0.574,
+              0.627
             ],
-            "bg_text": true,
+            "bg_text": false,
             "badge": [
-              0.353,
-              0.454,
-              0.417,
-              0.501
+              0.345,
+              0.48,
+              0.394,
+              0.524
             ],
             "face": [
-              0.661,
-              0.14,
-              0.856,
-              0.377
+              0.618,
+              0.23,
+              0.792,
+              0.432
             ],
             "pan": "lr"
           },
           {
-            "prompt": "Medium shot at the post office counter. The customer points at the envelope in confusion, while the postman shakes his head in disapproval.",
-            "target": "the white envelope with Devanagari script",
-            "tag": "देवनागरी और भारतीय अंक",
+            "prompt": "A close-up view of hands holding a plain white envelope on the wooden counter, showing the address area, with the postman pointing at it with a worried expression.",
+            "target": "the address on the envelope",
+            "tag": "देवनागरी लिपि और अंक",
             "tag_color": "red",
-            "text": "विदेशी पते पर देवनागरी और भारतीय अंक लिखना गलत है।",
-            "desc": "The envelope shows Devanagari script and Indian numerals with a red tag indicating it is incorrect.",
+            "text": "विदेशी पते को देवनागरी लिपि या अंकों में लिखना गलत है।",
+            "desc": "Close-up of the envelope showing Devanagari script, marked wrong.",
             "mark": "wrong",
             "card": {
               "lines": [
-                "सेवा में, जॉन स्मिथ",
-                "मकान १२३, मुख्य मार्ग",
-                "लंदन, ब्रिटेन"
+                "जॉन स्मिथ",
+                "मकान १२३",
+                "लंदन"
               ],
               "corner": "",
-              "hl": 1
-            },
-            "say": {
-              "who": "customer",
-              "text": "क्या हिंदी और भारतीय अंकों में लिख दूँ?"
-            },
-            "img": "clause_plans/chitra_img/ca635a18ed_73495299_2.jpg",
-            "box": [
-              0.467,
-              0.513,
-              0.603,
-              0.603
-            ],
-            "bg_text": false,
-            "badge": [
-              0.364,
-              0.457,
-              0.429,
-              0.499
-            ],
-            "face": [
-              0.233,
-              0.169,
-              0.424,
-              0.342
-            ],
-            "frames": [
-              "clause_plans/chitra_img/ca635a18ed_73495299_2f1.jpg",
-              "clause_plans/chitra_img/ca635a18ed_73495299_2f2.jpg"
-            ]
-          },
-          {
-            "prompt": "Medium shot at the post office counter. The postman points to the correct envelope with a smiling expression, while the customer looks relieved.",
-            "target": "the white envelope with Roman script",
-            "tag": "रोमन अक्षर और अरबी अंक",
-            "tag_color": "green",
-            "text": "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।",
-            "desc": "The envelope shows Roman letters and Arabic numerals with a green tag showing the correct rule.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "To,",
-                "123",
-                "London, UK"
-              ],
-              "corner": "",
-              "hl": 1
+              "hl": 0
             },
             "say": {
               "who": "postman",
-              "text": "इसे रोमन अक्षर और अरबी अंक में लिखो।"
+              "text": "अरे! देवनागरी में लिखा पता नहीं चलेगा!"
             },
-            "img": "clause_plans/chitra_img/ca635a18ed_73495299_3.jpg",
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/ca635a18ed_32635117_2.jpg",
             "box": [
-              0.476,
-              0.506,
-              0.611,
-              0.597
+              0.461,
+              0.552,
+              0.663,
+              0.737
             ],
             "bg_text": false,
             "badge": [
-              0.366,
-              0.454,
-              0.435,
-              0.496
+              0.321,
+              0.51,
+              0.401,
+              0.563
             ],
             "face": [
-              0.242,
-              0.164,
-              0.435,
-              0.335
+              0.0,
+              0.071,
+              0.528,
+              0.998
+            ],
+            "frames": [
+              "clause_plans/chitra_img/ca635a18ed_32635117_2f1.jpg",
+              "clause_plans/chitra_img/ca635a18ed_32635117_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "An over-the-shoulder shot from behind the customer looking at the smiling postman, who points cheerfully at a clean white envelope on the wooden counter.",
+            "target": "the address on the envelope",
+            "tag": "रोमन अक्षर और अरबी अंक",
+            "tag_color": "green",
+            "text": "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।",
+            "desc": "Over the shoulder view showing the address correctly written in Roman letters and Arabic figures.",
+            "mark": "right",
+            "card": {
+              "lines": [
+                "123"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "रोमन अक्षर और अरबी अंक ही सही हैं!"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/ca635a18ed_32635117_3.jpg",
+            "box": [
+              0.442,
+              0.501,
+              0.584,
+              0.621
+            ],
+            "bg_text": false,
+            "badge": [
+              0.345,
+              0.486,
+              0.399,
+              0.529
+            ],
+            "face": [
+              0.091,
+              0.133,
+              0.583,
+              1.0
             ],
             "pan": "rl",
             "frames": [
-              "clause_plans/chitra_img/ca635a18ed_73495299_3f1.jpg"
+              "clause_plans/chitra_img/ca635a18ed_32635117_3f1.jpg"
             ]
           }
         ],
         "caps": [
-          "विदेशी देश भेजने वाले लेख पर पता सही लिखना ज़रूरी है।",
-          "विदेशी पते पर देवनागरी और भारतीय अंक लिखना गलत है।",
+          "ग्राहक विदेशी देश भेजने के लिए लिफाफा लेकर आता है।",
+          "विदेशी पते को देवनागरी लिपि या अंकों में लिखना गलत है।",
           "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।"
         ],
         "score": 10.0,
-        "lesson": "Addresses on international mail articles must be written correctly using Roman letters and Arabic numerals instead of Devanagari script and Indian numerals.",
+        "lesson": "When sending a letter to a foreign country, the address must be written in Roman letters and Arabic numerals instead of Devanagari script and numbers.",
         "pv": 4,
         "ok": true,
         "v": 9,
         "attempt": 1
       },
       "cf_spent": {
-        "2026-10-28": 14
+        "2026-10-29": 10
       },
       "punch_v": {
         "ok": true,
@@ -1115,7 +1109,7 @@
       },
       "opt_pics": {
         "none": true,
-        "ref": "clause_plans/chitra_img/ca635a18ed_73495299_1.jpg"
+        "ref": "clause_plans/chitra_img/ca635a18ed_32635117_1.jpg"
       },
       "trap_v": {
         "none": true,
@@ -1123,108 +1117,28 @@
       },
       "published_prev": "2026-10-13",
       "published_round_prev": 19,
-      "chitra_keep": {
-        "scene": "A clean, modern post office service counter with plain walls and no signage, featuring the postman in his khaki uniform and the customer in his blue checked shirt.",
-        "seed0": 89005653,
-        "files": {
-          "0": "clause_plans/chitra_img/ca635a18ed_keep_89005653_1.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.317,
-            0.518,
-            0.622,
-            0.725
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": [
-              0.331,
-              0.454,
-              0.366,
-              0.487
-            ],
-            "face": [
-              0.246,
-              0.23,
-              0.363,
-              0.353
-            ]
-          }
-        },
-        "bgt": {
-          "0": false
-        },
-        "fixes": {
-          "1": "Make it clearly show: the handwritten address on the parcel - saaf nahi",
-          "2": "Make it clearly show: the rewritten address on the parcel - saaf nahi"
-        },
-        "panels": [
-          {
-            "prompt": "The postman stands behind the service counter, watching as the customer places a large international parcel on the desk. The scene is bright and professional with a wide view showing the counter setup.",
-            "target": "the parcel",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "विदेश भेजने के लिए ग्राहक पार्सल लेकर डाकघर पहुँचा है।",
-            "desc": "The customer arrives at the post office with an international parcel to send.",
-            "mark": "none",
-            "card": null,
-            "say": {
-              "who": "customer",
-              "text": "भैया, यह पार्सल विदेश भेजना है।"
-            },
-            "shot": "wide"
-          },
-          {
-            "prompt": "A close-up shot focusing on the customer's handwritten address on the parcel in Devanagari script, while the postman frowns and points at the writing. The parcel is clear and the writing is prominent.",
-            "target": "the handwritten address on the parcel",
-            "tag": "देवनागरी लिपि",
-            "tag_color": "red",
-            "text": "विदेशी पते पर स्थानीय भाषा या देवनागरी नहीं चलेगी।",
-            "desc": "The postman identifies that the address is written incorrectly in Devanagari script.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्रीमान राहुल",
-                "एवेन्यू स्ट्रीट 12",
-                "लंदन",
-                "यूके"
-              ],
-              "corner": "",
-              "hl": 0
-            },
-            "say": {
-              "who": "postman",
-              "text": "नहीं भाई, यह पता मान्य नहीं होगा।"
-            },
-            "shot": "closeup"
-          },
-          {
-            "prompt": "An over-the-shoulder shot from behind the customer, showing the postman pointing at the address rewritten correctly in Roman letters and Arabic figures on the parcel. The postman's expression is helpful and the customer looks satisfied.",
-            "target": "the rewritten address on the parcel",
-            "tag": "रोमन अक्षर और अरबी अंक",
-            "tag_color": "green",
-            "text": "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखें।",
-            "desc": "The postman shows the correctly written address in Roman letters and Arabic figures.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "12",
-                "UK"
-              ],
-              "corner": "",
-              "hl": 1
-            },
-            "say": {
-              "who": "postman",
-              "text": "अब यह बिल्कुल सही है।"
-            },
-            "shot": "over"
-          }
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "In the case of articles addressed to foreign countries, the address should be written in Roman letters and in Arabic figures.",
+        "kind": "line"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "विदेश भेजो खत तो, रोमन अक्षर और अरबी अंक लिखो।",
+        "key": [
+          "रोमन अक्षर",
+          "अरबी अंक"
         ],
-        "reuse_n": 2
-      }
+        "why": ""
+      },
+      "published": "2026-10-29",
+      "published_round": 24
     },
     {
       "basis": "guide",
@@ -1282,137 +1196,127 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "The customer stands at the post office counter holding a plain white envelope, looking confused about where to write.",
-            "target": "the plain white envelope",
-            "tag": "",
+            "prompt": "Wide shot of the post office counter where the customer holds a plain white envelope, looking at the postman with a thoughtful expression.",
+            "target": "the white envelope in customer hands",
+            "tag": "नियम",
             "tag_color": "dark",
-            "text": "ग्राहक पत्र पर प्रेषक का पता लिखना चाहता है।",
-            "desc": "The customer stands at the post office counter holding a plain white envelope, looking confused.",
+            "text": "प्रेषक का पता लिखने का नियम क्या है?",
+            "desc": "The customer stands at the post office counter holding a plain white envelope.",
             "mark": "none",
             "card": null,
             "say": {
               "who": "customer",
-              "text": "भैया, पता कहाँ लिखें?"
+              "text": "भैया, इस लिफाफे पर पता कहाँ लिखूँ?"
             },
-            "img": "clause_plans/chitra_img/b9c9117998_65230234_1.jpg",
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/b9c9117998_60212033_1.jpg",
             "box": [
+              0.48,
               0.502,
-              0.664,
-              0.649,
-              0.75
+              0.603,
+              0.6
             ],
-            "bg_text": false,
+            "bg_text": true,
             "badge": [
-              0.388,
-              0.501,
-              0.461,
-              0.541
+              0.372,
+              0.462,
+              0.431,
+              0.5
             ],
             "face": [
-              0.608,
-              0.172,
-              0.796,
-              0.391
+              0.614,
+              0.171,
+              0.804,
+              0.38
             ],
             "pan": "lr"
           },
           {
-            "prompt": "The customer writes the sender address on the top right corner of the white envelope on the counter.",
-            "target": "the white envelope",
-            "tag": "शीर्ष दाएं कोने में",
+            "prompt": "Closeup shot of the envelope surface where the sender address is written incorrectly at the top right corner, while the postman points at it with a worried expression.",
+            "target": "the envelope address at the top right",
+            "tag": "गलत स्थान",
             "tag_color": "red",
-            "text": "गलत जगह पर पता लिखना बिल्कुल मना है।",
-            "desc": "The customer writes the sender address on the top right corner of the white envelope.",
+            "text": "शीर्ष दाएं कोने में पता लिखना गलत तरीका है।",
+            "desc": "The envelope shows the sender address incorrectly placed at the top right corner.",
             "mark": "wrong",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "पटना 800001"
-              ],
-              "corner": "प्रेषक: ए. शर्मा, दिल्ली",
-              "hl": -2
-            },
+            "card": null,
             "say": {
               "who": "postman",
-              "text": "अरे भाई, वहाँ मत लिखो!"
+              "text": "अरे भाई, ऊपर दाईं ओर मत लिखो!"
             },
-            "img": "clause_plans/chitra_img/b9c9117998_65230234_2.jpg",
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/b9c9117998_60212033_2.jpg",
             "box": [
-              0.496,
-              0.676,
-              0.637,
-              0.759
-            ],
-            "bg_text": false,
-            "face": [
-              0.537,
-              0.17,
-              0.907,
-              1.0
-            ],
-            "frames": [
-              "clause_plans/chitra_img/b9c9117998_65230234_2f2.jpg"
-            ]
-          },
-          {
-            "prompt": "The postman points to the lower left corner of the white envelope on the counter, smiling wisely.",
-            "target": "the white envelope",
-            "tag": "निचले बाएं कोने में",
-            "tag_color": "green",
-            "text": "प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।",
-            "desc": "The postman points to the lower left corner of the white envelope on the counter.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "श्री राम कुमार",
-                "मकान 12, गांधी नगर",
-                "पटना 800001"
-              ],
-              "corner": "",
-              "hl": 2
-            },
-            "say": {
-              "who": "postman",
-              "text": "इसे हमेशा नीचे बाएं कोने में लिखो।"
-            },
-            "img": "clause_plans/chitra_img/b9c9117998_65230234_3.jpg",
-            "box": [
-              0.503,
-              0.663,
-              0.642,
-              0.749
+              0.497,
+              0.116,
+              0.683,
+              0.362
             ],
             "bg_text": false,
             "badge": [
-              0.394,
-              0.496,
-              0.465,
-              0.537
+              0.373,
+              0.448,
+              0.421,
+              0.49
             ],
             "face": [
-              0.604,
-              0.178,
-              0.786,
-              0.381
+              0.276,
+              0.217,
+              0.414,
+              0.345
+            ]
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer, looking at the postman who points his finger at the lower left corner of the envelope address side.",
+            "target": "the lower left corner of the envelope",
+            "tag": "निचले बाएं कोने में",
+            "tag_color": "green",
+            "text": "प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।",
+            "desc": "The postman points to the lower left corner of the address side showing the correct placement for the sender address.",
+            "mark": "right",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "हमेशा नीचे बाएं कोने में लिखना चाहिए।"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/b9c9117998_60212033_3.jpg",
+            "box": [
+              0.484,
+              0.499,
+              0.605,
+              0.604
+            ],
+            "bg_text": true,
+            "badge": [
+              0.377,
+              0.48,
+              0.422,
+              0.516
+            ],
+            "face": [
+              0.275,
+              0.23,
+              0.428,
+              0.371
             ],
             "pan": "rl"
           }
         ],
         "caps": [
-          "ग्राहक पत्र पर प्रेषक का पता लिखना चाहता है।",
-          "गलत जगह पर पता लिखना बिल्कुल मना है।",
+          "प्रेषक का पता लिखने का नियम क्या है?",
+          "शीर्ष दाएं कोने में पता लिखना गलत तरीका है।",
           "प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।"
         ],
-        "score": 7.0,
-        "lesson": "A customer must write the sender's address in the bottom-left corner of the address side of a letter.",
+        "score": 10.0,
+        "lesson": "The sender's address must be written in the lower left corner of the address side of the postal article.",
         "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 1
+        "attempt": 2
       },
       "cf_spent": {
-        "2026-10-28": 0
+        "2026-10-29": 12
       },
       "punch_v": {
         "ok": true,
@@ -1790,14 +1694,16 @@
   ],
   "clause_text_en": "26. Particulars to be furnished  –  (1) The prompt delivery of a postal article is greatly \nfacilitated if it is addressed in the correct manner.  Delay to correspondence and mistakes in \n\n\ndelivery often result from an incorrect or incomplete postal address.  The address should, \ntherefore, be complete and definite enough to ensure the easy transmission of the article and its \ndelivery at destination to the addressee without any el aborate enquiry.  The public can help the \nPost Office by keeping the following points in mind while addressing their correspondence: \n \n(a) The address should be written parallel to the length of the cover and in the lower half \nand towards the right-hand side of the front of the article, leaving a clear margin at least \n3 centimeter at the top for the postage stamps and labels, postmarks and other \nindications.  \n \n(b) The Post town should be noted in block letter and according to the approved spelling in \nthe List of Post Offices (Part III of this Guide).  It should, also be underlined.  The PIN \nCode of the post town should be noted below. \n \n(c) The following particulars should generally be furnished in the address and in the same \norder as noted below :- \n \nIn the case of articles for delivery in the urban \nareas \n \nIn the case of articles for delivery in the rural \nareas \n(i) Name of addressee \n \n(i) Name of addressee \n(ii) Profession, if any \n(iii)  \n(ii)Father’s or husbands’ name \n(iv) Number and/or name of the House, \nand name of the street or Road. \n(v)  \n(iii) Profession, if any \n(vi) Name of the locality or Mohall (iv) No. of house, if any along with the name \nof street if any. \n \n(v) Post Box No., if any. (v) Name of the village and Thana Firka, Hobli, \netc. \n \n(vi) Name of the Post Town and Pin -\nCode \n(vi) Name of the Post Office of delivery and the \nPIN-Code. \n \n(vii) Name of the District and State Pin -\nCode \n \n(vii) Name of the Taluk or Tahsil.  This is not \nnecessary if correct PIN is written. \n (viii) Name of the District and State  \n         This is not necessary if correct PIN is \nwritten. \n \n(d) It is particularly important to note the District in cases where there is more than one \nPost town bearing the same name and if PIN is not noted.  If the name of the district is \n\n\nthe same as that of the Post town, the name of the State should be noted.  I ndications of \nroute like ‘via’ should not be given. \n \n(e) In the case of articles addressed to foreign countries, the address should be written in \nRoman letters and in Arabic figures. \n \n(f) It is desirable to note the sender’s address preferable in the lower left -hand corner on \nthe address side or failing that on the reverse of the article.  There should be an \nindication from to obviate its being mistaken for the addressee’s particulars. \n \n(g) In the case of articles entitled to concessional rates of postage or to be tran smitted free \nof postage, the class of the articles, e.g., ‘Book -Post’, ‘Blind Literature’ should be \nclearly noted on the top of the address side of the article.  The indication ‘Letter’ should \nbe given on the address -side of bulky letter packets, which, on  account of their size or \nmake up, might be mistaken for other classes of packets. \n \n(h) The President, Prime Minister and other Ministers of the Government of India and \ncertain High government Officers are allowed the facility of delivery of their mails to \nthem wherever they may happen to be on tour within India.  A list of the high officers \nentitled to this privilege will be found in Clause 206.  Articles intended for delivery in \ncamp to such officers should not be addressed to any Post Town but only to their camp \nas indicated in Clause 206. \n \n \n(2)  A few examples of correct and complete addresses are given below :- \n \n(1)  ABC, \nEngineer, \nMandir Marg, \nGole Market, \nNew Delhi-110001. \n(2) Lakshmi, \nWife of Chikka Ramudu Dhobi, \nBukkapatnam Village, \nBUKKAPATNAM –  515144 \nPennukonda Taluq \nAnantpur District. \n \n(3)  Govindaswamy, \nSon of Kumaraswamy, \nHead Gangman \nQuarter No. T/23 \nKurumalai R.S., S.R., \nIdaiseval P.O., \nNallatinaputhur-627716. \n(Tirunelveli District) \nTamil Nadu. \n(4) Private Secretary to the Prime Minister of \nIndia, \nPrime Minister’s Camp",
   "clause_pyq_v": {
-    "v": 1,
-    "item": {
-      "src": "HR-MTS-PM-MG-2020.pdf#Q23",
-      "ans": "D",
-      "exams": [
-        "हरियाणा 2020"
-      ],
-      "q_en": "What is the information one should mention while writing address for urban are?"
-    }
+    "v": 2,
+    "items": [
+      {
+        "src": "HR-MTS-PM-MG-2020.pdf#Q23",
+        "ans": "D",
+        "exams": [
+          "हरियाणा 2020"
+        ],
+        "q_en": "What is the information one should mention while writing address for urban are?"
+      }
+    ]
   }
 }

@@ -252,5 +252,20 @@
     "trap_quote": "",
     "guide_line": "Indications of route like ‘via’ should not be given.",
     "done": "skip"
+  },
+  {
+    "clause": 26,
+    "part_index": 4,
+    "part_no": 5,
+    "reel": "reel_clause_26_part_5_v2.mp4",
+    "question": "विदेशी देशों को संबोधित लेखों पर पता किस लिपि और अंकों में होना चाहिए?",
+    "fact": "विदेशी पते रोमन अक्षरों और अरबी अंकों में लिखे जाने चाहिए।",
+    "answer": "रोमन अक्षर और अरबी अंक",
+    "en_question": "In which script and figures should the address on articles addressed to foreign countries be written?",
+    "en_fact": "Addresses for foreign countries should be written in Roman letters and Arabic figures.",
+    "source_quote": "In the case of articles addressed to foreign countries, the address should be written in Roman letters and in Arabic figures.",
+    "trap_quote": "",
+    "guide_line": "In the case of articles addressed to foreign countries, the address should be written in Roman letters and in Arabic figures.",
+    "done": "skip"
   }
 ]
