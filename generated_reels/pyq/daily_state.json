@@ -5,16 +5,9 @@
     "hours_by_circle",
     "night_po",
     "transit_mo",
-    "rlo",
     "face",
-    "navy_fmo",
-    "aps_delhi",
-    "upu_1874",
     "sp_division",
     "postbox_circle",
-    "bo_reg_parcel_10",
-    "vp_demurrage_7",
-    "insured_reg",
     "bo_no_foreign",
     "franked_letterbox",
     "franking_any",
@@ -111,14 +104,22 @@
     "p_53b0c0d876",
     "p_551c5082cc",
     "p_5525055840",
-    "p_554af1a26a"
+    "p_554af1a26a",
+    "insured_reg",
+    "navy_fmo",
+    "rlo",
+    "bo_reg_parcel_10",
+    "vp_demurrage_7",
+    "aps_delhi",
+    "upu_1874"
   ],
   "am": {
     "2026-10-24": "pyq_8am_2026-10-24.mp4",
     "2026-10-25": "pyq_8am_2026-10-25.mp4",
     "2026-10-26": "pyq_8am_2026-10-26.mp4",
     "2026-10-27": "pyq_8am_2026-10-27.mp4",
-    "2026-10-28": "pyq_8am_2026-10-28.mp4"
+    "2026-10-28": "pyq_8am_2026-10-28.mp4",
+    "2026-10-29": "pyq_8am_2026-10-29.mp4"
   },
   "pm": {
     "2026-10-23": "pyq_9pm_2026-10-23.mp4",
