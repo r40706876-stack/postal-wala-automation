@@ -67,9 +67,9 @@ V2 = os.getenv("BHAROSA_V2", "0") == "1"
 V2_OPEN_EXACT = ["ये सवाल {L} के पेपर में आया था! ज़्यादातर लोग इसमें गलती करते हैं!",
                  "{L} के पेपर का असली सवाल! जल्दी में लोग यहीं गलत कर देते हैं!",
                  "ये सवाल {L} में पूछा गया था! क्या आप सही जवाब दे पाओगे?"]
-V2_OPEN_CLAUSE = ["इसी नियम से {L} के पेपर में सवाल आया था! ऐसे सवाल में अक्सर लोग गलती करते हैं!",
-                  "{L} के पेपर में इसी नियम से सवाल आया! ज़्यादातर लोग यहाँ फँस जाते हैं!",
-                  "इसी नियम से {L} में सवाल पूछा गया था! आप होते तो क्या जवाब देते?"]
+V2_OPEN_CLAUSE = ["इसी क्लॉज़ से {L} के पेपर में सवाल आया था! ऐसे सवाल में अक्सर लोग गलती करते हैं!",
+                  "{L} के पेपर में इसी क्लॉज़ से सवाल आया! ज़्यादातर लोग यहाँ फँस जाते हैं!",
+                  "इसी क्लॉज़ से {L} में सवाल पूछा गया था! आप होते तो क्या जवाब देते?"]
 V2_OPEN_GUIDE = ["ऐसे सवाल पेपर में आते हैं, और ज़्यादातर लोग गलत कर देते हैं! आप बताओ?",
                  "PO Guide का पक्का नियम! इस पर लोग अक्सर गलती करते हैं!",
                  "ये नियम पेपर में आता है, और जल्दी में लोग यहीं फँसते हैं!"]
@@ -242,11 +242,14 @@ CANDIDATES:
 Return ONLY JSON: {{"items": [{{"id": "", "q_en": ""}}]}}  (best first, max 3; empty list if none fits)"""
 
 
-def clause_pyq(plan):
-    """Isi CLAUSE ka asli paper sawal (niyam ka exact na mile tab). Jawab = paper ki answer key. Plan me cache."""
+def clause_pyq(plan, part_no=1):
+    """Isi CLAUSE ka asli paper sawal (niyam ka exact na mile tab). Jawab = paper ki answer key. Plan me cache.
+    v2 (2026-10-29): pehle ek hi sawal save hota tha -> Clause 26 ke har part me "हरियाणा 2020". Ab saare
+    scan-layak sawal (max 3) save, part ke hisaab se badalte hain."""
     cv = plan.get("clause_pyq_v") if isinstance(plan.get("clause_pyq_v"), dict) else {}
-    if cv.get("v") == 1:
-        return cv.get("item")
+    if cv.get("v") == 2:
+        its = cv.get("items") or []
+        return dict(its[(int(part_no or 1) - 1) % len(its)]) if its else None
     if M.DRY_RUN:
         return None
     import pyq_reel as P
@@ -256,7 +259,7 @@ def clause_pyq(plan):
     for c in P.candidates(e, k=10):
         if c.get("trust") and P.key_map(c["file"]).get(int(c["no"])) in ("A", "B", "C", "D"):
             cands.append(c)
-    item = None
+    item, items = None, []
     if cands:
         try:
             js = M._llm_json(CLAUSE_PYQ_PROMPT.format(
@@ -272,12 +275,12 @@ def clause_pyq(plan):
                 cand = {"src": f'{c["file"]}#Q{c["no"]}', "ans": P.key_map(c["file"])[int(c["no"])],
                         "exams": c.get("exams") or [c["exam"]], "q_en": " ".join(str(x.get("q_en") or "").split())}
                 if paper_scan(cand):                 # scan ban sake tabhi (asli panna dikhna chahiye)
-                    item = cand
-                    break
+                    items.append(cand)
         except Exception as exc:
             print("  Clause PYQ jaanch nahi hui (agli run me):", str(exc)[:140])
             return None
-    plan["clause_pyq_v"] = {"v": 1, "item": item}
+    plan["clause_pyq_v"] = {"v": 2, "items": items}
+    item = dict(items[(int(part_no or 1) - 1) % len(items)]) if items else None
     try:
         M.save_plan(plan)
     except Exception:
@@ -383,7 +386,9 @@ class Bharosa(N.Reel):
         self.guide_proof = proof
         self.proof = True                     # naya ki "GDS की गलती" pill story pe nahi (patti me sab hai)
         self.scan, self.trick, self.syl, self.guide_en = scan, trick, syl, guide_en
-        self.stamp = stamp_img("असली पेपर में आया", f"{scan['label'][0]}  •  प्रश्न {scan['label'][1]}") if scan else \
+        self.stamp = (stamp_img(f"इसी Clause से {scan['label'][0]} में सवाल", f"असली पेपर  •  प्रश्न {scan['label'][1]}")
+                      if scan.get("clause_level") else
+                      stamp_img("असली पेपर में आया", f"{scan['label'][0]}  •  प्रश्न {scan['label'][1]}")) if scan else \
             stamp_img("सिलेबस का पक्का नियम", "PO Guide Part I")
         self.piece_n = len(story) + 1
 
@@ -691,26 +696,31 @@ def make_thumb(data, pn, scan, path):
     d = ImageDraw.Draw(cv)
     d.rectangle((0, 0, W, 250), fill=(8, 12, 30))
     d.rectangle((0, H - 250, W, H), fill=(8, 12, 30))
+    # 0) sabse upar: Postal Wala + kiske liye (user)
+    d.rounded_rectangle((40, 255, 1040, 355), 24, fill=RED)
+    d.text((540, 305), "POSTAL WALA  •  GDS से MTS / Postman / PA", font=F(43), fill="white", anchor="mm")
     # 1) Clause + Part
     tp = data.get("total_parts")
     txt = f"Clause {data.get('clause_no')}  •  Part {data.get('part_no')}" + (f"/{tp}" if tp else "")
-    d.rounded_rectangle((90, 268, 990, 388), 60, fill=GOLD)
-    d.text((540, 328), txt, font=F(72), fill=NAVY, anchor="mm")
+    d.rounded_rectangle((90, 375, 990, 485), 55, fill=GOLD)
+    d.text((540, 430), txt, font=F(70), fill=NAVY, anchor="mm")
     # 2) chitra + 3) paper/saal mohar
     try:
-        im = N.panel_full(pn, 0.6, 1.0, 0.0, 0.0, 0.0).convert("RGB").crop((40, 330, 1040, 1010)).resize((900, 612))
-        frame = Image.new("RGBA", (924, 636), GOLD)
+        im = N.panel_full(pn, 0.6, 1.0, 0.0, 0.0, 0.0).convert("RGB").crop((40, 380, 1040, 960)).resize((900, 522))
+        frame = Image.new("RGBA", (924, 546), GOLD)
         frame.paste(im, (12, 12))
-        cv.alpha_composite(frame, (78, 420))
+        cv.alpha_composite(frame, (78, 505))
     except Exception as exc:
         print("  Cover chitra nahi laga:", str(exc)[:100])
-    if scan:
+    if scan and scan.get("clause_level"):        # sawal is CLAUSE ka hai, is part ke niyam ka nahi - waisa hi likho
+        st = stamp_img(f"इसी Clause से {scan['label'][0]} में सवाल", f"प्रश्न {scan['label'][1]}  •  असली पेपर")
+    elif scan:
         st = stamp_img(f"{scan['label'][0]} के पेपर में आया", f"प्रश्न {scan['label'][1]}  •  असली पेपर")
     else:
         st = stamp_img("परीक्षा का पक्का नियम", "PO Guide Part I")
-    paste(cv, st, 540, 1030, min(1.0, 980 / max(1, st.width)))
+    paste(cv, st, 540, 1065, min(1.0, 980 / max(1, st.width)))
     # 4) vaade
-    y = 1170
+    y = 1200
     for tag, line in THUMB_POINTS:
         d.rounded_rectangle((70, y - 52, 1010, y + 52), 26, fill=(255, 255, 255, 240))
         d.rounded_rectangle((70, y - 52, 270, y + 52), 26, fill=(RED if tag == "FREE" else GRN))
@@ -718,7 +728,7 @@ def make_thumb(data, pn, scan, path):
         f, s_, ls = M.fit_lines(line, 700, 1, 44, 30)
         d.text((290, y), " ".join(ls[0]), font=f, fill=INK, anchor="lm")
         y += 122
-    d.text((540, 1690), "@postal_wala  •  GDS से MTS / Postman / PA", font=F(40), fill=(230, 235, 250), anchor="mm")
+    d.text((540, 1730), "@postal_wala", font=F(44), fill=(230, 235, 250), anchor="mm")
     cv.convert("RGB").save(path, quality=92)
     print("Cover (thumbnail):", path)
     return path
@@ -780,7 +790,7 @@ def build(data, out, plan=None, part=None):
             print("  PYQ nahi juda:", str(exc)[:140])
     scan = paper_scan(pyq) if (pyq and rel) else None
     if not scan and plan is not None:                 # niyam ka exact nahi -> isi Clause ka asli paper sawal
-        cp = clause_pyq(plan)
+        cp = clause_pyq(plan, data.get("part_no"))
         if cp:
             scan = paper_scan(dict(cp, clause_level=True))
     print("  Saboot:", f"asli paper scan {scan['label']}" if scan else "PO Guide panna + syllabus line")
