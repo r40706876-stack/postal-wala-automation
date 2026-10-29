@@ -88,7 +88,7 @@ jobs:
         run: |
           set -o pipefail
           B3D_JOB=b3d_job B3D_CHUNK=${{ matrix.chunk }} xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 2 \
-            --python b3d_reel3d.py 2>&1 | grep -E "B3D_|Error|error|Traceback|CEL_|OUTLINE_|CHECKER_" | tail -n 60
+            --python b3d_reel3d.py 2>&1 | { grep -E "B3D_|Error|error|Traceback|CEL_|OUTLINE_|CHECKER_" || true; } | tail -n 60
           touch b3d_job/.m${{ matrix.chunk }}
           ls -d b3d_job/frames_* 2>/dev/null; ls b3d_job/frames_*/ 2>/dev/null | wc -l
       - uses: actions/upload-artifact@v4
@@ -137,7 +137,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main || true
           git add demo_out/blender_full/
           git diff --staged --quiet || git commit -m "Demo: poori reel Blender me (Clause 26 Part 5) [skip ci]"
-          git push origin main || git push
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done
