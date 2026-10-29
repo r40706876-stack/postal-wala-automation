@@ -132,7 +132,7 @@ jobs:
       # Taiyaari yahan; render agle job me (tukdon me, kai runner); jodna + post 'post3d' job me.
       - name: 3D reel taiyaari (series) - fail ho to purani reel post hogi
         id: prep3d
-        if: steps.job.outputs.job == 'series' && vars.SERIES_3D != '0'      # band karna ho: repo variable SERIES_3D=0
+        if: steps.job.outputs.job == 'series' && (vars.SERIES_3D || '1') != '0'      # band: repo variable SERIES_3D=0
         continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
