@@ -185,6 +185,79 @@ def cutout(path, h):
     return out
 
 
+_VIG = {}
+
+
+def vignette():
+    if "v" not in _VIG:
+        yy, xx = np.mgrid[0:H, 0:W]
+        r = np.sqrt(((xx - W / 2) / (W * 0.62)) ** 2 + ((yy - H / 2) / (H * 0.6)) ** 2)
+        a = (np.clip((r - 0.55) / 0.6, 0, 1) ** 1.6 * 200).astype("uint8")
+        im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        im.putalpha(Image.fromarray(a))
+        _VIG["v"] = im
+    return _VIG["v"]
+
+
+def sprite_at(cv, sp, cx, bottom, t, sx=1.0, sy=1.0, tilt=0.0, phase=0.0):
+    """Kirdaar ko zinda rakho: saans (halka upar-neeche phoolna) + jhoolna; paon (neeche) anchor."""
+    br = 1 + 0.018 * math.sin(t * 2.4 + phase)
+    sw = 1.6 * math.sin(t * 1.7 + phase) + tilt
+    im = sp.resize((max(1, int(sp.width * sx)), max(1, int(sp.height * sy * br))), Image.BICUBIC)
+    im = im.rotate(sw, expand=True, resample=Image.BICUBIC, center=(im.width / 2, im.height))
+    cv.alpha_composite(im, (int(cx - im.width / 2), int(bottom - im.height)))
+
+
+def burst(cv, cx, cy, k, col, n=14):
+    """Takkar ka gubbaar: kirne bahar phailti, fiki padti."""
+    if k <= 0 or k >= 1:
+        return
+    ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(ov)
+    e = ease(k)
+    for i in range(n):
+        a = i * 2 * math.pi / n + 0.3
+        r0, r1 = 120 + 260 * e, 170 + 330 * e
+        al = int(255 * (1 - k))
+        d.line((cx + r0 * math.cos(a), cy + r0 * math.sin(a) * 0.8, cx + r1 * math.cos(a), cy + r1 * math.sin(a) * 0.8),
+               fill=col + (al,), width=10)
+    cv.alpha_composite(ov)
+
+
+_CONF = [(((i * 97) % 1000) / 1000, ((i * 57) % 1000) / 1000, i % 5) for i in range(70)]
+_CCOL = [(255, 205, 40), (22, 170, 80), (230, 50, 60), (60, 140, 255), (255, 255, 255)]
+
+
+def confetti(cv, t):
+    if t <= 0 or t > 2.2:
+        return
+    ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(ov)
+    for i, (u, v, c) in enumerate(_CONF):
+        vx = (u - 0.5) * 1500
+        vy = -900 - 700 * v
+        x = 540 + vx * t
+        y = 900 + vy * t + 1400 * t * t
+        if not (-40 < x < W + 40 and -40 < y < H + 40):
+            continue
+        a = t * (6 + 5 * v) + i
+        w_, h_ = 22 * abs(math.cos(a)) + 4, 12
+        pts = [(x + w_ * math.cos(a) - h_ * math.sin(a), y + w_ * math.sin(a) + h_ * math.cos(a)) for w_, h_ in
+               ((w_, h_), (-w_, h_), (-w_, -h_), (w_, -h_))]
+        d.polygon(pts, fill=_CCOL[c] + (int(255 * min(1.0, (2.2 - t) / 0.5)),))
+    cv.alpha_composite(ov)
+
+
+def drop(cv, x, y, a):
+    """Pasine/aansu ki boond."""
+    ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(ov)
+    al = int(230 * max(0.0, min(1.0, a)))
+    d.polygon([(x, y - 30), (x - 16, y), (x + 16, y)], fill=(120, 190, 255, al))
+    d.ellipse((x - 16, y - 12, x + 16, y + 20), fill=(120, 190, 255, al))
+    cv.alpha_composite(ov)
+
+
 def char_file(name, expr):
     for p in (os.path.join("clause_plans", "characters", f"{name}_{expr}.jpg"),
               os.path.join("clause_plans", "characters", f"{name}.jpg")):
@@ -485,6 +558,7 @@ class Bharosa(N.Reel):
                       stamp_img("असली पेपर में आया", f"{scan['label'][0]}  •  प्रश्न {scan['label'][1]}")) if scan else \
             stamp_img("सिलेबस का पक्का नियम", "PO Guide Part I")
         self.piece_n = len(story) + 1
+        self._fx = {}
 
     # ---- bharose ki patti (puri reel) ----
     def strip(self, cv, piece, cover=158):
@@ -600,44 +674,104 @@ class Bharosa(N.Reel):
         paste(cv, M.check_sprite(120), 930, 160, back((t - 0.25) / 0.3))
         return cv
 
-    def sc_galti(self, sc, t):                       # v24.4: galti ka drama (~2.6s)
+    def sc_galti(self, sc, t):                       # v24.5: galti ka drama - gehraai, speed, takkar, bhaav
         pn = sc["pn"]
-        cv = N.blurred_bg(pn, dark=0.5).convert("RGBA")
-        self.strip(cv, "गलती")
+        # 1) asli (saaf) chitra peeche, dheere andar khiskta (camera push) + andhera kinara -> gehraai
+        key = ("galti_bg", pn.get("img"))
+        if key not in self._fx:
+            base = N.panel_full(pn, 0.6, 0.0, 0.0, 0.0, 0.0).convert("RGB").filter(ImageFilter.GaussianBlur(3))
+            self._fx[key] = Image.blend(base, Image.new("RGB", (W, H), (12, 14, 26)), 0.38)
+        z = 1.0 + 0.06 * min(1.0, t / max(1.0, sc["dur"]))
+        bgi = self._fx[key].resize((int(W * z), int(H * z)), Image.BILINEAR)
+        ox, oy = (bgi.width - W) // 2, (bgi.height - H) // 2
+        cv = bgi.crop((ox, oy, ox + W, oy + H)).convert("RGBA")
+        cv.alpha_composite(vignette())
         d = ImageDraw.Draw(cv)
-        env = self._env if hasattr(self, "_env") else None
+        env = self._fx.get("env")
         if env is None:
-            env = self._env = lifaafa((pn.get("card") or {}).get("lines") or [])
-        # lifaafa: pop (0-0.4) -> ud ke bahar (0.5-0.95) -> laut ke (1.0-1.45) -> mohar 1.5
-        cx, cy, rot, s = 540, 720, 0.0, back(t / 0.35)
-        if 0.5 <= t < 0.95:
-            k = ease((t - 0.5) / 0.45)
-            cx, rot = 540 + 1000 * k, -25 * k
-        elif 0.95 <= t < 1.45:
-            k = ease((t - 0.95) / 0.5)
-            cx, rot = 1540 - 1000 * k, 18 * (1 - k)
-        if t >= 1.45:
-            cx += int(14 * math.sin(t * 40) * max(0.0, 1 - (t - 1.45) / 0.3))        # jhatka
-        e2 = env.rotate(rot, expand=True, resample=Image.BICUBIC) if abs(rot) > 0.5 else env
-        paste(cv, e2, cx, cy, max(0.05, s))
-        if 0.95 <= t < 1.45:
-            stroke(d, (540, 380), "वापस आ गया!", F(76), (255, 214, 40), 7)
-        if t >= 1.5:
-            stp = stamp_img("गलती!")
-            paste(cv, stp, 560, 760, 1.5 + 0.8 * (1 - ease((t - 1.5) / 0.16)))
-        # kirdaar: Golu (udaas) baayen se, Bhaiya (chauka) daayen se - hilte-dulte
-        if t >= 1.55:
-            k = back((t - 1.55) / 0.35)
-            g = char_file("grahak", "udaas")
-            b = char_file("bhaiya", "chauka")
+            env = self._fx["env"] = lifaafa((pn.get("card") or {}).get("lines") or [])
+        # 2) lifaafa: anticipation (peeche jhukna) -> zoom se ud jaana (trail + speed lines) -> laut ke dhadaam
+        T_OUT, T_BACK, T_HIT = 0.55, 1.0, 1.45
+        cx, cy, rot, sx, sy = 540.0, 700.0, 0.0, 1.0, 1.0
+        trail = []
+        if t < 0.35:
+            k = back(t / 0.35)
+            sx = sy = max(0.05, k)
+        elif t < T_OUT:                                  # anticipation: thoda peeche + dabna
+            k = ease((t - 0.35) / (T_OUT - 0.35))
+            cx, rot, sx, sy = 540 - 60 * k, 6 * k, 1 - 0.06 * k, 1 + 0.04 * k
+        elif t < T_BACK:
+            k = ease((t - T_OUT) / (T_BACK - T_OUT)) ** 1.6
+            cx, rot, sx, sy = 480 + 1150 * k, 6 - 30 * k, 1.12, 0.9
+            trail = [(-1, 0.09), (-1, 0.18)]
+        elif t < T_HIT:
+            k = ease((t - T_BACK) / (T_HIT - T_BACK))
+            cx, rot, sx, sy = 1640 - 1100 * k, 20 * (1 - k), 1.1, 0.92
+            trail = [(1, 0.09), (1, 0.18)]
+        else:                                            # takkar: squash -> wapas
+            k = (t - T_HIT) / 0.22
+            sq = max(0.0, 1 - k) * math.sin(min(1.0, k) * math.pi)
+            sx, sy = 1 + 0.12 * sq, 1 - 0.1 * sq
+        e = env.resize((max(1, int(env.width * sx)), max(1, int(env.height * sy))), Image.BICUBIC)
+        e = e.rotate(rot, expand=True, resample=Image.BICUBIC) if abs(rot) > 0.5 else e
+        if trail:                                        # raftaar: speed lines + parchhai
+            ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            od = ImageDraw.Draw(ov)
+            for yy in range(560, 860, 46):
+                L = 260 + (yy * 37) % 180
+                x_end = cx - trail[0][0] * e.width * 0.45
+                od.line((x_end - trail[0][0] * L, yy, x_end, yy), fill=(255, 255, 255, 130), width=6)
+            cv.alpha_composite(ov)
+            for sgn, lag in trail:
+                gh = e.copy()
+                gh.putalpha(gh.getchannel("A").point(lambda v: int(v * 0.28)))
+                paste(cv, gh, cx - sgn * lag * 1500, cy, 1.0)
+        paste(cv, e, cx, cy, 1.0)
+        if T_BACK <= t < T_HIT + 0.3:
+            ka = back((t - T_BACK) / 0.3)
+            paste(cv, N.pill("वापस आ गया!", 64, NAVY, GOLD), 540, 360, max(0.05, ka))
+        if t >= T_HIT:                                   # mohar: oopar se girti, dhool ka gubbaar
+            k = ease((t - T_HIT) / 0.14)
+            paste(cv, stamp_img("गलती!"), 560, 740, 2.6 - 1.1 * k)
+            burst(cv, 560, 740, (t - T_HIT) / 0.45, (255, 90, 80))
+        # 3) kirdaar: Bhaiya uchhal ke chaunkte hain, Golu sir jhukaata hai (aansu ki boond)
+        if t >= T_HIT + 0.05:
+            tt = t - T_HIT - 0.05
+            g, b = char_file("grahak", "udaas"), char_file("bhaiya", "chauka")
             if g:
-                gi = cutout(g, 760)
-                paste(cv, gi, 250, int(1580 + (1 - k) * 600 + 8 * math.sin(t * 5)), 1.0)
+                ent = back(tt / 0.35)
+                sink = 18 * ease((tt - 0.4) / 0.6)
+                sprite_at(cv, cutout(g, 780), 255, 1930 + (1 - ent) * 700 + sink, t,
+                          tilt=-4 * ease((tt - 0.4) / 0.6), phase=0.0)
+                if tt > 0.6:
+                    drop(cv, 345, 1250 + 60 * ((tt - 0.6) % 0.9), 1 - ((tt - 0.6) % 0.9) / 0.9)
             if b:
-                bi = cutout(b, 700)
-                paste(cv, bi, 830, int(1590 + (1 - k) * 600 + 8 * math.sin(t * 5 + 1.3)), 1.0)
+                jump = 120 * max(0.0, math.sin(min(1.0, tt / 0.45) * math.pi))
+                land = (tt - 0.45) / 0.18
+                sqz = 0.07 * max(0.0, 1 - land) * math.sin(min(1.0, max(0.0, land)) * math.pi) if tt > 0.45 else 0.0
+                sprite_at(cv, cutout(b, 720), 830, 1960 - jump, t, sx=1 + sqz, sy=1 - sqz, phase=1.3)
+                if tt > 0.2:
+                    paste(cv, N.pill("!", 90, (255, 255, 255), RED), 985, 1300 - jump, back((tt - 0.2) / 0.25))
         p = (t - sc["lead"]) / max(0.3, sc["vd"])
-        N.caption(cv, sc["text"], p, cy=1180)
+        N.caption(cv, sc["text"], p, cy=1080)
+        self.strip(cv, "गलती")
+        if T_HIT <= t < T_HIT + 0.25:                    # camera jhatka
+            a_ = 16 * (1 - (t - T_HIT) / 0.25)
+            cv = ImageChops.offset(cv, int(a_ * math.sin(t * 90)), int(a_ * math.cos(t * 70)))
+        return cv
+
+    def sc_ans(self, sc, t):                         # v24.5: sahi jawab par jashn (confetti + Golu khush)
+        cv = super().sc_ans(sc, t)
+        self.strip(cv, f"टुकड़ा {self.piece_n}/{self.piece_n}", cover=196)
+        N.put(cv, N.pill("सही जवाब", 42, (255, 255, 255), N.GREEN_C), W / 2, 228,
+              scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
+        if V2 and V2_DRAMA:
+            confetti(cv, t - 0.3)
+            g = char_file("grahak", "khush")
+            if g and t > 0.45:
+                tt = t - 0.45
+                hop = 70 * abs(math.sin(tt * 5.5)) * max(0.0, 1 - tt / 1.6)
+                sprite_at(cv, cutout(g, 600), 170, 2010 + (1 - back(tt / 0.35)) * 500 - hop, t, phase=0.5)
         return cv
 
     def sc_end2(self, sc, t):                        # v24.4: 1 लाइन नोट्स (SAVE) + साथी को भेजो (share)
@@ -746,13 +880,6 @@ class Bharosa(N.Reel):
         cv = super().sc_story(sc, t, i)
         self.strip(cv, f"टुकड़ा {i + 1}/{self.piece_n}", cover=196)      # purani POV line dhak ke neeche chhoti
         stroke(ImageDraw.Draw(cv), (W / 2, 236), N.POV_LINE, F(50), (255, 255, 255), 6)
-        return cv
-
-    def sc_ans(self, sc, t):
-        cv = super().sc_ans(sc, t)
-        self.strip(cv, f"टुकड़ा {self.piece_n}/{self.piece_n}", cover=196)
-        N.put(cv, N.pill("सही जवाब", 42, (255, 255, 255), N.GREEN_C), W / 2, 228,
-              scale=max(0.05, M.ease_out_back(M.prog(t, 0.0, 0.3))))
         return cv
 
     def sc_trick(self, sc, t):
