@@ -62,9 +62,17 @@ END_VOICE = "फॉलो करो, पूरी तैयारी फ्र�
 # (saboot sawal ke upar, alag scene nahi), kathin/raasta hata ke unki baat ant me, PO Guide ki line JAWAB ke
 # baad ("देखो, PO Guide में यही लिखा है"). Chitra/animation/trick/MOCK wahi. BHAROSA_V2=0 -> purana v23.
 V2 = os.getenv("BHAROSA_V2", "0") == "1"
-V2_OPEN_EXACT = "{L} के पेपर का सवाल!"
-V2_OPEN_CLAUSE = "इसी क्लॉज़ से {L} में सवाल आया!"
-V2_OPEN_GUIDE = "PO Guide का पक्का नियम!"
+# v24.1 (user): awaaz sawal NAHI padhti (sawal screen par hai) - hook bolti hai: kab/kis paper me aaya +
+# "aise sawal me log galti karte hain". Roz badalta hai (ek hi line se skip badhta hai).
+V2_OPEN_EXACT = ["ये सवाल {L} के पेपर में आया था! ज़्यादातर लोग इसमें गलती करते हैं!",
+                 "{L} के पेपर का असली सवाल! जल्दी में लोग यहीं गलत कर देते हैं!",
+                 "ये सवाल {L} में पूछा गया था! क्या आप सही जवाब दे पाओगे?"]
+V2_OPEN_CLAUSE = ["इसी नियम से {L} के पेपर में सवाल आया था! ऐसे सवाल में अक्सर लोग गलती करते हैं!",
+                  "{L} के पेपर में इसी नियम से सवाल आया! ज़्यादातर लोग यहाँ फँस जाते हैं!",
+                  "इसी नियम से {L} में सवाल पूछा गया था! आप होते तो क्या जवाब देते?"]
+V2_OPEN_GUIDE = ["ऐसे सवाल पेपर में आते हैं, और ज़्यादातर लोग गलत कर देते हैं! आप बताओ?",
+                 "PO Guide का पक्का नियम! इस पर लोग अक्सर गलती करते हैं!",
+                 "ये नियम पेपर में आता है, और जल्दी में लोग यहीं फँसते हैं!"]
 V2_GUIDE_VOICE = "देखो, PO Guide में यही लिखा है!"
 V2_END_VOICE = "क्लॉज़ वाइज़ पूरा सिलेबस, कोई नियम नहीं छूटेगा! फॉलो करो, पूरी तैयारी फ्री! कमेंट में मॉक लिखो, फ्री मॉक टेस्ट पाओ!"
 
@@ -445,10 +453,8 @@ class Bharosa(N.Reel):
             d.rounded_rectangle((60, y0, 1020, y0 + h), 34, fill=(255, 255, 255), outline=GOLD, width=6)
             if V2:      # v24: awaaz ke saath shabd laal hote jaayein (screen kabhi ruki nahi, aankh padhti rahe)
                 nw = sum(len(l) for l in ls)
-                tw = len(sc["text"].split())               # pehle mohar wali line boli jaati hai
-                pre = sc["vd"] * max(0.15, min(0.5, (tw - nw) / max(1, tw)))
-                p = (t - sc["lead"] - pre) / max(0.3, sc["vd"] - pre)
-                shown = int(nw * min(1.0, max(0.0, p))) if t > sc["lead"] + pre else 0
+                p = (t - 0.3) / max(1.0, sc.get("cd0", 2.5) - 0.3)   # padhne ki raftaar se (awaaz hook bolti hai)
+                shown = int(nw * min(1.0, max(0.0, p)))
                 cnt, sp_ = 0, f.getlength(" ")
                 for i, ln in enumerate(ls):
                     wz = [f.getlength(w_) for w_ in ln]
@@ -745,12 +751,10 @@ def build(data, out, plan=None, part=None):
     ep = int(data.get("episode") or 0)
     specs = []
     if V2:
-        if scan:
-            op = (V2_OPEN_CLAUSE if scan.get("clause_level") else V2_OPEN_EXACT).format(L=scan['label'][0])
-        else:
-            op = V2_OPEN_GUIDE
-        print("  v24 sawal-pehle | shuru:", op)
-        specs.append({"name": "ruko", "segs": [("r", op + " " + N.ruko_q(data))]})
+        pool = (V2_OPEN_CLAUSE if scan.get("clause_level") else V2_OPEN_EXACT) if scan else V2_OPEN_GUIDE
+        op = pool[ep % len(pool)].format(L=scan['label'][0] if scan else "")
+        print("  v24 sawal-pehle | hook awaaz:", op)
+        specs.append({"name": "ruko", "segs": [("r", op)]})          # sawal screen par, awaaz me hook
         for i, pn in enumerate(story):
             specs.append({"name": f"s{i}", "segs": [(f"c{i}", pn.get("text") or "")]})
         specs.append({"name": "ans", "segs": [("a", ans_pn.get("text") or f"सही जवाब है, {data['correct_text']}!")]})
@@ -800,6 +804,11 @@ def build(data, out, plan=None, part=None):
             cd0 = max(0.9, lead + vd - 0.9)
             sc["cd0"] = cd0
             sc["dur"] = dur = max(cd0 + 3 * N.CD_STEP + 0.1, lead + vd + 0.2)
+            if V2:                                  # sawal padhne ka samay (awaaz sawal nahi padhti)
+                nq = len((data.get("question") or "").split())
+                cd0 = max(cd0, min(4.0, 0.28 * nq))
+                sc["cd0"] = cd0
+                sc["dur"] = dur = max(dur, cd0 + 3 * N.CD_STEP + 0.1)
         if nm.startswith("s") and nm[1:].isdigit():
             sc["wrong"] = story[int(nm[1:])].get("mark") == "wrong"
         tl.append(sc)
