@@ -354,7 +354,7 @@ def _arms(c, body, skin, sleeve, sleeve_len=0.24, cuff=None):
     sk = cel("twacha_b", skin)
     for s in (-1, 1):
         sh = empty(f"kandha{s}", body, (SH_X * s, 0, SH_Z))
-        ball(f"kandha_gol{s}", 0.13, sleeve, sh, (0, 0, -0.02))
+        ball(f"kandha_gol{s}", 0.11, sleeve, sh, (0, 0, -0.03))
         cyl(f"aasteen{s}", 0.11, sleeve_len, sleeve, sh, (0, 0, -sleeve_len / 2 - 0.02), r2=0.1)
         if cuff:
             cyl(f"mod{s}", 0.104, 0.05, cuff, sh, (0, 0, -sleeve_len - 0.02))
@@ -377,8 +377,9 @@ def _legs(c, root, trouser, shoe, sole=None):
     c["legs"] = []
     for s in (-1, 1):
         lg = empty(f"taang_e{s}", root, (0.16 * s, 0, 1.05))
-        ball(f"jaangh{s}", 0.14, trouser, lg, (0, 0, -0.26), (1, 1, 1.95))
-        ball(f"pindli{s}", 0.115, trouser, lg, (0, 0, -0.74), (1, 1, 2.25))
+        cyl(f"jaangh{s}", 0.115, 0.52, trouser, lg, (0, 0, -0.26), r2=0.135)       # seedhi patloon (gubbara nahi)
+        ball(f"ghutna{s}", 0.112, trouser, lg, (0, 0, -0.52), line=False)
+        cyl(f"pindli{s}", 0.1, 0.46, trouser, lg, (0, 0, -0.76), r2=0.112)
         ball(f"joota{s}", 0.11, shoe, lg, (0, -0.08, -1.0), (1, 1.65, 0.55))
         if sole:
             cube(f"tala{s}", sole, lg, (0, -0.08, -1.045), (0.2, 0.34, 0.03), bevel=0.01)
@@ -396,7 +397,8 @@ def build_bhaiya(x=0.0, y=0.0, face=0.0):
     body = empty("dhad", root, (0, 0, 0))
     c["body"] = body
     ball("kamar", 0.3, khaki_d, body, (0, 0, 1.1), (1.2, 0.85, 0.6))
-    ball("seena", 0.5, khaki, body, (0, 0, 1.58), (0.8, 0.54, 0.98))
+    cyl("seena", 0.33, 0.78, khaki, body, (0, 0, 1.6), (1, 0.7, 1), r2=0.4)          # kamar se kandhe chaude
+    ball("kandhe", 0.4, khaki, body, (0, 0, 1.98), (1.02, 0.7, 0.32))
     cyl("belt", 0.33, 0.07, brown, body, (0, 0, 1.14), (1, 0.75, 1))
     cube("bakkal", flat("pital", GOLD), body, (0, -0.25, 1.14), (0.09, 0.02, 0.065))
     for s in (-1, 1):
@@ -461,7 +463,8 @@ def build_golu(x=0.0, y=0.0, face=0.0):
     body = empty("dhad", root, (0, 0, 0))
     c["body"] = body
     ball("kamar", 0.29, jeans, body, (0, 0, 1.1), (1.15, 0.85, 0.6))
-    ball("seena", 0.48, shirt, body, (0, 0, 1.58), (0.78, 0.52, 0.98))
+    cyl("seena", 0.31, 0.78, shirt, body, (0, 0, 1.6), (1, 0.68, 1), r2=0.38)
+    ball("kandhe", 0.38, shirt, body, (0, 0, 1.98), (1.02, 0.68, 0.32))
     for z in (1.3, 1.45, 1.6, 1.75, 1.9):
         ball(f"bataan{z}", 0.014, flat("bataan_g", (0.95, 0.95, 1.0)), body, (0, -0.26, z), line=False, seg=12)
     cube("kalar", cel("kalar", (0.7, 0.84, 1.0)), body, (0, -0.1, 2.06), (0.3, 0.2, 0.045), (R(-15), 0, 0))
