@@ -1,0 +1,142 @@
+name: Demo - POORI reel Blender me (Clause 26 Part 5, ek baar)
+
+# User (2026-10-29): "sari chize blender se animate karwao". Kuch post nahi hota, series state nahi badalta.
+# 1) taiyaari: Golu ke bhaav + awaaz + likhai-tasveeren  2) har drishya alag runner par Blender render
+# 3) jodna: caption + patti + awaaz -> demo_out/blender_full/
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: postal-wala-blender-demo
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  prep:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: System packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-liberation libraqm0 poppler-utils
+      - name: Python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pypdf pillow numpy edge-tts
+      - name: Golu ke naye bhaav (Cloudflare FLUX.2, ek baar)
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: python -c "import main; main.ensure_grahak_expressions()"
+      - name: Taiyaari (awaaz + timeline + likhai + cutout)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python b3d_prep.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b3d-job
+          path: b3d_job/
+          retention-days: 3
+      - name: Golu ke bhaav repo me save
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add clause_plans/characters/
+          git diff --staged --quiet || git commit -m "Golu ke bhaav (FLUX.2) [skip ci]"
+          git pull --rebase origin main || true
+          git push origin main || true
+
+  render:
+    needs: prep
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        scene: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: b3d-job
+          path: b3d_job
+      - name: Blender 4.2 (animation-special jaisa)
+        timeout-minutes: 15
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/blender"
+          curl -fL --retry 3 --retry-delay 3 --connect-timeout 25 -o "$RUNNER_TEMP/blender.tar.xz" \
+            "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+          tar -xJf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP/blender" --strip-components=1
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 \
+            libxfixes3 libxrender1 libxkbcommon0 libsm6
+          "$RUNNER_TEMP/blender/blender" --version | head -n 2
+      - name: Drishya ${{ matrix.scene }} render
+        run: |
+          set -o pipefail
+          B3D_JOB=b3d_job B3D_SCENE=${{ matrix.scene }} xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 2 \
+            --python b3d_reel.py 2>&1 | grep -E "B3D_|Error|error|Traceback|Fra:1 |Append frame 1$|Saved" | tail -n 60
+          touch b3d_job/.m${{ matrix.scene }}
+          ls b3d_job/frames_${{ matrix.scene }} 2>/dev/null | wc -l
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b3d-frames-${{ matrix.scene }}
+          path: |
+            b3d_job/frames_${{ matrix.scene }}/
+            b3d_job/.m${{ matrix.scene }}
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 3
+
+  assemble:
+    needs: render
+    if: always() && needs.render.result != 'cancelled'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: System packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core fonts-liberation libraqm0 poppler-utils
+      - name: Python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pypdf pillow numpy edge-tts
+      - uses: actions/download-artifact@v4
+        with:
+          name: b3d-job
+          path: b3d_job
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b3d-frames-*
+          path: b3d_job
+          merge-multiple: true
+      - name: Jodo (caption + patti + awaaz)
+        run: |
+          ls b3d_job
+          python b3d_assemble.py
+      - name: Repo me save
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main || true
+          git add demo_out/blender_full/
+          git diff --staged --quiet || git commit -m "Demo: poori reel Blender me (Clause 26 Part 5) [skip ci]"
+          git push origin main || git push
