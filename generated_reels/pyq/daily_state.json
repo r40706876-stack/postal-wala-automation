@@ -12,17 +12,10 @@
     "franked_letterbox",
     "franking_any",
     "revenue_unpaid",
-    "blind_7kg",
-    "pli_50l",
     "stamp_corner",
-    "sender_lower_left",
-    "pin_6",
     "pin_1972",
-    "minor_sb_10",
     "official_deficiency",
     "fictitious_stamp",
-    "p_924352ddac",
-    "p_bb3d876cc1",
     "p_0105be0e35",
     "p_0370028659",
     "p_05fe1298a1",
@@ -111,7 +104,14 @@
     "bo_reg_parcel_10",
     "vp_demurrage_7",
     "aps_delhi",
-    "upu_1874"
+    "upu_1874",
+    "p_924352ddac",
+    "pli_50l",
+    "blind_7kg",
+    "p_bb3d876cc1",
+    "pin_6",
+    "minor_sb_10",
+    "sender_lower_left"
   ],
   "am": {
     "2026-10-24": "pyq_8am_2026-10-24.mp4",
@@ -119,7 +119,8 @@
     "2026-10-26": "pyq_8am_2026-10-26.mp4",
     "2026-10-27": "pyq_8am_2026-10-27.mp4",
     "2026-10-28": "pyq_8am_2026-10-28.mp4",
-    "2026-10-29": "pyq_8am_2026-10-29.mp4"
+    "2026-10-29": "pyq_8am_2026-10-29.mp4",
+    "2026-10-30": "pyq_8am_2026-10-30.mp4"
   },
   "pm": {
     "2026-10-23": "pyq_9pm_2026-10-23.mp4",
