@@ -1324,15 +1324,92 @@
       },
       "opt_pics": {
         "tries": 1,
-        "ref": "clause_plans/chitra_img/b9c9117998_65230234_1.jpg",
-        "err": "option-chitra jaanch fail: A, B, D"
+        "ref": "clause_plans/chitra_img/b9c9117998_60212033_1.jpg",
+        "err": "option-chitra jaanch fail: A, B, C, D"
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
       },
       "published_prev": "2026-10-14",
-      "published_round_prev": 19
+      "published_round_prev": 19,
+      "pyq_v": {
+        "items": [
+          {
+            "id": "saathi_26_6_1",
+            "q": "प्रेषक का पता सामान्यतः कहाँ लिखा जाना चाहिए?",
+            "opts": [
+              "डाकीय वस्तु पर कहीं भी",
+              "पते वाली साइड के निचले बाएं कोने में",
+              "डाकीय वस्तु के ऊपरी दाहिने कोने में",
+              "प्रेषक का पता लिखने की कोई आवश्यकता नहीं है"
+            ],
+            "ans": "B",
+            "exams": [
+              "हरियाणा 2022"
+            ],
+            "q_en": "It is desirable to note the sender ‘s address preferable in the ____",
+            "why": "PO गाइड पार्ट I, खंड 26 के अनुसार, प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखा जाना चाहिए।",
+            "src": "HR-MTS-PM-MG-2022.pdf#Q20",
+            "key_ok": true
+          },
+          {
+            "id": "saathi_26_6_2",
+            "q": "लेख पर प्रेषक का पता कहाँ लिखा जाता है?",
+            "opts": [
+              "शीर्ष बाएं कोने पर",
+              "तल के निचले दाहिने कोने पर",
+              "तल के निचले बाएं कोने पर",
+              "इनमें से कोई नहीं"
+            ],
+            "ans": "C",
+            "exams": [
+              "मध्य प्रदेश 2020"
+            ],
+            "q_en": "Where sender’s address is written on the article?",
+            "why": "नियम के अनुसार प्रेषक का पता पते वाली साइड के निचले बाएं कोने में होना चाहिए।",
+            "src": "MP-MTS-PM-MG-2020.pdf#Q10",
+            "key_ok": true
+          },
+          {
+            "id": "saathi_26_6_3",
+            "q": "लेखों की पता साइड के किस कोने में प्रेषक का पता लिखा जाना चाहिए?",
+            "opts": [
+              "ऊपरी बायां",
+              "ऊपरी दायां",
+              "निचला बायां",
+              "निचला दायां"
+            ],
+            "ans": "C",
+            "exams": [
+              "छत्तीसगढ़ 2021"
+            ],
+            "q_en": "In which corner of address side of articles, the senders address should be written?",
+            "why": "नियम स्पष्ट करता है कि प्रेषक का पता निचले बाएं कोने (Lower left) में लिखा जाना वांछनीय है।",
+            "src": "CG-MTS-PM-MG-2021.pdf#Q1",
+            "key_ok": true
+          }
+        ],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "It is desirable to note the sender’s address preferable in the lower left-hand corner on the address side",
+        "kind": "line"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "भेजने वाले का पता, लिफाफे के नीचे बाएं कोने पर सजा।",
+        "key": [
+          "नीचे बाएं",
+          "कोने"
+        ],
+        "why": "The memory trick accurately captures the sender's address placement at the lower left-hand corner of the address side as stated in the rule, without adding extr"
+      },
+      "published": "2026-10-30",
+      "published_round": 24
     },
     {
       "basis": "guide",
@@ -1389,25 +1466,65 @@
       "style_v": "2026-09-26c",
       "simple_rebuilds": 1,
       "cf_spent": {
-        "2026-10-28": 0
+        "2026-10-30": 18
       },
       "chitra_v": {
         "kit": "photo",
         "panels": [
           {
-            "prompt": "The customer stands at the post office counter holding a large bulky letter packet, looking confused while handing it to the postman.",
-            "target": "the large bulky letter packet",
+            "prompt": "Wide shot of a clean post office counter under bright warm light. The customer places a very thick, bulky brown envelope packet on the wooden counter before the postman, who looks at it with curious interest.",
+            "target": "the bulky brown packet on the counter",
             "tag": "",
             "tag_color": "dark",
-            "text": "ग्राहक ने भारी पत्र पैकेट काउंटर पर जमा कराया।",
-            "desc": "The customer holding a large bulky letter packet at the counter.",
+            "text": "ग्राहक काउंटर पर एक भारी पत्र पैकेट लेकर आया।",
+            "desc": "Wide view of the post office counter where the customer presents a bulky brown paper packet to the postman.",
             "mark": "none",
             "card": null,
             "say": {
               "who": "customer",
-              "text": "भैया, यह भारी पैकेट भेजना है।"
+              "text": "भैया, यह बड़ा पैकेट भेजना है!"
             },
-            "img": "clause_plans/chitra_img/37e0a8e689_93419984_1.jpg",
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/37e0a8e689_50324825_1.jpg",
+            "box": [
+              0.329,
+              0.52,
+              0.656,
+              0.866
+            ],
+            "bg_text": false,
+            "face": [
+              0.521,
+              0.126,
+              0.737,
+              0.394
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Close-up shot focusing on hands and a regular small flat white envelope on the wooden counter, with a pen resting beside it. The postman gently holds up a hand to stop the customer.",
+            "target": "the small white envelope",
+            "tag": "छोटे पत्र",
+            "tag_color": "red",
+            "text": "छोटे पत्रों पर यह शब्द लिखना बिल्कुल आवश्यक नहीं है।",
+            "desc": "Close-up of a standard small white letter with the word 'Letter' shown on the card, marked with a red tag indicating it is wrong.",
+            "mark": "wrong",
+            "card": {
+              "lines": [
+                "श्री मोहन लाल",
+                "मकान 14, स्टेशन रोड",
+                "जयपुर",
+                "PIN 302001"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "साधारण पत्र पर मत लिखो!"
+            },
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/37e0a8e689_50324825_2.jpg",
             "box": [
               0.22,
               0.3,
@@ -1415,75 +1532,95 @@
               0.86
             ],
             "bg_text": false,
-            "pan": "lr"
+            "face": [
+              0.527,
+              0.126,
+              0.746,
+              0.406
+            ],
+            "frames": [
+              "clause_plans/chitra_img/37e0a8e689_50324825_2f1.jpg",
+              "clause_plans/chitra_img/37e0a8e689_50324825_2f2.jpg"
+            ]
           },
           {
-            "prompt": "The postman holds the bulky letter packet without any writing on the address side, looking doubtful.",
-            "target": "the plain address side",
-            "tag": "साधारण पैकेट",
+            "prompt": "Reaction shot focusing on the postman's face showing deep confusion and doubt as he holds up a blank, thick bulky brown packet near his face against a plain wall.",
+            "target": "the blank bulky packet in hand",
+            "tag": "बिना लिखे भ्रम",
             "tag_color": "red",
-            "text": "बिना संकेत के भारी पैकेट को साधारण मान लिया जाता है।",
-            "desc": "The postman holding the bulky letter packet without the required indication.",
+            "text": "भारी पत्र पैकेटों पर यह शब्द न लिखने से भ्रम होता है।",
+            "desc": "The postman looks perplexed while holding the thick unmarked packet, marked with a red tag showing postal confusion.",
             "mark": "wrong",
             "card": null,
             "say": {
               "who": "postman",
-              "text": "इस पर कोई संकेत नहीं लिखा है।"
+              "text": "यह पैकेट है या पार्सल?"
             },
-            "img": "clause_plans/chitra_img/37e0a8e689_93419984_2.jpg",
+            "shot": "reaction",
+            "img": "clause_plans/chitra_img/37e0a8e689_50324825_3.jpg",
             "box": [
-              0.22,
-              0.3,
-              0.78,
-              0.86
+              0.478,
+              0.447,
+              0.904,
+              0.917
             ],
             "bg_text": true,
-            "frames": [
-              "clause_plans/chitra_img/37e0a8e689_93419984_2f1.jpg",
-              "clause_plans/chitra_img/37e0a8e689_93419984_2f2.jpg"
+            "face": [
+              0.337,
+              0.055,
+              0.66,
+              0.446
             ]
           },
           {
-            "prompt": "The postman points his finger clearly at the address side of the bulky letter packet, explaining the rule to the customer.",
-            "target": "the address side",
-            "tag": "Letter स्पष्ट लिखें",
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman, who smiles warmly and points with a pen to the address side of the large bulky brown envelope packet on the counter.",
+            "target": "the bulky brown packet with address",
+            "tag": "भारी पत्र पैकेट",
             "tag_color": "green",
             "text": "भारी पत्र पैकेटों के पते वाली साइड पर 'Letter' स्पष्ट लिखना चाहिए।",
-            "desc": "The postman pointing at the address side of the bulky letter packet with the required indication.",
+            "desc": "Over-the-shoulder view as the postman approves the bulky packet with 'Letter' clearly written at the top of the address side, marked with a green tag.",
             "mark": "right",
-            "card": null,
-            "say": null,
-            "img": "clause_plans/chitra_img/37e0a8e689_93419984_3.jpg",
+            "card": {
+              "lines": [
+                "श्री राजेश शर्मा",
+                "मकान 25, मुख्य बाजार",
+                "भोपाल",
+                "PIN 462001"
+              ],
+              "corner": "",
+              "hl": 0
+            },
+            "say": {
+              "who": "postman",
+              "text": "हाँ, बड़े पैकेट पर ही लिखो!"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/37e0a8e689_50324825_4.jpg",
             "box": [
-              0.423,
-              0.462,
-              0.649,
-              0.688
+              0.34,
+              0.509,
+              0.655,
+              0.863
             ],
             "bg_text": false,
-            "face": [
-              0.626,
-              0.146,
-              0.816,
-              0.373
-            ],
             "pan": "rl",
             "frames": [
-              "clause_plans/chitra_img/37e0a8e689_93419984_3f1.jpg"
+              "clause_plans/chitra_img/37e0a8e689_50324825_4f1.jpg"
             ]
           }
         ],
         "caps": [
-          "ग्राहक ने भारी पत्र पैकेट काउंटर पर जमा कराया।",
-          "बिना संकेत के भारी पैकेट को साधारण मान लिया जाता है।",
+          "ग्राहक काउंटर पर एक भारी पत्र पैकेट लेकर आया।",
+          "छोटे पत्रों पर यह शब्द लिखना बिल्कुल आवश्यक नहीं है।",
+          "भारी पत्र पैकेटों पर यह शब्द न लिखने से भ्रम होता है।",
           "भारी पत्र पैकेटों के पते वाली साइड पर 'Letter' स्पष्ट लिखना चाहिए।"
         ],
-        "score": 10.0,
-        "lesson": "Heavy letter packets must clearly have 'Letter' written on their address side to avoid being treated as ordinary packets.",
+        "score": 8.0,
+        "lesson": "On heavy letter packets, you must clearly write the word 'Letter' on the address side.",
         "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 4
+        "attempt": 2
       },
       "punch_v": {
         "ok": true,

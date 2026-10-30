@@ -267,5 +267,22 @@
     "trap_quote": "",
     "guide_line": "In the case of articles addressed to foreign countries, the address should be written in Roman letters and in Arabic figures.",
     "done": "skip"
+  },
+  {
+    "clause": 26,
+    "part_index": 5,
+    "part_no": 6,
+    "reel": "reel_clause_26_part_6_v2.mp4",
+    "question": "प्रेषक का पता (Sender's address) सामान्यतः कहाँ लिखा जाना चाहिए?",
+    "fact": "प्रेषक का पता पते वाली साइड के निचले बाएं कोने में लिखना चाहिए।",
+    "answer": "पते वाली साइड नीचे बाएं कोने में",
+    "en_question": "Where should the sender's address preferably be noted on the article?",
+    "en_fact": "The sender's address should preferably be noted in the lower left-hand corner on the address side.",
+    "source_quote": "It is desirable to note the sender’s address preferable in the lower left-hand corner on the address side",
+    "trap_quote": "",
+    "guide_line": "It is desirable to note the sender’s address preferable in the lower left-hand corner on the address side",
+    "done": true,
+    "pyq_reel": "pyq_clause_26_part_6.mp4",
+    "related": true
   }
 ]
