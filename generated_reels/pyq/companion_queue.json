@@ -284,5 +284,20 @@
     "done": true,
     "pyq_reel": "pyq_clause_26_part_6.mp4",
     "related": true
+  },
+  {
+    "clause": 26,
+    "part_index": 6,
+    "part_no": 7,
+    "reel": "reel_clause_26_part_7_v2.mp4",
+    "question": "किन लेखों के पते वाली साइड पर 'Letter' (पत्र) संकेत देना अनिवार्य है?",
+    "fact": "भारी पत्र पैकेटों के पते वाली साइड पर 'Letter' स्पष्ट लिखना चाहिए।",
+    "answer": "भारी और बड़े आकार के पत्र पैकेट",
+    "en_question": "On which articles is it necessary to give the indication 'Letter' on the address side?",
+    "en_fact": "The indication 'Letter' should be given on the address-side of bulky letter packets.",
+    "source_quote": "The indication ‘Letter’ should be given on the address-side of bulky letter packets, which, on account of their size or make up, might be mistaken for other classes of packets.",
+    "trap_quote": "",
+    "guide_line": "The indication ‘Letter’ should be given on the address-side of bulky letter packets, which, on account of their size or make up, might be mistaken for other classes of packets.",
+    "done": "skip"
   }
 ]

@@ -1627,16 +1627,38 @@
         "text": "ये चिट्ठी है या पार्सल?"
       },
       "opt_pics": {
-        "tries": 1,
-        "ref": "clause_plans/chitra_img/37e0a8e689_93419984_1.jpg",
-        "err": "option-chitra jaanch fail: D"
+        "none": true,
+        "ref": "clause_plans/chitra_img/37e0a8e689_50324825_1.jpg"
       },
       "trap_v": {
         "none": true,
         "v": 3
       },
       "published_prev": "2026-10-14",
-      "published_round_prev": 19
+      "published_round_prev": 19,
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "The indication ‘Letter’ should be given on the address-side of bulky letter packets, which, on account of their size or make up, might be mistaken for other classes of packets.",
+        "kind": "line"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "भारी पैकेट, पता साइड, 'Letter' लिखो भाई!",
+        "key": [
+          "भारी पैकेट",
+          "पता साइड",
+          "Letter"
+        ],
+        "why": "यह ट्रिक सीधे तौर पर नियम को याद दिलाती है कि भारी पैकेटों के पते वाली साइड पर 'Letter' लिखा जाना चाहिए।"
+      },
+      "published": "2026-10-31",
+      "published_round": 24
     },
     {
       "basis": "guide",
@@ -1696,122 +1718,132 @@
         "kit": "photo",
         "panels": [
           {
-            "prompt": "The postman and the customer stand at a wooden sorting table in a bright post office, looking at a letter envelope together with curious expressions.",
-            "target": "the white letter envelope on the wooden table",
+            "prompt": "A wide shot of a clean Indian post office with a plain counter and plain walls. The customer stands in front of the counter holding a plain blank white envelope, asking with curiosity, while the postman in khaki uniform listens attentively across the counter. Natural daylight, balanced composition.",
+            "target": "the blank white envelope in customer hands",
             "tag": "",
             "tag_color": "dark",
-            "text": "उच्च अधिकारियों के कैंप के लिए डाक का पता कैसे लिखें?",
-            "desc": "The postman and the customer look at the white letter envelope on the wooden table.",
+            "text": "उच्च अधिकारी के कैंप के लिए डाक भेजनी है।",
+            "desc": "The customer stands at the post office counter holding a blank letter to send to an officer's camp.",
             "mark": "none",
             "card": null,
-            "say": null,
-            "img": "clause_plans/chitra_img/e9158fc148_10253945_1.jpg",
+            "say": {
+              "who": "customer",
+              "text": "भैया, कैंप में डाक भेजनी है।"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/e9158fc148_60296420_1.jpg",
             "box": [
-              0.446,
-              0.708,
-              0.592,
-              0.804
+              0.549,
+              0.562,
+              0.706,
+              0.634
             ],
             "bg_text": false,
-            "badge": [
-              0.377,
-              0.468,
-              0.425,
-              0.506
-            ],
-            "face": [
-              0.259,
-              0.188,
-              0.423,
-              0.318
-            ],
             "pan": "lr"
           },
           {
-            "prompt": "The customer points at the envelope while the postman looks worried, showing a common mistake of writing the post town instead of just the camp address.",
-            "target": "the letter envelope with the post town name written",
-            "tag": "निकलटतम पोस्ट टाउन",
+            "prompt": "A closeup shot focusing on the wooden counter and hands. The customer places a plain blank white envelope on the counter with a worried look, while the postman raises a hand to stop him. Focused warm lighting on the envelope.",
+            "target": "the blank white envelope on the counter",
+            "tag": "पोस्ट टाउन का नाम",
             "tag_color": "red",
-            "text": "कैंप के लेखों पर पोस्ट टाउन का नाम लिखना गलत है।",
-            "desc": "The customer points at the letter envelope with the post town name written tagged as निकलटतम पोस्ट टाउन.",
+            "text": "डाक पर निकलटतम पोस्ट टाउन का नाम कभी न लिखें।",
+            "desc": "A closeup showing the envelope addressed with a post town name, marked wrong with a red tag.",
             "mark": "wrong",
-            "card": null,
-            "say": null,
-            "img": "clause_plans/chitra_img/e9158fc148_10253945_2.jpg",
+            "card": {
+              "lines": [
+                "माननीय निदेशक महोदय",
+                "दौरा कैंप",
+                "पोस्ट टाउन: शिमला"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "customer",
+              "text": "पोस्ट टाउन का नाम लिख दूँ?"
+            },
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/e9158fc148_60296420_2.jpg",
             "box": [
-              0.446,
-              0.709,
-              0.597,
-              0.81
+              0.263,
+              0.538,
+              0.792,
+              0.816
             ],
             "bg_text": false,
             "badge": [
+              0.122,
               0.384,
-              0.468,
-              0.437,
-              0.51
-            ],
-            "face": [
-              0.273,
-              0.189,
-              0.431,
-              0.341
+              0.222,
+              0.458
             ],
             "frames": [
-              "clause_plans/chitra_img/e9158fc148_10253945_2f1.jpg",
-              "clause_plans/chitra_img/e9158fc148_10253945_2f2.jpg"
+              "clause_plans/chitra_img/e9158fc148_60296420_2f1.jpg",
+              "clause_plans/chitra_img/e9158fc148_60296420_2f2.jpg"
             ]
           },
           {
-            "prompt": "The postman smilingly points his finger at the camp address on the envelope, showing the correct way.",
-            "target": "the letter envelope with the camp address",
+            "prompt": "An over-the-shoulder shot from behind the customer looking at the smiling postman. The postman in khaki uniform points with his index finger at a plain blank white envelope lying on the counter, explaining warmly. Warm lighting, sharp focus on the envelope.",
+            "target": "the blank white envelope on the counter",
             "tag": "केवल कैंप का पता",
             "tag_color": "green",
-            "text": "उच्च अधिकारियों के कैंप के लेखों पर केवल कैंप का पता दें।",
-            "desc": "The postman smilingly points his finger at the letter envelope with the camp address tagged as केवल कैंप का पता.",
+            "text": "कैंप के लेखों पर केवल कैंप का पता लिखें।",
+            "desc": "The postman points to the envelope having only the camp address, marked right with a green tag.",
             "mark": "right",
-            "card": null,
-            "say": null,
-            "img": "clause_plans/chitra_img/e9158fc148_10253945_3.jpg",
+            "card": {
+              "lines": [
+                "माननीय निदेशक महोदय",
+                "कैंप: सर्किट हाउस",
+                "केवल कैंप का पता"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "सिर्फ कैंप का पता लिखिए!"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/e9158fc148_60296420_3.jpg",
             "box": [
-              0.452,
-              0.725,
-              0.597,
-              0.821
+              0.22,
+              0.3,
+              0.78,
+              0.86
             ],
             "bg_text": false,
             "badge": [
-              0.379,
-              0.483,
-              0.43,
-              0.524
+              0.345,
+              0.441,
+              0.394,
+              0.473
             ],
             "face": [
-              0.263,
-              0.193,
-              0.431,
-              0.357
+              0.597,
+              0.247,
+              0.932,
+              1.0
             ],
             "pan": "rl",
             "frames": [
-              "clause_plans/chitra_img/e9158fc148_10253945_3f1.jpg"
+              "clause_plans/chitra_img/e9158fc148_60296420_3f1.jpg"
             ]
           }
         ],
         "caps": [
-          "उच्च अधिकारियों के कैंप के लिए डाक का पता कैसे लिखें?",
-          "कैंप के लेखों पर पोस्ट टाउन का नाम लिखना गलत है।",
-          "उच्च अधिकारियों के कैंप के लेखों पर केवल कैंप का पता दें।"
+          "उच्च अधिकारी के कैंप के लिए डाक भेजनी है।",
+          "डाक पर निकलटतम पोस्ट टाउन का नाम कभी न लिखें।",
+          "कैंप के लेखों पर केवल कैंप का पता लिखें।"
         ],
-        "score": 8.0,
-        "lesson": "When addressing mail for high officials' camps, you must provide only the camp address and never include the post town name.",
+        "score": 10.0,
+        "lesson": "When sending mail for a high official's camp, write only the camp's address on the article and never include the nearest post town's name.",
         "pv": 4,
         "ok": true,
         "v": 9,
-        "attempt": 4
+        "attempt": 1
       },
       "cf_spent": {
-        "2026-10-28": 0
+        "2026-10-31": 8
       },
       "punch_v": {
         "ok": true,
