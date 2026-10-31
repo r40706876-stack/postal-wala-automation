@@ -2793,6 +2793,447 @@
    "list_q": "जीडीएस (GDS) डाकघर अधिकतम कितने घंटे खुले रहते हैं?",
    "list_a": "5 घंटे",
    "auto": "v22"
+  },
+  {
+   "id": "p_6a5b576d4c",
+   "q": "डाक जीवन बीमा (PLI) की मनी बैक पॉलिसी को क्या कहा जाता है?",
+   "opts": [
+    "सुरक्षा",
+    "संतोष",
+    "सुमंगल",
+    "सुविधा"
+   ],
+   "ans": "C",
+   "exams": [
+    "उत्तर प्रदेश 2020"
+   ],
+   "q_en": "What is Money back policy of Postal Life Insurance called?",
+   "src": [
+    "15. Uttar Pardesh MTS 2020.docx.pdf#Q22"
+   ],
+   "list_q": "PLI की मनी बैक पॉलिसी का नाम क्या है?",
+   "list_a": "सुमंगल",
+   "auto": "v22"
+  },
+  {
+   "id": "p_6c2a50982e",
+   "q": "आई.एन.एस जहाजों पर नौसेना कर्मियों के लिए डाक किस पते पर भेजी जानी चाहिए?",
+   "opts": [
+    "मार्फत (c/o) 56 APO",
+    "मार्फत (c/o) 99 APO",
+    "मार्फत (c/o) फ्लीट मेल ऑफिस, बॉम्बे",
+    "उपरोक्त में से कोई भी"
+   ],
+   "ans": "C",
+   "exams": [
+    "ओडिशा 2021"
+   ],
+   "q_en": "Mail for Navy Personnel on board I.N.S ships should be addressed:",
+   "src": [
+    "14. Odisha MTS 2021.pdf#Q7"
+   ],
+   "list_q": "INS जहाजों के नौसेना कर्मियों की डाक का पता?",
+   "list_a": "c/o फ्लीट मेल ऑफिस",
+   "auto": "v22"
+  },
+  {
+   "id": "p_6c6594f597",
+   "q": "डाक जीवन बीमा (PLI) में अधिकतम बीमा राशि (Sum Assured) की सीमा क्या है?",
+   "opts": [
+    "10 लाख रुपये",
+    "20 लाख रुपये",
+    "25 लाख रुपये",
+    "50 लाख रुपये"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "What is the maximum limit of sum assured in postal life insurance (PLI)?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q29"
+   ],
+   "list_q": "PLI में अधिकतम बीमा राशि की सीमा क्या है?",
+   "list_a": "50 लाख रुपये",
+   "auto": "v22"
+  },
+  {
+   "id": "p_6d48047ca2",
+   "q": "किसी वस्तु के पते वाले भाग पर डाक टिकट कहाँ चिपकाए जाने चाहिए?",
+   "opts": [
+    "दाएं हाथ के ऊपरी कोने में",
+    "बाएं हाथ के ऊपरी कोने में",
+    "दाएं हाथ के निचले कोने में",
+    "बाएं हाथ के निचले कोने में"
+   ],
+   "ans": "A",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "Where should the postage stamps be affixed on the address side of an articles?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q27"
+   ],
+   "list_q": "डाक टिकट पते वाली तरफ कहाँ चिपकाए जाते हैं?",
+   "list_a": "दाएं ऊपरी कोने में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_6defe99cb6",
+   "q": "आधिकारिक डाक वस्तुएं (Official postal articles) पोस्ट ऑफिस गाइड के किस अनुभाग के अंतर्गत आती हैं?",
+   "opts": [
+    "अनुभाग 4",
+    "अनुभाग 3",
+    "अनुभाग 2",
+    "अनुभाग 1"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Official postal article comes under which section of post office guide:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q15"
+   ],
+   "list_q": "आधिकारिक डाक वस्तुएं PO Guide के किस अनुभाग में हैं?",
+   "list_a": "अनुभाग 3",
+   "auto": "v22"
+  },
+  {
+   "id": "p_6f36d86a3b",
+   "q": "निम्नलिखित में से कौन सा कथन सही है? i. सब-डिवीजन का प्रमुख SDI(P) / ASP होता है ii. पोस्टल डिवीजन का प्रमुख SPOs/SSPOs होता है iii. एक रीजन का प्रमुख सामान्यतः PMG होता है iv. एक सब पोस्ट ऑफिस का प्रमुख Sr. PM होता है",
+   "opts": [
+    "(i), (ii), (iii) और (iv)",
+    "(i), (ii) और (iv)",
+    "(ii), (iii) और (iv)",
+    "(i), (ii) और (iii)"
+   ],
+   "ans": "D",
+   "exams": [
+    "असम 2022"
+   ],
+   "q_en": "Which of the following is correct statement? i. A sub division is headed by SDI(P) / ASP ii. A postal division is headed by SPOs/SSPOs iii. A region is normally headed by PMG iv. A sub post office is headed by Sr. PM",
+   "src": [
+    "ASM-MTS-PM-MG-2022.pdf#Q2"
+   ],
+   "list_q": "डाक प्रशासनिक संरचना के संबंध में सही कथन कौन से हैं?",
+   "list_a": "(i), (ii) और (iii)",
+   "auto": "v22"
+  },
+  {
+   "id": "p_6f745006ee",
+   "q": "मुद्रित पोस्टकार्ड (printed post card) का आकार (dimensions) क्या होता है?",
+   "opts": [
+    "15 × 9 सेमी",
+    "14 × 9 सेमी",
+    "15 × 10 सेमी",
+    "14 × 10 सेमी"
+   ],
+   "ans": "B",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "The dimensions of a printed post card are",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q20"
+   ],
+   "list_q": "मुद्रित पोस्टकार्ड का आकार क्या होता है?",
+   "list_a": "14 × 9 सेमी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_70a69c93c5",
+   "q": "APS का पूर्ण रूप क्या है?",
+   "opts": [
+    "Army postal system",
+    "Artillery postal service",
+    "Army postal service",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "असम 2022"
+   ],
+   "q_en": "APS stands for___",
+   "src": [
+    "ASM-MTS-PM-MG-2022.pdf#Q1"
+   ],
+   "list_q": "APS का पूर्ण रूप क्या है?",
+   "list_a": "Army postal service",
+   "auto": "v22"
+  },
+  {
+   "id": "p_7193a61de5",
+   "q": "भारत में 'My Stamp' पहली बार किस विश्व फिलाटेलिक प्रदर्शनी के दौरान शुरू किया गया था?",
+   "opts": [
+    "INDIPEX-2009",
+    "INDIPEX-2010",
+    "INDIPEX-2011",
+    "INDIPEX-2012"
+   ],
+   "ans": "C",
+   "exams": [
+    "राजस्थान 2021"
+   ],
+   "q_en": "'My Stamp' was first introduced in India during the World Philatelic Exhibition",
+   "src": [
+    "16. Rajasthan MTS 2021.docx.pdf#Q24"
+   ],
+   "list_q": "'My Stamp' की शुरुआत किस प्रदर्शनी में हुई थी?",
+   "list_a": "INDIPEX-2011",
+   "auto": "v22"
+  },
+  {
+   "id": "p_734c13b2e1",
+   "q": "ग्रामीण डाक जीवन बीमा (RPLI) के तहत ऋण सुविधा कितने समय बाद मिलती है?",
+   "opts": [
+    "3 वर्ष",
+    "1 वर्ष",
+    "2 वर्ष",
+    "5 वर्ष"
+   ],
+   "ans": "A",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "Loan facility under Rural postal life insurance is allowed after?",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q2"
+   ],
+   "list_q": "RPLI में लोन की सुविधा कितने समय बाद मिलती है?",
+   "list_a": "3 वर्ष",
+   "auto": "v22"
+  },
+  {
+   "id": "p_74e0061e40",
+   "q": "डाक द्वारा कितने रुपये से अधिक मूल्य के सोने के सिक्के या बुलियन या दोनों का प्रेषण प्रतिबंधित है?",
+   "opts": [
+    "रु 10,000",
+    "रु 25,000",
+    "रु 20,000",
+    "रु 1,00,000"
+   ],
+   "ans": "D",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "Gold coin or bullion or both exceeding a value of Rs. Is prohibited for transmission by post?",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q10"
+   ],
+   "list_q": "डाक से सोने के सिक्के भेजने की अधिकतम सीमा क्या है?",
+   "list_a": "रु 1,00,000",
+   "auto": "v22"
+  },
+  {
+   "id": "p_760287f926",
+   "q": "CRC किसके अधीन कार्य करता है?",
+   "opts": [
+    "RMS डिवीजन",
+    "डाक डिवीजन",
+    "PSD",
+    "पोस्टल जनरल"
+   ],
+   "ans": "A",
+   "exams": [
+    "असम 2022"
+   ],
+   "q_en": "CRC is functioning under:",
+   "src": [
+    "ASM-MTS-PM-MG-2022.pdf#Q26"
+   ],
+   "list_q": "CRC किसके अंतर्गत कार्य करता है?",
+   "list_a": "RMS डिवीजन",
+   "auto": "v22"
+  },
+  {
+   "id": "p_7916d4c9d2",
+   "q": "नकद में डाक शुल्क के पूर्व भुगतान की सुविधा किसके लिए उपलब्ध है?",
+   "opts": [
+    "पोस्टकार्ड",
+    "अंतर्देशीय पत्र कार्ड",
+    "पत्र और अपंजीकृत पार्सल",
+    "उपरोक्त सभी"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "Facility of prepayment of Postage by cash is available for",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q24"
+   ],
+   "list_q": "नकद में डाक शुल्क पूर्व-भुगतान सुविधा किसके लिए उपलब्ध है?",
+   "list_a": "उपरोक्त सभी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_7b462cc83a",
+   "q": "शाखा डाकघर (BO) में बुक किए गए पंजीकृत पार्सल का अधिकतम वजन कितना हो सकता है?",
+   "opts": [
+    "5 किग्रा",
+    "8 किग्रा",
+    "10 किग्रा",
+    "25 किग्रा"
+   ],
+   "ans": "C",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "What is the maximum weight of a registered parcel booked in a branch post office?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q6"
+   ],
+   "list_q": "शाखा डाकघर में पंजीकृत पार्सल का अधिकतम वजन कितना है?",
+   "list_a": "10 किग्रा",
+   "auto": "v22"
+  },
+  {
+   "id": "p_7cd7398c9b",
+   "q": "डाक जीवन बीमा (PLI) की शुरुआत कब की गई थी?",
+   "opts": [
+    "1824",
+    "1884",
+    "1984",
+    "1894"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Postal life insurance was introduced in",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q10"
+   ],
+   "list_q": "डाक जीवन बीमा की शुरुआत किस वर्ष हुई थी?",
+   "list_a": "1884",
+   "auto": "v22"
+  },
+  {
+   "id": "p_7dc37dd23d",
+   "q": "अधीक्षक RMS द्वारा जारी 'A-ऑर्डर' किससे संबंधित है?",
+   "opts": [
+    "छंटाई सूची (Sorting list) में बदलाव",
+    "कार्य समय में बदलाव",
+    "डाकघर में कर्मचारियों का प्रदर्शन",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "Superintendent RMS issued A-Order which deals with?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q15"
+   ],
+   "list_q": "RMS अधीक्षक द्वारा जारी A-ऑर्डर किससे संबंधित है?",
+   "list_a": "छंटाई सूची में बदलाव",
+   "auto": "v22"
+  },
+  {
+   "id": "p_7e41f0f5ca",
+   "q": "भारत में 'माई स्टाम्प' (My Stamp) पहली बार किस वर्ष आयोजित विश्व डाक टिकट प्रदर्शनी 'INDIPEX' के दौरान शुरू किया गया था?",
+   "opts": [
+    "2016",
+    "2010",
+    "2011",
+    "2014"
+   ],
+   "ans": "C",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "My stamp was first introduced in India during the world philatelic exhibition conducted ‘INDIPEX’ in the year.",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q24"
+   ],
+   "list_q": "'माई स्टाम्प' भारत में किस वर्ष शुरू किया गया था?",
+   "list_a": "2011",
+   "auto": "v22"
+  },
+  {
+   "id": "p_82a17bf3f6",
+   "q": "ब्लाइंड लिटरेचर पैकेट (Blind Literature Packet) का अधिकतम वजन कितना हो सकता है?",
+   "opts": [
+    "5 kg",
+    "7 kg",
+    "8 kg",
+    "10 kg"
+   ],
+   "ans": "B",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "What is the maximum weight of a blind literature packet?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q26"
+   ],
+   "list_q": "ब्लाइंड लिटरेचर पैकेट का अधिकतम वजन कितना होता है?",
+   "list_a": "7 kg",
+   "auto": "v22"
+  },
+  {
+   "id": "p_8309fe8291",
+   "q": "निम्नलिखित कथनों को पढ़ें: (1) PO Guide के अनुसार डाकघरों की तीन श्रेणियां होती हैं (2) PO Guide के अनुसार HO, ED उप-डाकघर सहित उप-डाकघर और ED शाखा डाकघर होते हैं (3) PO Guide के अनुसार डाकघरों की चार श्रेणियां होती हैं (4) सेना डाकघर (APO) के पते पर मूल्य देय (VP) वस्तुएं और मनी ऑर्डर बुक नहीं किए जाएंगे",
+   "opts": [
+    "सभी सही हैं",
+    "कोई भी सही नहीं है",
+    "1, 2 और 4 सही हैं",
+    "1 और 2 सही हैं"
+   ],
+   "ans": "C",
+   "exams": [
+    "हरियाणा 2020"
+   ],
+   "q_en": "Read the following sentences(1) As per PO Guide there are three classes of post offices (2) As per PO Guide there are HOs, Sub post officers including ED sub offices and ED Branch post offices (3) As per PO Guide there are four classes of post offices (4) Value-payable articles and money orders will not be booked to the address of Army Post Offices",
+   "src": [
+    "HR-MTS-PM-MG-2020.pdf#Q19"
+   ],
+   "list_q": "सेना डाकघर (APO) के पते पर क्या बुक नहीं किया जाता?",
+   "list_a": "VP वस्तुएं और मनीऑर्डर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_8808c5f7ba",
+   "q": "सेना डाकघर (Army Post Office) के पते के लिए कौन सा डाकघर मनी ऑर्डर बुक कर सकता है?",
+   "opts": [
+    "प्रधान डाकघर (HO)",
+    "प्रधान डाकघर और उप-डाकघर",
+    "प्रधान डाकघर, उप-डाकघर और शाखा डाकघर",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "D",
+   "exams": [
+    "महाराष्ट्र 2020"
+   ],
+   "q_en": "Which office can book a money order for address of Army Post Office?",
+   "src": [
+    "11. Maharashtra MTS  - 2020  Q.P..pdf#Q3"
+   ],
+   "list_q": "सेना डाकघर के लिए कौन सा कार्यालय मनी ऑर्डर बुक कर सकता है?",
+   "list_a": "कोई भी नहीं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_888d85708e",
+   "q": "अंतर्राष्ट्रीय मनी ट्रांसफर सेवा (IMTS) के तहत एक कैलेंडर वर्ष में एक एकल लाभार्थी द्वारा कितने लेनदेन प्राप्त किए जा सकते हैं?",
+   "opts": [
+    "10",
+    "20",
+    "25",
+    "30"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "How many transactions through international money transfer service (IMTS) can be received by single beneficiary in a calendar year?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q30"
+   ],
+   "list_q": "IMTS के तहत एक वर्ष में अधिकतम कितने लेनदेन प्राप्त हो सकते हैं?",
+   "list_a": "30 लेनदेन",
+   "auto": "v22"
   }
  ],
  "sets": [
@@ -2920,6 +3361,21 @@
   "p_60687da516",
   "p_650dd9e7b0",
   "p_666da86f72",
-  "p_668d95d6a6"
+  "p_668d95d6a6",
+  "p_6882b61d37",
+  "p_6b88f38d47",
+  "p_6d1aa850eb",
+  "p_6d9b38625f",
+  "p_705939f381",
+  "p_74aa125733",
+  "p_7735f50938",
+  "p_7922ca1479",
+  "p_80f3fb8294",
+  "p_82168c0e13",
+  "p_822abf8479",
+  "p_850b4e99fe",
+  "p_873d98d9d0",
+  "p_891dbe3742",
+  "p_894f848fec"
  ]
 }
