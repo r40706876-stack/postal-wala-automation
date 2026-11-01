@@ -3234,6 +3234,384 @@
    "list_q": "IMTS के तहत एक वर्ष में अधिकतम कितने लेनदेन प्राप्त हो सकते हैं?",
    "list_a": "30 लेनदेन",
    "auto": "v22"
+  },
+  {
+   "id": "p_8d7eaddf1a",
+   "q": "पांच वर्षों के लिए फ्रैंकिंग मशीन का लाइसेंस शुल्क कितना है?",
+   "opts": [
+    "रु 500",
+    "रु 375",
+    "रु 250",
+    "रु 275"
+   ],
+   "ans": "B",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "The licence fee franking machines for five years is:",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q5"
+   ],
+   "list_q": "5 वर्ष हेतु फ्रैंकिंग मशीन लाइसेंस शुल्क क्या है?",
+   "list_a": "रु 375",
+   "auto": "v22"
+  },
+  {
+   "id": "p_8ed831424e",
+   "q": "सुकन्या समृद्धि खाते में, बकाया राशि की 50% आंशिक निकासी की अनुमति किस स्तर पर दी जाती है?",
+   "opts": [
+    "खाताधारक के 18 वर्ष की आयु प्राप्त करने पर",
+    "खाताधारक के 21 वर्ष की आयु प्राप्त करने पर",
+    "खाताधारक के विवाह पर",
+    "उपरोक्त सभी"
+   ],
+   "ans": "A",
+   "exams": [
+    "उत्तर प्रदेश 2020"
+   ],
+   "q_en": "In Sukanya samriddhi account, Partial withdrawal of 50% of outstanding balance is allowed at which stage?",
+   "src": [
+    "15. Uttar Pardesh MTS 2020.docx.pdf#Q24"
+   ],
+   "list_q": "सुकन्या खाते से 50% निकासी कब अनुमत है?",
+   "list_a": "18 वर्ष की आयु",
+   "auto": "v22"
+  },
+  {
+   "id": "p_91c2e0d5c5",
+   "q": "निम्नलिखित में से किसे लेटर बॉक्स में नहीं डाला जाना चाहिए?",
+   "opts": [
+    "साधारण अंतर्देशीय पत्र कार्ड (ILC)",
+    "साधारण पोस्ट कार्ड",
+    "साधारण पत्र",
+    "साधारण मशीन फ्रैंक्ड वस्तुएं"
+   ],
+   "ans": "D",
+   "exams": [
+    "असम 2021"
+   ],
+   "q_en": "Which of the following should not be posted in the letter box?",
+   "src": [
+    "ASM-MTS-PM-MG-2021.pdf#Q10"
+   ],
+   "list_q": "किसे लेटर बॉक्स में नहीं डालना चाहिए?",
+   "list_a": "मशीन फ्रैंक्ड वस्तुएं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_922f81888f",
+   "q": "यदि BNPL ग्राहक नियत तिथि तक देय राशि का भुगतान करने में विफल रहता है, तो जुर्माने की दर क्या है?",
+   "opts": [
+    "10% प्रति वर्ष",
+    "15% प्रति वर्ष",
+    "18% प्रति वर्ष",
+    "12% प्रति वर्ष"
+   ],
+   "ans": "D",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "If the BNPL customer fails to pay the dues by due date, then the rate of penalty is",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q13"
+   ],
+   "list_q": "BNPL ग्राहक द्वारा भुगतान न करने पर जुर्माना दर?",
+   "list_a": "12% प्रति वर्ष",
+   "auto": "v22"
+  },
+  {
+   "id": "p_93936a4193",
+   "q": "पोस्ट बॉक्स के किरायेदार द्वारा अपना कार्यालय दूसरे स्थान पर स्थानांतरित करने की स्थिति में, इस परिवर्तन की सूचना देने की समय सीमा क्या है?",
+   "opts": [
+    "छह दिन",
+    "सात दिन",
+    "पांच दिन",
+    "आठ दिन"
+   ],
+   "ans": "B",
+   "exams": [
+    "असम 2021"
+   ],
+   "q_en": "In the event of renter of a post box shifting his office to another place, then what is time limit to inform such change?",
+   "src": [
+    "ASM-MTS-PM-MG-2021.pdf#Q6"
+   ],
+   "list_q": "पोस्ट बॉक्स पते में बदलाव की सूचना सीमा क्या है?",
+   "list_a": "सात दिन",
+   "auto": "v22"
+  },
+  {
+   "id": "p_94241a6000",
+   "q": "सामान्य कार्य दिवसों में \"डाक टिकटों और स्टेशनरी की बिक्री\" का कार्य समय क्या होता है?",
+   "opts": [
+    "डाकघर के पूरे कामकाजी घंटे",
+    "सुबह 10 बजे से दोपहर 1 बजे के बीच",
+    "सुबह 10 बजे से दोपहर 3 बजे के बीच",
+    "सुबह 10 बजे से शाम 5 बजे के बीच"
+   ],
+   "ans": "A",
+   "exams": [
+    "असम 2020"
+   ],
+   "q_en": "On normal working days the Business Hours with respect to “sale of postage stamp and stationery is",
+   "src": [
+    "ASM-MTS-PM-MG-2020.pdf#Q4"
+   ],
+   "list_q": "डाक टिकट व स्टेशनरी बिक्री का कार्य समय क्या है?",
+   "list_a": "पूरे कामकाजी घंटे",
+   "auto": "v22"
+  },
+  {
+   "id": "p_95ac0f6432",
+   "q": "डाक शुल्क का भुगतान आमतौर पर किसके अधिकार के तहत भारतीय डाकघर द्वारा जारी डाक टिकटों के माध्यम से किया जाता है?",
+   "opts": [
+    "संबंधित सर्किल",
+    "विदेश मंत्रालय",
+    "भारत सरकार",
+    "यूनिवर्सल पोस्टल यूनियन (UPU)"
+   ],
+   "ans": "C",
+   "exams": [
+    "दिल्ली 2022"
+   ],
+   "q_en": "Payment of postage is normally to be affected by means of postage stamps issued by the Indian post office under the authority of:",
+   "src": [
+    "DL-MTS-PM-MG-2022.pdf#Q6"
+   ],
+   "list_q": "डाक टिकट किसके प्राधिकार के तहत जारी होते हैं?",
+   "list_a": "भारत सरकार",
+   "auto": "v22"
+  },
+  {
+   "id": "p_9ad2b1d2e4",
+   "q": "लेटर बॉक्स कब खाली (क्लियर) नहीं किए जाते हैं?",
+   "opts": [
+    "रविवार",
+    "छुट्टी",
+    "A और B दोनों",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "दिल्ली 2022"
+   ],
+   "q_en": "Letter Box are not cleared on:",
+   "src": [
+    "DL-MTS-PM-MG-2022.pdf#Q12"
+   ],
+   "list_q": "लेटर बॉक्स कब खाली नहीं किए जाते हैं?",
+   "list_a": "रविवार और छुट्टी दोनों",
+   "auto": "v22"
+  },
+  {
+   "id": "p_9cc75c9459",
+   "q": "सामान्यतः मेल लिस्ट कितनी प्रतियों में तैयार की जाती है?",
+   "opts": [
+    "तीन प्रतियों में (Triplicate)",
+    "दो प्रतियों में (Duplicate)",
+    "एक प्रति में (Single copy)",
+    "चार प्रतियों में (Quadruplicate)"
+   ],
+   "ans": "B",
+   "exams": [
+    "उत्तराखंड 2020"
+   ],
+   "q_en": "Normally mail lists prepared in",
+   "src": [
+    "16. Uttarakhan Mts 2020.docx.pdf#Q16"
+   ],
+   "list_q": "मेल लिस्ट सामान्यतः कितनी प्रतियों में बनती है?",
+   "list_a": "दो प्रतियों में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_9ded9ac5aa",
+   "q": "भारत में नामित डाकघरों में निम्नलिखित में से कौन सा म्यूचुअल फंड उपलब्ध है?",
+   "opts": [
+    "UTI म्यूचुअल फंड",
+    "SBI म्यूचुअल फंड",
+    "L&T म्यूचुअल फंड",
+    "रिलायंस म्यूचुअल फंड"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Which of the following mutual Funds are available in designated post offices in India",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q9"
+   ],
+   "list_q": "नामित डाकघरों में कौन सा म्यूचुअल फंड उपलब्ध है?",
+   "list_a": "UTI म्यूचुअल फंड",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a25dd803ca",
+   "q": "डाक सेवाओं से संबंधित सभी सामान्य जानकारी किस मोबाइल ऐप से प्राप्त की जा सकती है?",
+   "opts": [
+    "PMA",
+    "Post Info ऐप",
+    "Nanyatha",
+    "IPPB ऐप"
+   ],
+   "ans": "B",
+   "exams": [
+    "हरियाणा 2020"
+   ],
+   "q_en": "All general information related to mail services may be extracted from which mobile application?",
+   "src": [
+    "HR-MTS-PM-MG-2020.pdf#Q10"
+   ],
+   "list_q": "डाक सेवाओं की सामान्य जानकारी किस ऐप से मिलती है?",
+   "list_a": "Post Info ऐप",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a2ead6e99c",
+   "q": "IPO कितने मूल्यवर्ग (Denominations) में उपलब्ध हैं?",
+   "opts": [
+    "10 मूल्यवर्ग",
+    "6 मूल्यवर्ग",
+    "4 मूल्यवर्ग",
+    "8 मूल्यवर्ग"
+   ],
+   "ans": "C",
+   "exams": [
+    "उत्तराखंड 2020"
+   ],
+   "q_en": "IPOs are available in",
+   "src": [
+    "16. Uttarakhan Mts 2020.docx.pdf#Q27"
+   ],
+   "list_q": "IPO कितने मूल्यवर्ग में उपलब्ध हैं?",
+   "list_a": "4 मूल्यवर्ग",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a3e2c785fd",
+   "q": "आधार में डोरस्टेप मोबाइल नंबर अपडेट किसके माध्यम से किया जाता है?",
+   "opts": [
+    "AePS",
+    "CELC",
+    "DLC",
+    "उपरोक्त सभी"
+   ],
+   "ans": "B",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "Doorstep mobile number Updation in Aadhar is done through",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q29"
+   ],
+   "list_q": "आधार में डोरस्टेप मोबाइल नंबर अपडेट किससे होता है?",
+   "list_a": "CELC",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a4ddaab584",
+   "q": "डाकघर में पब्लिक प्रॉविडेंट फंड (PPF) खाता खोलने के लिए न्यूनतम राशि क्या है?",
+   "opts": [
+    "1000",
+    "1500",
+    "100",
+    "500"
+   ],
+   "ans": "D",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "What is the minimum amount of public provident fund account opened in the post office?",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q28"
+   ],
+   "list_q": "डाकघर PPF खाता खोलने की न्यूनतम राशि क्या है?",
+   "list_a": "500",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a4ed42ac0f",
+   "q": "ट्रांजिट सेक्शन (Transit Section) के प्रभारी व्यक्ति को क्या कहा जाता है?",
+   "opts": [
+    "पोस्टल असिस्टेंट या सॉर्टिंग असिस्टेंट",
+    "मेल गार्ड या मेल एजेंट",
+    "उपरोक्त A और B दोनों",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "B",
+   "exams": [
+    "गुजरात 2020"
+   ],
+   "q_en": "The person in charge of transit section is called",
+   "src": [
+    "GJ-MTS-PM-MG-2020.pdf#Q1"
+   ],
+   "list_q": "ट्रांजिट सेक्शन का प्रभारी क्या कहलाता है?",
+   "list_a": "मेल गार्ड या मेल एजेंट",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a619488d59",
+   "q": "डाकघरों को कितने वर्गों में विभाजित किया गया है?",
+   "opts": [
+    "दो वर्ग",
+    "तीन वर्ग",
+    "चार वर्ग",
+    "दस वर्ग"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "Post offices are divided into",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q20"
+   ],
+   "list_q": "डाकघर कितने वर्गों में विभाजित हैं?",
+   "list_a": "तीन वर्ग",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a7b323176e",
+   "q": "डाकघर गाइड भाग-1 के किस अनुभाग (Section) के तहत प्रतिबंधित वस्तुएं (Prohibited articles) आती हैं?",
+   "opts": [
+    "अनुभाग II",
+    "अनुभाग III",
+    "अनुभाग IV",
+    "अनुभाग V"
+   ],
+   "ans": "C",
+   "exams": [
+    "हरियाणा 2020"
+   ],
+   "q_en": "Prohibited articles comes under which section of post office guide part-1",
+   "src": [
+    "HR-MTS-PM-MG-2020.pdf#Q21"
+   ],
+   "list_q": "PO गाइड भाग-1 में प्रतिबंधित वस्तुएं किस सेक्शन में हैं?",
+   "list_a": "अनुभाग IV",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a811577bb8",
+   "q": "निम्नलिखित में से कौन अपने अधिकार क्षेत्र के तहत सभी डाकघरों के कामकाज को सीधे नियंत्रित करता है?",
+   "opts": [
+    "संबंधित मंडल के डाकघर अधीक्षक (Supdt. of POs)",
+    "संबंधित मंडल के रेलवे मेल अधीक्षक",
+    "संबंधित मंडल के MMS अधीक्षक",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "असम 2021"
+   ],
+   "q_en": "Who of the following directly controls the working of all post offices under his jurisdiction",
+   "src": [
+    "ASM-MTS-PM-MG-2021.pdf#Q7"
+   ],
+   "list_q": "मंडल के सभी डाकघरों को सीधे कौन नियंत्रित करता है?",
+   "list_a": "डाकघर अधीक्षक",
+   "auto": "v22"
   }
  ],
  "sets": [
@@ -3376,6 +3754,24 @@
   "p_850b4e99fe",
   "p_873d98d9d0",
   "p_891dbe3742",
-  "p_894f848fec"
+  "p_894f848fec",
+  "p_897b8f8177",
+  "p_8c87e7da55",
+  "p_8e027d495f",
+  "p_932e78a9f4",
+  "p_94a9e15a14",
+  "p_95d4bfe70c",
+  "p_960be0f65f",
+  "p_9ab94eabbf",
+  "p_9b2b929d4b",
+  "p_9db5864281",
+  "p_9f37960a32",
+  "p_9f5680a762",
+  "p_a175b64cae",
+  "p_a29bbce3dd",
+  "p_a4180105f7",
+  "p_a4ce8c7927",
+  "p_a8c7e858af",
+  "p_a92698be7b"
  ]
 }
