@@ -299,5 +299,20 @@
     "trap_quote": "",
     "guide_line": "The indication ‘Letter’ should be given on the address-side of bulky letter packets, which, on account of their size or make up, might be mistaken for other classes of packets.",
     "done": "skip"
+  },
+  {
+    "clause": 26,
+    "part_index": 7,
+    "part_no": 8,
+    "reel": "reel_clause_26_part_8_v2.mp4",
+    "question": "विशिष्ट उच्च अधिकारियों के कैंप के लिए आने वाली डाक का पता कैसे लिखा जाना चाहिए?",
+    "fact": "उच्च अधिकारियों के कैंप के लेखों पर पोस्ट टाउन के बजाय केवल कैंप का पता दें।",
+    "answer": "केवल उनके कैंप के पते पर",
+    "en_question": "How should the address be written on articles intended for delivery in camp to high officers?",
+    "en_fact": "Articles for camp delivery to such officers should not be addressed to any Post Town but only to their camp.",
+    "source_quote": "Articles intended for delivery in camp to such officers should not be addressed to any Post Town but only to their camp as indicated in Clause 206.",
+    "trap_quote": "",
+    "guide_line": "Articles intended for delivery in camp to such officers should not be addressed to any Post Town but only to their camp as indicated in Clause 206.",
+    "done": "skip"
   }
 ]
