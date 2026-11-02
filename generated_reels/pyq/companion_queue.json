@@ -314,5 +314,20 @@
     "trap_quote": "",
     "guide_line": "Articles intended for delivery in camp to such officers should not be addressed to any Post Town but only to their camp as indicated in Clause 206.",
     "done": "skip"
+  },
+  {
+    "clause": 27,
+    "part_index": 0,
+    "part_no": 1,
+    "reel": "reel_clause_27_part_1.mp4",
+    "question": "सेना और वायु सेना डाक के पते में क्या होना अनिवार्य है?",
+    "fact": "सेना और वायु सेना कर्मियों की डाक में नंबर, रैंक, नाम और यूनिट अनिवार्य है।",
+    "answer": "नंबर, रैंक, नाम, यूनिट",
+    "en_question": "What particulars must be furnished in the address of mails for Defence Services personnel?",
+    "en_fact": "Address of Defence Services personnel must always contain Number, Rank, Name, and Unit.",
+    "source_quote": "✓ नांबर \n✓ रैंक \n✓ नाम \n✓ यूदनि",
+    "trap_quote": "",
+    "guide_line": "Mails for Defence Services Personnel serving in the Army and Air Force – The following particulars should always be furnished in the address in the case of mails for the personnel of the Defence Services serving in the Army and",
+    "done": "skip"
   }
 ]

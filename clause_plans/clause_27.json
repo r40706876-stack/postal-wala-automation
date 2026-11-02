@@ -67,147 +67,160 @@
         "text": "फौज वाले पते में क्या लिखें?"
       },
       "chitra_v": {
-        "tries": 2,
-        "last_err": "chitra saaf nahi bana (khaana 3): saaf nahi",
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "Wide shot of the post office counter where the customer hands over an army mail letter to the postman under warm light.",
+            "target": "the army mail letter on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "सैनिक भाई के लिए डाक भेजते समय पता पूरा लिखना चाहिए।",
+            "desc": "दुकान या काउंटर पर सेना की डाक जमा की जा रही है।",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, ये सेना की चिट्ठी भेजनी है।"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/083a055612_18044147_1.jpg",
+            "box": [
+              0.347,
+              0.693,
+              0.574,
+              0.762
+            ],
+            "bg_text": false,
+            "badge": [
+              0.388,
+              0.502,
+              0.447,
+              0.537
+            ],
+            "face": [
+              0.149,
+              0.198,
+              0.569,
+              0.74
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Closeup shot of the letter on the counter with missing details as the customer looks worried.",
+            "target": "the incomplete army mail letter",
+            "tag": "केवल नाम और रैंक",
+            "tag_color": "red",
+            "text": "केवल नाम और रैंक लिखने से डाक वापस आ सकती है।",
+            "desc": "पत्र पर केवल नाम और रैंक लिखा है जो अधूरा है।",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "अरे! इसमें क्या कमी रह गई?"
+            },
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/083a055612_18044147_2.jpg",
+            "box": [
+              0.321,
+              0.672,
+              0.666,
+              0.785
+            ],
+            "bg_text": false,
+            "badge": [
+              0.348,
+              0.431,
+              0.437,
+              0.482
+            ],
+            "face": [
+              0.776,
+              0.14,
+              0.949,
+              0.339
+            ],
+            "frames": [
+              "clause_plans/chitra_img/083a055612_18044147_2f1.jpg",
+              "clause_plans/chitra_img/083a055612_18044147_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer as the postman points at the address card on the counter showing all required details.",
+            "target": "the complete army mail address card on the counter",
+            "tag": "नंबर, रैंक, नाम, यूनिट",
+            "tag_color": "green",
+            "text": "सेना की डाक में नंबर, रैंक, नाम और यूनिट अनिवार्य है।",
+            "desc": "पोस्टमैन काउंटर पर रखे पते वाले कार्ड पर नंबर, रैंक, नाम और यूनिट दिखाता है।",
+            "mark": "right",
+            "card": null,
+            "say": null,
+            "shot": "over",
+            "img": "clause_plans/chitra_img/083a055612_18044147_3.jpg",
+            "box": [
+              0.452,
+              0.554,
+              0.622,
+              0.747
+            ],
+            "bg_text": false,
+            "face": [
+              0.655,
+              0.301,
+              0.762,
+              0.396
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/083a055612_18044147_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "सैनिक भाई के लिए डाक भेजते समय पता पूरा लिखना चाहिए।",
+          "केवल नाम और रैंक लिखने से डाक वापस आ सकती है।",
+          "सेना की डाक में नंबर, रैंक, नाम और यूनिट अनिवार्य है।"
+        ],
+        "score": 10.0,
+        "lesson": "When sending mail to a soldier brother, you must include the number, rank, name, and unit completely, otherwise it may be returned.",
+        "pv": 4,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 3
       },
       "cf_spent": {
-        "2026-10-14": 30
+        "2026-11-02": 14
       },
       "trap_v": {
         "tries": 2,
         "v": 3
       },
-      "chitra_keep": {
-        "scene": "Inside a bright post office with a plain white wall and a wooden service counter.",
-        "seed0": 94723497,
-        "files": {
-          "0": "clause_plans/chitra_img/083a055612_keep_94723497_1.jpg",
-          "1": "clause_plans/chitra_img/083a055612_keep_94723497_2.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.375,
-            0.586,
-            0.584,
-            0.751
-          ],
-          "1": [
-            0.38,
-            0.576,
-            0.584,
-            0.749
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": [
-              0.355,
-              0.518,
-              0.427,
-              0.555
-            ],
-            "face": [
-              0.612,
-              0.269,
-              0.742,
-              0.422
-            ]
-          },
-          "1": {
-            "badge": [
-              0.353,
-              0.506,
-              0.433,
-              0.544
-            ],
-            "face": [
-              0.576,
-              0.17,
-              0.778,
-              0.414
-            ]
-          }
-        },
-        "bgt": {
-          "0": false,
-          "1": false
-        },
-        "fixes": {
-          "2": "Make it clearly show: the correct military letter on the counter - saaf nahi"
-        },
-        "panels": [
-          {
-            "prompt": "The postman and the customer stand at the wooden post office counter, looking at a military letter together under bright warm light.",
-            "target": "the white letter on the counter",
-            "tag": "",
-            "tag_color": "dark",
-            "text": "सैनिक डाक भेजते समय पते की सभी जरूरी बातें लिखनी होती हैं।",
-            "desc": "The customer and postman look at the military letter on the counter.",
-            "mark": "none",
-            "card": {
-              "lines": [
-                "सिपाही रमेश कुमार",
-                "59 एपीएफओ",
-                "सेना डाक"
-              ],
-              "corner": "",
-              "hl": -1
-            },
-            "say": {
-              "who": "customer",
-              "text": "भैया, यह सेना का पत्र भेजना है।"
-            }
-          },
-          {
-            "prompt": "The postman points at the military letter on the counter while the customer looks confused.",
-            "target": "the incomplete letter on the counter",
-            "tag": "केवल नाम और रैंक",
-            "tag_color": "red",
-            "text": "केवल नाम और रैंक लिखने से डाक पूरी नहीं होती।",
-            "desc": "The postman points at the letter showing only name and rank, missing unit and number.",
-            "mark": "wrong",
-            "card": {
-              "lines": [
-                "रैंक नायक",
-                "नाम सुरेश कुमार",
-                "भारत"
-              ],
-              "corner": "",
-              "hl": 0
-            },
-            "say": {
-              "who": "postman",
-              "text": "अरे भाई, इसमें नंबर और यूनिट कहां है?"
-            }
-          },
-          {
-            "prompt": "The postman smiles and points his finger clearly at the fully detailed address card on the counter.",
-            "target": "the correct military letter on the counter",
-            "tag": "नंबर, रैंक, नाम, यूनिट",
-            "tag_color": "green",
-            "text": "सेना की डाक में नंबर रैंक नाम यूनिट अनिवार्य है।",
-            "desc": "The postman points at the correct military letter showing number, rank, name, and unit clearly.",
-            "mark": "right",
-            "card": {
-              "lines": [
-                "नंबर 12345",
-                "रैंक हवलदार",
-                "नाम राजेश कुमार",
-                "यूनिट 15 बटालियन"
-              ],
-              "corner": "",
-              "hl": 2
-            },
-            "say": {
-              "who": "postman",
-              "text": "अब बिल्कुल सही है, यह तुरंत जाएगी।"
-            }
-          }
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/083a055612_18044147_1.jpg"
+      },
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "Mails for Defence Services Personnel serving in the Army and Air Force – The following particulars should always be furnished in the address in the case of mails for the personnel of the Defence Services serving in the Army and",
+        "kind": "clause"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "फौजी चिट्ठी में नंबर, रैंक, नाम, यूनिट पक्का लिखो भाई!",
+        "key": [
+          "नंबर",
+          "रैंक",
+          "नाम"
         ],
-        "reuse_n": 0
-      }
+        "why": "The memory trick correctly mentions the four mandatory details (number, rank, name, unit) for army and air force personnel mail as specified in the rule, withou"
+      },
+      "published": "2026-11-02",
+      "published_round": 24
     },
     {
       "basis": "notes",
@@ -261,7 +274,142 @@
       "simple": true,
       "web_verdict": "unknown",
       "web_sources": [],
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "The postman and the customer standing at the post office counter with a khaki envelope between them, warm indoor light.",
+            "target": "the khaki envelope on the counter",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "सेना के जवान को चिट्ठी भेजते समय पता कैसे लिखें?",
+            "desc": "The customer is asking the postman how to address a letter to a soldier.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, सेना वाले भाई को चिट्ठी भेजनी है।"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/1f16ac6c4a_17145834_1.jpg",
+            "box": [
+              0.415,
+              0.576,
+              0.597,
+              0.715
+            ],
+            "bg_text": true,
+            "badge": [
+              0.347,
+              0.545,
+              0.41,
+              0.577
+            ],
+            "face": [
+              0.154,
+              0.273,
+              0.471,
+              0.755
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Closeup of hands holding a plain white envelope on the counter with a wrong local city address written on it, red lighting.",
+            "target": "the envelope with local city address",
+            "tag": "गृह जिला पोस्ट ऑफिस",
+            "tag_color": "red",
+            "text": "गृह जिले का नाम लिखने से डाक सही जगह नहीं जाएगी।",
+            "desc": "Closeup of hands showing the envelope addressed to the home district post office, which is incorrect.",
+            "mark": "wrong",
+            "card": null,
+            "say": null,
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/1f16ac6c4a_17145834_2.jpg",
+            "box": [
+              0.329,
+              0.521,
+              0.668,
+              0.795
+            ],
+            "bg_text": false,
+            "badge": [
+              0.185,
+              0.421,
+              0.318,
+              0.497
+            ],
+            "frames": [
+              "clause_plans/chitra_img/1f16ac6c4a_17145834_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "Closeup of hands holding another envelope with the current posting city written on it, harsh red lighting.",
+            "target": "the envelope with posting city",
+            "tag": "वर्तमान पोस्टिंग शहर",
+            "tag_color": "red",
+            "text": "वर्तमान पोस्टिंग शहर का नाम लिखना भी गलत है।",
+            "desc": "Closeup of hands showing an envelope addressed to the current posting city, which is also a mistake.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "या फिर वर्तमान पोस्टिंग शहर का नाम लिखूँ?"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/1f16ac6c4a_17145834_3.jpg",
+            "box": [
+              0.502,
+              0.706,
+              1.0,
+              1.0
+            ],
+            "bg_text": false
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman pointing clearly at the 56 or 99 APO address on the envelope, bright light.",
+            "target": "the envelope with APO address",
+            "tag": "56 या 99 APO",
+            "tag_color": "green",
+            "text": "सेना कर्मियों की डाक को बिना पोस्ट टाउन के 56 या 99 APO संबोधित करें।",
+            "desc": "Over-the-shoulder shot showing the postman pointing at the correct 56 or 99 APO address on the envelope.",
+            "mark": "right",
+            "card": null,
+            "say": null,
+            "shot": "over",
+            "img": "clause_plans/chitra_img/1f16ac6c4a_17145834_4.jpg",
+            "box": [
+              0.422,
+              0.563,
+              0.613,
+              0.706
+            ],
+            "bg_text": false,
+            "face": [
+              0.634,
+              0.272,
+              0.803,
+              0.423
+            ],
+            "pan": "rl"
+          }
+        ],
+        "caps": [
+          "सेना के जवान को चिट्ठी भेजते समय पता कैसे लिखें?",
+          "गृह जिले का नाम लिखने से डाक सही जगह नहीं जाएगी।",
+          "वर्तमान पोस्टिंग शहर का नाम लिखना भी गलत है।",
+          "सेना कर्मियों की डाक को बिना पोस्ट टाउन के 56 या 99 APO संबोधित करें।"
+        ],
+        "score": 9.0,
+        "lesson": "When addressing a letter to an army personnel, do not use the home district or the current posting city name; instead, address it to 56 APO or 99 APO without a post town.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 2
+      },
+      "cf_spent": {
+        "2026-11-02": 13
+      }
     },
     {
       "basis": "notes",

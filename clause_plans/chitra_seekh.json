@@ -1,6 +1,4 @@
 [
- "chitra saaf nahi bana (khaana 2): The sticker is placed with space at the top border instead of directly at the extreme top edge without leaving any space.",
- "chitra saaf nahi bana (khaana 2): safety-chhalni ne roka - saral, saaf drishya likho",
  "chitra saaf nahi bana (khaana 3): The postman is holding the envelope instead of pointing at the underlined city name as requested.",
  "chitra saaf nahi bana (khaana 3): Viewpoint is wrong, showing front/side view instead of over-the-shoulder from behind the customer.",
  "chitra saaf nahi bana (khaana 2, 3): saaf nahi; View is not from behind the customer looking at the postman, and the postman is not pointing at an underlined city name in block let",
@@ -10,5 +8,7 @@
  "chitra saaf nahi bana (khaana 2, 3): saaf nahi; Shot is too wide, not an over-the-shoulder shot pointing at the envelope name.",
  "chitra saaf nahi bana (khaana 3): Wrong camera angle, not over-the-shoulder from behind the customer, and postman is not pointing at the envelope.",
  "chitra saaf nahi bana (khaana 2, 3): The postman points at the bottom left corner instead of the top right corner where the sender address should be.; Shot shows a medium view of b",
- "chitra saaf nahi bana (khaana 2): Wrong key object; shows a large brown package instead of a small flat white envelope."
+ "chitra saaf nahi bana (khaana 2): Wrong key object; shows a large brown package instead of a small flat white envelope.",
+ "chitra saaf nahi bana (khaana 3): The postman is holding the letter instead of pointing at the address card on the counter.",
+ "chitra saaf nahi bana (khaana 3, 4): Missing the close-up of hands holding the envelope with harsh red lighting as requested in the prompt.; Has a giant distorted floating postman "
 ]
