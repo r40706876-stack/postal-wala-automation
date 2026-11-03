@@ -329,5 +329,20 @@
     "trap_quote": "",
     "guide_line": "Mails for Defence Services Personnel serving in the Army and Air Force – The following particulars should always be furnished in the address in the case of mails for the personnel of the Defence Services serving in the Army and",
     "done": "skip"
+  },
+  {
+    "clause": 27,
+    "part_index": 1,
+    "part_no": 2,
+    "reel": "reel_clause_27_part_2.mp4",
+    "question": "सेना कर्मियों की डाक को कहाँ के लिए संबोधित करना चाहिए?",
+    "fact": "सेना कर्मियों की डाक को बिना पोस्ट टाउन के 56 या 99 APO संबोधित करें।",
+    "answer": "56 APO या 99 APO",
+    "en_question": "To which offices should mails for Army and Air Force personnel be addressed?",
+    "en_fact": "Such mails must be addressed to 56 APO or 99 APO without adding any post town.",
+    "source_quote": "इन्हें दबना दकसी पोस्ट डाउन का नाम दिए 56 APO या 99 APO के लिए सांबोदधत करना चादहए",
+    "trap_quote": "",
+    "guide_line": "Such mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",
+    "done": "skip"
   }
 ]

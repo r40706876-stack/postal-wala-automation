@@ -234,7 +234,7 @@
       "fact": "सेना कर्मियों की डाक को बिना पोस्ट टाउन के 56 या 99 APO संबोधित करें।",
       "trap": "शहर का नाम लिखना गलत है, क्योंकि APO पता ही पर्याप्त है।",
       "trap_quote": "",
-      "yaad": "बिना पोस्ट टाउन = केवल APO पता",
+      "yaad": "सेना की डाक → बिना पोस्ट टाउन → 56 या 99 APO",
       "hook": "ग्राहक सेना के जवान को पत्र भेज रहा है, वह पता कहाँ का लिखेगा?",
       "en": {
         "question": "To which offices should mails for Army and Air Force personnel be addressed?",
@@ -267,7 +267,8 @@
       "hint": "",
       "_clause_no": 27,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "सेना कर्मियों की डाक पर पता कहाँ का होना चाहिए?"
       },
       "auto_check": true,
       "check_errors": [],
@@ -409,7 +410,42 @@
       },
       "cf_spent": {
         "2026-11-02": 13
-      }
+      },
+      "style_retry": true,
+      "punch_v": {
+        "ok": true,
+        "text": "फौजी का पता कैसे लिखें?"
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/1f16ac6c4a_17145834_1.jpg"
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      },
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "Such mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",
+        "kind": "line"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "सेना की डाक पर सिर्फ 56 APO या 99 APO लिखें।",
+        "key": [
+          "56 APO",
+          "99 APO"
+        ],
+        "why": "The memory trick accurately conveys the core instruction to address military mail simply to 56 APO or 99 APO without a post town, matching the verified rule wit"
+      },
+      "published": "2026-11-03",
+      "published_round": 24
     },
     {
       "basis": "notes",
@@ -463,7 +499,122 @@
       "simple": true,
       "web_verdict": "unknown",
       "web_sources": [],
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "chitra_v": {
+        "kit": "photo",
+        "panels": [
+          {
+            "prompt": "Wide shot of the post office counter where the customer stands outside asking the postman holding a plain white letter. Bright natural lighting inside the office.",
+            "target": "the plain white letter held by the postman",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "दौरे पर आए व्यक्ति को अपनी डाक कहाँ मिलेगी?",
+            "desc": "Wide shot showing the customer at the counter asking the postman about receiving mail while on tour.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, मैं यहाँ दौरे पर आया हूँ!"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/95dc42e6ff_47168139_1.jpg",
+            "box": [
+              0.366,
+              0.536,
+              0.545,
+              0.661
+            ],
+            "bg_text": true,
+            "face": [
+              0.514,
+              0.14,
+              0.92,
+              1.0
+            ],
+            "pan": "lr"
+          },
+          {
+            "prompt": "Close-up view of the postman's hands putting the letter into a red redirection box away from the customer. Soft side lighting focusing on the envelope.",
+            "target": "the plain white letter placed in the box",
+            "tag": "केवल गृह पते पर",
+            "tag_color": "red",
+            "text": "केवल गृह पते पर डाक भेजना गलत नियम है।",
+            "desc": "Close-up of the letter being incorrectly redirected to home address only, with a red tag.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "डाक तो केवल आपके घर जाएगी!"
+            },
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/95dc42e6ff_47168139_2.jpg",
+            "box": [
+              0.377,
+              0.5,
+              0.583,
+              0.667
+            ],
+            "bg_text": true,
+            "badge": [
+              0.256,
+              0.353,
+              0.355,
+              0.424
+            ],
+            "frames": [
+              "clause_plans/chitra_img/95dc42e6ff_47168139_2f1.jpg",
+              "clause_plans/chitra_img/95dc42e6ff_47168139_2f2.jpg"
+            ]
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman handing the plain white letter over the counter with a friendly smile.",
+            "target": "the plain white letter handed across counter",
+            "tag": "वर्तमान दौरे वाले स्थान पर",
+            "tag_color": "green",
+            "text": "भारत में दौरे वाले स्थान पर लेख वितरित होता है।",
+            "desc": "Over-the-shoulder view of the postman handing the letter to the customer at his current tour location with a green tag.",
+            "mark": "right",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "यहाँ दौरे वाले स्थान पर ही मिलेगी!"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/95dc42e6ff_47168139_3.jpg",
+            "box": [
+              0.399,
+              0.518,
+              0.565,
+              0.613
+            ],
+            "bg_text": true,
+            "badge": [
+              0.367,
+              0.479,
+              0.428,
+              0.521
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/95dc42e6ff_47168139_3f1.jpg"
+            ]
+          }
+        ],
+        "caps": [
+          "दौरे पर आए व्यक्ति को अपनी डाक कहाँ मिलेगी?",
+          "केवल गृह पते पर डाक भेजना गलत नियम है।",
+          "भारत में दौरे वाले स्थान पर लेख वितरित होता है।"
+        ],
+        "score": 8.0,
+        "lesson": "Mail addressed to a person on tour should be delivered to them at their touring location in India, rather than restricted only to their home address.",
+        "pv": 4,
+        "ok": true,
+        "v": 9,
+        "attempt": 1
+      },
+      "cf_spent": {
+        "2026-11-03": 7
+      }
     }
   ],
   "clause_text_en": "27.Mails for Defence Services Personnel serving in the Army and Air Force  –  The \nfollowing particulars should always be furnished in the address in the case of mails for the \n\n\npersonnel of the Defence Services serving in the Army and Air Force, which are to be delivered \nthrough Army Post Offices: - \n \n No. \n \n Rank \n \n Name \n \n Unit \n \nSuch mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",

@@ -22,7 +22,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 **Yaad:** नंबर + रैंक + नाम + यूनिट = अनिवार्य
 **Hook:** सेना के जवान को चिट्ठी भेजनी है, पते पर क्या लिखना जरूरी है?
 
-## Part 2  [PASS | publish baaki]
+## Part 2  [PASS | publish: 2026-11-03]
 **Source (PO Guide):** इन्हें दबना दकसी पोस्ट डाउन का नाम दिए 56 APO या 99 APO के लिए सांबोदधत करना चादहए
 
 **Niyam:** सेना कर्मियों की डाक को बिना पोस्ट टाउन के 56 या 99 APO संबोधित करें।
@@ -33,7 +33,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. निकटतम रेलवे डाकघर
 **Hint:** 
 **Trap:** शहर का नाम लिखना गलत है, क्योंकि APO पता ही पर्याप्त है।
-**Yaad:** बिना पोस्ट टाउन = केवल APO पता
+**Yaad:** सेना की डाक → बिना पोस्ट टाउन → 56 या 99 APO
 **Hook:** ग्राहक सेना के जवान को पत्र भेज रहा है, वह पता कहाँ का लिखेगा?
 
 ## Part 3  [PASS | publish baaki]
