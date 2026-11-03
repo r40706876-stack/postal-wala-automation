@@ -3612,6 +3612,552 @@
    "list_q": "मंडल के सभी डाकघरों को सीधे कौन नियंत्रित करता है?",
    "list_a": "डाकघर अधीक्षक",
    "auto": "v22"
+  },
+  {
+   "id": "p_a9457d18a6",
+   "q": "खतरनाक सामान (Dangerous Goods) से तात्पर्य उन वस्तुओं से है जो किसके लिए जोखिम पैदा कर सकती हैं?",
+   "opts": [
+    "केवल कर्मचारियों के लिए",
+    "केवल पर्यावरण के लिए",
+    "स्वास्थ्य, सुरक्षा, संपत्ति और पर्यावरण",
+    "उपरोक्त में से कोई नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "Dangerous Goods means articles which are capable of posing a risk to",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q10"
+   ],
+   "list_q": "खतरनाक सामान किसके लिए जोखिम पैदा कर सकते हैं?",
+   "list_a": "स्वास्थ्य, सुरक्षा, संपत्ति, पर्यावरण",
+   "auto": "v22"
+  },
+  {
+   "id": "p_a978580ed6",
+   "q": "सेना में सेवारत रक्षा कर्मियों के लिए डाक किस पते पर भेजी जानी चाहिए?",
+   "opts": [
+    "57 APO",
+    "56 APO",
+    "36 APO",
+    "96 APO"
+   ],
+   "ans": "B",
+   "exams": [
+    "महाराष्ट्र 2022"
+   ],
+   "q_en": "Mails for defence service personnel service in army should be addressed to….",
+   "src": [
+    "MH-MTS-PM-MG-2022.pdf#Q9"
+   ],
+   "list_q": "सेना के जवानों की डाक किस पर भेजी जाती है?",
+   "list_a": "56 APO",
+   "auto": "v22"
+  },
+  {
+   "id": "p_ab2e285f2f",
+   "q": "सॉर्टिंग सूची में बदलाव निर्धारित करने वाले अधीक्षक, RMS द्वारा जारी आदेशों को क्या कहा जाता है?",
+   "opts": [
+    "A orders",
+    "B orders",
+    "C orders",
+    "D orders"
+   ],
+   "ans": "A",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Orders issued by a superintendent, RMS prescribing changes in sorting lists are called:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q28"
+   ],
+   "list_q": "सॉर्टिंग सूची में बदलाव हेतु RMS अधीक्षक के आदेश:",
+   "list_a": "A orders",
+   "auto": "v22"
+  },
+  {
+   "id": "p_ac46fd6bea",
+   "q": "यदि कोई विदेशी पंजीकृत वस्तु वितरण कार्यालय में क्षतिग्रस्त स्थिति में प्राप्त होती है, तो प्राप्तकर्ता को कितने समय में डाकघर आकर डिलीवरी लेने का नोटिस भेजा जाना चाहिए?",
+   "opts": [
+    "उसी दिन",
+    "तीन दिनों के भीतर",
+    "सात दिनों के भीतर",
+    "पंद्रह दिनों के भीतर"
+   ],
+   "ans": "D",
+   "exams": [
+    "असम 2020"
+   ],
+   "q_en": "If a foreign registered article is received in the office of delivery in damaged condition, a notice should be sent to the addressee to attend the post office to take its delivery",
+   "src": [
+    "ASM-MTS-PM-MG-2020.pdf#Q28"
+   ],
+   "list_q": "क्षतिग्रस्त विदेशी पंजीकृत वस्तु लेने हेतु उपस्थित होने की अवधि:",
+   "list_a": "पंद्रह दिनों के भीतर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_ad4f528d71",
+   "q": "लेटर बॉक्स में पोस्ट की गई मशीन फ्रैंक की गई वस्तुओं को क्या माना जाएगा?",
+   "opts": [
+    "पूर्णतः प्रीपेड वस्तुएं",
+    "अनपेड वस्तुएं (Unpaid)",
+    "आंशिक रूप से भुगतान की गई वस्तुएं",
+    "पंजीकृत वस्तु"
+   ],
+   "ans": "B",
+   "exams": [
+    "छत्तीसगढ़ 2022"
+   ],
+   "q_en": "Machine Franked articles posted in letter boxes shall be treated as",
+   "src": [
+    "CG-MTS-PM-MG-2022.pdf#Q23"
+   ],
+   "list_q": "लेटर बॉक्स में डाली गई फ्रैंक्ड डाक मानी जाएगी:",
+   "list_a": "अनपेड वस्तुएं (Unpaid)",
+   "auto": "v22"
+  },
+  {
+   "id": "p_ae08670b90",
+   "q": "पोस्ट बॉक्स या पोस्ट बैग का त्रैमासिक किराया कितना है?",
+   "opts": [
+    "50 रुपये",
+    "70 रुपये",
+    "80 रुपये",
+    "100 रुपये"
+   ],
+   "ans": "A",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "What is the quarterly rent of a post box or a post bag?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q28"
+   ],
+   "list_q": "पोस्ट बॉक्स या पोस्ट बैग का त्रैमासिक किराया:",
+   "list_a": "50 रुपये",
+   "auto": "v22"
+  },
+  {
+   "id": "p_ae251870fc",
+   "q": "पोस्टल इंडेक्स नंबर (PIN) में कितने अंक होने चाहिए?",
+   "opts": [
+    "5 अंक",
+    "4 अंक",
+    "7 अंक",
+    "6 अंक"
+   ],
+   "ans": "D",
+   "exams": [
+    "उत्तराखंड 2020"
+   ],
+   "q_en": "The Postal Index Number (PIN) must contain:",
+   "src": [
+    "16. Uttarakhan Mts 2020.docx.pdf#Q23"
+   ],
+   "list_q": "पिन कोड (PIN) में कितने अंक होते हैं?",
+   "list_a": "6 अंक",
+   "auto": "v22"
+  },
+  {
+   "id": "p_afb7d385af",
+   "q": "स्मारक डाक टिकटों के लिए प्रस्ताव किसके द्वारा भेजा जा सकता है?",
+   "opts": [
+    "केवल प्रधानमंत्री",
+    "केवल राष्ट्रपति",
+    "संचार मंत्री",
+    "भारत का कोई भी नागरिक"
+   ],
+   "ans": "D",
+   "exams": [
+    "दिल्ली 2022"
+   ],
+   "q_en": "Proposal for Commemorative postage stamps may be sent by",
+   "src": [
+    "DL-MTS-PM-MG-2022.pdf#Q17"
+   ],
+   "list_q": "स्मारक डाक टिकट का प्रस्ताव कौन भेज सकता है?",
+   "list_a": "भारत का कोई भी नागरिक",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b06422d645",
+   "q": "RMS निम्नलिखित में से किस गतिविधि के लिए ज़िम्मेदार नहीं है?",
+   "opts": [
+    "डाक का वितरण (Distribution)",
+    "डाक की डिलीवरी (Delivery)",
+    "डाक का संग्रहण (Collection)",
+    "डाक का वहन (Carriage)"
+   ],
+   "ans": "B",
+   "exams": [
+    "असम 2021"
+   ],
+   "q_en": "For which of the activities RMS is not responsible for?",
+   "src": [
+    "ASM-MTS-PM-MG-2021.pdf#Q16"
+   ],
+   "list_q": "RMS किस कार्य के लिए ज़िम्मेदार नहीं है?",
+   "list_a": "डाक की डिलीवरी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b0d3902548",
+   "q": "बिज़नेस रिप्लाई सर्विस (Business Reply Service) का लाइसेंस हर साल कब नवीनीकृत किया जाता है?",
+   "opts": [
+    "जनवरी में",
+    "मार्च में",
+    "अप्रैल में",
+    "दिसंबर में"
+   ],
+   "ans": "B",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "When is the license of ‘’Business reply service” renewed every year?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q16"
+   ],
+   "list_q": "बिज़नेस रिप्लाई सर्विस का लाइसेंस हर साल कब रिन्यू होता है?",
+   "list_a": "मार्च में",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b17faa3564",
+   "q": "डाक वस्तु के पते वाले भाग के किस कोने में प्रेषक का पता लिखा जाना चाहिए?",
+   "opts": [
+    "ऊपरी बाएं",
+    "ऊपरी दाएं",
+    "निचले बाएं",
+    "निचले दाएं"
+   ],
+   "ans": "C",
+   "exams": [
+    "छत्तीसगढ़ 2021"
+   ],
+   "q_en": "In which corner of address side of articles, the senders address should be written?",
+   "src": [
+    "CG-MTS-PM-MG-2021.pdf#Q1"
+   ],
+   "list_q": "डाक वस्तु पर प्रेषक का पता किस कोने में लिखा जाता है?",
+   "list_a": "निचले बाएं",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b1c75e4b67",
+   "q": "निम्नलिखित में से कौन PLI के लिए पात्र नहीं है?",
+   "opts": [
+    "डॉक्टर",
+    "बैंक कर्मचारी",
+    "रक्षा बल",
+    "किसान"
+   ],
+   "ans": "D",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Which one of the following is not eligible for PLI",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q22"
+   ],
+   "list_q": "इनमें से कौन PLI के लिए पात्र नहीं है?",
+   "list_a": "किसान",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b1cc7a5da4",
+   "q": "PLI और RPLI के मामले में अधिकतम बीमा राशि (Sum Assured) क्या है?",
+   "opts": [
+    "PLI में 25 लाख, RPLI में 5 लाख",
+    "PLI में 25 लाख, RPLI में 10 लाख",
+    "PLI में 50 लाख, RPLI में 5 लाख",
+    "PLI में 50 लाख, RPLI में 10 लाख"
+   ],
+   "ans": "D",
+   "exams": [
+    "महाराष्ट्र 2020"
+   ],
+   "q_en": "What is the maximum sum assured in case of PLI and RPLI?",
+   "src": [
+    "11. Maharashtra MTS  - 2020  Q.P..pdf#Q19"
+   ],
+   "list_q": "PLI और RPLI में अधिकतम बीमा राशि कितनी है?",
+   "list_a": "50 लाख और 10 लाख",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b3907793b6",
+   "q": "IPPB मोबाइल ऐप के माध्यम से कौन सी डाक सेवा उपलब्ध है?",
+   "opts": [
+    "NSC",
+    "KVP",
+    "APY",
+    "RD पर लोन"
+   ],
+   "ans": "D",
+   "exams": [
+    "बिहार 2020"
+   ],
+   "q_en": "Which postal service is available through IPPB mobile APP",
+   "src": [
+    "BH-MTS-PM-MG-2020.pdf#Q7"
+   ],
+   "list_q": "IPPB मोबाइल ऐप से कौन सी डाक सेवा उपलब्ध है?",
+   "list_a": "RD पर लोन",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b44298666d",
+   "q": "मेल कार्यालय में CRC का पूर्ण रूप क्या है?",
+   "opts": [
+    "सेंट्रल रजिस्ट्रेशन सेंटर",
+    "कंप्यूटराइज्ड रजिस्ट्रेशन सेंटर",
+    "कंप्यूटराइज्ड रेलवे सेंटर",
+    "सेंटर रेलवे सेंटर"
+   ],
+   "ans": "B",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "What is the full form of CRC in mail office:",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q24"
+   ],
+   "list_q": "मेल ऑफिस में CRC का फुल फॉर्म क्या है?",
+   "list_a": "कंप्यूटराइज्ड रजिस्ट्रेशन सेंटर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b583972d42",
+   "q": "डाकघरों में आजकल मनी ऑर्डर का स्थान किस सेवा ने ले लिया है?",
+   "opts": [
+    "बैंकिंग",
+    "पोस्टल ऑर्डर",
+    "E-MO",
+    "IPPB"
+   ],
+   "ans": "C",
+   "exams": [
+    "हरियाणा 2020"
+   ],
+   "q_en": "Money order has been replaced by which kind of services in post offices these days?",
+   "src": [
+    "HR-MTS-PM-MG-2020.pdf#Q9"
+   ],
+   "list_q": "डाकघर में मनी ऑर्डर की जगह किस सेवा ने ली है?",
+   "list_a": "E-MO",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b899a59901",
+   "q": "निम्नलिखित में से कौन सा कार्य प्रधान अभिलेख कार्यालय (HRO) में नहीं किया जाता है?",
+   "opts": [
+    "वेतन तैयार करना",
+    "आकस्मिक बिल तैयार करना",
+    "स्पीड पोस्ट मेल का प्रसंस्करण",
+    "RMS डिवीजन का लेखा संबंधी कार्य"
+   ],
+   "ans": "C",
+   "exams": [
+    "बिहार 2021"
+   ],
+   "q_en": "Out of following which one is not the work done at head record offices?",
+   "src": [
+    "BH-MTS-PM-MG-2021.pdf#Q26"
+   ],
+   "list_q": "प्रधान अभिलेख कार्यालय (HRO) में कौन सा कार्य नहीं होता?",
+   "list_a": "स्पीड पोस्ट का प्रसंस्करण",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b9362aa053",
+   "q": "सामान्यतः किसी भी डाकघर के काम करने के घंटे निर्धारित करने का अधिकार किसके पास है?",
+   "opts": [
+    "डिवीजन के प्रमुख",
+    "राजपत्रित प्रधान डाकघर के पोस्टमास्टर",
+    "सर्किल के प्रमुख",
+    "संबंधित पोस्टमास्टर"
+   ],
+   "ans": "C",
+   "exams": [
+    "असम 2020"
+   ],
+   "q_en": "Generally, who has the authority to fix working hours of the any Post Office",
+   "src": [
+    "ASM-MTS-PM-MG-2020.pdf#Q2"
+   ],
+   "list_q": "डाकघर के कामकाज का समय निर्धारित करने का अधिकार किसे है?",
+   "list_a": "सर्किल के प्रमुख",
+   "auto": "v22"
+  },
+  {
+   "id": "p_b9b64eb1d8",
+   "q": "अपर्याप्त डाक शुल्क वाले सरकारी डाक लेखों के वितरण पर लिया जाने वाला डाक शुल्क कितना होता है?",
+   "opts": [
+    "वास्तविक कमी (Actual deficiency)",
+    "कमी का दोगुना",
+    "कमी के साथ 5 रुपये का जुर्माना",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "A",
+   "exams": [
+    "केरल 2021"
+   ],
+   "q_en": "The postage chargeable on delivery of official postal articles when the postage is insufficient is",
+   "src": [
+    "KRL-MTS-PM-MG-2021.pdf#Q15"
+   ],
+   "list_q": "सरकारी डाक वस्तु पर अपर्याप्त शुल्क होने पर कितना शुल्क लगेगा?",
+   "list_a": "वास्तविक कमी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_ba3d475d79",
+   "q": "निम्नलिखित कथनों पर विचार करें: I. समाचार पत्र को आवंटित पंजीकरण संख्या समाचार पत्र के मुख्य पृष्ठ के शीर्ष पर छपी होनी चाहिए। II. यह 45 दिनों से अधिक नहीं के अंतराल पर बड़ी संख्या में प्रकाशित होता है। सही विकल्प चुनें:",
+   "opts": [
+    "केवल कथन I सही है",
+    "केवल कथन II सही है",
+    "दोनों कथन I और II सही हैं",
+    "दोनों कथन I और II गलत हैं"
+   ],
+   "ans": "A",
+   "exams": [
+    "आंध्र प्रदेश 2021"
+   ],
+   "q_en": "Consider the following statements I. The registration number allotted to a newspaper should be printed on the top of the front page of the newspaper. II. It is published in large numbers at intervals of not more than 45 days. Choose the correct option",
+   "src": [
+    "AP-MTS-PM-MG-2021.pdf#Q19"
+   ],
+   "list_q": "समाचार पत्र का पंजीकरण नंबर कहाँ छपा होना चाहिए?",
+   "list_a": "मुख्य पृष्ठ के शीर्ष पर",
+   "auto": "v22"
+  },
+  {
+   "id": "p_baf5eea9b7",
+   "q": "प्रथम श्रेणी के प्रधान डाकघर (First-class Head Post Office) का प्रभारी कौन होता है?",
+   "opts": [
+    "गैर-राजपत्रित अधिकारी",
+    "राजपत्रित अधिकारी",
+    "समूह 'सी' अधिकारी",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "B",
+   "exams": [
+    "महाराष्ट्र 2022"
+   ],
+   "q_en": "Who is in charge of first-class Head post office?",
+   "src": [
+    "MH-MTS-PM-MG-2022.pdf#Q14"
+   ],
+   "list_q": "प्रथम श्रेणी प्रधान डाकघर का प्रभारी कौन होता है?",
+   "list_a": "राजपत्रित अधिकारी",
+   "auto": "v22"
+  },
+  {
+   "id": "p_bafd029e43",
+   "q": "सामान्य कार्य दिवसों में पूछताछ और संदर्भ के संबंध में मुख्य डाकघर के कार्य घंटे क्या निर्धारित हैं?",
+   "opts": [
+    "कार्यालय के पहले सात घंटों के दौरान",
+    "कार्यालय के अंतिम सात घंटों के दौरान",
+    "कार्यालय के प्रत्येक कार्य दिवस पर निर्धारित पांच घंटों के दौरान",
+    "कार्यालय के पूरे कामकाजी घंटों के दौरान"
+   ],
+   "ans": "D",
+   "exams": [
+    "असम 2021"
+   ],
+   "q_en": "What are business hours for principal post office fixed in respect of ‘’inquiries and reference” on normal week days?",
+   "src": [
+    "ASM-MTS-PM-MG-2021.pdf#Q20"
+   ],
+   "list_q": "डाकघर में पूछताछ और संदर्भ के लिए कौन से घंटे निर्धारित हैं?",
+   "list_a": "पूरे कामकाजी घंटे",
+   "auto": "v22"
+  },
+  {
+   "id": "p_bcc5f1ba44",
+   "q": "केंद्र शासित प्रदेश 'दमन और दीव' किस डाक सर्किल (Postal Circle) के अंतर्गत आता है?",
+   "opts": [
+    "महाराष्ट्र",
+    "गुजरात",
+    "कर्नाटक",
+    "मध्य प्रदेश"
+   ],
+   "ans": "B",
+   "exams": [
+    "असम 2020"
+   ],
+   "q_en": "Union territory “Daman and Diu” comes under which Postal Circle",
+   "src": [
+    "ASM-MTS-PM-MG-2020.pdf#Q1"
+   ],
+   "list_q": "दमन और दीव किस डाक सर्किल के अंतर्गत आता है?",
+   "list_a": "गुजरात",
+   "auto": "v22"
+  },
+  {
+   "id": "p_bd851d4359",
+   "q": "एक एकल इलेक्ट्रॉनिक मनी ऑर्डर (eMO) अधिकतम कितनी राशि के लिए जारी किया जा सकता है?",
+   "opts": [
+    "1000 रुपये",
+    "5000 रुपये",
+    "10000 रुपये",
+    "15000 रुपये"
+   ],
+   "ans": "B",
+   "exams": [
+    "मध्य प्रदेश 2022"
+   ],
+   "q_en": "The maximum amount for which a single electronic money order can be issued is how much rupees?",
+   "src": [
+    "MP-MTS-PM-MG-2022.pdf#Q1"
+   ],
+   "list_q": "एक eMO अधिकतम कितनी राशि का जारी किया जा सकता है?",
+   "list_a": "5000 रुपये",
+   "auto": "v22"
+  },
+  {
+   "id": "p_be1b2098fa",
+   "q": "बुक पैकेट (Book Packet) में क्या नहीं भेजा जा सकता है?",
+   "opts": [
+    "पुस्तकें और बधाई कार्ड",
+    "मुद्रित नोटिस और मुद्रित परिपत्र",
+    "लिखित संचार (Written communication)",
+    "मुद्रित निमंत्रण"
+   ],
+   "ans": "C",
+   "exams": [
+    "मध्य प्रदेश 2020"
+   ],
+   "q_en": "What cannot be sent in a book packet?",
+   "src": [
+    "MP-MTS-PM-MG-2020.pdf#Q24"
+   ],
+   "list_q": "बुक पैकेट में इनमें से क्या भेजना मना है?",
+   "list_a": "लिखित संचार",
+   "auto": "v22"
+  },
+  {
+   "id": "p_be4175bf2d",
+   "q": "डाक वस्तुओं को इस प्रकार व्यवस्थित करना कि पते वाला भाग ऊपर हो और पते एक ही दिशा में हों, क्या कहलाता है?",
+   "opts": [
+    "कैटेगराइजिंग",
+    "सॉर्टिंग",
+    "फेसिंग (Facing)",
+    "इनमें से कोई नहीं"
+   ],
+   "ans": "C",
+   "exams": [
+    "महाराष्ट्र 2020"
+   ],
+   "q_en": "The arrangement of articles with the address-side upwards and the addresses turned in the same direction is called as;",
+   "src": [
+    "11. Maharashtra MTS  - 2020  Q.P..pdf#Q30"
+   ],
+   "list_q": "डाक वस्तुओं को पते वाली साइड ऊपर करके एक दिशा में रखना क्या कहलाता है?",
+   "list_a": "फेसिंग (Facing)",
+   "auto": "v22"
   }
  ],
  "sets": [
@@ -3772,6 +4318,16 @@
   "p_a4180105f7",
   "p_a4ce8c7927",
   "p_a8c7e858af",
-  "p_a92698be7b"
+  "p_a92698be7b",
+  "p_aafabf8e20",
+  "p_ab0f6bea3d",
+  "p_ab6adb4951",
+  "p_b18d0729e6",
+  "p_b257fdf441",
+  "p_b7d5a51183",
+  "p_ba441e98fa",
+  "p_bb89292371",
+  "p_bdc6c01a50",
+  "p_bdec49f314"
  ]
 }
