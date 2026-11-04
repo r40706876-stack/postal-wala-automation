@@ -3,7 +3,7 @@
 :root{
   --paper:#FFFDF6; --rule:#D3E3F2; --margin:#E99A9A; --ink:#1B3C8C; --ink2:#1E1E1E; --red:#C8261F; --green:#13784A; --purple:#6B2FA0;
   --hl:#FFEE58; --hl2:#B9F0C6; --hl3:#FFC9DA; --hl4:#CFE3FF; --muted:#666;
-  --hand:"Kalam","Hind","Noto Sans Devanagari",cursive; --lh:1.62;
+  --hand:"Kalam","Hind","Noto Sans Devanagari","Noto Color Emoji",cursive; --lh:1.62;
   color-scheme:light;
 }
 *{box-sizing:border-box}
