@@ -227,6 +227,7 @@ footer a{color:var(--red);font-weight:700}
 .spk{flex:none;border:1.5px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:3px 10px;font:700 13.5px var(--f-disp);cursor:pointer;display:inline-flex;align-items:center;gap:4px;width:fit-content}
 .spk.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 .wa{background:#1FA855;color:#fff;box-shadow:0 3px 0 #13813F}
+.btn svg{width:20px;height:20px;flex:none}
 .expl{border:1.5px solid var(--teal);border-radius:12px;overflow:hidden;background:var(--mint)}
 .expl .eh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;font:700 13.5px var(--f-disp);color:var(--teal)}
 .crop{display:block;width:100%;border-top:1px dashed #B9DED5!important;background-repeat:no-repeat;background-color:#fff;border:none;padding:0;cursor:zoom-in}
@@ -248,6 +249,44 @@ footer a{color:var(--red);font-weight:700}
 .mode.hot b{color:var(--red)}
 #app{zoom:var(--z,1)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== Notes PDF (paid) — banner + sales page ===== */
+.pdfban{position:relative;display:flex;gap:14px;align-items:center;text-decoration:none;color:#fff;border-radius:18px;padding:14px 14px 14px 12px;
+ background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,#3B2F7A 100%);box-shadow:0 0 0 3px var(--gold),0 8px 22px rgba(35,46,92,.28);overflow:hidden}
+.pdfban:before{content:"";position:absolute;inset:auto -30px -40px auto;width:160px;height:160px;border-radius:50%;background:radial-gradient(var(--gold) 0 30%,transparent 70%);opacity:.25}
+.pdfban img{flex:none;width:84px;height:auto;border-radius:6px;transform:rotate(-5deg);box-shadow:0 6px 14px rgba(0,0,0,.35);background:#fff}
+.pdfban div{min-width:0;display:flex;flex-direction:column;gap:3px;position:relative}
+.pdfban b{font:800 19px/1.2 var(--f-disp)}
+.pdfban small{font-size:13px;opacity:.88;line-height:1.35}
+.pb-cta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;font:700 14px var(--f-disp)}
+.pb-cta em{font-style:normal;background:var(--gold);color:var(--navy);border-radius:8px;padding:3px 10px;font-size:18px;font-weight:800}
+.pb-new{position:absolute;top:8px;right:-30px;transform:rotate(35deg);background:var(--red);color:#fff;font:800 11px var(--f-disp);letter-spacing:.12em;padding:3px 34px;z-index:1;animation:pbpulse 1.6s ease-in-out infinite}
+@keyframes pbpulse{50%{background:#F04A40}}
+@media (prefers-reduced-motion:reduce){.pb-new{animation:none}}
+.pdfhero{background:var(--card);border:2px solid var(--navy);border-radius:20px;padding:18px 16px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.pdfhero h1{font:800 27px/1.18 var(--f-disp);color:var(--navy);margin:0;padding-right:92px;text-wrap:balance}
+.pdfhero h1 span{color:var(--red);display:block}
+.pricest{position:absolute;top:14px;right:12px;width:92px;height:92px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-content:center;text-align:center;
+ transform:rotate(8deg);box-shadow:0 0 0 4px var(--card),0 0 0 6px var(--gold);font-family:var(--f-disp)}
+.pricest small{font-size:12px;font-weight:700;line-height:1}.pricest b{font-size:28px;font-weight:800;line-height:1.05}
+.hl3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hl3 div{background:var(--butter);border-radius:12px;padding:8px;text-align:center}
+.hl3 b{display:block;font:800 22px/1.1 var(--f-disp);color:var(--red)}.hl3 span{font-size:12.5px;color:var(--muted);line-height:1.25;display:block}
+.btn-gold{background:var(--gold);color:var(--navy);box-shadow:0 3px 0 var(--gold-d);font-size:19px}
+.pdfpages{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;scrollbar-width:thin}
+.pdfpages figure{flex:none;width:min(78%,330px);margin:0;scroll-snap-align:center}
+.pdfpages a{display:block;border-radius:10px;overflow:hidden;box-shadow:0 6px 16px rgba(35,46,92,.18);border:1px solid var(--line);background:#fff}
+.pdfpages figcaption{font-size:13px;color:var(--muted);margin-top:6px;text-align:center}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.feat div{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px;font-size:14px;line-height:1.35;min-width:0}
+.feat b{display:block;font:800 15px var(--f-disp);color:var(--navy)}
+.feat i{font-style:normal;display:inline-block;border-radius:6px;padding:0 6px;margin-bottom:4px;font-weight:700;font-size:12.5px}
+.parts{display:flex;flex-direction:column;gap:6px}
+.parts div{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;font-size:14px;line-height:1.4}
+.parts b{flex:none;width:34px;height:34px;border-radius:9px;background:var(--navy);color:#fff;display:grid;place-items:center;font:800 15px var(--f-disp)}
+.steps3{counter-reset:s;display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.steps3 li{counter-increment:s;display:flex;gap:10px;align-items:center;font-size:15px}
+.steps3 li:before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font:800 15px var(--f-disp)}
 </style>
 
 <div class="airmail" aria-hidden="true"></div>
@@ -459,7 +498,7 @@ const updLine=()=>`<p class="note">${t("upd")}: ${INFO.asOf}</p>`;
 const head=(k,intro)=>{const c=TOOLS.find(x=>x[0]===k)[1];return `${back()}<div class="thead"><span class="num ${c}" style="width:44px;height:44px">${svg(k,2.1)}</span><h1>${t(tName(k))}</h1></div><p class="muted">${intro}</p>`};
 
 function renderTabs(cur){
- const map={home:"home",search:"home",notes:"notes",note:"notes",mock:"mock",study:"study",pyq:"study",course:"study",galti:"study",quiz:"study"};
+ const map={home:"home",search:"home",pdf:"notes",notes:"notes",note:"notes",mock:"mock",study:"study",pyq:"study",course:"study",galti:"study",quiz:"study"};
  const on=map[cur]||"tools";
  $("#tabs").innerHTML=["home","notes","study","mock","tools"].map(k=>`<a class="tab${k===on?" on":""}" href="#${k}">${svg(k,k===on?2.3:1.9)}${t(k)}</a>`).join("");
  $("#langBtn").textContent=t("lang");
@@ -470,6 +509,40 @@ const dayMs=864e5;
 const todayD=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 function nextHoliday(){const td=todayD();for(const h of INFO.holidays){const d=new Date(h[0]+"T00:00:00");if(d>=td)return {d,h,left:Math.round((d-td)/dayMs)}}return null}
 const fmtD=(d,o)=>d.toLocaleDateString(L==="hi"?"hi-IN":"en-IN",o);
+
+
+/* ---------- NOTES PDF (paid) ---------- */
+/* ↓↓ यहाँ असली दाम और पेमेंट लिंक डालें (Razorpay / Instamojo / UPI page) ↓↓ */
+const PDF={price:"₹49",buy:"https://ig.me/m/postal_wala",
+ sample:"https://github.com/r40706876-stack/postal-wala-automation/raw/main/handnotes/out/PO_Guide_Short_Notes_01_Hindi.pdf"};
+const hiEn=(h,e)=>L==="hi"?h:e;
+function pdfBanner(){return `<a class="pdfban" href="#pdf"><span class="pb-new">NEW</span><img src="notes/pdf_s1_t.webp" alt="" width="84" height="119">
+ <div><b>${hiEn("हस्तलिखित शॉर्ट नोट्स PDF","Handwritten Short Notes PDF")}</b><small>PO Guide Part I · ${hiEn("162 पेज → 46 पेज · हिंदी + English","162 pages → 46 pages · Hindi + English")}</small>
+ <span class="pb-cta"><em>${PDF.price}</em>${hiEn("नमूना देखें →","See sample →")}</span></div></a>`}
+function pdfView(){
+ const pages=[["pdf_s1",hiEn("पहला पेज · रंग का मतलब","Page 1 · colour key")],["pdf_s3",hiEn("“एक नज़र” बॉक्स · ट्रैप + ट्रिक","Glance box · trap + trick")],["pdf_s2",hiEn("PYQ टैग · राज्य-साल","PYQ tags · state-year")],["pdf_s4",hiEn("तालिका + खुद को परखो","Tables + self-test")]];
+ const feat=[["#FFF3CF","पीला","Yellow",hiEn("ज़रूर याद वाली बात","Must-remember fact")],["#FCE9E6","IMP","IMP",hiEn("बहुत पूछा जाने वाला","Asked very often")],["#EEE7FB","PYQ","PYQ",hiEn("किस राज्य-साल में आया","Which state & year asked")],["#FCE9E6","⚠ ट्रैप","⚠ Trap",hiEn("जहाँ उल्टा पूछते हैं","Where they twist it")],
+  ["#FFF3CF","याद रखो","Trick",hiEn("याद करने की आसान ट्रिक","Easy memory trick")],["#E4F2EE","एक नज़र","Glance",hiEn("हर टॉपिक के नंबर एक बॉक्स में","Each topic's numbers in one box")],["#E8EEFB","क्विज़","Quiz",hiEn("खुद को परखो सवाल","Self-test questions")],["#E8EEFB","2 भाषा","2 langs",hiEn("हिंदी PDF + English PDF अलग","Separate Hindi & English PDFs")]];
+ const parts=[["01",hiEn("संगठन, 23 सर्किल, इतिहास, Clause 1–20","Organisation, 23 circles, history, Clause 1–20")],["02",hiEn("टिकट, पता, पैकिंग, सेना डाक, पोस्ट बॉक्स, सरकारी डाक, निषिद्ध","Stamps, address, packing, army mail, post box, official mail, prohibited")],["03",hiEn("10 वर्ग के लेख, रजिस्ट्री, बीमा, VPP, Speed Post, विदेशी डाक","Article classes, registration, insurance, VPP, Speed Post, foreign mail")],["04",hiEn("Export, MO / e-MO / IMO, फिलेटली, My Stamp, NPS, PMSBY, PMJJBY","Export, MO / e-MO / IMO, philately, My Stamp, NPS, PMSBY, PMJJBY")],["05",hiEn("APY, BNPL, COD, Bill Mail, Direct / Media / Logistics Post, PLI / RPLI","APY, BNPL, COD, Bill Mail, Direct / Media / Logistics Post, PLI / RPLI")],["06",hiEn("PLI FAQ, सारी बचत योजनाएँ, ePassbook, ATM","PLI FAQ, all savings schemes, ePassbook, ATM")]];
+ const buy=`<a class="btn btn-gold" href="${PDF.buy}" target="_blank" rel="noopener">${hiEn("PDF खरीदें","Buy the PDF")} · ${PDF.price} →</a>`;
+ return `<div class="stack pdfv">
+ <section class="pdfhero"><span class="eyebrow">Postal Wala · ${hiEn("PDF नोट्स","PDF notes")}</span>
+  <div class="pricest"><small>${hiEn("सिर्फ़","only")}</small><b>${PDF.price}</b><small>${hiEn("दोनों PDF","both PDFs")}</small></div>
+  <h1>PO Guide Part I<span>${hiEn("हस्तलिखित शॉर्ट नोट्स","Handwritten short notes")}</span></h1>
+  <p class="muted">${hiEn("मोटी किताब की जगह रंगीन, हाथ से लिखे जैसे नोट्स — परीक्षा से पहले जल्दी रिवीज़न के लिए। GDS · MTS · Postman · Mail Guard","Colourful handwritten-style notes instead of the thick book — for fast revision before the exam. GDS · MTS · Postman · Mail Guard")}</p>
+  <div class="hl3"><div><b>162→46</b><span>${hiEn("पेज (हिंदी)","pages (Hindi)")}</span></div><div><b>20+</b><span>${hiEn("“एक नज़र” बॉक्स","glance boxes")}</span></div><div><b>6</b><span>${hiEn("भाग · पूरा Part I","parts · full Part I")}</span></div></div>
+  ${buy}<a class="btn btn-line" href="${PDF.sample}" target="_blank" rel="noopener">${hiEn("मुफ़्त सैंपल: भाग 01 (हिंदी)","Free sample: Part 01 (Hindi)")}</a></section>
+ <div class="sec-h"><h2>${hiEn("नमूना पेज","Sample pages")}</h2><span class="note">${hiEn("← खिसकाएँ →","← swipe →")}</span></div>
+ <div class="pdfpages">${pages.map(p=>`<figure><a href="notes/${p[0]}.webp" target="_blank" rel="noopener"><img src="notes/${p[0]}.webp" alt="${esc(p[1])}" loading="lazy" width="660" height="934"></a><figcaption>${esc(p[1])}</figcaption></figure>`).join("")}</div>
+ <h2>${hiEn("अंदर क्या मिलेगा","What's inside")}</h2>
+ <div class="feat">${feat.map(f=>`<div><i style="background:${f[0]}">${L==="hi"?f[1]:f[2]}</i><b>${f[3]}</b></div>`).join("")}</div>
+ <h2>${hiEn("6 भाग · पूरा सिलेबस","6 parts · full syllabus")}</h2>
+ <div class="parts">${parts.map(p=>`<div><b>${p[0]}</b><span>${p[1]}</span></div>`).join("")}</div>
+ <section class="pdfhero"><h2 style="margin:0">${hiEn("कैसे मिलेगा?","How to get it?")}</h2>
+  <ol class="steps3"><li>${hiEn("नीचे बटन दबाएँ","Tap the button below")}</li><li>${hiEn("पेमेंट करें / Instagram पर DM करें","Pay / DM us on Instagram")}</li><li>${hiEn("हिंदी + English दोनों PDF आपको भेज दी जाएँगी","You receive both Hindi + English PDFs")}</li></ol>
+  ${buy}</section>
+ ${strip()}
+ <div class="row">${waBtn(hiEn("PO Guide के हस्तलिखित शॉर्ट नोट्स PDF देखो: ","Handwritten PO Guide short notes PDF: ")+SITE+"#pdf")}</div></div>`}
 
 /* ---------- HOME ---------- */
 function notesRow(){return `<div class="nrow">${NOTES.map(n=>`<a class="ncard" href="#note-${n.n}"><img src="${nimg(cid(n.n),"chitra",1)}" alt="${esc(n.en)}" loading="lazy" width="150" height="212"><div><b>${pad2(n.n)} · ${esc(L==="hi"?n.hi:n.en)}</b><small>${t("w1")} ${t("w2")} ${t("w3")}</small></div></a>`).join("")}
@@ -483,6 +556,7 @@ function home(){
  const studySec=`<div class="sec-h"><h2>${t("secStudy")}</h2><a class="more" href="#study">${t("all")} →</a></div>${studyRows()}`;
  const rl={gds:"rGds",mts:"rMts",pm:"rPm",prep:"rPrep"}[role];
  return `<div class="stack">
+ ${pdfBanner()}
  ${contCards()}
  ${role?"":roleCard()}
  <section class="cover"><div class="wm" aria-hidden="true"></div>
@@ -493,6 +567,7 @@ function home(){
   <div class="stats"><div class="stat"><b>${DATA.pyq.length}</b><span>${t("sPyq")}</span></div><div class="stat"><b>${DATA.clauses.length}</b><span>${t("sCl")}</span></div><div class="stat"><b>${allExams.length}</b><span>${t("sEx")}</span></div></div>
   <div class="row"><a class="btn btn-red" href="#mock">${t("startMock")} →</a><a class="btn btn-line" href="#notes">${t("openNotes")}</a></div></section>
  <div class="ticker">
+  <a class="tk hot" href="#pdf"><b>📚 ${PDF.price}</b><span>${hiEn("शॉर्ट नोट्स PDF","Short notes PDF")}</span></a>
   <a class="tk hot" href="#note-final"><b>⚠ ${t("tkTrap")}</b><span>${L==="hi"?tr[1]:tr[0].replace(/<[^>]+>/g,"")}</span></a>
   <a class="tk" href="#salary"><b>${INFO.da}%</b><span>${t("tkDa")}</span></a>
   ${nh?`<a class="tk" href="#hol"><b>${nh.left===0?t("today"):nh.left+" "+(L==="hi"?"दिन":"days")}</b><span>${t("tkHol")}: ${esc(L==="hi"?nh.h[1]:nh.h[2])}</span></a>`:""}
@@ -524,6 +599,7 @@ function studyRows(){const nParts=DATA.clauses.reduce((s,c)=>s+c.p.length,0);con
 /* ---------- NOTES ---------- */
 function notesView(){
  return `<div class="stack"><span class="eyebrow">PO Guide · Part 1</span><h1>${t("secNotes")}</h1><p class="muted">${t("notesIntro")}</p>
+ ${pdfBanner()}
  <div class="rows">${NOTES.map((n,i)=>rowLink("#note-"+n.n,pad2(n.n),NC[i%3],esc(n.en),esc(n.hi))).join("")}
  ${EXTRA_NOTES.map(x=>rowLink("#note-"+x.id,"★","n-gold",esc(x.en),esc(x.hi)," dash")).join("")}</div>
  ${notesRow()}<p class="note">${t("soon")}</p>${strip()}</div>`}
@@ -847,7 +923,7 @@ function bindModes(){
  document.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>{const c=DATA.clauses.find(x=>x.n===+b.dataset.cl);const qs=shuffle(c.p.map(p=>({...p,x:[],c:c.n})));startRun("mock",qs,Math.max(180,qs.length*45))})}
 
 /* ---------- ROUTER ---------- */
-const VIEWS=["home","notes","study","mock","pyq","course","quiz","galti","tools","search",...TOOLS.map(x=>x[0])];
+const VIEWS=["home","pdf","notes","study","mock","pyq","course","quiz","galti","tools","search",...TOOLS.map(x=>x[0])];
 function bindInputs(sel,fn){document.querySelectorAll(sel).forEach(el=>{el.oninput=fn;el.onchange=fn});fn()}
 function route(){
  const v=(location.hash||"#home").slice(1);
@@ -855,7 +931,7 @@ function route(){
  renderTabs(view);const app=$("#app");
  if((view==="mock"||view==="quiz")&&run&&run.kind===view){draw();return}
  if(run&&run.kind!==view){clearInterval(timerId);run=null}
- const R2={home,notes:notesView,study:studyView,tools:toolsView,course:courseView,exam:examView,links:linksView,rates:ratesView,hol:holView};
+ const R2={home,pdf:pdfView,notes:notesView,study:studyView,tools:toolsView,course:courseView,exam:examView,links:linksView,rates:ratesView,hol:holView};
  if(R2[view])app.innerHTML=R2[view]();
  if(view==="note"){const id=v.slice(5);app.innerHTML=noteView(id);
   app.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{noteTab[id]=b.dataset.tab;route()});
