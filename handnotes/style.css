@@ -26,7 +26,7 @@ body{margin:0;font-family:var(--hand);color:var(--ink);font-size:17px;line-heigh
 /* section banner */
 h2{display:flex;align-items:center;gap:.4em;font-weight:700;color:#fff;background:var(--red);font-size:1.25em;line-height:1.2;
    margin:1.2em -.2em .4em;padding:.25em .6em;border-radius:10px 4px 12px 4px;transform:rotate(-.4deg);break-after:avoid;box-shadow:3px 3px 0 rgba(200,38,31,.25)}
-h2 .cl{background:#fff;color:var(--red);border-radius:6px;padding:0 .35em;font-size:.8em;white-space:nowrap}
+h2 .cl{flex:none;font-size:0;width:.55em;height:.55em;padding:0;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 h2.blue{background:var(--ink);box-shadow:3px 3px 0 rgba(27,60,140,.25)}
 h2.blue .cl{color:var(--ink)}
 h2.green{background:var(--green);box-shadow:3px 3px 0 rgba(19,120,74,.25)}
@@ -67,7 +67,7 @@ mark.bl{background-image:linear-gradient(104deg,transparent 2%,var(--hl4) 4%,var
 :lang(en) .trick::before{content:"💡 Remember"}
 .glance{border:2.5px solid var(--ink);border-radius:14px 6px 16px 6px;padding:.4em .7em .55em;margin:.7em 0;background:#F4F8FF;break-inside:avoid}
 .glance>b:first-child{display:block;color:var(--ink);font-size:1.05em}
-.glance>b:first-child::before{content:"👀 "}
+.glance>b:first-child::before{content:"★ ";color:var(--red)}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:7px;margin:.35em 0}
 .tile{border:2px solid var(--ink);border-radius:12px 5px 12px 6px;background:#fff;text-align:center;padding:.15em .3em .25em;line-height:1.25}
 .tile b{display:block;color:var(--red);font-size:1.75em;line-height:1.1}
