@@ -1,0 +1,887 @@
+<title>Postal Wala</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="GDS, MTS, Postman, PA के लिए फ्री ऐप: चित्रों वाले PO Guide नोट्स, असली PYQ, मॉक टेस्ट, GDS सैलरी, बोनस, बचत कैलकुलेटर, TD कमीशन, प्रमोशन चेकर, छुट्टियाँ।">
+<meta name="theme-color" content="#232E5C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Hind:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the Postal Wala notes look — cream airmail letter, navy + post-box red, stamp badges; one phone column + bottom tab bar.
+   Single deliberate light look (matches the printed notes), so no dark palette. */
+:root{
+  --navy:#232E5C; --navy2:#2F3C75; --red:#D3302C; --red-d:#A92420; --gold:#F2B33D; --gold-d:#9A6A07; --teal:#127A6A;
+  --paper:#FBF6EC; --card:#FFFFFF; --mint:#E4F2EE; --pink:#FCE9E6; --butter:#FFF3CF; --line:#E7DDCB; --ink:#1D2033; --muted:#5F6070;
+  --f-disp:"Baloo 2","Hind",system-ui,sans-serif;
+  --f-body:"Hind","Noto Sans Devanagari",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%;display:block}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+.airmail{height:9px;background:repeating-linear-gradient(-45deg,var(--red) 0 13px,#fff 13px 19px,var(--navy) 19px 32px,#fff 32px 38px)}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 112px}
+/* header */
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:6px 12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+.logo{flex:none;width:46px;height:46px;border-radius:12px;overflow:hidden;transform:rotate(-4deg);box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.brand b{font:800 25px/1 var(--f-disp);color:var(--red);letter-spacing:-.01em;display:block}
+.brand small{font-size:13px;color:var(--navy);font-weight:600}
+.hdr-r{display:flex;gap:8px;align-items:center}
+.lang{border:1.5px solid var(--navy);background:var(--card);color:var(--navy);border-radius:10px;padding:5px 10px;font:700 14px var(--f-disp);cursor:pointer}
+/* insta strip like the notes */
+.strip{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;border-radius:14px;padding:10px 12px;text-decoration:none}
+.strip .igi{flex:none;width:34px;height:34px;border-radius:10px;background:linear-gradient(45deg,#F9A825,#E53935 45%,#8E24AA);display:grid;place-items:center}
+.strip .igi svg{width:20px;height:20px}
+.strip p{font-size:13.5px;line-height:1.35;min-width:0}
+.strip p b{font-family:var(--f-disp);font-size:15px;display:block}
+.follow{flex:none;margin-left:auto;background:var(--gold);color:var(--navy);font:800 14px var(--f-disp);border-radius:999px;padding:5px 14px}
+/* type */
+h1,h2,h3{font-family:var(--f-disp);font-weight:800;text-wrap:balance;margin:0;color:var(--navy);letter-spacing:-.01em}
+h1{font-size:30px;line-height:1.15}
+h2{font-size:22px;line-height:1.2}
+h3{font-size:18px;line-height:1.25}
+p{margin:0}
+.eyebrow{font:700 13px var(--f-disp);letter-spacing:.08em;color:var(--red);text-transform:uppercase}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.note{font-size:13.5px;color:var(--muted);line-height:1.45}
+.stack{display:flex;flex-direction:column;gap:14px}
+.sec-h{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:8px}
+.more{font:700 15px var(--f-disp);color:var(--red);text-decoration:none;white-space:nowrap}
+/* hero = notes cover */
+.cover{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.cover .wm{position:absolute;right:-30px;top:30px;width:200px;height:200px;border:10px solid rgba(211,48,44,.07);border-radius:50%;pointer-events:none}
+.cover .wm::after{content:"PW";position:absolute;inset:0;display:grid;place-items:center;font:800 70px var(--f-disp);color:rgba(211,48,44,.07)}
+.big1{font:800 44px/0.95 var(--f-disp);color:var(--ink);letter-spacing:-.02em}
+.big1 span{color:var(--red);display:block}
+.ways{background:var(--navy);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.ways b{font:700 15px var(--f-disp);color:var(--gold)}
+.ways div{display:flex;flex-wrap:wrap;gap:6px}
+.ways span{background:#fff;color:var(--navy);font:700 13px var(--f-disp);border-radius:999px;padding:2px 10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--paper);border:1.5px dashed var(--line);border-radius:12px;padding:8px 10px}
+.stat b{display:block;font:800 24px/1.1 var(--f-disp);color:var(--navy);font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:12px 16px;font:800 17px var(--f-disp);cursor:pointer;text-decoration:none;text-align:center;line-height:1.2}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 3px 0 var(--red-d)}
+.btn-gold{background:var(--gold);color:var(--navy);box-shadow:0 3px 0 #C98E1D}
+.btn-navy{background:var(--navy);color:#fff;box-shadow:0 3px 0 #141B3B}
+.btn-line{background:var(--card);color:var(--navy);border:1.5px solid var(--navy)}
+.btn-sm{padding:7px 12px;font-size:15px;border-radius:10px;box-shadow:none}
+.btn:active{transform:translateY(2px);box-shadow:none}
+:is(.btn,.opt,.lang,.tab,.chip,.row-link,.ncard,input,select,summary):focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+/* ticker */
+.ticker{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.tk{flex:none;display:flex;flex-direction:column;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;text-decoration:none;color:var(--ink);min-width:120px}
+.tk b{font:800 21px/1.15 var(--f-disp);color:var(--navy);font-variant-numeric:tabular-nums}
+.tk span{font-size:12px;color:var(--muted);line-height:1.3}
+.tk.hot{background:var(--pink);border-color:#F3C2BC}
+.tk.hot b{color:var(--red)}
+/* row list = notes cover clause list */
+.rows{background:var(--mint);border-left:4px solid var(--teal);border-radius:14px;padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:440px){.rows{grid-template-columns:1fr}}
+.row-link{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:9px 10px;text-decoration:none;color:var(--ink);min-width:0}
+.row-link>span:last-child{min-width:0}
+.row-link b{display:block;font:700 15.5px/1.2 var(--f-disp);color:var(--ink)}
+.row-link small{font-size:13px;color:var(--muted);line-height:1.25;display:block}
+.num{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:800 15px var(--f-disp);color:#fff;font-variant-numeric:tabular-nums}
+.num svg{width:19px;height:19px}
+.n-red{background:var(--red)} .n-navy{background:var(--navy)} .n-teal{background:var(--teal)} .n-gold{background:var(--gold);color:var(--navy)}
+.row-link.dash{border:1.5px dashed var(--red)}
+/* notes gallery */
+.nrow{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;scroll-snap-type:x mandatory}
+.ncard{flex:none;width:150px;scroll-snap-align:start;text-decoration:none;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;padding:0;text-align:left;font:inherit}
+.ncard img{width:100%;aspect-ratio:1100/1555;object-fit:cover;object-position:top;background:var(--line)}
+.ncard div{padding:6px 8px}
+.ncard b{display:block;font:700 14px/1.2 var(--f-disp);color:var(--navy)}
+.ncard small{font-size:12px;color:var(--muted)}
+.stampbadge{flex:none;width:58px;height:58px;background:var(--red);color:#fff;display:grid;place-items:center;text-align:center;font:800 24px/0.9 var(--f-disp);
+  -webkit-mask:radial-gradient(circle 4px at 4px 4px,#0000 98%,#000) -4px -4px/8px 8px;mask:radial-gradient(circle 4px at 4px 4px,#0000 98%,#000) -4px -4px/8px 8px}
+.stampbadge small{display:block;font-size:9px;letter-spacing:.08em;font-weight:700}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.three button{border:2px solid var(--line);border-radius:12px;background:var(--card);padding:0;cursor:pointer;overflow:hidden;text-align:center;font:700 13px var(--f-disp);color:var(--navy)}
+.three button.on{border-color:var(--red)}
+.three img{aspect-ratio:1100/1555;object-fit:cover;object-position:top;width:100%}
+.three span{display:block;padding:4px 2px}
+.page{background:var(--card);border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.page img{width:100%;height:auto}
+.zoom-wrap{position:fixed;inset:0;background:rgba(17,20,36,.96);z-index:20;display:flex;flex-direction:column}
+.zoom-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));color:#fff}
+.zoom-bar b{font:700 16px var(--f-disp)}
+.zoom-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,0px)}
+.zoom-scroll img{margin:0 auto;width:100%;max-width:none}
+.zoom-scroll.z2 img{width:200%}
+.zb{background:#fff;color:var(--navy);border:none;border-radius:10px;padding:6px 12px;font:800 15px var(--f-disp);cursor:pointer}
+/* boxes from notes */
+.oneline{background:var(--mint);border-radius:12px;padding:10px 12px;border-left:4px solid var(--teal)}
+.oneline small{display:block;font:700 12px var(--f-disp);letter-spacing:.06em;color:var(--teal)}
+.trap{background:var(--pink);border:1.5px dashed var(--red);border-radius:12px;padding:10px 12px}
+.trap>b{font:800 16px var(--f-disp);color:var(--red)}
+.trick{background:var(--butter);border-radius:12px;padding:10px 12px;font-weight:600;transform:rotate(-.6deg);box-shadow:0 2px 0 rgba(0,0,0,.06)}
+.trick small{display:block;font:700 12px var(--f-disp);color:var(--gold-d);letter-spacing:.04em}
+mark{background:var(--butter);color:inherit;padding:0 3px;border-radius:3px;font-weight:700}
+.traps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:440px){.traps{grid-template-columns:1fr}}
+.traps div{background:#fff;border-radius:10px;padding:8px 10px;font-size:15px;line-height:1.35}
+.traps small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+/* cards & quiz */
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.qmeta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.qtext{font:600 19px/1.4 var(--f-body);color:var(--ink)}
+.qsub{font-size:14px;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:500 16.5px var(--f-body);color:var(--ink);cursor:pointer}
+.opt .l{flex:none;width:27px;height:27px;border-radius:50%;border:1.5px solid var(--navy);color:var(--navy);display:grid;place-items:center;font:800 14px var(--f-disp)}
+.opt.sel{border-color:var(--navy);background:#EEF0FA}
+.opt.sel .l{background:var(--navy);color:#fff}
+.opt.ok{border-color:var(--teal);background:var(--mint)}
+.opt.ok .l{background:var(--teal);border-color:var(--teal);color:#fff}
+.opt.bad{border-color:var(--red);background:var(--pink)}
+.opt.bad .l{background:var(--red);border-color:var(--red);color:#fff}
+.exams{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ex{font:600 12px var(--f-body);color:var(--navy);border:1px solid #CCD2EA;border-radius:6px;padding:1px 7px;background:#F1F3FB}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden}
+.bar>div{height:100%;background:var(--red);border-radius:8px;transition:width .25s}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 130px}
+.timer{font:800 18px var(--f-disp);color:var(--red);font-variant-numeric:tabular-nums}
+.navyband{background:var(--navy);color:#fff;border-radius:18px;padding:18px 16px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.navyband h1,.navyband h2{color:#fff}
+.navyband p{color:#D8DCF0}
+.navyband .eyebrow{color:var(--gold)}
+.result{text-align:center;align-items:center}
+.cancel{width:150px;height:150px;border-radius:50%;border:4px double var(--gold);display:grid;place-items:center;transform:rotate(-8deg);color:#fff}
+.cancel b{font:800 42px/1 var(--f-disp);font-variant-numeric:tabular-nums}
+.cancel span{font:700 12px var(--f-disp);letter-spacing:.08em;color:var(--gold)}
+.navyband .stat{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+.navyband .stat b{color:#fff}
+.navyband .stat span{color:#C9CFEB}
+.streak{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:12px;padding:10px 14px}
+.streak b{font:800 32px/1 var(--f-disp);color:var(--gold)}
+/* forms + tools */
+.search,.inp{width:100%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:10px 12px;font:16px var(--f-body)}
+label.f{display:flex;flex-direction:column;gap:4px;font:700 14px var(--f-disp);color:var(--navy);min-width:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.grid2{grid-template-columns:1fr}}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 12px;font:700 14px var(--f-disp);cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.out{background:var(--navy);color:#fff;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.out .big{font:800 36px/1.1 var(--f-disp);font-variant-numeric:tabular-nums}
+.out .lbl{font:700 13px var(--f-disp);letter-spacing:.06em;color:var(--gold);text-transform:uppercase}
+.kv{display:flex;justify-content:space-between;gap:10px;font-variant-numeric:tabular-nums;padding:6px 0;border-bottom:1px dashed var(--line)}
+.out .kv{border-color:rgba(255,255,255,.2)}
+.kv:last-child{border-bottom:none}
+.kv span:first-child{color:var(--muted)}
+.out .kv span:first-child{color:#C9CFEB}
+.kv b{font-weight:700;text-align:right}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 12px var(--f-disp);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+td b{color:var(--navy)}
+.rate{font:800 18px var(--f-disp);color:var(--teal);white-space:nowrap}
+.hol{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.hol:last-child{border-bottom:none}
+.hd{flex:none;width:52px;text-align:center;border-radius:10px;border:1.5px solid var(--line);padding:4px 0;line-height:1.05;background:var(--paper)}
+.hd b{display:block;font:800 21px var(--f-disp);color:var(--navy)}
+.hd span{font:700 11px var(--f-disp);color:var(--red);text-transform:uppercase}
+.hol.past{opacity:.45}
+.hol.next .hd{border-color:var(--red);background:var(--pink)}
+.pill{display:inline-block;font:700 12px var(--f-disp);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.p-ok{background:var(--mint);color:var(--teal)} .p-no{background:var(--pink);color:var(--red)} .p-wait{background:var(--butter);color:var(--gold-d)}
+.elig{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.elig:last-child{border-bottom:none}
+.elig>div{min-width:0;flex:1}
+.elig b{font-family:var(--f-disp)}
+.back{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--navy);font:700 15px var(--f-disp);width:fit-content}
+.thead{display:flex;gap:12px;align-items:center}
+details.cl{background:var(--card);border:1.5px solid var(--line);border-radius:14px}
+details.cl summary{list-style:none;display:flex;gap:12px;align-items:center;padding:10px 12px;cursor:pointer}
+details.cl summary::-webkit-details-marker{display:none}
+.ct{min-width:0;flex:1}
+.ct b{display:block;font:700 17px/1.25 var(--f-disp);color:var(--navy)}
+.ct span{font-size:13px;color:var(--muted)}
+.cbody{padding:0 12px 12px;display:flex;flex-direction:column;gap:12px}
+.done-tag{color:var(--teal);font-weight:700}
+/* bottom nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1.5px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);z-index:5}
+nav.tabs::before{content:"";position:absolute;left:0;right:0;top:-5px;height:4px;background:repeating-linear-gradient(-45deg,var(--red) 0 10px,#fff 10px 14px,var(--navy) 14px 24px,#fff 24px 28px)}
+.tab{flex:1;max-width:120px;display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 2px 7px;text-decoration:none;color:var(--muted);font:700 12.5px var(--f-disp)}
+.tab svg{width:23px;height:23px}
+.tab.on{color:var(--red)}
+.tab.on svg{stroke-width:2.3}
+footer{font-size:13px;color:var(--muted);text-align:center;padding-top:16px;line-height:1.5}
+footer a{color:var(--red);font-weight:700}
+.cont{display:flex;align-items:center;gap:12px;background:var(--red);color:#fff;border-radius:14px;padding:12px 14px;text-decoration:none;box-shadow:0 3px 0 var(--red-d)}
+.cont .num{background:#fff;color:var(--red)}
+.cont b{font:800 17px/1.2 var(--f-disp);display:block}
+.cont small{font-size:13.5px;opacity:.9}
+.cont .arrow{margin-left:auto;font:800 22px var(--f-disp)}
+.role{background:var(--butter);border:1.5px solid #EED48A;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.role .opts2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.role button{border:1.5px solid var(--navy);background:#fff;color:var(--navy);border-radius:12px;padding:10px;font:700 15.5px/1.25 var(--f-disp);cursor:pointer}
+.spk{flex:none;border:1.5px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:3px 10px;font:700 13.5px var(--f-disp);cursor:pointer;display:inline-flex;align-items:center;gap:4px;width:fit-content}
+.spk.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.wa{background:#1FA855;color:#fff;box-shadow:0 3px 0 #13813F}
+.expl{border:1.5px solid var(--teal);border-radius:12px;overflow:hidden;background:var(--mint)}
+.expl .eh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;font:700 13.5px var(--f-disp);color:var(--teal)}
+.crop{display:block;width:100%;border-top:1px dashed #B9DED5!important;background-repeat:no-repeat;background-color:#fff;border:none;padding:0;cursor:zoom-in}
+.expl .row{padding:8px 10px}
+.srch{position:relative}
+.srch input{padding-left:38px}
+.srch svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--muted)}
+.res{display:flex;flex-direction:column;gap:6px}
+.res a{display:flex;gap:10px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;text-decoration:none;color:var(--ink)}
+.res a span:last-child{min-width:0}
+.res b{font:700 15px/1.25 var(--f-disp);color:var(--navy);display:block}
+.res small{font-size:13px;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:380px){.modes{grid-template-columns:1fr}}
+.mode{display:flex;flex-direction:column;gap:2px;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;font:inherit;color:var(--ink)}
+.mode b{font:800 18px/1.2 var(--f-disp);color:var(--navy)}
+.mode small{font-size:13.5px;color:var(--muted)}
+.mode.hot{border-color:var(--red);background:var(--pink)}
+.mode.hot b{color:var(--red)}
+#app{zoom:var(--z,1)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="airmail" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#home"><img class="logo" src="/*__LOGO__*/" alt="Postal Wala logo" width="46" height="46"><span><b>Postal Wala</b><small>@postal_wala · GDS → MTS · Postman · PA</small></span></a>
+    <div class="hdr-r"><a class="lang" href="#search" aria-label="खोजो" style="display:grid;place-items:center;padding:5px 8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></a><button class="lang" id="fsBtn" type="button" aria-label="अक्षर बड़े करो">A+</button><button class="lang" id="langBtn" type="button">EN</button></div>
+  </header>
+  <main id="app"></main>
+  <footer id="foot"></footer>
+</div>
+<nav class="tabs" id="tabs"></nav>
+<div class="zoom-wrap" id="zoom" hidden>
+  <div class="zoom-bar"><b id="zt"></b><span class="row" style="flex:none;gap:6px"><button class="zb" id="zz" type="button">2×</button><button class="zb" id="zx" type="button">✕</button></span></div>
+  <div class="zoom-scroll" id="zs"><img id="zi" alt=""></div>
+</div>
+
+<script>
+const DATA=/*__DATA__*/null;
+/* ===== NOTES (from the Postal Wala clause notes PDF) ===== */
+const NOTES=[
+ {n:3,en:"Night Post Office",hi:"रात्रिकालीन डाकघर",line:{hi:"जो डाकघर रात 8:30 बजे तक और रविवार को भी खुला रहे, वह Night PO है। यह अधिकार सिर्फ़ DG के पास है।",en:"A post office kept open till 8:30 PM and on Sundays too is a Night PO. Only the DG has this power."},trick:"DG = Der raat tak Ghar (डाकघर) खुला"},
+ {n:4,en:"Mobile Post Office",hi:"चल डाकघर",line:{hi:"एक खास वैन जो तय समय पर शहर के तय स्थानों पर जाकर देर से डाक पोस्ट करने की सुविधा देती है।",en:"A specially designed van that visits fixed points on a fixed schedule to give late-posting facility."},trick:"Mobile में VP नहीं, MO सिर्फ़ Ma-Na (Madras, Nagpur)"},
+ {n:5,en:"Business Hours",hi:"काम के घंटे",line:{hi:"हर डाकघर व RMS कार्यालय में समय साफ़ लिखा होता है; काउंटर का काम ठीक तय समय पर बंद हो जाता है।",en:"Every PO & RMS office notifies its hours clearly; counter work stops exactly at the last fixed time."},trick:""},
+ {n:7,en:"Sunday & Holiday Business",hi:"रविवार व अवकाश पर काम",line:{hi:"रविवार और अवकाश पर सभी डाकघर, मोबाइल PO भी, बंद रहते हैं, सिर्फ़ Night PO को छोड़कर।",en:"On Sundays & holidays every PO, even Mobile PO, stays closed, except Night POs."},trick:"Late fee: Registered = ₹3, Unregistered = ₹2"},
+ {n:8,en:"Post Office Holidays",hi:"डाकघर अवकाश",line:{hi:"कुल 17 छुट्टियाँ = 14 अनिवार्य + 3 जो सर्किल के अनुसार बदलती हैं।",en:"17 holidays in total = 14 compulsory + 3 that vary from circle to circle."},trick:"17 = 14 + 3"},
+ {n:9,en:"Prepayment of Postage",hi:"डाक प्रभार का पूर्व भुगतान",line:{hi:"पूरा भुगतान किए गए लेख सबसे पहली डाक से भेजे जाते हैं और जल्दी बाँटे जाते हैं।",en:"Fully prepaid articles go by the earliest mail and get the fastest delivery."},trick:"पूरा टिकट = पूरी रफ़्तार 🚀"},
+ {n:10,en:"Stamps & Stationery",hi:"डाक टिकट व स्टेशनरी",line:{hi:"डाक प्रभार आमतौर पर डाक टिकट से दिया जाता है, जो भारत सरकार के अधिकार से भारतीय डाक जारी करता है।",en:"Postage is normally paid with postage stamps, issued by India Post under the authority of the Government of India."},trick:"Revenue = Rajya (Centre) का, डाक का नहीं"}
+];
+const EXTRA_NOTES=[{id:"route",en:"Dak Route Revision",hi:"डाक रूट रिवीज़न",sub:"Clause 3 → 10 एक पेज में"},{id:"final",en:"Top 8 Exam Traps",hi:"टॉप 8 एग्ज़ाम ट्रैप",sub:"ये गलती मत करना"}];
+const TRAPS=[
+ ["Night PO hours extended by <mark>DG</mark>, not CPMG","Night PO का समय DG बढ़ाते हैं, CPMG नहीं"],["Night PO Sunday = <mark>10–5</mark>, not 8:30","रविवार को 10 से 5, 8:30 नहीं"],
+ ["Mobile PO cannot book <mark>VP</mark>","मोबाइल PO में VP बुक नहीं होता"],["Army PO: no VP, no MO booking","सेना डाकघर: VP व MO बुक नहीं"],
+ ["Mobile PO is also <mark>closed</mark> on Sunday","मोबाइल PO भी रविवार को बंद"],["Franked mail not in PO / mail-van letter box","फ्रैंक डाक लेटर बॉक्स में नहीं"],
+ ["Revenue stamp is sold, not issued, by PO","राजस्व टिकट डाकघर बेचता है, जारी नहीं करता"],["Unpaid article gets <mark>no</mark> extra security","अवैतनिक लेख को कोई अतिरिक्त सुरक्षा नहीं"]];
+/* ===== OFFICIAL FIGURES — update when orders change ===== */
+const INFO={
+ asOf:"04.11.2026", da:63,
+ rates:{q:"अक्टूबर–दिसंबर 2026",qEn:"Oct–Dec 2026",sb:4.0,td1:6.9,td2:7.0,td3:7.1,td5:7.5,rd:6.7,mis:7.4,scss:8.2,ppf:7.1,ssa:8.2,nsc:7.7,kvp:7.5,kvpMonths:115},
+ trca:[{id:"bpm4",hi:"BPM (4 घंटे) – लेवल 1",en:"BPM (4 hrs) – Level 1",min:12000},{id:"bpm5",hi:"BPM (5 घंटे) – लेवल 2",en:"BPM (5 hrs) – Level 2",min:14500},
+       {id:"ab4",hi:"ABPM / डाक सेवक (4 घंटे) – लेवल 1",en:"ABPM / Dak Sevak (4 hrs) – Level 1",min:10000},{id:"ab5",hi:"ABPM / डाक सेवक (5 घंटे) – लेवल 2",en:"ABPM / Dak Sevak (5 hrs) – Level 2",min:12000}],
+ bonusCeil:7000, bonusYear:"2025-26", tdComm:{1:0.5,2:1,3:1,5:2},
+ holidays:[["2026-01-26","गणतंत्र दिवस","Republic Day"],["2026-03-04","होली","Holi"],["2026-03-21","ईद-उल-फितर","Id-ul-Fitr"],["2026-03-26","राम नवमी","Ram Navami"],
+  ["2026-03-31","महावीर जयंती","Mahavir Jayanti"],["2026-04-03","गुड फ्राइडे","Good Friday"],["2026-04-14","डॉ. आंबेडकर जयंती","Dr. Ambedkar Jayanti"],["2026-05-01","बुद्ध पूर्णिमा","Buddha Purnima"],
+  ["2026-05-27","ईद-उल-ज़ुहा (बकरीद)","Id-ul-Zuha (Bakrid)"],["2026-06-26","मुहर्रम","Muharram"],["2026-08-15","स्वतंत्रता दिवस","Independence Day"],["2026-08-26","मिलाद-उन-नबी","Milad-un-Nabi"],
+  ["2026-09-04","जन्माष्टमी","Janmashtami"],["2026-10-02","गांधी जयंती","Gandhi Jayanti"],["2026-10-20","दशहरा","Dussehra"],["2026-11-08","दीपावली","Diwali"],
+  ["2026-11-24","गुरु नानक जयंती","Guru Nanak Jayanti"],["2026-12-25","क्रिसमस","Christmas"]]
+};
+const IG="https://www.instagram.com/postal_wala/";
+const SITE="https://r40706876-stack.github.io/postal-wala-automation/";
+const store={get(k,d){try{const v=localStorage.getItem("pw_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("pw_"+k,JSON.stringify(v))}catch(e){}}};
+let L=store.get("lang","hi");
+const T={
+ hi:{lang:"EN",home:"होम",notes:"नोट्स",study:"पढ़ाई",mock:"टेस्ट",tools:"टूल्स",quiz:"क्विज़",
+  greet:["सुप्रभात","नमस्ते","शुभ संध्या"],eyebrow:"फ्री तैयारी · पूरे रिवीज़न नोट्स",heroL1:"PO Guide",heroL2:"चित्रों से",heroP:"GDS → MTS · Postman · Mail Guard · PA की पूरी तैयारी। हर नियम आसान भाषा, चित्र और असली पेपर के सवालों के साथ।",
+  ways:"हर क्लॉज़ 3 तरीकों से",w1:"① नोट्स",w2:"② चित्र पोस्टर",w3:"③ स्केचनोट",
+  sPyq:"असली PYQ",sCl:"क्लॉज़",sEx:"परीक्षाएँ",startMock:"फ्री मॉक टेस्ट दो",openNotes:"नोट्स खोलो",
+  stripB:"पूरे नियम चित्रों के माध्यम से Postal Wala में समझाए गए हैं",stripS:"Instagram पर जाकर देखें → @postal_wala",follow:"Follow",
+  tkDa:"DA (1 जुलाई 2026 से)",tkHol:"अगली छुट्टी",tkTd:"5 साल TD ब्याज",tkBonus:"GDS बोनस अधिकतम",tkStreak:"दिन की स्ट्रीक",tkTrap:"आज का ट्रैप",
+  secNotes:"चित्रों वाले नोट्स",secStudy:"परीक्षा की तैयारी",secTools:"रोज़ के काम के टूल्स",secTraps:"टॉप 8 एग्ज़ाम ट्रैप · ये गलती मत करना",all:"सभी",
+  tMock:"मॉक टेस्ट",tMockS:"25 असली PYQ · 20 मिनट",tPyq:"PYQ बैंक",tPyqS:"राज्य और साल के हिसाब से",
+  tCourse:"क्लॉज़ प्रैक्टिस",tCourseS:"हर क्लॉज़ के सवाल + ट्रिक",tQuiz:"डेली क्विज़",tQuizS:"रोज़ 5 सवाल, स्ट्रीक",tGalti:"गलतियाँ सुधारो",tGaltiS:"जो सवाल गलत हुए",
+  tSalary:"GDS सैलरी",tSalaryS:"TRCA + DA 63%",tBonus:"बोनस",tBonusS:"60 दिन · ₹13,816 तक",tSavings:"बचत कैलकुलेटर",tSavingsS:"RD, TD, MIS, PPF, SSA…",tRates:"ब्याज दरें",tRatesS:"अक्टू–दिसं 2026",
+  tTd:"TD कमीशन",tTdS:"BPM इंसेंटिव",tCareer:"प्रमोशन चेकर",tCareerS:"MTS · Postman · PA",tPay8:"8वाँ वेतन",tPay8S:"फिटमेंट अनुमान",tHol:"छुट्टियाँ 2026",tHolS:"अगली छुट्टी कब",
+  tLinks:"ज़रूरी लिंक",tLinksS:"आधिकारिक वेबसाइटें",tExam:"परीक्षा पैटर्न",tExamS:"क्या आता है",
+  q:"सवाल",of:"में से",next:"अगला",prev:"पिछला",submit:"टेस्ट जमा करो",skip:"छोड़ो",score:"आपका स्कोर",correct:"सही",wrong:"गलत",left:"छोड़े",
+  review:"जवाब देखो",again:"नया मॉक टेस्ट",askedIn:"इसमें आया:",search:"सवाल खोजो…",showAns:"जवाब दिखाओ",
+  mockIntro:"हर बार अलग 25 असली PYQ। नेगेटिव मार्किंग नहीं। टाइम खत्म होते ही टेस्ट अपने आप जमा। गलत सवाल 'गलतियाँ सुधारो' में सेव हो जाते हैं।",
+  courseIntro:"PO Guide Part I, क्लॉज़ दर क्लॉज़। क्लॉज़ पूरा होने पर ✓ लगाओ, प्रगति इसी फोन में सेव रहती है।",
+  quizIntro:"आज के 5 सवाल। रोज़ खेलो और स्ट्रीक मत टूटने दो।",streak:"दिन की स्ट्रीक",done:"आज का क्विज़ हो गया! कल फिर आना।",
+  trick:"याद रखने की लाइन",rule:"नियम:",oneLine:"एक लाइन में",reel:"रील देखो",markDone:"पूरा ✓",isDone:"पूरा",progress:"कोर्स प्रगति",
+  shareTxt:"मैंने Postal Wala मॉक टेस्ट में स्कोर किया",copy:"कॉपी करो",copied:"कॉपी हो गया",shown:"दिख रहे",
+  galtiIntro:"मॉक और क्विज़ में जो सवाल गलत हुए वो यहाँ हैं। सही करते ही हट जाएँगे।",galtiEmpty:"अभी कोई गलती सेव नहीं है। पहले एक मॉक टेस्ट दो।",practice:"इनकी प्रैक्टिस करो",
+  notesIntro:"PO Guide Part I के पूरे रिवीज़न नोट्स। हर क्लॉज़ 3 तरीकों से: नोट्स, चित्र पोस्टर और स्केचनोट। पेज पर टैप करो, बड़ा खुलेगा।",
+  notesClause:"क्लॉज़",practiceClause:"इस क्लॉज़ के सवाल",tapZoom:"टैप करो, बड़ा देखो",soon:"आगे के क्लॉज़ के नोट्स जल्द आ रहे हैं। Instagram पर Follow करो।",
+  foot:"Postal Wala एक स्वतंत्र पेज है, इंडिया पोस्ट का आधिकारिक ऐप नहीं। अंतिम राशि और नियम हमेशा आधिकारिक आदेश और अपने कार्यालय से मिलाएँ।",
+  msgs:["शाबाश! ऐसे ही चलते रहो।","अच्छा है, थोड़ा और अभ्यास करो।","कोई बात नहीं, हर गलती से सीखो।"],
+  backTools:"सभी टूल्स",backNotes:"सभी नोट्स",upd:"अपडेट",
+  salIntro:"अपना स्लैब और मूल TRCA डालो। DA अभी {da}% है (1 जुलाई 2026 से)।",slab:"पद / स्लैब",basic:"मूल TRCA (₹/माह)",daLbl:"DA",gross:"कुल TRCA + DA",perYear:"सालाना",perDay:"प्रति दिन (30 दिन)",
+  salNote:"स्लैब का न्यूनतम TRCA अपने आप भरा है। हर साल 3% वृद्धि के बाद अपनी असली मूल TRCA डालें। कटौती (SDBS, ग्रुप बीमा) इसमें नहीं घटाई गई।",
+  bonIntro:"GDS को 60 दिन का एक्स-ग्रेशिया बोनस, ₹{c} की मासिक सीमा पर। साल {y} (1 अप्रैल से 31 मार्च)।",months:"साल में कितने महीने काम किया",monthly:"मासिक TRCA + DA (₹)",bonus:"आपका बोनस (अनुमान)",
+  bonNote:"फॉर्मूला: min(मासिक राशि, ₹7000) × 60 ÷ 30.4 × (महीने ÷ 12)। पूरे साल का अधिकतम ₹13,816। सब्स्टीट्यूट का TRCA गिना नहीं जाता। अंतिम राशि डिवीजन के आदेश से।",
+  savIntro:"पोस्ट ऑफिस की हर योजना की मैच्योरिटी और ब्याज, अभी की दरों ({q}) पर।",scheme:"योजना",amount:"राशि (₹)",monthlyDep:"हर महीने जमा (₹)",yearlyDep:"हर साल जमा (₹)",years:"अवधि",
+  maturity:"मैच्योरिटी राशि",deposit:"कुल जमा",interest:"कुल ब्याज",monthlyInt:"हर महीने ब्याज",quarterlyInt:"हर तिमाही ब्याज",yearlyInt:"हर साल ब्याज",
+  savNote:"यह अनुमान है, ग्राहक को अंतिम राशि पोस्ट ऑफिस सिस्टम से ही बताएँ। खाता खुलने के समय की दर पूरी अवधि लागू रहती है (PPF, SSA, SB छोड़कर)।",copyQuote:"ग्राहक के लिए कोटेशन कॉपी करो",
+  tdIntro:"BO में खोले गए TD पर BPM इंसेंटिव। हर TD की राशि और अवधि डालो।",addTd:"+ और TD जोड़ो",term:"अवधि",total:"कुल इंसेंटिव",remove:"हटाओ",
+  tdNote:"दरें: 1 साल 0.5%, 2 और 3 साल 1%, 5 साल 2%। न्यूनतम ₹1000, ₹100 के गुणक में। री-डिपॉज़िट / एक्सटेंशन और SAS एजेंट के खातों पर इंसेंटिव नहीं।",
+  carIntro:"अपनी जानकारी डालो, देखो कौन-सी विभागीय परीक्षा दे सकते हो।",post:"अभी का पद",joined:"सेवा शुरू होने की तारीख",dob:"जन्म तारीख",edu:"शिक्षा",cat:"वर्ग",examYear:"परीक्षा का साल",
+  eligible:"योग्य",notYet:"अभी नहीं",from:"से योग्य",ageOver:"उम्र सीमा पार",eduNeed:"शिक्षा कम",
+  carNote:"सेवा और उम्र परीक्षा वर्ष की 1 जनवरी को गिनी जाती है। यह सिर्फ़ मार्गदर्शन है, आवेदन से पहले अपने सर्कल की अधिसूचना ज़रूर पढ़ें।",
+  p8Intro:"8वें वेतन आयोग का अनुमान। फिटमेंट फैक्टर अभी घोषित नहीं हुआ है।",curBasic:"अभी की मूल वेतन / TRCA (₹)",factor:"फिटमेंट फैक्टर",newBasic:"नई मूल राशि (अनुमान)",increase:"बढ़ोतरी",
+  p8Note:"नई राशि = अभी की मूल × फैक्टर (₹100 तक गोल)। 7वें आयोग में 2.57 था। GDS वेतन आयोग में नहीं आते, उनका TRCA अलग GDS कमेटी तय करती है, इसलिए GDS के लिए यह सिर्फ़ तुलना है।",
+  holIntro:"केंद्र सरकार के कार्यालयों की 2026 की बंद छुट्टियाँ (DoPT, दिल्ली सूची)। हर राज्य में 3 छुट्टियाँ राज्य समिति अलग चुनती है।",daysLeft:"दिन बाकी",today:"आज",
+  holNote:"बकरीद दिल्ली में 28 मई कर दी गई (DoPT आदेश 22.05.2026)। डॉ. आंबेडकर जयंती 14 अप्रैल जोड़ी गई (DoPT आदेश 09.04.2026)। अपने राज्य की सूची सर्कल से देखें।",
+  ratesIntro:"पोस्ट ऑफिस बचत योजनाओं की ब्याज दरें, {q}।",perYr:"सालाना",
+  examIntro:"GDS से विभागीय परीक्षाओं में क्या आता है। PO Guide Part I हर पेपर का बड़ा हिस्सा है, इसलिए नोट्स और प्रैक्टिस क्लॉज़-वार हैं।",
+  linksIntro:"इंडिया पोस्ट की आधिकारिक वेबसाइटें। ये बाहर खुलती हैं।",
+  cont:"जहाँ छोड़ा, वहीं से शुरू करो",quizDue:"आज का क्विज़ बाकी है",quizDueS:"5 सवाल · 2 मिनट · स्ट्रीक बचाओ",
+  roleQ:"आप कौन हैं? (इसी से होम पेज आपके हिसाब से सजेगा)",rGds:"GDS (BPM / ABPM / डाक सेवक)",rMts:"MTS",rPm:"पोस्टमैन / मेल गार्ड",rPrep:"परीक्षा की तैयारी कर रहा हूँ",roleYou:"आप",change:"बदलो",
+  say:"सुनो",stop:"रोको",fsT:"अक्षर का आकार",
+  wa:"WhatsApp पर भेजो",waScore:"मैंने Postal Wala के फ्री मॉक टेस्ट में {c}/{n} नंबर लाए 📮 तुम भी दो:",waNote:"PO Guide Clause {n} ({t}) चित्रों से आसान भाषा में, बिल्कुल फ्री 📮",waSite:"GDS → MTS / Postman / PA की फ्री तैयारी 📮",
+  chooseMock:"कौन-सा टेस्ट दोगे?",m10:"छोटा टेस्ट",m10S:"10 सवाल · 10 मिनट",m25:"पूरा मॉक",m25S:"25 सवाल · 20 मिनट",mPaper:"असली पेपर (राज्य + साल)",mPaperS:"उसी परीक्षा के सारे सवाल",mClause:"क्लॉज़ टेस्ट",mClauseS:"एक क्लॉज़ के सारे सवाल",
+  fromNotes:"📒 Postal Wala नोट्स PDF से",fullPage:"पूरा पेज",seeChitra:"चित्र से समझो →",ruleFrom:"PO Guide का नियम",practiceCl:"क्लॉज़ {n} प्रैक्टिस →",notesCl:"📒 क्लॉज़ {n} नोट्स खोलो →",noExpl:"इसका विस्तार जल्द नोट्स में आएगा। सही जवाब ऊपर हरे रंग में है।",
+  searchT:"खोजो",searchPh:"जैसे: TD, बोनस, night PO, क्लॉज़ 8…",noRes:"कुछ नहीं मिला। दूसरे शब्द से खोजो।",rTools:"टूल",rNotes:"नोट्स",rCl:"क्लॉज़",rQ:"सवाल",
+  install:"📲 फ़ोन में ऐप की तरह लगाओ",installS:"होम स्क्रीन पर आइकन, बिना इंटरनेट भी नोट्स खुलेंगे",installBtn:"इंस्टॉल करो",soonTag:"जल्द"},
+ en:{lang:"हिं",home:"Home",notes:"Notes",study:"Study",mock:"Test",tools:"Tools",quiz:"Quiz",
+  greet:["Good morning","Namaste","Good evening"],eyebrow:"Free prep · complete revision notes",heroL1:"PO Guide",heroL2:"in pictures",heroP:"Full GDS → MTS · Postman · Mail Guard · PA preparation. Every rule in easy language, pictures and real paper questions.",
+  ways:"Every clause in 3 ways",w1:"① Notes",w2:"② Picture poster",w3:"③ Sketchnote",
+  sPyq:"Real PYQs",sCl:"Clauses",sEx:"Exams",startMock:"Take a free mock test",openNotes:"Open notes",
+  stripB:"All rules are explained with pictures on Postal Wala",stripS:"Watch on Instagram → @postal_wala",follow:"Follow",
+  tkDa:"DA (from 1 Jul 2026)",tkHol:"Next holiday",tkTd:"5-year TD rate",tkBonus:"Max GDS bonus",tkStreak:"day streak",tkTrap:"Today's trap",
+  secNotes:"Picture notes",secStudy:"Exam preparation",secTools:"Daily work tools",secTraps:"Top 8 exam traps · don't make these mistakes",all:"All",
+  tMock:"Mock test",tMockS:"25 real PYQs · 20 min",tPyq:"PYQ bank",tPyqS:"By state and year",
+  tCourse:"Clause practice",tCourseS:"Questions + tricks per clause",tQuiz:"Daily quiz",tQuizS:"5 questions a day, streak",tGalti:"Fix mistakes",tGaltiS:"Questions you got wrong",
+  tSalary:"GDS salary",tSalaryS:"TRCA + DA 63%",tBonus:"Bonus",tBonusS:"60 days · up to ₹13,816",tSavings:"Savings calculator",tSavingsS:"RD, TD, MIS, PPF, SSA…",tRates:"Interest rates",tRatesS:"Oct–Dec 2026",
+  tTd:"TD commission",tTdS:"BPM incentive",tCareer:"Promotion checker",tCareerS:"MTS · Postman · PA",tPay8:"8th pay",tPay8S:"Fitment estimate",tHol:"Holidays 2026",tHolS:"Next holiday",
+  tLinks:"Useful links",tLinksS:"Official websites",tExam:"Exam pattern",tExamS:"What comes",
+  q:"Question",of:"of",next:"Next",prev:"Back",submit:"Submit test",skip:"Skip",score:"Your score",correct:"Correct",wrong:"Wrong",left:"Skipped",
+  review:"Answers",again:"New mock test",askedIn:"Asked in:",search:"Search questions…",showAns:"Show answer",
+  mockIntro:"25 different real PYQs every time. No negative marking. The test submits itself when time runs out. Wrong answers are saved to 'Fix mistakes'.",
+  courseIntro:"PO Guide Part I, clause by clause. Tick a clause when done; your progress stays on this phone.",
+  quizIntro:"Today's 5 questions. Play daily and keep your streak alive.",streak:"day streak",done:"Today's quiz is done! Come back tomorrow.",
+  trick:"Line to remember",rule:"Rule:",oneLine:"In one line",reel:"Watch reel",markDone:"Done ✓",isDone:"Done",progress:"Course progress",
+  shareTxt:"I scored in the Postal Wala mock test",copy:"Copy",copied:"Copied",shown:"showing",
+  galtiIntro:"Questions you got wrong in mocks and quizzes. They leave once you answer them right.",galtiEmpty:"No saved mistakes yet. Take a mock test first.",practice:"Practise these",
+  notesIntro:"Complete PO Guide Part I revision notes. Every clause in 3 ways: notes, picture poster and sketchnote. Tap a page to open it large.",
+  notesClause:"Clause",practiceClause:"Questions on this clause",tapZoom:"Tap to view large",soon:"Notes for the next clauses are coming soon. Follow on Instagram.",
+  foot:"Postal Wala is an independent page, not an official India Post app. Always confirm final amounts and rules with the official orders and your office.",
+  msgs:["Well done! Keep going.","Good, practise a little more.","No problem, learn from every mistake."],
+  backTools:"All tools",backNotes:"All notes",upd:"Updated",
+  salIntro:"Pick your slab and enter your basic TRCA. DA is {da}% now (from 1 July 2026).",slab:"Post / slab",basic:"Basic TRCA (₹/month)",daLbl:"DA",gross:"Total TRCA + DA",perYear:"Yearly",perDay:"Per day (30 days)",
+  salNote:"The slab minimum TRCA is filled in. After yearly 3% increments, enter your actual basic TRCA. Deductions (SDBS, group insurance) are not subtracted.",
+  bonIntro:"GDS get a 60-day ex-gratia bonus on a ₹{c} monthly ceiling. Year {y} (1 April to 31 March).",months:"Months worked in the year",monthly:"Monthly TRCA + DA (₹)",bonus:"Your bonus (estimate)",
+  bonNote:"Formula: min(monthly amount, ₹7000) × 60 ÷ 30.4 × (months ÷ 12). Full-year maximum ₹13,816. A substitute's TRCA is not counted. Final amount comes from your division's order.",
+  savIntro:"Maturity and interest for every Post Office scheme at current rates ({q}).",scheme:"Scheme",amount:"Amount (₹)",monthlyDep:"Monthly deposit (₹)",yearlyDep:"Yearly deposit (₹)",years:"Term",
+  maturity:"Maturity amount",deposit:"Total deposit",interest:"Total interest",monthlyInt:"Monthly interest",quarterlyInt:"Quarterly interest",yearlyInt:"Yearly interest",
+  savNote:"This is an estimate; give customers the final figure from the Post Office system. The rate at opening applies for the whole term (except PPF, SSA, SB).",copyQuote:"Copy quotation for customer",
+  tdIntro:"BPM incentive on TDs opened at the BO. Enter each TD's amount and term.",addTd:"+ Add another TD",term:"Term",total:"Total incentive",remove:"Remove",
+  tdNote:"Rates: 1 year 0.5%, 2 and 3 years 1%, 5 years 2%. Minimum ₹1000, in multiples of ₹100. No incentive on re-deposit / extension or SAS agent accounts.",
+  carIntro:"Enter your details to see which departmental exams you can take.",post:"Current post",joined:"Service start date",dob:"Date of birth",edu:"Education",cat:"Category",examYear:"Exam year",
+  eligible:"Eligible",notYet:"Not yet",from:"eligible from",ageOver:"over age limit",eduNeed:"education short",
+  carNote:"Service and age are counted on 1 January of the exam year. This is guidance only; read your circle's notification before applying.",
+  p8Intro:"8th Pay Commission estimate. No fitment factor has been announced yet.",curBasic:"Current basic pay / TRCA (₹)",factor:"Fitment factor",newBasic:"New basic (estimate)",increase:"Increase",
+  p8Note:"New amount = current basic × factor (rounded to ₹100). The 7th CPC used 2.57. GDS are not under the Pay Commission; their TRCA is set by a separate GDS committee, so for GDS this is only a comparison.",
+  holIntro:"2026 closed holidays for central government offices (DoPT, Delhi list). Each state's committee picks 3 more.",daysLeft:"days left",today:"Today",
+  holNote:"Bakrid moved to 28 May in Delhi (DoPT order 22.05.2026). Dr. Ambedkar Jayanti, 14 April, was added (DoPT order 09.04.2026). Check your state list with your circle.",
+  ratesIntro:"Post Office savings scheme interest rates, {q}.",perYr:"per year",
+  examIntro:"What the departmental exams from GDS cover. PO Guide Part I is a big part of every paper, so notes and practice are clause-wise.",
+  linksIntro:"Official India Post websites. These open outside.",
+  cont:"Continue where you left off",quizDue:"Today's quiz is waiting",quizDueS:"5 questions · 2 minutes · keep your streak",
+  roleQ:"Who are you? (Home will be arranged for you)",rGds:"GDS (BPM / ABPM / Dak Sevak)",rMts:"MTS",rPm:"Postman / Mail Guard",rPrep:"Preparing for the exam",roleYou:"You",change:"Change",
+  say:"Listen",stop:"Stop",fsT:"Text size",
+  wa:"Send on WhatsApp",waScore:"I scored {c}/{n} in the free Postal Wala mock test 📮 Try it:",waNote:"PO Guide Clause {n} ({t}) explained with pictures, free 📮",waSite:"Free GDS → MTS / Postman / PA preparation 📮",
+  chooseMock:"Which test?",m10:"Short test",m10S:"10 questions · 10 min",m25:"Full mock",m25S:"25 questions · 20 min",mPaper:"Real paper (state + year)",mPaperS:"All questions from that exam",mClause:"Clause test",mClauseS:"All questions of one clause",
+  fromNotes:"📒 From the Postal Wala notes PDF",fullPage:"Full page",seeChitra:"Understand with pictures →",ruleFrom:"PO Guide rule",practiceCl:"Clause {n} practice →",notesCl:"📒 Open Clause {n} notes →",noExpl:"An explanation is coming to the notes soon. The correct answer is shown in green above.",
+  searchT:"Search",searchPh:"e.g. TD, bonus, night PO, clause 8…",noRes:"Nothing found. Try another word.",rTools:"Tool",rNotes:"Notes",rCl:"Clause",rQ:"Question",
+  install:"📲 Install it like an app",installS:"Icon on your home screen, notes open even offline",installBtn:"Install",soonTag:"Soon"}
+};
+const t=k=>T[L][k];
+const tf=(k,o)=>t(k).replace(/\{(\w+)\}/g,(_,x)=>o[x]);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const AB="ABCD";
+const inr=n=>"₹"+Math.round(n).toLocaleString("en-IN");
+const pad2=n=>String(n).padStart(2,"0");
+function shuffle(a,rnd=Math.random){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function seeded(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+const qText=q=>L==="en"&&q.e?q.e:q.q;
+const allExams=[...new Set(DATA.pyq.flatMap(q=>q.x))];
+const stateOf=e=>e.replace(/\s*\d{4}.*/,"").trim();
+const states=[...new Set(allExams.map(stateOf))].sort();
+const qid=q=>q.id||("c"+(q.c||0)+"_"+q.q.slice(0,24));
+const daySeed=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
+function copyText(txt,btn,fallbackEl){(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>{if(btn)btn.textContent=t("copied")})
+ .catch(()=>{if(!fallbackEl)return;fallbackEl.hidden=false;const r=document.createRange();r.selectNodeContents(fallbackEl);const s=getSelection();s.removeAllRanges();s.addRange(r)})}
+const NC=["n-red","n-navy","n-teal"];
+const nimg=(id,kind,thumb)=>`notes/${id}${kind?"_"+kind:""}${thumb?"_t":""}.webp`;
+const cid=n=>"c"+pad2(n);
+
+/* ---------- icons ---------- */
+const P={
+ home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ notes:'<path d="M3 6l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/>',
+ mock:'<path d="M7 3h10l3 3v15H4V3z"/><path d="M8 10h8M8 14h8M8 18h5"/>',
+ study:'<path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3"/><path d="M20 4v14h-6"/>',
+ tools:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+ quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/>',
+ salary:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+ bonus:'<rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M12 8v13M3 12h18M12 8c-2-4-6-4-6-1.5S10 8 12 8zm0 0c2-4 6-4 6-1.5S14 8 12 8z"/>',
+ savings:'<path d="M3 21h18M5 21V10M19 21V10M9 21v-7M15 21v-7M2 10l10-6 10 6z"/>',
+ rates:'<path d="M3 20l6-6 4 4 8-9"/><path d="M15 9h6v6"/>',
+ td:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+ career:'<path d="M12 3l3 6 6 .9-4.5 4.3 1 6.3L12 17.5 6.5 20.5l1-6.3L3 9.9 9 9z"/>',
+ pay8:'<path d="M7 5h10M7 10h10M13 5c3 0 3 5 0 5H7l7 9"/>',
+ hol:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ links:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+ exam:'<path d="M9 4h6v3H9z"/><path d="M8 5H5v16h14V5h-3"/><path d="M8 12l2 2 4-4M8 17h8"/>',
+ galti:'<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
+ pyq:'<path d="M4 5h16v14H4z"/><path d="M4 9h16M9 9v10"/>',
+ ig:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>'};
+const svg=(k,w)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w||1.9}" stroke-linecap="round" stroke-linejoin="round">${P[k]}</svg>`;
+const TOOLS=[["salary","n-teal"],["bonus","n-gold"],["savings","n-navy"],["rates","n-teal"],["td","n-red"],["career","n-navy"],["pay8","n-gold"],["hol","n-red"],["exam","n-navy"],["links","n-teal"]];
+const tName=k=>({salary:"tSalary",bonus:"tBonus",savings:"tSavings",rates:"tRates",td:"tTd",career:"tCareer",pay8:"tPay8",hol:"tHol",exam:"tExam",links:"tLinks"})[k];
+const rowLink=(href,numHtml,cls,title,sub,extra)=>`<a class="row-link${extra||""}" href="${href}"><span class="num ${cls}">${numHtml}</span><span><b>${title}</b><small>${sub}</small></span></a>`;
+const toolRows=list=>`<div class="rows">${list.map(([k,c])=>rowLink("#"+k,svg(k,2.1),c,t(tName(k)),t(tName(k)+"S"))).join("")}</div>`;
+const strip=()=>`<a class="strip" href="${IG}" target="_blank" rel="noopener"><span class="igi">${svg("ig",2)}</span><p><b>${t("stripB")}</b>${t("stripS")}</p><span class="follow">${t("follow")}</span></a>`;
+const back=(h,k)=>`<a class="back" href="#${h||"tools"}">← ${t(k||"backTools")}</a>`;
+const updLine=()=>`<p class="note">${t("upd")}: ${INFO.asOf}</p>`;
+const head=(k,intro)=>{const c=TOOLS.find(x=>x[0]===k)[1];return `${back()}<div class="thead"><span class="num ${c}" style="width:44px;height:44px">${svg(k,2.1)}</span><h1>${t(tName(k))}</h1></div><p class="muted">${intro}</p>`};
+
+function renderTabs(cur){
+ const map={home:"home",search:"home",notes:"notes",note:"notes",mock:"mock",study:"study",pyq:"study",course:"study",galti:"study",quiz:"study"};
+ const on=map[cur]||"tools";
+ $("#tabs").innerHTML=["home","notes","study","mock","tools"].map(k=>`<a class="tab${k===on?" on":""}" href="#${k}">${svg(k,k===on?2.3:1.9)}${t(k)}</a>`).join("");
+ $("#langBtn").textContent=t("lang");
+ $("#foot").innerHTML=`${esc(t("foot"))}<br><a href="${IG}" target="_blank" rel="noopener">instagram.com/postal_wala</a> · Postal Wala`;
+ document.documentElement.lang=L==="hi"?"hi":"en";
+}
+const dayMs=864e5;
+const todayD=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+function nextHoliday(){const td=todayD();for(const h of INFO.holidays){const d=new Date(h[0]+"T00:00:00");if(d>=td)return {d,h,left:Math.round((d-td)/dayMs)}}return null}
+const fmtD=(d,o)=>d.toLocaleDateString(L==="hi"?"hi-IN":"en-IN",o);
+
+/* ---------- HOME ---------- */
+function notesRow(){return `<div class="nrow">${NOTES.map(n=>`<a class="ncard" href="#note-${n.n}"><img src="${nimg(cid(n.n),"chitra",1)}" alt="${esc(n.en)}" loading="lazy" width="150" height="212"><div><b>${pad2(n.n)} · ${esc(L==="hi"?n.hi:n.en)}</b><small>${t("w1")} ${t("w2")} ${t("w3")}</small></div></a>`).join("")}
+ ${EXTRA_NOTES.map(x=>`<a class="ncard" href="#note-${x.id}"><img src="${nimg(x.id,"",1)}" alt="${esc(x.en)}" loading="lazy" width="150" height="212"><div><b>${esc(L==="hi"?x.hi:x.en)}</b><small>${esc(x.sub)}</small></div></a>`).join("")}</div>`}
+function home(){
+ const hr=new Date().getHours(),g=t("greet")[hr<12?0:hr<17?1:2];
+ const nh=nextHoliday();const st=store.get("streak",{n:0});
+ const tr=TRAPS[daySeed()%TRAPS.length];
+ const role=store.get("role",null);const tl=(ROLE_TOOLS[role]||TOOLS.slice(0,6).map(x=>x[0])).map(k=>TOOLS.find(x=>x[0]===k));
+ const toolsSec=`<div class="sec-h"><h2>${t("secTools")}</h2><a class="more" href="#tools">${t("all")} →</a></div>${toolRows(tl)}`;
+ const studySec=`<div class="sec-h"><h2>${t("secStudy")}</h2><a class="more" href="#study">${t("all")} →</a></div>${studyRows()}`;
+ const rl={gds:"rGds",mts:"rMts",pm:"rPm",prep:"rPrep"}[role];
+ return `<div class="stack">
+ ${contCards()}
+ ${role?"":roleCard()}
+ <section class="cover"><div class="wm" aria-hidden="true"></div>
+  <span class="eyebrow">${g} · ${t("eyebrow")}</span>
+  <p class="big1">${t("heroL1")}<span>${t("heroL2")}</span></p>
+  <p class="muted">${t("heroP")}</p>
+  <div class="ways"><b>${t("ways")}</b><div><span>${t("w1")}</span><span>${t("w2")}</span><span>${t("w3")}</span></div></div>
+  <div class="stats"><div class="stat"><b>${DATA.pyq.length}</b><span>${t("sPyq")}</span></div><div class="stat"><b>${DATA.clauses.length}</b><span>${t("sCl")}</span></div><div class="stat"><b>${allExams.length}</b><span>${t("sEx")}</span></div></div>
+  <div class="row"><a class="btn btn-red" href="#mock">${t("startMock")} →</a><a class="btn btn-line" href="#notes">${t("openNotes")}</a></div></section>
+ <div class="ticker">
+  <a class="tk hot" href="#note-final"><b>⚠ ${t("tkTrap")}</b><span>${L==="hi"?tr[1]:tr[0].replace(/<[^>]+>/g,"")}</span></a>
+  <a class="tk" href="#salary"><b>${INFO.da}%</b><span>${t("tkDa")}</span></a>
+  ${nh?`<a class="tk" href="#hol"><b>${nh.left===0?t("today"):nh.left+" "+(L==="hi"?"दिन":"days")}</b><span>${t("tkHol")}: ${esc(L==="hi"?nh.h[1]:nh.h[2])}</span></a>`:""}
+  <a class="tk" href="#rates"><b>${INFO.rates.td5}%</b><span>${t("tkTd")}</span></a>
+  <a class="tk" href="#bonus"><b>₹13,816</b><span>${t("tkBonus")}</span></a>
+  <a class="tk" href="#quiz"><b>${st.n} 🔥</b><span>${t("tkStreak")}</span></a>
+ </div>
+ <div class="sec-h"><h2>${t("secNotes")}</h2><a class="more" href="#notes">${t("all")} →</a></div>
+ ${notesRow()}
+ ${role==="gds"?toolsSec+studySec:studySec+toolsSec}
+ ${trapsBox()}
+ ${installCard()}
+ ${strip()}
+ <div class="row">${waBtn(t("waSite")+" "+SITE)}</div>
+ ${rl?`<p class="note" style="text-align:center">${t("roleYou")}: <b>${t(rl)}</b> · <a href="#home" data-rolechange="1" style="color:var(--red);font-weight:700">${t("change")}</a></p>`:""}
+ </div>`;
+}
+function trapsBox(){return `<div class="trap stack" style="gap:10px"><b>⚠ ${t("secTraps")}</b><div class="traps">${TRAPS.map(x=>`<div>${L==="hi"?esc(x[1]):x[0]}${L==="hi"?`<small>${x[0].replace(/<[^>]+>/g,"")}</small>`:`<small>${esc(x[1])}</small>`}</div>`).join("")}</div></div>`}
+function studyRows(){const nParts=DATA.clauses.reduce((s,c)=>s+c.p.length,0);const g=Object.keys(store.get("galti",{})).length;const dn=store.get("done",[]).length;
+ return `<div class="rows">
+  ${rowLink("#mock",svg("mock",2.1),"n-red",t("tMock"),t("tMockS"))}
+  ${rowLink("#quiz",svg("quiz",2.1),"n-teal",t("tQuiz"),t("tQuizS")+" · "+store.get("streak",{n:0}).n+" 🔥")}
+  ${rowLink("#course",svg("study",2.1),"n-navy",t("tCourse"),`${dn}/${DATA.clauses.length} ✓ · ${nParts} ${t("q")}`)}
+  ${rowLink("#pyq",svg("pyq",2.1),"n-teal",t("tPyq"),`${DATA.pyq.length} ${t("q")} · ${t("tPyqS")}`)}
+  ${rowLink("#galti",svg("galti",2.1),"n-gold",t("tGalti"),g?g+" "+t("q"):t("tGaltiS")," dash")}
+  ${rowLink("#exam",svg("exam",2.1),"n-red",t("tExam"),t("tExamS"))}
+ </div>`}
+
+/* ---------- NOTES ---------- */
+function notesView(){
+ return `<div class="stack"><span class="eyebrow">PO Guide · Part 1</span><h1>${t("secNotes")}</h1><p class="muted">${t("notesIntro")}</p>
+ <div class="rows">${NOTES.map((n,i)=>rowLink("#note-"+n.n,pad2(n.n),NC[i%3],esc(n.en),esc(n.hi))).join("")}
+ ${EXTRA_NOTES.map(x=>rowLink("#note-"+x.id,"★","n-gold",esc(x.en),esc(x.hi)," dash")).join("")}</div>
+ ${notesRow()}<p class="note">${t("soon")}</p>${strip()}</div>`}
+let noteTab={};
+function noteView(id){
+ const ex=EXTRA_NOTES.find(x=>x.id===id);
+ if(ex){return `<div class="stack">${back("notes","backNotes")}<h1>${esc(L==="hi"?ex.hi:ex.en)}</h1><p class="muted">${esc(ex.sub)} · ${t("tapZoom")}</p>
+  <button class="page" type="button" data-zoom="${nimg(id)}" data-title="${esc(ex.en)}" style="padding:0;cursor:zoom-in"><img src="${nimg(id)}" alt="${esc(ex.en)}" width="1100" height="1555"></button>${id==="final"?trapsBox():""}${strip()}</div>`}
+ const n=NOTES.find(x=>String(x.n)===id);if(!n)return notesView();
+ const k=noteTab[id]||"notes";const c=cid(n.n);const kinds=[["notes","w1"],["chitra","w2"],["sketch","w3"]];
+ const cl=DATA.clauses.find(x=>x.n===n.n);
+ const idx=NOTES.indexOf(n),prev=NOTES[idx-1],next=NOTES[idx+1];
+ return `<div class="stack">${back("notes","backNotes")}
+ <div class="thead"><span class="stampbadge"><span><small>CLAUSE</small>${pad2(n.n)}</span></span><div style="min-width:0"><h1>${esc(n.en)}</h1><p class="muted" style="font-weight:600">${esc(n.hi)}</p></div></div>
+ <div class="oneline"><small>${t("oneLine").toUpperCase()} · IN ONE LINE</small>${esc(L==="hi"?n.line.hi:n.line.en)}<div style="margin-top:6px">${spk((L==="hi"?n.line.hi:n.line.en)+(n.trick?"। "+t("trick")+": "+n.trick:""))}</div></div>
+ <div class="three">${kinds.map(([kk,lab])=>`<button type="button" data-tab="${kk}" class="${kk===k?"on":""}"><img src="${nimg(c,kk,1)}" alt="" loading="lazy" width="120" height="170"><span>${t(lab)}</span></button>`).join("")}</div>
+ <button class="page" type="button" data-zoom="${nimg(c,k)}" data-title="Clause ${n.n} · ${esc(n.en)}" style="padding:0;cursor:zoom-in"><img src="${nimg(c,k)}" alt="Clause ${n.n} ${k}" width="1100" height="1555"></button>
+ <p class="note" style="text-align:center">${t("tapZoom")}</p>
+ ${n.trick?`<div class="trick"><small>${t("trick").toUpperCase()}</small>${esc(n.trick)}</div>`:""}
+ ${cl?`<div class="sec-h"><h2>${t("practiceClause")}</h2></div>${cl.p.slice(0,3).map(p=>practiceCard(p)).join("")}`:""}
+ <div class="row">${prev?`<a class="btn btn-line" href="#note-${prev.n}">← ${pad2(prev.n)}</a>`:""}${next?`<a class="btn btn-navy" href="#note-${next.n}">${pad2(next.n)} ${esc(L==="hi"?next.hi:next.en)} →</a>`:`<a class="btn btn-navy" href="#note-route">${t("all")} ★ →</a>`}</div>
+ <div class="row">${waBtn(tf("waNote",{n:n.n,t:L==="hi"?n.hi:n.en})+" "+SITE+"#note-"+n.n)}</div>
+ ${strip()}</div>`}
+function practiceCard(p){const id="pc"+Math.random().toString(36).slice(2,8);
+ return `<div class="card" data-pc="${id}"><p class="qtext" style="font-size:17.5px">${esc(L==="en"&&p.e?p.e:p.q)}</p>${qBlock(p,null,false)}<div class="pcx" hidden>${p.f?`<p class="fact oneline" style="font-size:15px"><b>${t("rule")}</b> ${esc(p.f)}</p>`:""}</div></div>`}
+function bindPractice(root,list){root.querySelectorAll("[data-pc]").forEach((card,i)=>{const p=list[i];card.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const j=+b.dataset.j;
+ card.querySelectorAll(".opt").forEach(o=>{const oj=+o.dataset.j;o.disabled=true;o.classList.toggle("ok",oj===p.a);o.classList.toggle("bad",oj===j&&j!==p.a)});card.querySelector(".pcx").hidden=false})})}
+function openZoom(src,title){$("#zi").src=src;$("#zi").alt=title;$("#zt").textContent=title;$("#zs").classList.remove("z2");$("#zz").textContent="2×";$("#zoom").hidden=false;document.body.style.overflow="hidden"}
+$("#zx").onclick=()=>{$("#zoom").hidden=true;document.body.style.overflow=""};
+$("#zz").onclick=()=>{const z=$("#zs").classList.toggle("z2");$("#zz").textContent=z?"1×":"2×"};
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#zoom").hidden)$("#zx").click()});
+
+/* ---------- QUESTION RUNNER ---------- */
+let run=null,timerId=null;
+function startRun(kind,qs,secs){clearInterval(timerId);run={kind,qs,ans:Array(qs.length).fill(null),i:0,end:secs?Date.now()+secs*1000:0,done:false};
+ if(secs)timerId=setInterval(()=>{const el=$("#tmr");if(!run||run.done){clearInterval(timerId);return}const left=run.end-Date.now();if(left<=0){finish();return}if(el)el.textContent=fmt(left)},500);
+ draw()}
+const fmt=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return pad2(Math.floor(s/60))+":"+pad2(s%60)};
+function qBlock(q,chosen,reveal){
+ return `<div class="opts">${q.o.map((o,j)=>{let c="opt";if(reveal){if(j===q.a)c+=" ok";else if(j===chosen)c+=" bad"}else if(j===chosen)c+=" sel";
+  return `<button class="${c}" type="button" data-j="${j}" ${reveal?"disabled":""}><span class="l">${AB[j]}</span><span>${esc(o)}</span></button>`}).join("")}</div>`}
+function examLine(q){return q.x&&q.x.length?`<div class="exams"><span class="qsub">${t("askedIn")}</span>${q.x.map(e=>`<span class="ex">${esc(e)}</span>`).join("")}</div>`:""}
+function draw(){
+ const app=$("#app");
+ if(run.done){app.innerHTML=resultView();bindResult();return}
+ const q=run.qs[run.i],n=run.qs.length,instant=run.kind!=="mock",reveal=instant&&run.ans[run.i]!=null;
+ app.innerHTML=`<div class="stack"><div class="qmeta"><span>${t("q")} <b>${run.i+1}</b> ${t("of")} ${n}</span>${run.end?`<span class="timer" id="tmr">${fmt(run.end-Date.now())}</span>`:""}</div>
+ <div class="bar"><div style="width:${(run.i+1)/n*100}%"></div></div>
+ <div class="card"><p class="qtext">${esc(qText(q))}</p>${L==="en"&&q.e?`<p class="qsub">${esc(q.q)}</p>`:""}${spk(qText(q)+"। "+q.o.map((o,j)=>AB[j]+", "+o).join("। "))}${qBlock(q,run.ans[run.i],reveal)}${reveal?examLine(q)+(run.ans[run.i]===q.a?(q.f?`<div class="oneline"><small>${t("rule")}</small>${esc(q.f)}</div>`:""):explain(q))+(q.y?`<div class="trick"><small>${t("trick")}</small>${esc(q.y)}</div>`:""):""}</div>
+ <div class="row">${run.i>0&&!instant?`<button class="btn btn-line" id="prev" type="button">${t("prev")}</button>`:""}
+ ${run.i<n-1?`<button class="btn btn-navy" id="next" type="button">${run.ans[run.i]==null&&!instant?t("skip"):t("next")} →</button>`:`<button class="btn btn-red" id="sub" type="button">${t("submit")}</button>`}</div></div>`;
+ app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{run.ans[run.i]=+b.dataset.j;draw()});
+ const nx=$("#next");if(nx)nx.onclick=()=>{run.i++;draw();scrollTo(0,0)};
+ const pv=$("#prev");if(pv)pv.onclick=()=>{run.i--;draw()};
+ const sb=$("#sub");if(sb)sb.onclick=finish;
+}
+function finish(){if(!run||run.done)return;run.done=true;clearInterval(timerId);
+ const g=store.get("galti",{});run.qs.forEach((q,i)=>{const id=qid(q);if(run.ans[i]===q.a)delete g[id];else if(run.ans[i]!=null)g[id]=1});store.set("galti",g);
+ if(run.kind==="quiz"){const today=new Date().toDateString();const s=store.get("streak",{n:0,last:""});
+  if(s.last!==today){const y=new Date(Date.now()-dayMs).toDateString();s.n=s.last===y?s.n+1:1;s.last=today;store.set("streak",s)}}
+ draw();scrollTo(0,0)}
+function resultView(){
+ const n=run.qs.length,c=run.qs.filter((q,i)=>run.ans[i]===q.a).length,sk=run.ans.filter(a=>a==null).length,w=n-c-sk;
+ const pct=c/n,msg=t("msgs")[pct>=.7?0:pct>=.4?1:2];
+ const txt=`${t("shareTxt")}: ${c}/${n} 📮 ${IG}`;
+ return `<div class="stack"><section class="navyband result"><div class="cancel"><div><b>${c}/${n}</b><br><span>${t("score").toUpperCase()}</span></div></div>
+ <h2>${msg}</h2><div class="stats" style="width:100%"><div class="stat"><b>${c}</b><span>${t("correct")}</span></div><div class="stat"><b>${w}</b><span>${t("wrong")}</span></div><div class="stat"><b>${sk}</b><span>${t("left")}</span></div></div>
+ <div class="row" style="width:100%">${waBtn(tf("waScore",{c,n})+" "+SITE)}${run.kind==="mock"?`<button class="btn btn-gold" id="again" type="button">${t("again")}</button>`:""}</div>
+ <button class="btn btn-line btn-sm" id="cp" type="button" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">${t("copy")}</button>
+ <p class="small" id="cpt" hidden>${esc(txt)}</p></section>
+ ${run.kind==="quiz"?`<p class="muted" style="text-align:center">${t("done")}</p>`:""}
+ ${strip()}<h2>${t("review")}</h2>
+ ${run.qs.map((q,i)=>`<div class="card"><div class="qmeta"><span>${t("q")} ${i+1}</span><span class="pill ${run.ans[i]===q.a?"p-ok":run.ans[i]==null?"p-wait":"p-no"}">${run.ans[i]===q.a?"✓ "+t("correct"):run.ans[i]==null?t("left"):"✗ "+t("wrong")}</span></div><p class="qtext">${esc(qText(q))}</p>${qBlock(q,run.ans[i],true)}${examLine(q)}${run.ans[i]===q.a?(q.f?`<div class="oneline"><small>${t("rule")}</small>${esc(q.f)}</div>`:""):explain(q)}</div>`).join("")}</div>`}
+function bindResult(){const cp=$("#cp");if(cp)cp.onclick=()=>copyText($("#cpt").textContent,cp,$("#cpt"));
+ const ag=$("#again");if(ag)ag.onclick=()=>{run=null;route()}}
+
+/* ---------- STUDY / MOCK / QUIZ / GALTI ---------- */
+function studyView(){return `<div class="stack"><h1>${t("study")}</h1><p class="muted">${t("examIntro")}</p>${studyRows()}
+ <div class="sec-h"><h2>${t("secNotes")}</h2><a class="more" href="#notes">${t("all")} →</a></div>${notesRow()}${strip()}</div>`}
+function mockIntro(){return `<div class="stack"><section class="navyband"><span class="eyebrow">25 Q · 20 MIN · FREE</span><h1>${t("tMock")}</h1><p>${t("mockIntro")}</p><button class="btn btn-gold" id="go" type="button">${t("startMock")} →</button></section>${strip()}</div>`}
+const allQs=()=>DATA.clauses.flatMap(c=>c.p.map(p=>({...p,x:[],c:c.n}))).concat(DATA.pyq);
+function dailyQs(){return shuffle(allQs(),seeded(daySeed())).slice(0,5)}
+function quizIntro(){const s=store.get("streak",{n:0,last:""});const doneToday=s.last===new Date().toDateString();
+ return `<div class="stack"><section class="navyband"><span class="eyebrow">${fmtD(new Date(),{day:"numeric",month:"long"})}</span><h1>${t("tQuiz")}</h1><p>${doneToday?t("done"):t("quizIntro")}</p>
+ <div class="streak"><b>${s.n}</b><span>${t("streak")} 🔥</span></div><button class="btn btn-gold" id="go" type="button">${doneToday?t("review"):t("tQuiz")} →</button></section>${strip()}</div>`}
+function galtiView(){const g=store.get("galti",{});const qs=allQs().filter(q=>g[qid(q)]);
+ return `<div class="stack">${back("study","study")}<h1>${t("tGalti")}</h1><p class="muted">${qs.length?t("galtiIntro"):t("galtiEmpty")}</p>
+ ${qs.length?`<button class="btn btn-red" id="gp" type="button">${t("practice")} (${qs.length}) →</button>`:`<a class="btn btn-red" href="#mock">${t("startMock")} →</a>`}
+ ${qs.slice(0,30).map(q=>`<div class="card"><p class="qtext">${esc(qText(q))}</p>${qBlock(q,null,true)}${examLine(q)}${explain(q)}</div>`).join("")}</div>`}
+
+/* ---------- PYQ BANK ---------- */
+let pf={s:"",st:"",shown:{}};
+function pyqView(){
+ return `<div class="stack">${back("study","study")}<h1>${t("tPyq")}</h1><input class="search" id="srch" type="search" placeholder="${t("search")}" value="${esc(pf.s)}">
+ <div class="chips" id="chips"><button class="chip${pf.st?"":" on"}" data-st="" type="button">${t("all")}</button>${states.map(s=>`<button class="chip${pf.st===s?" on":""}" data-st="${esc(s)}" type="button">${esc(s)}</button>`).join("")}</div>
+ <p class="qsub" id="cnt"></p><div class="stack" id="plist"></div></div>`}
+function pyqList(){
+ const s=pf.s.trim().toLowerCase();
+ const list=DATA.pyq.filter(q=>(!pf.st||q.x.some(e=>stateOf(e)===pf.st))&&(!s||(q.q+" "+q.e+" "+q.o.join(" ")).toLowerCase().includes(s)));
+ $("#cnt").textContent=`${list.length} ${t("shown")}`;
+ $("#plist").innerHTML=list.slice(0,60).map(q=>{const r=!!pf.shown[q.id];return `<div class="card" data-id="${q.id}"><p class="qtext">${esc(qText(q))}</p>${qBlock(q,null,r)}${r?"":`<button class="btn btn-line btn-sm" data-show="${q.id}" type="button">${t("showAns")}</button>`}${examLine(q)}</div>`}).join("");
+ $("#plist").querySelectorAll("[data-show]").forEach(b=>b.onclick=()=>{pf.shown[b.dataset.show]=1;pyqList()});
+ $("#plist").querySelectorAll(".card .opt").forEach(b=>b.onclick=()=>{pf.shown[b.closest(".card").dataset.id]=1;pyqList()});
+}
+
+/* ---------- COURSE ---------- */
+function courseView(){const done=store.get("done",[]);const pct=Math.round(done.length/DATA.clauses.length*100);
+ return `<div class="stack">${back("study","study")}<h1>${t("tCourse")}</h1><p class="muted">${t("courseIntro")}</p>
+ <div class="card" style="gap:8px"><div class="qmeta"><span>${t("progress")}</span><b style="color:var(--teal)">${done.length}/${DATA.clauses.length} · ${pct}%</b></div><div class="bar"><div style="width:${pct}%;background:var(--teal)"></div></div></div>
+ ${DATA.clauses.map((c,i)=>{const d=done.includes(c.n);const hasN=NOTES.some(x=>x.n===c.n);return `<details class="cl"><summary><span class="num ${d?"n-teal":NC[i%3]}">${d?"✓":pad2(c.n)}</span><span class="ct"><b>${esc(L==="en"&&c.t?c.t:c.h||c.t)}</b><span>Clause ${c.n} · ${c.p.length} ${t("q")}${d?` · <span class="done-tag">✓ ${t("isDone")}</span>`:""}${hasN?" · 📒 "+t("notes"):""}</span></span></summary>
+  <div class="cbody">${c.p.map(p=>`<div class="card" style="padding:12px"><p class="qtext" style="font-size:17px">${esc(L==="en"&&p.e?p.e:p.q)}</p>${qBlock(p,null,true)}${p.f?`<div class="oneline"><small>${t("rule")}</small>${esc(p.f)}<div style="margin-top:6px">${spk(p.f+(p.y?"। "+p.y:""))}</div></div>`:""}${p.y?`<div class="trick"><small>${t("trick")}</small>${esc(p.y)}</div>`:""}</div>`).join("")}
+  <div class="row">${hasN?`<a class="btn btn-navy btn-sm" href="#note-${c.n}">📒 ${t("notes")}</a>`:""}<a class="btn btn-line btn-sm" href="${IG}" target="_blank" rel="noopener">${t("reel")} →</a>${d?"":`<button class="btn btn-red btn-sm" data-done="${c.n}" type="button">${t("markDone")}</button>`}</div></div></details>`}).join("")}</div>`}
+
+/* ---------- TOOLS ---------- */
+function toolsView(){return `<div class="stack"><h1>${t("tools")}</h1>${toolRows(TOOLS)}${strip()}</div>`}
+function salaryView(){const sv=store.get("sal",{slab:"bpm4",basic:12000});
+ return `<div class="stack">${head("salary",tf("salIntro",{da:INFO.da}))}
+ <div class="card"><label class="f">${t("slab")}<select class="inp" id="s_slab">${INFO.trca.map(s=>`<option value="${s.id}"${s.id===sv.slab?" selected":""}>${esc(L==="hi"?s.hi:s.en)}</option>`).join("")}</select></label>
+ <label class="f">${t("basic")}<input class="inp" id="s_basic" type="number" inputmode="numeric" min="0" step="10" value="${sv.basic}"></label></div>
+ <div class="out" id="s_out"></div><p class="note">${t("salNote")}</p>${updLine()}</div>`}
+function salaryCalc(){const slab=$("#s_slab").value;const b=+$("#s_basic").value||0;store.set("sal",{slab,basic:b});const da=b*INFO.da/100,g=b+da;
+ $("#s_out").innerHTML=`<span class="lbl">${t("gross")}</span><span class="big">${inr(g)}</span>
+ <div class="kv"><span>${t("basic")}</span><b>${inr(b)}</b></div><div class="kv"><span>${t("daLbl")} ${INFO.da}%</span><b>${inr(da)}</b></div>
+ <div class="kv"><span>${t("perYear")}</span><b>${inr(g*12)}</b></div><div class="kv"><span>${t("perDay")}</span><b>${inr(g/30)}</b></div>`}
+function bonusView(){const bv=store.get("bon",{m:12,amt:Math.round(12000*(1+INFO.da/100))});
+ return `<div class="stack">${head("bonus",tf("bonIntro",{c:INFO.bonusCeil.toLocaleString("en-IN"),y:INFO.bonusYear}))}
+ <div class="card"><label class="f">${t("monthly")}<input class="inp" id="b_amt" type="number" inputmode="numeric" min="0" value="${bv.amt}"></label>
+ <label class="f">${t("months")}<select class="inp" id="b_m">${Array.from({length:12},(_,i)=>12-i).map(m=>`<option${m===bv.m?" selected":""}>${m}</option>`).join("")}</select></label></div>
+ <div class="out" id="b_out"></div><p class="note">${t("bonNote")}</p>${updLine()}</div>`}
+function bonusCalc(){const amt=+$("#b_amt").value||0,m=+$("#b_m").value;store.set("bon",{amt,m});const base=Math.min(amt,INFO.bonusCeil),v=Math.round(base*60/30.4*m/12);
+ $("#b_out").innerHTML=`<span class="lbl">${t("bonus")}</span><span class="big">${inr(v)}</span><div class="kv"><span>min(${inr(amt)}, ₹7,000)</span><b>${inr(base)}</b></div><div class="kv"><span>× 60 ÷ 30.4 × ${m}/12</span><b>${inr(v)}</b></div>`}
+const R=INFO.rates;
+const SCH=[
+ {id:"rd",hi:"आवर्ती जमा (RD) – 5 साल",en:"Recurring Deposit (RD) – 5 yrs",kind:"monthly",def:1000,rate:R.rd},
+ {id:"td1",hi:"सावधि जमा (TD) – 1 साल",en:"Time Deposit (TD) – 1 yr",kind:"lump",def:100000,rate:R.td1,n:1},
+ {id:"td2",hi:"सावधि जमा (TD) – 2 साल",en:"Time Deposit (TD) – 2 yrs",kind:"lump",def:100000,rate:R.td2,n:2},
+ {id:"td3",hi:"सावधि जमा (TD) – 3 साल",en:"Time Deposit (TD) – 3 yrs",kind:"lump",def:100000,rate:R.td3,n:3},
+ {id:"td5",hi:"सावधि जमा (TD) – 5 साल",en:"Time Deposit (TD) – 5 yrs",kind:"lump",def:100000,rate:R.td5,n:5},
+ {id:"mis",hi:"मासिक आय योजना (MIS)",en:"Monthly Income Scheme (MIS)",kind:"lump",def:900000,rate:R.mis},
+ {id:"scss",hi:"वरिष्ठ नागरिक बचत (SCSS)",en:"Senior Citizen Savings (SCSS)",kind:"lump",def:1000000,rate:R.scss},
+ {id:"nsc",hi:"राष्ट्रीय बचत पत्र (NSC)",en:"National Savings Certificate (NSC)",kind:"lump",def:100000,rate:R.nsc},
+ {id:"kvp",hi:"किसान विकास पत्र (KVP)",en:"Kisan Vikas Patra (KVP)",kind:"lump",def:100000,rate:R.kvp},
+ {id:"ppf",hi:"लोक भविष्य निधि (PPF) – 15 साल",en:"Public Provident Fund (PPF) – 15 yrs",kind:"yearly",def:150000,rate:R.ppf},
+ {id:"ssa",hi:"सुकन्या समृद्धि (SSA) – 21 साल",en:"Sukanya Samriddhi (SSA) – 21 yrs",kind:"yearly",def:150000,rate:R.ssa}];
+function calcScheme(s,a){const r=s.rate/100,H=L==="hi";
+ if(s.id==="rd"){let m=0;for(let i=1;i<=60;i++)m+=a*Math.pow(1+r/4,i/3);return {dep:a*60,mat:m,rows:[[t("years"),H?"5 साल (60 किस्त)":"5 yrs (60 instalments)"]]}}
+ if(s.id.startsWith("td")){const yi=a*(Math.pow(1+r/4,4)-1);return {dep:a,mat:a+yi*s.n,rows:[[t("yearlyInt"),inr(yi)],[t("years"),s.n+(H?" साल":" yrs")]]}}
+ if(s.id==="mis"){const mi=a*r/12;return {dep:a,mat:a+mi*60,rows:[[t("monthlyInt"),inr(mi)],[t("years"),H?"5 साल, फिर मूलधन वापस":"5 yrs, then principal back"]]}}
+ if(s.id==="scss"){const qi=a*r/4;return {dep:a,mat:a+qi*20,rows:[[t("quarterlyInt"),inr(qi)],[t("years"),H?"5 साल":"5 yrs"]]}}
+ if(s.id==="nsc")return {dep:a,mat:a*Math.pow(1+r,5),rows:[[t("years"),H?"5 साल":"5 yrs"]]};
+ if(s.id==="kvp")return {dep:a,mat:a*2,rows:[[t("years"),R.kvpMonths+(H?" महीने में दोगुना":" months, doubles")]]};
+ if(s.id==="ppf"){let v=0;for(let y=0;y<15;y++)v=(v+a)*(1+r);return {dep:a*15,mat:v,rows:[[t("years"),H?"15 साल जमा":"15 yrs deposit"]]}}
+ if(s.id==="ssa"){let v=0;for(let y=0;y<21;y++){if(y<15)v+=a;v*=1+r}return {dep:a*15,mat:v,rows:[[t("years"),H?"15 साल जमा, 21 साल पर मैच्योर":"15 yrs deposit, matures at 21 yrs"]]}}}
+function savingsView(){const sv=store.get("sav",{id:"rd",a:1000});
+ return `<div class="stack">${head("savings",tf("savIntro",{q:L==="hi"?R.q:R.qEn}))}
+ <div class="card"><label class="f">${t("scheme")}<select class="inp" id="v_id">${SCH.map(s=>`<option value="${s.id}"${s.id===sv.id?" selected":""}>${esc(L==="hi"?s.hi:s.en)} · ${s.rate}%</option>`).join("")}</select></label>
+ <label class="f"><span id="v_lbl"></span><input class="inp" id="v_a" type="number" inputmode="numeric" min="0" step="100" value="${sv.a}"></label></div>
+ <div class="out" id="v_out"></div><div class="row"><a class="btn wa" id="v_wa" href="#" target="_blank" rel="noopener">${svg("wa",2)} ${t("wa")}</a><button class="btn btn-line" id="v_cp" type="button">${t("copyQuote")}</button></div><p class="small" id="v_txt" hidden style="white-space:pre-line"></p>
+ <p class="note">${t("savNote")}</p>${updLine()}</div>`}
+function savingsCalc(e){const id=$("#v_id").value,s=SCH.find(x=>x.id===id);
+ if(e&&e.target&&e.target.id==="v_id")$("#v_a").value=s.def;
+ const a=+$("#v_a").value||0;store.set("sav",{id,a});
+ $("#v_lbl").textContent=s.kind==="monthly"?t("monthlyDep"):s.kind==="yearly"?t("yearlyDep"):t("amount");
+ const r=calcScheme(s,a);const name=L==="hi"?s.hi:s.en;
+ $("#v_out").innerHTML=`<span class="lbl">${t("maturity")}</span><span class="big">${inr(r.mat)}</span>
+ <div class="kv"><span>${t("deposit")}</span><b>${inr(r.dep)}</b></div><div class="kv"><span>${t("interest")}</span><b>${inr(r.mat-r.dep)}</b></div>
+ <div class="kv"><span>${L==="hi"?"ब्याज दर":"Interest rate"}</span><b>${s.rate}%</b></div>${r.rows.map(x=>`<div class="kv"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("")}`;
+ $("#v_txt").textContent=`📮 ${name} @ ${s.rate}%\n${t("deposit")}: ${inr(r.dep)}\n${t("maturity")}: ${inr(r.mat)}\n${t("interest")}: ${inr(r.mat-r.dep)}\n${r.rows.map(x=>x[0]+": "+x[1]).join("\n")}\n(${L==="hi"?"अनुमान, अंतिम राशि पोस्ट ऑफिस से":"Estimate; final amount from Post Office"})`;
+ $("#v_wa").href=waHref($("#v_txt").textContent+"\n"+SITE+"#savings")}
+function ratesView(){const rows=[["SB","Savings Account",R.sb],["TD 1","1-year Time Deposit",R.td1],["TD 2","2-year Time Deposit",R.td2],["TD 3","3-year Time Deposit",R.td3],["TD 5","5-year Time Deposit",R.td5],
+ ["RD","5-year Recurring Deposit",R.rd],["MIS","Monthly Income Scheme",R.mis],["SCSS","Senior Citizen Savings Scheme",R.scss],["PPF","Public Provident Fund",R.ppf],["SSA","Sukanya Samriddhi Account",R.ssa],
+ ["NSC","National Savings Certificate",R.nsc],["KVP","Kisan Vikas Patra ("+R.kvpMonths+" months)",R.kvp]];
+ return `<div class="stack">${head("rates",tf("ratesIntro",{q:L==="hi"?R.q:R.qEn}))}
+ <div class="card tbl" style="padding:6px 12px"><table><thead><tr><th>${t("scheme")}</th><th>${t("perYr")}</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${r[0]}</b><br><span class="note">${r[1]}</span></td><td class="rate">${r[2].toFixed(1)}%</td></tr>`).join("")}</tbody></table></div>
+ <a class="btn btn-navy" href="#savings">${t("tSavings")} →</a>${updLine()}</div>`}
+function tdView(){const rows=store.get("td",[{a:100000,n:5}]);
+ return `<div class="stack">${head("td",t("tdIntro"))}<div class="stack" id="td_rows">${rows.map((r,i)=>tdRow(r,i)).join("")}</div>
+ <button class="btn btn-line" id="td_add" type="button">${t("addTd")}</button><div class="out" id="td_out"></div><p class="note">${t("tdNote")}</p></div>`}
+const tdRow=(r,i)=>`<div class="card" style="padding:12px;gap:8px"><div class="qmeta"><b style="color:var(--navy)">TD ${i+1}</b>${i?`<button class="btn btn-line btn-sm" data-rm="${i}" type="button" style="flex:none">${t("remove")}</button>`:""}</div>
+ <div class="grid2"><label class="f">${t("amount")}<input class="inp td-a" id="td_a${i}" type="number" inputmode="numeric" min="1000" step="100" value="${r.a}"></label>
+ <label class="f">${t("term")}<select class="inp td-n" id="td_n${i}">${[1,2,3,5].map(n=>`<option value="${n}"${n===r.n?" selected":""}>${n} ${L==="hi"?"साल":"yr"} · ${INFO.tdComm[n]}%</option>`).join("")}</select></label></div></div>`;
+function tdRead(){return [...document.querySelectorAll(".td-a")].map((el,i)=>({a:+el.value||0,n:+$("#td_n"+i).value}))}
+function tdCalc(){const rows=tdRead();store.set("td",rows);let tot=0;
+ const lines=rows.map((r,i)=>{const ok=r.a>=1000&&r.a%100===0;const c=ok?r.a*INFO.tdComm[r.n]/100:0;tot+=c;return `<div class="kv"><span>TD ${i+1}: ${inr(r.a)} · ${r.n}${L==="hi"?" साल":" yr"}</span><b>${ok?inr(c):"—"}</b></div>`}).join("");
+ $("#td_out").innerHTML=`<span class="lbl">${t("total")}</span><span class="big">${inr(tot)}</span>${lines}`}
+function careerView(){const cv=store.get("car",{post:"gds",join:"2019-06-01",dob:"1995-01-01",edu:"12",cat:"ur",yr:new Date().getFullYear()+1});
+ const o=(v,c,l)=>`<option value="${v}"${v===c?" selected":""}>${l}</option>`;const H=L==="hi";
+ return `<div class="stack">${head("career",t("carIntro"))}
+ <div class="card"><div class="grid2">
+ <label class="f">${t("post")}<select class="inp" id="c_post">${o("gds",cv.post,"GDS (BPM/ABPM/Dak Sevak)")}${o("mts",cv.post,"MTS")}${o("pm",cv.post,H?"पोस्टमैन / मेल गार्ड":"Postman / Mail Guard")}</select></label>
+ <label class="f">${t("examYear")}<input class="inp" id="c_yr" type="number" min="2024" max="2040" value="${cv.yr}"></label>
+ <label class="f">${t("joined")}<input class="inp" id="c_join" type="date" value="${cv.join}"></label>
+ <label class="f">${t("dob")}<input class="inp" id="c_dob" type="date" value="${cv.dob}"></label>
+ <label class="f">${t("edu")}<select class="inp" id="c_edu">${o("8",cv.edu,H?"10वीं से कम":"Below 10th")}${o("10",cv.edu,H?"10वीं पास":"10th pass")}${o("12",cv.edu,H?"12वीं पास":"12th pass")}${o("grad",cv.edu,H?"ग्रेजुएट":"Graduate")}</select></label>
+ <label class="f">${t("cat")}<select class="inp" id="c_cat">${o("ur",cv.cat,"UR / EWS")}${o("obc",cv.cat,"OBC")}${o("sc",cv.cat,"SC / ST")}</select></label>
+ </div></div><div class="card" id="c_out" style="gap:0"></div><p class="note">${t("carNote")}</p></div>`}
+function yrsBetween(a,b){let y=b.getFullYear()-a.getFullYear();const m=b.getMonth()-a.getMonth();if(m<0||(m===0&&b.getDate()<a.getDate()))y--;return y}
+function careerCalc(){const v={post:$("#c_post").value,yr:+$("#c_yr").value||new Date().getFullYear(),join:$("#c_join").value,dob:$("#c_dob").value,edu:$("#c_edu").value,cat:$("#c_cat").value};store.set("car",v);
+ const H=L==="hi";if(!v.join||!v.dob){$("#c_out").innerHTML="";return}
+ const ref=new Date(v.yr+"-01-01T00:00:00"),j=new Date(v.join+"T00:00:00"),d=new Date(v.dob+"T00:00:00");
+ const svc=yrsBetween(j,ref),age=yrsBetween(d,ref),eduN={"8":8,"10":10,"12":12,"grad":15}[v.edu];
+ const early=j<=new Date("2022-06-17T00:00:00");
+ const fromYr=n=>j.getFullYear()+n+((j.getMonth()||j.getDate()>1)?1:0);
+ const res=[];const push=(name,need,ok,why)=>res.push({name,need,ok,why});
+ if(v.post==="gds"){
+  push("GDS → MTS",H?"3 साल नियमित सेवा · उम्र/शिक्षा की शर्त नहीं · पेपर I":"3 yrs regular service · no age/education limit · Paper I",svc>=3,svc>=3?"":`${fromYr(3)} ${t("from")}`);
+  const pmAge=50+(v.cat==="sc"?5:v.cat==="obc"?3:0);
+  push("GDS → Postman / Mail Guard",H?`5 साल सेवा · उम्र ${pmAge} तक · 10वीं · कंप्यूटर व स्थानीय भाषा · पेपर I–III + डेटा एंट्री टेस्ट`:`5 yrs service · age up to ${pmAge} · 10th · computer & local language · Papers I–III + data entry test`,
+   svc>=5&&age<=pmAge&&eduN>=10,svc<5?`${fromYr(5)} ${t("from")}`:age>pmAge?t("ageOver"):eduN<10?t("eduNeed"):"");
+  const paSvc=early?5:8,paAge=40+(v.cat==="sc"?5:v.cat==="obc"?3:0),paEdu=early?12:15;
+  push("GDS → PA / SA (Category C)",H?`${paSvc} साल सेवा · उम्र ${paAge} तक · ${early?"12वीं (17.06.2022 या पहले जुड़े)":"ग्रेजुएशन (17.06.2022 के बाद जुड़े)"}`:`${paSvc} yrs service · age up to ${paAge} · ${early?"12th (joined on/before 17.06.2022)":"graduation (joined after 17.06.2022)"}`,
+   svc>=paSvc&&age<=paAge&&eduN>=paEdu,svc<paSvc?`${fromYr(paSvc)} ${t("from")}`:age>paAge?t("ageOver"):eduN<paEdu?t("eduNeed"):"");
+ }else{
+  const n=v.post==="pm"?3:5;
+  push("PA / SA (Category A)",H?`${v.post==="pm"?"पोस्टमैन/मेल गार्ड में 3 साल":"MTS में 5 साल"} नियमित सेवा`:`${n} yrs regular service as ${v.post==="pm"?"Postman/Mail Guard":"MTS"}`,svc>=n,svc>=n?"":`${fromYr(n)} ${t("from")}`);
+  if(v.post==="mts")push("MTS → Postman / Mail Guard",H?"विभागीय परीक्षा, सर्कल अधिसूचना के अनुसार":"Departmental exam, as per circle notification",null,H?"अधिसूचना देखें":"See notification");
+ }
+ $("#c_out").innerHTML=`<div class="qmeta" style="padding-bottom:6px"><span>${H?"सेवा":"Service"}: <b>${Math.max(0,svc)} ${H?"साल":"yrs"}</b></span><span>${H?"उम्र":"Age"}: <b>${age}</b></span><span>1.1.${v.yr}</span></div>
+ ${res.map(r=>`<div class="elig"><span class="pill ${r.ok===true?"p-ok":r.ok===null?"p-wait":"p-no"}">${r.ok===true?t("eligible"):r.ok===null?"?":t("notYet")}</span><div><b>${esc(r.name)}</b><p class="note">${esc(r.need)}</p>${r.why?`<p class="small" style="color:var(--red);font-weight:700">${esc(r.why)}</p>`:""}</div></div>`).join("")}`}
+function pay8View(){const pv=store.get("p8",{b:12000,f:2.57});
+ return `<div class="stack">${head("pay8",t("p8Intro"))}
+ <div class="card"><label class="f">${t("curBasic")}<input class="inp" id="p_b" type="number" inputmode="numeric" min="0" value="${pv.b}"></label>
+ <span class="f">${t("factor")}</span><div class="chips" id="p_f">${[1.92,2.28,2.57,2.86].map(f=>`<button class="chip${f===pv.f?" on":""}" data-f="${f}" type="button">${f}</button>`).join("")}</div></div>
+ <div class="out" id="p_out"></div><p class="note">${t("p8Note")}</p></div>`}
+function pay8Calc(){const b=+$("#p_b").value||0;const on=$("#p_f .chip.on");const f=on?+on.dataset.f:2.57;store.set("p8",{b,f});const nb=Math.round(b*f/100)*100;
+ $("#p_out").innerHTML=`<span class="lbl">${t("newBasic")} · ×${f}</span><span class="big">${inr(nb)}</span><div class="kv"><span>${t("curBasic")}</span><b>${inr(b)}</b></div><div class="kv"><span>${t("increase")}</span><b>${inr(nb-b)}</b></div>`}
+function holView(){const td=todayD();const nh=nextHoliday();
+ return `<div class="stack">${head("hol",t("holIntro"))}
+ ${nh?`<div class="out"><span class="lbl">${t("tkHol")}</span><span class="big">${esc(L==="hi"?nh.h[1]:nh.h[2])}</span><div class="kv"><span>${fmtD(nh.d,{weekday:"long",day:"numeric",month:"long"})}</span><b>${nh.left===0?t("today"):nh.left+" "+t("daysLeft")}</b></div></div>`:""}
+ <div class="card" style="gap:0;padding-block:4px">${INFO.holidays.map(h=>{const d=new Date(h[0]+"T00:00:00");const past=d<td;const isN=nh&&h===nh.h;
+  return `<div class="hol${past?" past":""}${isN?" next":""}"><div class="hd"><b>${d.getDate()}</b><span>${fmtD(d,{month:"short"})}</span></div><div style="min-width:0"><b style="font-family:var(--f-disp)">${esc(L==="hi"?h[1]:h[2])}</b><br><span class="note">${fmtD(d,{weekday:"long"})}</span></div></div>`}).join("")}</div>
+ <p class="note">${t("holNote")}</p><a class="btn btn-line" href="#note-8">📒 Clause 8 · ${L==="hi"?"डाकघर अवकाश नोट्स":"Post Office Holidays notes"}</a></div>`}
+function examView(){const H=L==="hi";
+ const rows=[["GDS → MTS",H?"पेपर I: PO Guide Part I, Post Office Act व नियम, डाक विभाग की योजनाएँ (सर्कल अधिसूचना अनुसार)":"Paper I: PO Guide Part I, Post Office Act & rules, departmental schemes (as per circle notification)"],
+  ["GDS → Postman / Mail Guard",H?"पेपर I–III: विभागीय नियम, PO Guide, सामान्य ज्ञान, गणित, भाषा, फिर 15 मिनट का डेटा एंट्री टेस्ट":"Papers I–III: departmental rules, PO Guide, GK, maths, language, then a 15-minute data entry test"],
+  ["GDS → PA / SA",H?"विभागीय नियम, PO Guide, गणित, अंग्रेज़ी, रीज़निंग और कंप्यूटर (सर्कल अधिसूचना अनुसार)":"Departmental rules, PO Guide, maths, English, reasoning and computer (as per circle notification)"]];
+ return `<div class="stack">${head("exam",t("examIntro"))}
+ <div class="card" style="gap:0;padding-block:4px">${rows.map(r=>`<div class="elig"><span class="pill p-ok">${H?"परीक्षा":"Exam"}</span><div><b>${r[0]}</b><p class="note">${r[1]}</p></div></div>`).join("")}</div>
+ <div class="row"><a class="btn btn-red" href="#notes">📒 ${t("secNotes")} →</a><a class="btn btn-line" href="#career">${t("tCareer")}</a></div><p class="note">${t("carNote")}</p></div>`}
+function linksView(){const H=L==="hi";const ls=[["https://www.indiapost.gov.in",H?"इंडिया पोस्ट":"India Post","indiapost.gov.in"],["https://indiapostgdsonline.gov.in",H?"GDS ऑनलाइन भर्ती":"GDS online engagement","indiapostgdsonline.gov.in"],
+ ["https://utilities.cept.gov.in/dop/ViewUploads.aspx?uid=10",H?"विभागीय आदेश (CEPT)":"Departmental orders (CEPT)","utilities.cept.gov.in"],[IG,"Postal Wala Instagram","instagram.com/postal_wala"]];
+ return `<div class="stack">${head("links",t("linksIntro"))}<div class="rows">${ls.map((l,i)=>`<a class="row-link" href="${l[0]}" target="_blank" rel="noopener"><span class="num ${NC[i%3]}">${svg("links",2.1)}</span><span><b>${esc(l[1])} ↗</b><small>${esc(l[2])}</small></span></a>`).join("")}</div></div>`}
+
+/* ---------- EASY-USE HELPERS ---------- */
+const canSpeak=(()=>{try{return "speechSynthesis" in window&&typeof SpeechSynthesisUtterance!=="undefined"}catch(e){return false}})();
+let speakingBtn=null;
+function speak(text,btn){if(!canSpeak)return;const ss=window.speechSynthesis;
+ if(speakingBtn===btn&&ss.speaking){ss.cancel();btn.classList.remove("on");btn.innerHTML="🔊 "+t("say");speakingBtn=null;return}
+ ss.cancel();if(speakingBtn){speakingBtn.classList.remove("on");speakingBtn.innerHTML="🔊 "+t("say")}
+ const u=new SpeechSynthesisUtterance(text);const hindi=/[ऀ-ॿ]/.test(text);u.lang=hindi?"hi-IN":"en-IN";u.rate=.92;
+ const v=ss.getVoices().find(v=>v.lang&&v.lang.toLowerCase().startsWith(hindi?"hi":"en-in"));if(v)u.voice=v;
+ u.onend=u.onerror=()=>{if(btn){btn.classList.remove("on");btn.innerHTML="🔊 "+t("say")}speakingBtn=null};
+ speakingBtn=btn;if(btn){btn.classList.add("on");btn.innerHTML="⏹ "+t("stop")}ss.speak(u)}
+const spk=text=>canSpeak&&text?`<button class="spk" type="button" data-say="${esc(text)}">🔊 ${t("say")}</button>`:"";
+document.addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b){e.preventDefault();speak(b.dataset.say,b)}});
+const waHref=txt=>"https://wa.me/?text="+encodeURIComponent(txt);
+const waBtn=(txt,sm)=>`<a class="btn wa${sm?" btn-sm":""}" href="${waHref(txt)}" target="_blank" rel="noopener">${svg("wa",2)} ${t("wa")}</a>`;
+P.wa='<path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.6-2-1-1 .8c-1-.4-1.8-1.2-2.2-2.2l.8-1-1-2z"/>';
+P.search='<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>';
+/* text size */
+const ZS=[1,1.12,1.25];let Z=store.get("z",0);
+function applyZ(){document.documentElement.style.setProperty("--z",ZS[Z]);const b=$("#fsBtn");if(b)b.textContent=["A+","A++","A"][Z]}
+$("#fsBtn").onclick=()=>{Z=(Z+1)%ZS.length;store.set("z",Z);applyZ()};
+applyZ();
+/* explanation for a wrong answer: the exact part of the notes PDF page */
+function explain(q){
+ if(q.nt){const [n,x0,y0,x1,y1]=q.nt;const w=x1-x0,h=y1-y0;const src=nimg(cid(n),"notes");const nn=NOTES.find(x=>x.n===n);
+  const bg=`background-image:url('${src}');background-size:${(100/w).toFixed(2)}% auto;background-position:${(x0/(1-w)*100).toFixed(2)}% ${(y0/(1-h)*100).toFixed(2)}%;aspect-ratio:${(w*1100/(h*1555)).toFixed(3)}`;
+  const tx=q.nx?(L==="hi"?q.nx[0]:q.nx[1]||q.nx[0]):"";
+  return `<div class="expl"><div class="eh"><span>${t("fromNotes")} · Clause ${n}</span>${spk(tx)}</div>
+  ${tx?`<p style="padding:0 10px 8px;font-size:16px;line-height:1.5">${esc(tx)}</p>`:""}
+  <button class="crop" type="button" data-zoom="${src}" data-title="Clause ${n} · ${esc(nn?nn.en:"")}" style="${bg}" aria-label="${t("fullPage")}"></button>
+  <div class="row"><button class="btn btn-line btn-sm" type="button" data-zoom="${src}" data-title="Clause ${n}">${t("fullPage")}</button><a class="btn btn-navy btn-sm" href="#note-${n}" data-ntab="chitra" data-nn="${n}">${t("seeChitra")}</a></div></div>`}
+ if(q.f){const hasN=q.c&&NOTES.some(x=>x.n===q.c);
+  return `<div class="oneline"><small>${t("ruleFrom")}${q.c?" · Clause "+q.c:""}</small>${esc(q.f)}<div class="row" style="margin-top:8px">${spk(q.f)}${hasN?`<a class="btn btn-navy btn-sm" href="#note-${q.c}">${tf("notesCl",{n:q.c})}</a>`:q.c?`<a class="btn btn-line btn-sm" href="#course">${tf("practiceCl",{n:q.c})}</a>`:""}</div></div>`}
+ if(q.c&&NOTES.some(x=>x.n===q.c))return `<a class="btn btn-navy btn-sm" href="#note-${q.c}">${tf("notesCl",{n:q.c})}</a>`;
+ return `<p class="note">${t("noExpl")}</p>`}
+document.addEventListener("click",e=>{const a=e.target.closest("[data-ntab]");if(a)noteTab[a.dataset.nn]=a.dataset.ntab});
+/* continue + role */
+const LAST_OK=v=>v.startsWith("note-")||["course","pyq","galti",...TOOLS.map(x=>x[0])].includes(v);
+function remember(v){if(!LAST_OK(v))return;let lab;
+ if(v.startsWith("note-")){const id=v.slice(5);const n=NOTES.find(x=>String(x.n)===id);const ex=EXTRA_NOTES.find(x=>x.id===id);lab=n?{hi:`क्लॉज़ ${n.n} · ${n.hi}`,en:`Clause ${n.n} · ${n.en}`}:ex?{hi:ex.hi,en:ex.en}:null}
+ else if(v==="course")lab={hi:T.hi.tCourse,en:T.en.tCourse};else if(v==="pyq")lab={hi:T.hi.tPyq,en:T.en.tPyq};else if(v==="galti")lab={hi:T.hi.tGalti,en:T.en.tGalti};
+ else lab={hi:T.hi[tName(v)],en:T.en[tName(v)]};
+ if(lab)store.set("last",{h:"#"+v,...lab})}
+function contCards(){let h="";const last=store.get("last",null);const s=store.get("streak",{last:""});
+ if(last)h+=`<a class="cont" href="${last.h}"><span class="num">▶</span><span style="min-width:0"><small>${t("cont")}</small><b>${esc(L==="hi"?last.hi:last.en)}</b></span><span class="arrow">→</span></a>`;
+ if(s.last!==new Date().toDateString())h+=`<a class="cont" href="#quiz" style="background:var(--navy);box-shadow:0 3px 0 #141B3B"><span class="num" style="color:var(--navy)">?</span><span style="min-width:0"><b>${t("quizDue")}</b><small>${t("quizDueS")}</small></span><span class="arrow">→</span></a>`;
+ return h}
+const ROLE_TOOLS={gds:["salary","bonus","td","savings","rates","hol"],mts:["career","pay8","hol","rates","savings","links"],pm:["career","pay8","hol","rates","savings","links"],prep:["career","exam","hol","links","rates","savings"]};
+function roleCard(){return `<div class="role"><b style="font:800 17px var(--f-disp);color:var(--navy)">👋 ${t("roleQ")}</b><div class="opts2">
+ <button type="button" data-role="gds">${t("rGds")}</button><button type="button" data-role="mts">${t("rMts")}</button><button type="button" data-role="pm">${t("rPm")}</button><button type="button" data-role="prep">${t("rPrep")}</button></div></div>`}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-role]");if(b){store.set("role",b.dataset.role);route()}
+ const c=e.target.closest("[data-rolechange]");if(c){e.preventDefault();store.set("role",null);route();scrollTo(0,0)}});
+/* install (only works on the real website) */
+let deferredInstall=null;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;const v=(location.hash||"#home").slice(1);if(v==="home"||v==="")route()});
+function installCard(){return deferredInstall?`<div class="role" style="background:var(--mint);border-color:#B9DED5"><b style="font:800 17px var(--f-disp);color:var(--teal)">${t("install")}</b><p class="small">${t("installS")}</p><button class="btn btn-navy" id="inst" type="button">${t("installBtn")}</button></div>`:""}
+/* search */
+let sq="";
+function searchView(){return `<div class="stack"><h1>${t("searchT")}</h1><label class="srch">${svg("search",2.2)}<input class="search" id="sq" type="search" placeholder="${t("searchPh")}" value="${esc(sq)}" autofocus></label><div class="res" id="sres"></div></div>`}
+function searchRun(){sq=$("#sq").value;const s=sq.trim().toLowerCase();const out=[];
+ if(s.length>=2){const has=x=>String(x||"").toLowerCase().includes(s);const num=(s.match(/\d+/)||[])[0];
+  TOOLS.forEach(([k,c])=>{if(has(T.hi[tName(k)])||has(T.en[tName(k)])||has(T.hi[tName(k)+"S"])||has(T.en[tName(k)+"S"])||has(k))out.push(`<a href="#${k}"><span class="num ${c}">${svg(k,2.1)}</span><span><b>${t(tName(k))}</b><small>${t("rTools")} · ${t(tName(k)+"S")}</small></span></a>`)});
+  NOTES.forEach((n,i)=>{if(has(n.en)||has(n.hi)||has(n.line.hi)||has(n.line.en)||(num&&+num===n.n))out.push(`<a href="#note-${n.n}"><span class="num ${NC[i%3]}">${pad2(n.n)}</span><span><b>${esc(L==="hi"?n.hi:n.en)}</b><small>${t("rNotes")} · ${esc(L==="hi"?n.line.hi:n.line.en)}</small></span></a>`)});
+  DATA.clauses.forEach(c=>{if(NOTES.some(n=>n.n===c.n))return;if(has(c.h)||has(c.t)||(num&&+num===c.n))out.push(`<a href="#course"><span class="num n-navy">${pad2(c.n)}</span><span><b>${esc(L==="hi"?c.h||c.t:c.t)}</b><small>${t("rCl")} ${c.n} · ${c.p.length} ${t("q")}</small></span></a>`)});
+  let k=0;DATA.pyq.forEach(q=>{if(k<15&&(has(q.q)||has(q.e)||q.o.some(has))){k++;out.push(`<a href="#pyq" data-ps="${esc(sq)}"><span class="num n-gold">${svg("pyq",2.1)}</span><span><b>${esc(qText(q))}</b><small>${t("rQ")} · ${esc(q.o[q.a])}</small></span></a>`)}})}
+ $("#sres").innerHTML=s.length<2?"":out.length?out.join(""):`<p class="muted">${t("noRes")}</p>`;
+ $("#sres").querySelectorAll("[data-ps]").forEach(a=>a.onclick=()=>{pf.s=a.dataset.ps;pf.st=""})}
+/* mock modes */
+const paperList=()=>{const c={};DATA.pyq.forEach(q=>q.x.forEach(e=>c[e]=(c[e]||0)+1));return Object.entries(c).filter(([,n])=>n>=6).sort((a,b)=>b[1]-a[1])};
+function mockModes(){const papers=paperList();
+ return `<div class="stack"><section class="navyband"><span class="eyebrow">FREE · ${DATA.pyq.length} PYQ</span><h1>${t("chooseMock")}</h1><p>${t("mockIntro")}</p></section>
+ <div class="modes"><button class="mode hot" type="button" data-mode="10"><b>${t("m10")}</b><small>${t("m10S")}</small></button><button class="mode" type="button" data-mode="25"><b>${t("m25")}</b><small>${t("m25S")}</small></button></div>
+ <h2>${t("mPaper")}</h2><p class="note">${t("mPaperS")}</p><div class="chips" style="flex-wrap:wrap">${papers.map(([e,n])=>`<button class="chip" type="button" data-paper="${esc(e)}">${esc(e)} · ${n}</button>`).join("")}</div>
+ <h2>${t("mClause")}</h2><p class="note">${t("mClauseS")}</p><div class="chips" style="flex-wrap:wrap">${DATA.clauses.map(c=>`<button class="chip" type="button" data-cl="${c.n}">${c.n} · ${esc((L==="hi"?c.h||c.t:c.t).slice(0,22))}</button>`).join("")}</div>
+ ${strip()}</div>`}
+function bindModes(){
+ document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{const n=+b.dataset.mode;startRun("mock",shuffle(DATA.pyq).slice(0,n),n===10?600:1200)});
+ document.querySelectorAll("[data-paper]").forEach(b=>b.onclick=()=>{const qs=shuffle(DATA.pyq.filter(q=>q.x.includes(b.dataset.paper)));startRun("mock",qs,Math.max(300,qs.length*48))});
+ document.querySelectorAll("[data-cl]").forEach(b=>b.onclick=()=>{const c=DATA.clauses.find(x=>x.n===+b.dataset.cl);const qs=shuffle(c.p.map(p=>({...p,x:[],c:c.n})));startRun("mock",qs,Math.max(180,qs.length*45))})}
+
+/* ---------- ROUTER ---------- */
+const VIEWS=["home","notes","study","mock","pyq","course","quiz","galti","tools","search",...TOOLS.map(x=>x[0])];
+function bindInputs(sel,fn){document.querySelectorAll(sel).forEach(el=>{el.oninput=fn;el.onchange=fn});fn()}
+function route(){
+ const v=(location.hash||"#home").slice(1);
+ const isNote=v.startsWith("note-");const view=isNote?"note":VIEWS.includes(v)?v:"home";
+ renderTabs(view);const app=$("#app");
+ if((view==="mock"||view==="quiz")&&run&&run.kind===view){draw();return}
+ if(run&&run.kind!==view){clearInterval(timerId);run=null}
+ const R2={home,notes:notesView,study:studyView,tools:toolsView,course:courseView,exam:examView,links:linksView,rates:ratesView,hol:holView};
+ if(R2[view])app.innerHTML=R2[view]();
+ if(view==="note"){const id=v.slice(5);app.innerHTML=noteView(id);
+  app.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{noteTab[id]=b.dataset.tab;route()});
+  const n=NOTES.find(x=>String(x.n)===id);const cl=n&&DATA.clauses.find(x=>x.n===n.n);if(cl)bindPractice(app,cl.p.slice(0,3))}
+ remember(isNote?v:view);
+ if(view==="home"){const ib=$("#inst");if(ib)ib.onclick=()=>{deferredInstall.prompt();deferredInstall=null;route()}}
+ if(view==="search"){app.innerHTML=searchView();$("#sq").oninput=searchRun;searchRun();setTimeout(()=>{try{$("#sq").focus()}catch(e){}},50)}
+ if(view==="mock"){app.innerHTML=mockModes();bindModes()}
+ if(view==="quiz"){app.innerHTML=quizIntro();$("#go").onclick=()=>{const qs=dailyQs();startRun("quiz",qs,0);
+   if(store.get("streak",{}).last===new Date().toDateString()){run.ans=qs.map(q=>q.a);run.done=true;draw()}}}
+ if(view==="galti"){app.innerHTML=galtiView();const gp=$("#gp");if(gp)gp.onclick=()=>{const g=store.get("galti",{});startRun("galti",shuffle(allQs().filter(q=>g[qid(q)])).slice(0,25),0)}}
+ if(view==="pyq"){app.innerHTML=pyqView();pyqList();
+  $("#srch").oninput=e=>{pf.s=e.target.value;pyqList()};
+  $("#chips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{pf.st=b.dataset.st;$("#chips").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b));pyqList()})}
+ if(view==="course")app.querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>{const d=store.get("done",[]);d.push(+b.dataset.done);store.set("done",[...new Set(d)]);route()});
+ if(view==="salary"){app.innerHTML=salaryView();$("#s_slab").onchange=()=>{$("#s_basic").value=INFO.trca.find(s=>s.id===$("#s_slab").value).min;salaryCalc()};$("#s_basic").oninput=salaryCalc;salaryCalc()}
+ if(view==="bonus"){app.innerHTML=bonusView();bindInputs("#b_amt,#b_m",bonusCalc)}
+ if(view==="savings"){app.innerHTML=savingsView();$("#v_id").onchange=savingsCalc;$("#v_a").oninput=savingsCalc;savingsCalc();$("#v_cp").onclick=e=>copyText($("#v_txt").textContent,e.currentTarget,$("#v_txt"))}
+ if(view==="td"){app.innerHTML=tdView();bindInputs(".td-a,.td-n",tdCalc);
+  document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{const r=tdRead();r.splice(+b.dataset.rm,1);store.set("td",r);route()});
+  $("#td_add").onclick=()=>{const r=tdRead();r.push({a:100000,n:5});store.set("td",r);route()}}
+ if(view==="career"){app.innerHTML=careerView();bindInputs("#c_post,#c_yr,#c_join,#c_dob,#c_edu,#c_cat",careerCalc)}
+ if(view==="pay8"){app.innerHTML=pay8View();$("#p_b").oninput=pay8Calc;$("#p_f").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{$("#p_f").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b));pay8Calc()});pay8Calc()}
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-zoom]");if(b){e.preventDefault();openZoom(b.dataset.zoom,b.dataset.title)}});
+$("#langBtn").onclick=()=>{L=L==="hi"?"en":"hi";store.set("lang",L);route()};
+addEventListener("hashchange",()=>{scrollTo(0,0);route()});
+route();
+</script>

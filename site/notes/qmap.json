@@ -1,0 +1,189 @@
+{
+"_note": "PYQ id -> [clause, x0, y0, x1, y1, text_key]: notes PDF page ka hissa (0-1) + _texts me us hisse ki likhi baat. Naye jodo isi tarah.",
+"night_po": [
+3,
+0.04,
+0.245,
+0.96,
+0.39,
+"night"
+],
+"p_13d417ffa4": [
+3,
+0.04,
+0.245,
+0.96,
+0.39,
+"night"
+],
+"hours_by_circle": [
+3,
+0.04,
+0.31,
+0.96,
+0.352,
+"cpmg"
+],
+"p_b9362aa053": [
+3,
+0.04,
+0.31,
+0.96,
+0.352,
+"cpmg"
+],
+"bo_5_hours": [
+5,
+0.04,
+0.695,
+0.96,
+0.742,
+"gds5"
+],
+"p_66b8e5c019": [
+5,
+0.04,
+0.695,
+0.96,
+0.742,
+"gds5"
+],
+"p_168f47c313": [
+5,
+0.04,
+0.695,
+0.96,
+0.742,
+"gds5"
+],
+"p_42c16b1a98": [
+5,
+0.04,
+0.305,
+0.96,
+0.447,
+"fixed"
+],
+"p_1b31915263": [
+5,
+0.04,
+0.455,
+0.96,
+0.698,
+"table"
+],
+"p_94241a6000": [
+5,
+0.04,
+0.455,
+0.96,
+0.698,
+"table"
+],
+"p_bafd029e43": [
+5,
+0.04,
+0.455,
+0.96,
+0.698,
+"table"
+],
+"franked_letterbox": [
+7,
+0.04,
+0.482,
+0.52,
+0.645,
+"franked"
+],
+"p_61b7a4cc6a": [
+7,
+0.04,
+0.482,
+0.52,
+0.645,
+"franked"
+],
+"p_91c2e0d5c5": [
+7,
+0.04,
+0.482,
+0.52,
+0.645,
+"franked"
+],
+"p_5dba6a6151": [
+7,
+0.04,
+0.482,
+0.52,
+0.645,
+"franked"
+],
+"p_ad4f528d71": [
+7,
+0.04,
+0.482,
+0.52,
+0.645,
+"franked"
+],
+"p_95ac0f6432": [
+10,
+0.04,
+0.252,
+0.96,
+0.322,
+"stamps"
+],
+"revenue_unpaid": [
+10,
+0.04,
+0.41,
+0.96,
+0.572,
+"revenue"
+],
+"p_5d07a4e1d7": [
+10,
+0.04,
+0.41,
+0.96,
+0.572,
+"revenue"
+],
+"_texts": {
+"night": {
+"hi": "जो डाकघर रात 8:30 बजे तक और रविवार को भी खुला रहे, वह Night PO है। यह अधिकार सिर्फ़ DG के पास है: DG किसी भी डाकघर का समय रात 8:30 तक बढ़ा सकते हैं और रविवार को भी खोल सकते हैं।",
+"en": "A post office kept open till 8:30 PM and on Sundays too is a Night PO. Only the DG has this power: the DG can extend any PO's hours up to 8:30 PM and keep it open on Sunday."
+},
+"cpmg": {
+"hi": "डाकघरों का सामान्य काम का समय सर्किल प्रमुख (CPMG) तय करते हैं, क्लॉज़ 5 के अनुसार।",
+"en": "Normal working hours are fixed by the Head of Circle (CPMG), as per Clause 5 timings."
+},
+"gds5": {
+"hi": "GDS के प्रभार वाले डाकघर अधिकतम 5 घंटे खुले रहते हैं।",
+"en": "POs in charge of GDS stay open for a maximum of 5 hours."
+},
+"fixed": {
+"hi": "हर डाकघर व RMS कार्यालय में समय साफ़ लिखा होता है। सूचित समय बताता है: जनता से लेन-देन का समय और डाक वितरण / प्रेषण का समय। समय स्थानीय सुविधा और डाक के आने-जाने के अनुसार तय होता है।",
+"en": "Every PO & RMS office notifies its hours: time of public business and time of mail delivery / dispatch. Hours are fixed according to local convenience and arrival & departure of mail."
+},
+"table": {
+"hi": "सामान्य दिनों में: पूछताछ, टिकट व स्टेशनरी बिक्री, पोस्टिंग प्रमाणपत्र = पूरे समय। रजिस्टर्ड, बीमाकृत, VP लेख व पार्सल बुकिंग = 6–7 घंटे (शनिवार 5 घंटे, 3 बजे तक)। मनीऑर्डर, पोस्टल ऑर्डर, SB व प्रमाणपत्र = लगभग 5 घंटे (शनिवार 3 घंटे, 1 बजे तक)।",
+"en": "On normal week days: enquiry, sale of stamps & stationery, certificate of posting = entire hours. Booking of registered, insured, VP articles & parcels = 6–7 hrs (Saturday 5 hrs, till 3 PM). MO issue, postal orders, SB & PO certificates = about 5 hrs (Saturday 3 hrs, till 1 PM)."
+},
+"franked": {
+"hi": "मशीन से फ्रैंक किए लेख पोस्ट ऑफिस के लेटर बॉक्स और मेल वैन के लेटर बॉक्स में नहीं डाले जाते।",
+"en": "Machine-franked articles are not to be posted in post office letter boxes or mail van letter boxes."
+},
+"stamps": {
+"hi": "डाक प्रभार आमतौर पर डाक टिकट से दिया जाता है, जो भारत सरकार के अधिकार से भारतीय डाक जारी करता है।",
+"en": "Postage is normally paid with postage stamps, issued by India Post under the authority of the Government of India."
+},
+"revenue": {
+"hi": "राजस्व टिकट डाकघर सिर्फ़ बेचता है, जारी नहीं करता; इसे केंद्र सरकार जारी करती है और यह डाक प्रभार के लिए इस्तेमाल नहीं हो सकता।",
+"en": "A revenue stamp is only sold by the PO, not issued by it; it is issued by the Central Government and cannot be used for postage."
+}
+}
+}
