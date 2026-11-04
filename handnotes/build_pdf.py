@@ -27,3 +27,18 @@ with sync_playwright() as p:
                display_header_footer=True, header_template="<div></div>", footer_template=foot)
         print("OK", dst)
     b.close()
+
+# पूरी किताब: सारे भाग एक PDF में (हिंदी अलग, English अलग)
+try:
+    from pypdf import PdfWriter
+    for lang in ("Hindi", "English"):
+        parts = sorted(glob.glob(os.path.join(OUT, f"PO_Guide_Short_Notes_0*_{lang}.pdf")))
+        if parts:
+            w = PdfWriter()
+            for f in parts:
+                w.append(f)
+            dst = os.path.join(OUT, f"PO_Guide_Short_Notes_FULL_{lang}.pdf")
+            w.write(dst)
+            print("OK", dst)
+except ImportError:
+    print("pypdf nahi mila, FULL PDF nahi bani")
