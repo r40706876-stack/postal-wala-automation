@@ -1,0 +1,70 @@
+/* Handwritten short notes — notebook look. Screen = notebook column; print = A4 pages. */
+:root{
+  --paper:#FFFDF6; --rule:#D3E3F2; --margin:#E99A9A; --ink:#1B3C8C; --ink2:#1E1E1E; --red:#C8261F; --green:#13784A;
+  --hl:#FFF06A; --hl2:#C4F2CE; --hl3:#FFD4E1; --muted:#6B6B6B;
+  --hand:"Kalam","Hind","Noto Sans Devanagari",cursive; --lh:1.62;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:#E9E5DC}
+body{margin:0;font-family:var(--hand);color:var(--ink);font-size:17px;line-height:var(--lh)}
+.book{max-width:820px;margin:0 auto;background-color:var(--paper);
+  background-image:repeating-linear-gradient(transparent 0 calc(var(--lh)*1em - 1px),var(--rule) calc(var(--lh)*1em - 1px) calc(var(--lh)*1em));
+  background-position:0 .35em;position:relative;
+  padding:28px max(18px,env(safe-area-inset-right,0px)) 40px calc(max(18px,env(safe-area-inset-left,0px)) + 34px);
+  box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.book::before{content:"";position:absolute;top:0;bottom:0;left:max(30px,calc(env(safe-area-inset-left,0px) + 26px));border-left:2px solid var(--margin);opacity:.75}
+h1{font-weight:700;color:var(--red);font-size:1.75em;line-height:1.15;margin:0 0 .2em}
+h1 small{display:block;font-size:.5em;color:var(--muted);font-weight:400}
+h2{font-weight:700;color:var(--red);font-size:1.32em;line-height:1.2;margin:1.1em 0 .25em;break-after:avoid}
+h2 .cl{display:inline-block;border:2px solid var(--red);border-radius:6px 3px 7px 4px;padding:0 .3em;margin-right:.35em;font-size:.82em;transform:rotate(-2deg)}
+h3{font-weight:700;color:var(--ink2);font-size:1.06em;margin:.7em 0 .1em;break-after:avoid}
+p{margin:.15em 0}
+ul{margin:.1em 0 .3em;padding-left:1.5em;list-style:none}
+li{position:relative;margin:.05em 0}
+li::before{content:"➜";position:absolute;left:-1.3em;color:var(--red);font-size:.9em}
+li.s::before{content:"★"}
+li.x::before{content:"✗"}
+li.ok::before{content:"✓";color:var(--green)}
+b,.k{color:var(--ink2);font-weight:700}
+.r{color:var(--red);font-weight:700}
+.g{color:var(--green);font-weight:700}
+.en{color:var(--muted);font-size:.86em}
+mark{background:linear-gradient(transparent 38%,var(--hl) 38%,var(--hl) 90%,transparent 90%);color:inherit;padding:0 .15em}
+mark.gn{background:linear-gradient(transparent 38%,var(--hl2) 38%,var(--hl2) 90%,transparent 90%)}
+mark.pk{background:linear-gradient(transparent 38%,var(--hl3) 38%,var(--hl3) 90%,transparent 90%)}
+.u{text-decoration:underline wavy var(--red);text-underline-offset:.22em;text-decoration-thickness:1px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:4px 22px}
+@media (max-width:560px){.cols{grid-template-columns:1fr}}
+.box{border:2px solid var(--ink);border-radius:10px 4px 12px 5px;padding:.35em .8em;margin:.45em 0;break-inside:avoid}
+.trap{border:2px dashed var(--red);border-radius:8px;padding:.35em .8em;margin:.5em 0;background:rgba(255,212,225,.35);break-inside:avoid}
+.trap::before{content:"⚠ परीक्षा ट्रैप";display:block;color:var(--red);font-weight:700}
+.trick{background:#FFF59A;padding:.35em .8em;margin:.55em .2em;transform:rotate(-.7deg);box-shadow:0 3px 6px rgba(0,0,0,.12);break-inside:avoid}
+.trick::before{content:"💡 याद रखो";display:block;color:var(--red);font-weight:700}
+table{border-collapse:collapse;width:100%;margin:.35em 0;break-inside:avoid;font-size:.95em}
+td,th{border:1.6px solid var(--ink);padding:.12em .45em;text-align:left;vertical-align:top}
+th{background:rgba(196,220,255,.45);color:var(--ink2)}
+.tbl{overflow-x:auto}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:.3em 0}
+.chips span{border:1.6px solid var(--ink);border-radius:999px;padding:0 .6em;font-size:.92em;background:#fff}
+.chips span b{color:var(--red)}
+hr{border:none;border-top:2px dashed var(--margin);margin:1em 0;opacity:.7}
+.src{font-size:.78em;color:var(--muted);text-align:right;margin-top:.3em}
+/* mind map page */
+.mm{position:relative;height:1000px;break-before:page;break-after:page;break-inside:avoid;margin:.5em 0}
+.mm svg{position:absolute;inset:0;width:100%;height:100%}
+.mm .n{position:absolute;transform:translate(-50%,-50%);text-align:center;background:var(--paper);border:2px dashed var(--ink);border-radius:14px;padding:.3em .55em;width:38%;font-size:.9em;line-height:1.38}
+.mm .n.c{border:3px solid var(--red);border-radius:50%;width:30%;padding:1.2em .4em;background:#FFF8E6}
+.mm .n.gr{border-color:var(--green)}
+.mm .n.rd{border-color:var(--red)}
+.mm .t{position:absolute;left:0;right:0;top:0}
+@media (max-width:560px){.mm{height:1150px}.mm .n{width:44%;font-size:.86em}}
+@page{size:A4;margin:14mm 12mm 16mm 20mm}
+@media print{
+  html{background:none}
+  body{font-size:12.6pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .book{max-width:none;box-shadow:none;padding:0 0 0 4mm;background-color:transparent}
+  .book::before{position:fixed;left:-6mm;top:-14mm;bottom:-16mm}
+  html,body{background-color:var(--paper)}
+  .mm{height:262mm}
+}
