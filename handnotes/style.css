@@ -1,7 +1,8 @@
-/* Handwritten short notes — notebook look. Screen = notebook column; print = A4 pages. */
+/* Handwritten short notes — notebook look + "one-glance" boxes. Screen = notebook column; print = A4 pages.
+   Language labels come from <html lang="hi|en">. */
 :root{
-  --paper:#FFFDF6; --rule:#D3E3F2; --margin:#E99A9A; --ink:#1B3C8C; --ink2:#1E1E1E; --red:#C8261F; --green:#13784A;
-  --hl:#FFF06A; --hl2:#C4F2CE; --hl3:#FFD4E1; --muted:#6B6B6B;
+  --paper:#FFFDF6; --rule:#D3E3F2; --margin:#E99A9A; --ink:#1B3C8C; --ink2:#1E1E1E; --red:#C8261F; --green:#13784A; --purple:#6B2FA0;
+  --hl:#FFEE58; --hl2:#B9F0C6; --hl3:#FFC9DA; --hl4:#CFE3FF; --muted:#666;
   --hand:"Kalam","Hind","Noto Sans Devanagari",cursive; --lh:1.62;
   color-scheme:light;
 }
@@ -14,14 +15,26 @@ body{margin:0;font-family:var(--hand);color:var(--ink);font-size:17px;line-heigh
   padding:28px max(18px,env(safe-area-inset-right,0px)) 40px calc(max(18px,env(safe-area-inset-left,0px)) + 34px);
   box-shadow:0 8px 24px rgba(0,0,0,.12)}
 .book::before{content:"";position:absolute;top:0;bottom:0;left:max(30px,calc(env(safe-area-inset-left,0px) + 26px));border-left:2px solid var(--margin);opacity:.75}
-h1{font-weight:700;color:var(--red);font-size:1.75em;line-height:1.15;margin:0 0 .2em}
-h1 small{display:block;font-size:.5em;color:var(--muted);font-weight:400}
-h2{font-weight:700;color:var(--red);font-size:1.32em;line-height:1.2;margin:1.1em 0 .25em;break-after:avoid}
-h2 .cl{display:inline-block;border:2px solid var(--red);border-radius:6px 3px 7px 4px;padding:0 .3em;margin-right:.35em;font-size:.82em;transform:rotate(-2deg)}
-h3{font-weight:700;color:var(--ink2);font-size:1.06em;margin:.7em 0 .1em;break-after:avoid}
+
+/* cover */
+.cover{border:3px solid var(--red);border-radius:16px 6px 18px 8px;padding:.6em 1em .8em;margin-bottom:.6em;background:#fff;position:relative;break-inside:avoid}
+.cover h1{font-weight:700;color:var(--red);font-size:2em;line-height:1.1;margin:0}
+.cover p{margin:.15em 0;color:var(--ink2)}
+.cover .chips{margin-top:.4em}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88em;margin-top:.5em;color:var(--ink2)}
+
+/* section banner */
+h2{display:flex;align-items:center;gap:.4em;font-weight:700;color:#fff;background:var(--red);font-size:1.25em;line-height:1.2;
+   margin:1.2em -.2em .4em;padding:.25em .6em;border-radius:10px 4px 12px 4px;transform:rotate(-.4deg);break-after:avoid;box-shadow:3px 3px 0 rgba(200,38,31,.25)}
+h2 .cl{background:#fff;color:var(--red);border-radius:6px;padding:0 .35em;font-size:.8em;white-space:nowrap}
+h2.blue{background:var(--ink);box-shadow:3px 3px 0 rgba(27,60,140,.25)}
+h2.blue .cl{color:var(--ink)}
+h2.green{background:var(--green);box-shadow:3px 3px 0 rgba(19,120,74,.25)}
+h2.green .cl{color:var(--green)}
+h3{font-weight:700;color:var(--ink2);font-size:1.08em;margin:.7em 0 .1em;break-after:avoid;text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:.25em}
 p{margin:.15em 0}
 ul{margin:.1em 0 .3em;padding-left:1.5em;list-style:none}
-li{position:relative;margin:.05em 0}
+li{position:relative;margin:.08em 0}
 li::before{content:"➜";position:absolute;left:-1.3em;color:var(--red);font-size:.9em}
 li.s::before{content:"★"}
 li.x::before{content:"✗"}
@@ -29,27 +42,55 @@ li.ok::before{content:"✓";color:var(--green)}
 b,.k{color:var(--ink2);font-weight:700}
 .r{color:var(--red);font-weight:700}
 .g{color:var(--green);font-weight:700}
-.en{color:var(--muted);font-size:.86em}
-mark{background:linear-gradient(transparent 38%,var(--hl) 38%,var(--hl) 90%,transparent 90%);color:inherit;padding:0 .15em}
-mark.gn{background:linear-gradient(transparent 38%,var(--hl2) 38%,var(--hl2) 90%,transparent 90%)}
-mark.pk{background:linear-gradient(transparent 38%,var(--hl3) 38%,var(--hl3) 90%,transparent 90%)}
-.u{text-decoration:underline wavy var(--red);text-underline-offset:.22em;text-decoration-thickness:1px}
+.p{color:var(--purple);font-weight:700}
+.sm{color:var(--muted);font-size:.86em}
+mark{background:linear-gradient(104deg,transparent 2%,var(--hl) 4%,var(--hl) 96%,transparent 98%);background-size:100% 62%;background-position:0 78%;background-repeat:no-repeat;color:inherit;padding:0 .18em;font-weight:700}
+mark.gn{background-image:linear-gradient(104deg,transparent 2%,var(--hl2) 4%,var(--hl2) 96%,transparent 98%)}
+mark.pk{background-image:linear-gradient(104deg,transparent 2%,var(--hl3) 4%,var(--hl3) 96%,transparent 98%)}
+mark.bl{background-image:linear-gradient(104deg,transparent 2%,var(--hl4) 4%,var(--hl4) 96%,transparent 98%)}
+.u{text-decoration:underline wavy var(--red);text-underline-offset:.22em;text-decoration-thickness:1.4px}
+.circ{border:2px solid var(--red);border-radius:50%;padding:0 .3em;font-weight:700;color:var(--red)}
+/* badges */
+.imp{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:.72em;line-height:1.4;padding:0 .4em;border-radius:4px;margin-right:.35em;transform:rotate(-4deg);vertical-align:.1em}
+.pyq{display:inline-block;border:1.8px solid var(--purple);color:var(--purple);font-weight:700;font-size:.74em;line-height:1.35;padding:0 .45em;border-radius:6px;margin-left:.35em;transform:rotate(-2deg);background:#F6EEFF;vertical-align:.1em;white-space:nowrap}
+.pyq::before{content:"📝 PYQ · "}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:4px 22px}
 @media (max-width:560px){.cols{grid-template-columns:1fr}}
-.box{border:2px solid var(--ink);border-radius:10px 4px 12px 5px;padding:.35em .8em;margin:.45em 0;break-inside:avoid}
-.trap{border:2px dashed var(--red);border-radius:8px;padding:.35em .8em;margin:.5em 0;background:rgba(255,212,225,.35);break-inside:avoid}
-.trap::before{content:"⚠ परीक्षा ट्रैप";display:block;color:var(--red);font-weight:700}
-.trick{background:#FFF59A;padding:.35em .8em;margin:.55em .2em;transform:rotate(-.7deg);box-shadow:0 3px 6px rgba(0,0,0,.12);break-inside:avoid}
+.box{border:2px solid var(--ink);border-radius:10px 4px 12px 5px;padding:.35em .8em;margin:.45em 0;break-inside:avoid;background:rgba(255,255,255,.7)}
+
+/* template-4 style boxes */
+.trap{border:2.5px solid var(--red);border-radius:12px 5px 14px 6px;padding:.35em .8em .45em;margin:.6em 0;background:#fff;break-inside:avoid;position:relative}
+.trap::before{content:"⚠ परीक्षा ट्रैप";display:block;color:var(--red);font-weight:700;font-size:1.02em}
+:lang(en) .trap::before{content:"⚠ Exam trap"}
+.trick{background:#FFF59A;padding:.35em .8em;margin:.6em .2em;transform:rotate(-.8deg);box-shadow:0 3px 7px rgba(0,0,0,.14);break-inside:avoid;border-radius:2px}
 .trick::before{content:"💡 याद रखो";display:block;color:var(--red);font-weight:700}
-table{border-collapse:collapse;width:100%;margin:.35em 0;break-inside:avoid;font-size:.95em}
+:lang(en) .trick::before{content:"💡 Remember"}
+.glance{border:2.5px solid var(--ink);border-radius:14px 6px 16px 6px;padding:.4em .7em .55em;margin:.7em 0;background:#F4F8FF;break-inside:avoid}
+.glance>b:first-child{display:block;color:var(--ink);font-size:1.05em}
+.glance>b:first-child::before{content:"👀 "}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:7px;margin:.35em 0}
+.tile{border:2px solid var(--ink);border-radius:12px 5px 12px 6px;background:#fff;text-align:center;padding:.15em .3em .25em;line-height:1.25}
+.tile b{display:block;color:var(--red);font-size:1.75em;line-height:1.1}
+.tile span{font-size:.86em;color:var(--ink2)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+@media (max-width:560px){.duo{grid-template-columns:1fr}}
+.duo .trap,.duo .trick{margin:.2em 0}
+/* quick quiz */
+.quiz{border:2px dashed var(--green);border-radius:12px;padding:.4em .8em;margin:.7em 0;background:#F1FBF4;break-inside:avoid}
+.quiz>b:first-child{color:var(--green);display:block}
+.quiz>b:first-child::before{content:"✍ "}
+.quiz ol{margin:.1em 0;padding-left:1.4em}
+.quiz .ans{transform:rotate(180deg);text-align:center;font-size:.82em;color:var(--muted);margin-top:.3em}
+table{border-collapse:collapse;width:100%;margin:.35em 0;break-inside:avoid;font-size:.95em;background:rgba(255,255,255,.75)}
 td,th{border:1.6px solid var(--ink);padding:.12em .45em;text-align:left;vertical-align:top}
-th{background:rgba(196,220,255,.45);color:var(--ink2)}
+th{background:#D9E7FF;color:var(--ink2)}
+tr.hot td{background:#FFF7C2}
 .tbl{overflow-x:auto}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:.3em 0}
 .chips span{border:1.6px solid var(--ink);border-radius:999px;padding:0 .6em;font-size:.92em;background:#fff}
 .chips span b{color:var(--red)}
-hr{border:none;border-top:2px dashed var(--margin);margin:1em 0;opacity:.7}
-.src{font-size:.78em;color:var(--muted);text-align:right;margin-top:.3em}
+.chips span.hot{border-color:var(--red);background:#FFF1F0}
+.src{font-size:.78em;color:var(--muted);text-align:right;margin-top:.6em}
 /* mind map page */
 .mm{position:relative;height:1000px;break-before:page;break-after:page;break-inside:avoid;margin:.5em 0}
 .mm svg{position:absolute;inset:0;width:100%;height:100%}
@@ -58,11 +99,11 @@ hr{border:none;border-top:2px dashed var(--margin);margin:1em 0;opacity:.7}
 .mm .n.gr{border-color:var(--green)}
 .mm .n.rd{border-color:var(--red)}
 .mm .t{position:absolute;left:0;right:0;top:0}
-@media (max-width:560px){.mm{height:1150px}.mm .n{width:44%;font-size:.86em}}
+@media (max-width:560px){.mm{height:1150px}.mm .n{width:44%;font-size:.84em}}
 @page{size:A4;margin:14mm 12mm 16mm 20mm}
 @media print{
   html{background:none}
-  body{font-size:12.6pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-size:12.4pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .book{max-width:none;box-shadow:none;padding:0 0 0 4mm;background-color:transparent}
   .book::before{position:fixed;left:-6mm;top:-14mm;bottom:-16mm}
   html,body{background-color:var(--paper)}

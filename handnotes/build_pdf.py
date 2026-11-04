@@ -20,7 +20,9 @@ with sync_playwright() as p:
         pg.evaluate("document.fonts.ready")
         pg.wait_for_timeout(800)
         name = os.path.splitext(os.path.basename(f))[0]
-        dst = os.path.join(OUT, f"PO_Guide_Short_Notes_{name.split('_')[-1]}.pdf")
+        parts = name.split("_")  # notes_01_hi
+        lang = {"hi": "Hindi", "en": "English"}.get(parts[-1], parts[-1])
+        dst = os.path.join(OUT, f"PO_Guide_Short_Notes_{parts[1]}_{lang}.pdf")
         pg.pdf(path=dst, format="A4", print_background=True, prefer_css_page_size=True,
                display_header_footer=True, header_template="<div></div>", footer_template=foot)
         print("OK", dst)
