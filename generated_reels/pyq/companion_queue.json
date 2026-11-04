@@ -344,5 +344,20 @@
     "trap_quote": "",
     "guide_line": "Such mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",
     "done": "skip"
+  },
+  {
+    "clause": 27,
+    "part_index": 2,
+    "part_no": 3,
+    "reel": "reel_clause_27_part_3.mp4",
+    "question": "दौरे पर गए सेना के जवान को उसकी डाक कहाँ मिल सकती है?",
+    "fact": "भारत के भीतर दौरे पर होने पर लेख वहीं वितरित करने की सुविधा मिलती है।",
+    "answer": "वर्तमान दौरे वाले स्थान पर",
+    "en_question": "Where can mails be delivered to Defence personnel when on tour within India?",
+    "en_fact": "Defence personnel on tour within India can get their mails delivered at the tour place.",
+    "source_quote": "जब भी भारत के भीतर िह िौरे पर होां उन्हें उनक े लेख िहीां दितररत करने की सुविधा मिलती है",
+    "trap_quote": "",
+    "guide_line": "Mails for Defence Services Personnel serving in the Army and Air Force – The following particulars should always be furnished in the address in the case of mails for the personnel of the Defence Services serving in the Army and",
+    "done": "skip"
   }
 ]

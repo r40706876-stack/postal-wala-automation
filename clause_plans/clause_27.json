@@ -459,7 +459,7 @@
       "fact": "भारत के भीतर दौरे पर होने पर लेख वहीं वितरित करने की सुविधा मिलती है।",
       "trap": "केवल 56 APO नहीं, बल्कि दौरे वाले स्थान पर भी वितरण संभव है।",
       "trap_quote": "",
-      "yaad": "भारत दौरा = वहीँ डाक वितरण",
+      "yaad": "दौरा → डाक वितरण → वर्तमान दौरे का स्थान",
       "hook": "दौरे पर गए सेना के जवान को उसकी डाक कहाँ मिल सकती है?",
       "en": {
         "question": "Where can mails be delivered to Defence personnel when on tour within India?",
@@ -492,7 +492,8 @@
       "hint": "",
       "_clause_no": 27,
       "hook_v": {
-        "tries": 0
+        "ok": true,
+        "text": "सेना का जवान दौरे पर है, डाक कहाँ मिलेगी?"
       },
       "auto_check": true,
       "check_errors": [],
@@ -614,9 +615,64 @@
       },
       "cf_spent": {
         "2026-11-03": 7
-      }
+      },
+      "style_retry": true,
+      "punch_v": {
+        "tries": 1
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/95dc42e6ff_47168139_1.jpg"
+      },
+      "trap_v": {
+        "none": true,
+        "v": 3
+      },
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "Mails for Defence Services Personnel serving in the Army and Air Force – The following particulars should always be furnished in the address in the case of mails for the personnel of the Defence Services serving in the Army and",
+        "kind": "clause"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "जहाँ आपका दौरा, डाक वहीं आपका ठहरा!",
+        "key": [
+          "दौरा",
+          "डाक वहीं"
+        ],
+        "why": ""
+      },
+      "published": "2026-11-04",
+      "published_round": 24
     }
   ],
   "clause_text_en": "27.Mails for Defence Services Personnel serving in the Army and Air Force  –  The \nfollowing particulars should always be furnished in the address in the case of mails for the \n\n\npersonnel of the Defence Services serving in the Army and Air Force, which are to be delivered \nthrough Army Post Offices: - \n \n No. \n \n Rank \n \n Name \n \n Unit \n \nSuch mails should be addressed to 56 A.P.O., 99 A.P.O, etc. without the addition of any post town.",
-  "simple_rebuilds": 1
+  "simple_rebuilds": 1,
+  "clause_pyq_v": {
+    "v": 2,
+    "items": [
+      {
+        "src": "11. Maharashtra MTS  - 2020  Q.P..pdf#Q10",
+        "ans": "D",
+        "exams": [
+          "महाराष्ट्र 2020"
+        ],
+        "q_en": "The mails meant for Defence Services personnel serving in Army and Air force are addressed to:"
+      },
+      {
+        "src": "MH-MTS-PM-MG-2022.pdf#Q9",
+        "ans": "B",
+        "exams": [
+          "महाराष्ट्र 2022"
+        ],
+        "q_en": "Mails for defence service personnel service in army should be addressed to…."
+      }
+    ]
+  }
 }
