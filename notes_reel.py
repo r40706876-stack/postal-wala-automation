@@ -45,6 +45,13 @@ TXT = {
 JS_TOPICS = r"""
 () => {
   const out = [];
+  // chhota div (heading + 2-4 baatein, jaise "Part I = 7 खंड") = ek poori ikaai; bada = uski lines alag
+  function addBlock(d, arr) {
+    const kids = [...d.children].filter(c => c.tagName === 'DIV');
+    if (kids.length >= 2 && kids.length === [...d.children].length) { kids.forEach(k => addBlock(k, arr)); return; }
+    if (d.innerText.replace(/\s+/g, ' ').trim().length <= 280) { arr.push(d); return; }
+    const lis = d.querySelectorAll('li'); if (lis.length) lis.forEach(li => arr.push(li)); else arr.push(d);
+  }
   const hs = [...document.querySelectorAll('main h2')];
   hs.forEach((h, i) => {
     const hc = h.cloneNode(true); hc.querySelector('.cl')?.remove();
@@ -57,8 +64,8 @@ JS_TOPICS = r"""
       if (el.matches('.glance')) t.glance = el;
       if (el.matches('.trap')) t.traps.push(el);
       if (el.matches('.trick')) t.tricks.push(el);
-      if (el.matches('.two, .cols, .box, div') && !el.matches('.glance, .trap, .trick, .quiz, .mm'))
-        el.querySelectorAll('li').forEach(li => t.lines.push(li));
+      if (el.matches('div') && !el.matches('.glance, .trap, .trick, .quiz, .mm')) addBlock(el, t.lines);
+      el.querySelectorAll?.('.pyq').forEach(p => t.pyq.push(p.innerText.replace(/^.*PYQ\s*·\s*/, '').trim()));
       el = el.nextElementSibling;
     }
     if (t.glance) {
@@ -75,7 +82,8 @@ JS_TOPICS = r"""
       tiles: t.glance ? [...t.glance.querySelectorAll('.tile')].map(x => x.innerText.replace(/\s+/g, ' ').trim()) : [],
       glanceTitle: t.glance ? (t.glance.querySelector('b')?.innerText || '') : '',
       trap: t.traps.map(x => x.innerText.replace(/\s+/g, ' ').trim()),
-      trick: t.tricks.map(x => x.innerText.replace(/\s+/g, ' ').trim())});
+      trick: t.tricks.map(x => x.innerText.replace(/\s+/g, ' ').trim()),
+      pyq: [...new Set(t.pyq)]});
     window.__T = window.__T || []; window.__T[i] = t;
   });
   const q = document.querySelector('.quiz');
@@ -121,6 +129,11 @@ def shoot(page, part, lang, i, tmp):
     data = read_topics(page, part, lang)
     t = data["topics"][i]
     page.evaluate("""() => { document.querySelectorAll('.pyq').forEach(e => e.style.whiteSpace = 'nowrap'); }""")
+    # trap/trick jis baat ke baare me hai, wo line bhi reel me aaye (warna trick ka matlab samajh nahi aata)
+    tw = {w for w in re.findall(r"[\w\u0900-\u097F]{3,}", " ".join(t["trap"] + t["trick"]).lower())}
+    for ln in t["lines"]:
+        common = tw & set(re.findall(r"[\w\u0900-\u097F]{3,}", ln["text"].lower()))
+        ln["score"] += 3 if len(common) >= 2 else 0
     order = sorted(range(len(t["lines"])), key=lambda k: -t["lines"][k]["score"])
     pick = sorted(order[:MAX_LINES]) if len(t["lines"]) > MAX_LINES else list(range(len(t["lines"])))
     shots = {"title": os.path.join(tmp, "title.png"), "lines": [], "tiles": [], "trap": None, "trick": None}
@@ -145,7 +158,7 @@ def shoot(page, part, lang, i, tmp):
             shots[kind] = p
     sel = {"title": t["title"], "lines": [t["lines"][k] for k in pick], "tiles": t["tiles"][:6],
            "glanceTitle": t["glanceTitle"], "trap": t["trap"][:1], "trick": t["trick"][:1],
-           "pyq": sorted({p for ln in t["lines"] for p in ln["pyq"]})}
+           "pyq": t.get("pyq") or sorted({p for ln in t["lines"] for p in ln["pyq"]})}
     return sel, shots, data["quiz"]
 
 
@@ -198,7 +211,7 @@ Return JSON:
  "lines": ["one short spoken sentence (max 12 words) for EACH notes line, same order, explaining it simply"],
  "tiles": "one short sentence with only the 3 most important numbers from tiles (only if tiles exist, else empty)",
  "trap": "one short sentence (max 12 words): where students get it wrong (only from trap text, else empty)",
- "trick": "one short sentence (max 10 words) memory trick (only from trick text, else empty)"}}
+ "trick": "one sentence (max 22 words) giving the memory trick from trick text. It MUST first say clearly WHAT it helps remember (e.g. 'PO Guide Part I के 7 खंडों का क्रम') and then the trick with its full meaning/expansion as in the notes - a viewer seeing it alone must understand it. Empty if no trick text."}}
 Rules: no line repeats another; no greetings; numbers spoken naturally; lines array length must be {len(src['lines'])}."""
     try:
         res = main.as_dict(main._llm_json(prompt))
@@ -216,7 +229,12 @@ Rules: no line repeats another; no greetings; numbers spoken naturally; lines ar
         if not srcs:
             continue
         a = str(res.get(k) or "")
-        out[k] = a if a and _nums(a) <= _nums(srcs) else _clean(srcs)
+        ok = bool(a) and _nums(a) <= _nums(srcs)
+        if ok and k == "trick":                  # trick ka poora matlab (English shabd/expansion) bacha ho
+            sw = {w for w in re.findall(r"[A-Za-z]{3,}", srcs.lower())}
+            aw = {w for w in re.findall(r"[A-Za-z]{3,}", a.lower())}
+            ok = not sw or len(sw & aw) >= 0.6 * len(sw)
+        out[k] = a if ok else _clean(srcs)
     h = str(res.get("hook") or "")
     if not h or not _nums(h) <= _nums(allsrc):
         h = (f"{sel['title']} — परीक्षा में ऐसे पूछा गया!" if lang == "hi" else f"{sel['title']} — asked in the exam!") \
