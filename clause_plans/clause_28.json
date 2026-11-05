@@ -60,7 +60,104 @@
       "auto_check": true,
       "check_errors": [],
       "simple": true,
-      "style_v": "2026-09-26c"
+      "style_v": "2026-09-26c",
+      "punch_v": {
+        "ok": true,
+        "text": "नौसेना की डाक कहाँ भेजें?"
+      },
+      "chitra_keep": {
+        "scene": "A clean, bright post office counter with a plain wall behind the counter.",
+        "seed0": 5812567,
+        "files": {
+          "0": "clause_plans/chitra_img/049c5748cf_keep_5812567_1.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.51,
+            0.632,
+            0.642,
+            0.715
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.323,
+              0.498,
+              0.396,
+              0.537
+            ],
+            "face": [
+              0.645,
+              0.23,
+              0.796,
+              0.417
+            ]
+          }
+        },
+        "bgt": {
+          "0": false
+        },
+        "fixes": {
+          "1": "Make it clearly show: the address on the envelope - saaf nahi",
+          "2": "Make it clearly show: the address card on the counter - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "The postman and the customer stand at the post office counter with a stack of letters, the customer looks curious while holding an envelope.",
+            "target": "the envelope held by the customer",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "भारतीय नौसेना के जवान को एक पत्र भेजना है, पता कैसे लिखें?",
+            "desc": "The customer is asking the postman about addressing a letter for a navy sailor.",
+            "mark": "none",
+            "card": null,
+            "say": null,
+            "shot": "wide"
+          },
+          {
+            "prompt": "A close-up shot of hands holding an envelope where the address is written to 'Base Circle Office, Delhi' on the surface.",
+            "target": "the address on the envelope",
+            "tag": "बेस सर्कल कार्यालय दिल्ली",
+            "tag_color": "red",
+            "text": "गलत पते पर डाक भेजने से वह जवान तक नहीं पहुँचेगी।",
+            "desc": "The envelope shows the wrong address written to the Base Circle Office in Delhi.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "नहीं, यहाँ मत भेजो, यह गलत पता है!"
+            },
+            "shot": "closeup"
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer, the postman points his finger clearly at the correct address written on a card: 'Fleet Mail Office, Bombay'.",
+            "target": "the address card on the counter",
+            "tag": "फ्लीट डाक कार्यालय मुंबई",
+            "tag_color": "green",
+            "text": "नौसेना की डाक केवल फ्लीट डाक कार्यालय मुंबई पते पर भेजें।",
+            "desc": "The postman explains that the correct address for navy personnel is the Fleet Mail Office, Bombay.",
+            "mark": "right",
+            "card": null,
+            "say": null,
+            "shot": "over"
+          }
+        ],
+        "reuse_n": 2
+      },
+      "chitra_v": {
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
+        "v": 9,
+        "kit_try": "photo3"
+      },
+      "cf_spent": {
+        "2026-11-05": 22
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      }
     },
     {
       "id": 2,
