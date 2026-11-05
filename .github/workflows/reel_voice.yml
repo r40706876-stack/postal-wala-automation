@@ -1,0 +1,42 @@
+name: Promo reel voice (Gemini)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "reels/voice/*.json"
+      - "reels/src/voice_mux.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reel-voice
+  cancel-in-progress: true
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg >/dev/null
+          pip install requests pypdf pillow numpy edge-tts >/dev/null
+      - name: Voice + mux
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          for f in reels/voice/*.json; do python reels/src/voice_mux.py "$f"; done
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reels/*_VOICE.mp4
+          git diff --cached --quiet || git commit -m "Promo reel with voice [skip ci]"
+          git pull --rebase -q origin main && git push
