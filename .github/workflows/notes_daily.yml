@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
     inputs:
       demo:
-        description: "Demo topic(s): part:naam:lang, comma se alag. Khaali = aaj ki daily reel"
-        default: "03:VPP:hi,03:VPP:en"
+        description: "Demo topic(s), jaise 03:VPP:hi,03:VPP:en (khaali = aaj ki daily reel)"
+        default: ""
       post:
         description: "Instagram pe post kare? (sirf daily reel)"
         type: boolean
