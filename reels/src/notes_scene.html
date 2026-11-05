@@ -1,0 +1,88 @@
+<!doctype html><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Hind:wght@500;700&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+:root{--navy:#13245c;--red:#c62828;--gold:#ffe14d;--green:#2e7d32;--purple:#6a3fb5;--paper:#fff9ec}
+body{width:540px;height:960px;overflow:hidden;font-family:"Hind","FreeSans",sans-serif;color:var(--navy);
+ background:var(--paper) repeating-linear-gradient(var(--paper) 0 31px,#dfe6f5 31px 32px);position:relative}
+.d{font-family:"Baloo 2","Hind","FreeSans",sans-serif}
+.air{position:absolute;left:0;right:0;height:14px;z-index:20;background:repeating-linear-gradient(135deg,#c62828 0 18px,var(--paper) 18px 30px,#1d3c8f 30px 48px,var(--paper) 48px 60px)}
+.top{top:0}.bot{bottom:0}
+.brand{position:absolute;top:24px;left:0;right:0;text-align:center;font-weight:700;font-size:16px;letter-spacing:.06em;color:var(--red)}
+.brand b{background:var(--navy);color:#fff;padding:2px 9px;border-radius:4px;margin-right:6px}
+.meta{position:absolute;top:52px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px}
+.meta span{background:#fff;border:2px solid var(--navy);border-radius:14px;padding:1px 10px}
+.meta .lg{background:var(--gold);border-color:var(--gold)}
+.title{position:absolute;top:86px;left:18px;right:18px}
+.title img{width:100%;display:block}
+.prog{position:absolute;top:152px;left:18px;right:18px;height:6px;border-radius:3px;background:#13245c22;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--red);transform-origin:0 0;animation:grow linear both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.stage{position:absolute;top:176px;left:0;right:0;bottom:120px}
+.s{position:absolute;left:18px;right:18px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;opacity:0}
+@keyframes in{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:none}}
+@keyframes out{to{opacity:0;transform:translateX(-60px)}}
+@keyframes shake{0%,100%{transform:none}20%{transform:rotate(-1.6deg)}40%{transform:rotate(1.6deg)}60%{transform:rotate(-1deg)}80%{transform:rotate(1deg)}}
+@keyframes pulse{50%{transform:scale(1.07)}}
+@keyframes sweep{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.hook{font-size:44px;line-height:1.22;font-weight:800;text-align:center;text-wrap:balance}
+.stamp{display:inline-block;border:3px solid var(--purple);color:var(--purple);background:#f6eeff;border-radius:10px;padding:4px 14px;font-weight:800;font-size:22px;transform:rotate(-4deg)}
+.stamp.sure{border-color:var(--red);color:var(--red);background:#fff}
+.card{position:relative;width:100%;background:#fff;border-radius:14px;padding:10px;box-shadow:0 10px 26px #13245c2e}
+.card img{display:block;width:100%}
+.card .mk{position:absolute;left:10px;right:10px;bottom:6px;height:6px;background:var(--gold);border-radius:3px;transform-origin:0 0;transform:scaleX(0)}
+.cnt{font-weight:800;font-size:18px;background:var(--navy);color:#fff;border-radius:14px;padding:2px 12px}
+.lab{font-weight:800;font-size:30px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.tiles div{background:#fff;border-radius:12px;padding:6px;box-shadow:0 6px 16px #13245c26;opacity:0}
+.tiles img{display:block;width:100%}
+.q{font-size:28px;font-weight:700;line-height:1.35;text-align:center;background:#fff;border:3px dashed var(--green);border-radius:16px;padding:18px 16px}
+.cm{font-weight:800;font-size:28px;background:var(--green);color:#fff;border-radius:30px;padding:8px 24px}
+.cta{position:absolute;inset:0;background:var(--navy);color:#fff;z-index:10;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;text-align:center;padding:0 28px;opacity:0}
+.cta h2{font-size:36px;line-height:1.2}.cta h2 em{font-style:normal;color:var(--gold)}
+.btn{background:var(--gold);color:var(--navy);font-weight:800;font-size:32px;padding:12px 30px;border-radius:40px}
+.tom{background:#ffffff18;border-left:6px solid var(--gold);border-radius:8px;padding:10px 16px;font-size:22px;text-align:left;width:100%}
+.tom b{color:var(--gold);display:block;font-size:17px;letter-spacing:.04em}
+.site{font-size:16px;opacity:.8}
+</style>
+<div class="air top"></div><div class="air bot"></div>
+<div class="brand"><b>POSTAL WALA</b> GDS → MTS · Postman</div>
+<div class="meta"><span id="day"></span><span class="lg" id="lg"></span></div>
+<div class="title"><img id="ti"></div>
+<div class="prog"><i id="pr"></i></div>
+<div class="stage" id="st"></div>
+<div class="cta" id="cta"></div>
+<script>
+const D=/*__DATA__*/null, T=D.T, st=document.getElementById('st');
+document.getElementById('day').textContent=(D.lang==='hi'?'दिन ':'Day ')+D.day+' · PO Guide Part I';
+document.getElementById('lg').textContent=D.lang==='hi'?'हिंदी':'English';
+document.getElementById('ti').src=D.title;
+const pr=document.getElementById('pr');pr.style.animationDuration=D.total+'s';
+const seg=k=>D.tl.find(x=>x.k===k);
+function scene(k,html,enter){const s=seg(k);if(!s)return null;const i=D.tl.indexOf(s);const nx=D.tl[i+1];
+ const el=document.createElement('div');el.className='s';el.innerHTML=html;st.appendChild(el);
+ const end=nx?nx.t-0.15:D.total;el.style.animation=`${enter||'in'} .35s ${s.t}s both, out .3s ${end}s forwards`;return [el,s]}
+const esc=x=>String(x).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+// hook
+scene('hook',`${D.pyq.length?`<div class="stamp">${T.pyq} · ${esc(D.pyq.join(' · '))}</div>`:`<div class="stamp sure">${T.sure}</div>`}<div class="hook d">${esc(D.hook)}</div>`,'pop');
+// lines
+D.lines.forEach((p,n)=>{const r=scene('line'+n,`<div class="cnt">${n+1} / ${D.lines.length}</div><div class="card"><img src="${p}"><i class="mk"></i></div>`);
+ if(r){r[0].querySelector('.mk').style.animation=`sweep ${Math.max(r[1].d*0.8,0.6)}s ${r[1].t+0.3}s linear both`}});
+// tiles
+{const r=scene('tiles',`<div class="lab d">★ ${T.glance}</div><div class="tiles">${D.tiles.map(p=>`<div><img src="${p}"></div>`).join('')}</div>`,'pop');
+ if(r){const step=Math.min(r[1].d/(D.tiles.length+1),0.9);r[0].querySelectorAll('.tiles div').forEach((x,i)=>x.style.animation=`pop .4s ${r[1].t+0.2+i*step}s both`)}}
+// trap / trick
+{const r=scene('trap',`<div class="card" style="border:3px solid var(--red)"><img src="${D.trap}"></div>`,'pop');
+ if(r){r[0].querySelector('.card').style.animation=`shake .6s ${r[1].t+0.5}s both`}}
+scene('trick',`<div class="card" style="background:#fff59a"><img src="${D.trick}"></div>`,'pop');
+// quiz
+{const r=scene('quiz',`<div class="q">${esc(D.quiz)}</div><div class="cm d">${T.q}</div>`,'pop');
+ if(r){r[0].querySelector('.cm').style.animation=`pulse 1s ${r[1].t+0.8}s 3`}}
+// cta
+{const s=seg('cta'),c=document.getElementById('cta');
+ const tom=D.nextSame?(D.lang==='hi'?'यही टॉपिक English में':''):D.next;
+ c.innerHTML=`<h2 class="d">${D.lang==='hi'?`ऐसे <em>${D.ntopics} टॉपिक</em><br>हैंडराइटिंग नोट्स PDF में`:`<em>${D.ntopics} topics</em> like this<br>in the handwritten PDF`}</h2>
+  <div class="btn d">${T.cta2}</div>${tom?`<div class="tom"><b>${T.tom.toUpperCase()}</b>${esc(tom)}</div>`:''}<div class="d" style="font-size:22px">${T.follow}</div><div class="site">${D.site}</div>`;
+ c.style.animation=`pop .4s ${s.t}s both`;c.querySelector('.btn').style.animation=`pulse 1s ${s.t+0.8}s 3`}
+</script>

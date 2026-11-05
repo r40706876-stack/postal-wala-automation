@@ -11,7 +11,8 @@ n = int(secs * fps)
 with sync_playwright() as p:
     b = p.chromium.launch()
     pg = b.new_page(viewport={'width': 540, 'height': 960}, device_scale_factor=2)
-    pg.goto(pathlib.Path(html).resolve().as_uri()); pg.wait_for_timeout(400)
+    pg.goto(pathlib.Path(html).resolve().as_uri()); pg.wait_for_load_state('networkidle')
+    pg.evaluate('document.fonts.ready.then(()=>1)'); pg.wait_for_timeout(400)
     for i in range(n):
         t = i * 1000 / fps
         pg.evaluate("t=>{for(const a of document.getAnimations()){a.pause();a.currentTime=t}}", t)

@@ -1,0 +1,58 @@
+name: Daily notes reel
+
+# Abhi sirf haath se (demo). Pasand aane ke baad timer.yml se roz chalega + Instagram post.
+on:
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: "Demo topic(s): part:naam:lang, comma se alag. Khaali = aaj ki daily reel"
+        default: "03:VPP:hi,03:VPP:en"
+      post:
+        description: "Instagram pe post kare? (sirf daily reel)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notes-reel
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
+          pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts >/dev/null
+          python -m playwright install --with-deps chromium >/dev/null
+      - name: Reel banao
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.demo }}" ]; then python notes_reel.py build --demo "${{ inputs.demo }}"; else python notes_reel.py build; fi
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes_reels
+          git diff --cached --quiet || git commit -m "Notes reel [skip ci]"
+          git pull --rebase -q origin main && git push
+      - name: Instagram post
+        if: inputs.post && inputs.demo == ''
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: |
+          python notes_reel.py post
+          git add generated_reels/ig_posted.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Instagram post log [skip ci]"
+          git pull --rebase -q origin main && git push
