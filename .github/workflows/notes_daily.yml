@@ -1,6 +1,7 @@
 name: Daily notes reel
 
-# Abhi sirf haath se (demo). Pasand aane ke baad timer.yml se roz chalega + Instagram post.
+# Roz: timer.yml 11:58 IST pe chalata hai (demo khaali, post=true) -> reel bane -> 1 PM IST pe Instagram post.
+# Haath se demo: demo me 'part:naam:lang' likho.
 on:
   workflow_dispatch:
     inputs:
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   reel:
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -46,8 +47,16 @@ jobs:
           git add notes_reels
           git diff --cached --quiet || git commit -m "Notes reel [skip ci]"
           git pull --rebase -q origin main && git push
-      - name: Instagram post
+      - name: 1 PM IST tak ruko
+        id: wait
         if: inputs.post && inputs.demo == ''
+        run: |
+          TGT=$(TZ=Asia/Kolkata date -d "today 13:00" +%s); NOW=$(date +%s); W=$((TGT-NOW))
+          if [ $W -gt 0 ] && [ $W -lt 9000 ]; then echo "$W sec ruk rahe"; sleep $W; fi
+          LATE=$(( $(date +%s) - TGT ))
+          if [ $LATE -gt 3600 ]; then echo "post=no" >> "$GITHUB_OUTPUT"; echo "1 PM slot nikal gaya - post nahi (reel repo me hai)"; else echo "post=yes" >> "$GITHUB_OUTPUT"; fi
+      - name: Instagram post
+        if: inputs.post && inputs.demo == '' && steps.wait.outputs.post == 'yes'
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}

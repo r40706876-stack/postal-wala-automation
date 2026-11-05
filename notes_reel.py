@@ -28,7 +28,7 @@ OUT = os.path.join(ROOT, "notes_reels")
 STATE = os.path.join(OUT, "state.json")
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 SITE = "r40706876-stack.github.io/postal-wala-automation"
-MAX_LINES = 3
+MAX_LINES = 2
 
 TXT = {
     "hi": {"trap": "⚠ परीक्षा ट्रैप", "trick": "याद रखो ट्रिक", "glance": "एक नज़र में", "q": "जवाब कमेंट करो ↓",
@@ -194,11 +194,11 @@ def write_script(sel, lang, quiz):
 Language: {L}. Use ONLY facts from the notes below. Never add any number, rule or name that is not in the notes.
 Notes (JSON): {json.dumps(src, ensure_ascii=False)}
 Return JSON:
-{{"hook": "one punchy line (max 14 words) that makes them stop - a question or 'this comes in exam' style, built from the most important fact; {'mention the PYQ state-year' if sel['pyq'] else 'no state/year'}",
- "lines": ["one short spoken sentence (max 14 words) for EACH notes line, same order, explaining it simply"],
+{{"hook": "one punchy line (max 12 words) that makes them stop - a question or 'this comes in exam' style, built from the most important fact; {'mention the PYQ state-year' if sel['pyq'] else 'no state/year'}",
+ "lines": ["one short spoken sentence (max 12 words) for EACH notes line, same order, explaining it simply"],
  "tiles": "one short sentence with only the 3 most important numbers from tiles (only if tiles exist, else empty)",
- "trap": "one sentence: where students get it wrong (only from trap text, else empty)",
- "trick": "one sentence memory trick (only from trick text, else empty)"}}
+ "trap": "one short sentence (max 12 words): where students get it wrong (only from trap text, else empty)",
+ "trick": "one short sentence (max 10 words) memory trick (only from trick text, else empty)"}}
 Rules: no line repeats another; no greetings; numbers spoken naturally; lines array length must be {len(src['lines'])}."""
     try:
         res = main.as_dict(main._llm_json(prompt))
@@ -225,8 +225,7 @@ Rules: no line repeats another; no greetings; numbers spoken naturally; lines ar
     if quiz:
         out["quiz"] = ("अब बताओ: " if lang == "hi" else "Now tell me: ") + quiz["q"] + \
                       (" जवाब कमेंट करो!" if lang == "hi" else " Comment your answer!")
-    out["cta"] = ("पूरी PDF का लिंक बायो में। रोज़ एक टॉपिक के लिए फॉलो करो!" if lang == "hi"
-                  else "Full PDF link in bio. Follow for one topic every day!")
+    out["cta"] = ("पूरी PDF लिंक बायो में, फॉलो करो!" if lang == "hi" else "Full PDF link in bio. Follow!")
     return out
 
 
@@ -267,8 +266,20 @@ def voice(segments, lang):
             raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", mp, "-f", "s16le", "-ac", "1", "-ar", str(sr), "-"],
                                  capture_output=True, check=True).stdout
             a = np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0; used.add("edge")
-        outs.append(_trim(a, sr))
+        a = _trim(a, sr)
+        if lang == "en":                         # English awaaz dheemi -> thodi tez (pitch wahi)
+            a = _tempo(a, sr, 1.08)
+        outs.append(a)
     return outs, sr, used
+
+
+def _tempo(a, sr, f):
+    i, o = tempfile.mktemp(suffix=".wav"), tempfile.mktemp(suffix=".wav")
+    _wav(i, a, sr)
+    subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", i, "-filter:a", f"atempo={f}", "-ar", str(sr), o], check=True)
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", o, "-f", "s16le", "-ac", "1", "-ar", str(sr), "-"],
+                         capture_output=True, check=True).stdout
+    return np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
 
 
 # ------------------------------------------------------------------ scene + render
@@ -307,7 +318,7 @@ def build(spec=None):
             order.append((k2, sc[k2]))
     order.append(("cta", sc["cta"]))
     auds, sr, used = voice([s for _, s in order], lang)
-    gap = 0.25
+    gap = 0.2
     tl, cur = [], 0.35
     for (name, _), a in zip(order, auds):
         d = len(a) / sr

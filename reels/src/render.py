@@ -16,10 +16,10 @@ with sync_playwright() as p:
     for i in range(n):
         t = i * 1000 / fps
         pg.evaluate("t=>{for(const a of document.getAnimations()){a.pause();a.currentTime=t}}", t)
-        pg.screenshot(path=str(fdir / f'f{i:04d}.jpg'), type='jpeg', quality=92)
+        pg.screenshot(path=str(fdir / f'f{i:04d}.jpg'), type='jpeg', quality=95)
     b.close()
 subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', str(fps), '-i', str(fdir / 'f%04d.jpg'),
-                '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p',
+                '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-pix_fmt', 'yuv420p',
                 '-movflags', '+faststart', out], check=True)
 shutil.rmtree(fdir)
 print('ok', out, n, 'frames')

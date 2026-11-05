@@ -27,7 +27,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           # build ka samay (IST) -> run.yml khud post ke time (8:00 / 17:00 / 21:00) tak rukta hai
-          SLOTS="06:43=am 15:43=series 19:43=pm"
+          SLOTS="06:43=am 11:58=notes 15:43=series 19:43=pm"
           NOW=$(date +%s)
           BEST=""; BESTT=0
           for d in today tomorrow; do
@@ -41,7 +41,11 @@ jobs:
           echo "Agla kaam: $BEST, $(TZ=Asia/Kolkata date -d @$BESTT '+%d %b %H:%M IST') ($W sec baad)"
           if [ $W -le 19800 ]; then
             sleep $W
-            gh workflow run run.yml -R "$REPO" --ref main -f job=$BEST && echo "run.yml ($BEST) chalaya"
+            if [ "$BEST" = "notes" ]; then
+              gh workflow run notes_daily.yml -R "$REPO" --ref main -f demo= -f post=true && echo "notes_daily.yml chalaya"
+            else
+              gh workflow run run.yml -R "$REPO" --ref main -f job=$BEST && echo "run.yml ($BEST) chalaya"
+            fi
             sleep 90
           else
             sleep 19800
