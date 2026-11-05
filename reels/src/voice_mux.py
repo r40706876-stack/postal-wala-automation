@@ -60,6 +60,7 @@ for start, slot_end, text in cfg["lines"]:
     dur, slot = len(a) / SR, slot_end - start
     if dur > slot:                                   # thoda tez (max 1.15x), fir bhi lamba ho to video aage badhega
         a = tempo(a, min(dur / slot, 1.15))
+    start = max(start, end + 0.15) if segs else start   # pichhli line se takraav na ho
     print(f"  {start:5.1f}s  {len(a) / SR:4.1f}s/{slot:.1f}s  [{src}]  {text}")
     segs.append((start, a)); end = max(end, start + len(a) / SR)
 
