@@ -359,5 +359,20 @@
     "trap_quote": "",
     "guide_line": "Mails for Defence Services Personnel serving in the Army and Air Force – The following particulars should always be furnished in the address in the case of mails for the personnel of the Defence Services serving in the Army and",
     "done": "skip"
+  },
+  {
+    "clause": 28,
+    "part_index": 0,
+    "part_no": 1,
+    "reel": "reel_clause_28_part_1.mp4",
+    "question": "नौसेना जहाजों पर तैनात कर्मियों की डाक किसे संबोधित की जानी चाहिए?",
+    "fact": "INS जहाजों पर तैनात नौसेना कर्मियों की डाक फ्लीट डाक कार्यालय, मुंबई के पते पर भेजी जाती है।",
+    "answer": "फ्लीट डाक कार्यालय मुंबई",
+    "en_question": "To whom should the mail for Navy personnel serving on INS ships be addressed?",
+    "en_fact": "Mail for Navy personnel on INS ships must be addressed c/o the Fleet Mail Office, Bombay.",
+    "source_quote": "Mail for Navy Personnel on board I.N.S. ships should be addressed c/o the Fleet Mail Office, Bombay.",
+    "trap_quote": "",
+    "guide_line": "Mail for Navy Personnel on board I.N.S. ships should be addressed c/o the Fleet Mail Office, Bombay.",
+    "done": "skip"
   }
 ]

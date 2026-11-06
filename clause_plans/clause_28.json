@@ -65,99 +65,174 @@
         "ok": true,
         "text": "नौसेना की डाक कहाँ भेजें?"
       },
-      "chitra_keep": {
-        "scene": "A clean, bright post office counter with a plain wall behind the counter.",
-        "seed0": 5812567,
-        "files": {
-          "0": "clause_plans/chitra_img/049c5748cf_keep_5812567_1.jpg"
-        },
-        "boxes": {
-          "0": [
-            0.51,
-            0.632,
-            0.642,
-            0.715
-          ]
-        },
-        "extra": {
-          "0": {
-            "badge": [
-              0.323,
-              0.498,
-              0.396,
-              0.537
-            ],
-            "face": [
-              0.645,
-              0.23,
-              0.796,
-              0.417
-            ]
-          }
-        },
-        "bgt": {
-          "0": false
-        },
-        "fixes": {
-          "1": "Make it clearly show: the address on the envelope - saaf nahi",
-          "2": "Make it clearly show: the address card on the counter - saaf nahi"
-        },
+      "chitra_v": {
+        "kit": "photo",
         "panels": [
           {
-            "prompt": "The postman and the customer stand at the post office counter with a stack of letters, the customer looks curious while holding an envelope.",
-            "target": "the envelope held by the customer",
+            "prompt": "Wide view of a post office counter with a plain wall behind. The customer in a light blue checked shirt holds a white envelope, asking the postman in khaki uniform who listens attentively.",
+            "target": "the white envelope in hand",
             "tag": "",
             "tag_color": "dark",
-            "text": "भारतीय नौसेना के जवान को एक पत्र भेजना है, पता कैसे लिखें?",
-            "desc": "The customer is asking the postman about addressing a letter for a navy sailor.",
+            "text": "ग्राहक नौसेना जहाज के जवान को पत्र भेजना चाहता है।",
+            "desc": "Wide view of the customer presenting a letter addressed to INS ship personnel to the postman at the counter.",
             "mark": "none",
-            "card": null,
-            "say": null,
-            "shot": "wide"
+            "card": {
+              "lines": [
+                "नाविक राजेश कुमार",
+                "आई.एन.एस. जहाज"
+              ],
+              "corner": "",
+              "hl": -1
+            },
+            "say": {
+              "who": "customer",
+              "text": "नौसेना जहाज पर चिट्ठी भेजनी है!"
+            },
+            "shot": "wide",
+            "img": "clause_plans/chitra_img/049c5748cf_32742532_1.jpg",
+            "box": [
+              0.468,
+              0.574,
+              0.632,
+              0.706
+            ],
+            "bg_text": false,
+            "pan": "lr"
           },
           {
-            "prompt": "A close-up shot of hands holding an envelope where the address is written to 'Base Circle Office, Delhi' on the surface.",
-            "target": "the address on the envelope",
-            "tag": "बेस सर्कल कार्यालय दिल्ली",
+            "prompt": "Extreme closeup of the customer's hands holding a plain white envelope flat on the wooden counter, illuminated by focused direct light.",
+            "target": "the white envelope on the counter",
+            "tag": "नौसेना मुख्यालय नई दिल्ली",
             "tag_color": "red",
-            "text": "गलत पते पर डाक भेजने से वह जवान तक नहीं पहुँचेगी।",
-            "desc": "The envelope shows the wrong address written to the Base Circle Office in Delhi.",
+            "text": "नौसेना मुख्यालय या दिल्ली का पता लिखना बिल्कुल गलत है।",
+            "desc": "Closeup of the envelope showing the incorrect address of Naval Headquarters New Delhi.",
             "mark": "wrong",
-            "card": null,
+            "card": {
+              "lines": [
+                "नाविक राजेश कुमार",
+                "आई.एन.एस. जहाज",
+                "नौसेना मुख्यालय नई दिल्ली"
+              ],
+              "corner": "",
+              "hl": 2
+            },
             "say": {
               "who": "postman",
-              "text": "नहीं, यहाँ मत भेजो, यह गलत पता है!"
+              "text": "अरे, इस पते पर नहीं जाएगी!"
             },
-            "shot": "closeup"
+            "shot": "closeup",
+            "img": "clause_plans/chitra_img/049c5748cf_32742532_2.jpg",
+            "box": [
+              0.263,
+              0.529,
+              0.804,
+              0.742
+            ],
+            "bg_text": false,
+            "badge": [
+              0.268,
+              0.292,
+              0.399,
+              0.367
+            ],
+            "frames": [
+              "clause_plans/chitra_img/049c5748cf_32742532_2f1.jpg",
+              "clause_plans/chitra_img/049c5748cf_32742532_2f2.jpg"
+            ]
           },
           {
-            "prompt": "Over-the-shoulder shot from behind the customer, the postman points his finger clearly at the correct address written on a card: 'Fleet Mail Office, Bombay'.",
-            "target": "the address card on the counter",
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman behind the counter. The postman smiles warmly and points with his index finger at the white envelope lying on the wooden desk.",
+            "target": "the white envelope on the desk",
             "tag": "फ्लीट डाक कार्यालय मुंबई",
             "tag_color": "green",
-            "text": "नौसेना की डाक केवल फ्लीट डाक कार्यालय मुंबई पते पर भेजें।",
-            "desc": "The postman explains that the correct address for navy personnel is the Fleet Mail Office, Bombay.",
+            "text": "आईएनएस जहाज की डाक फ्लीट डाक कार्यालय मुंबई भेजें।",
+            "desc": "Over the shoulder view showing the postman pointing at the correctly addressed envelope to Fleet Mail Office Bombay.",
             "mark": "right",
-            "card": null,
-            "say": null,
-            "shot": "over"
+            "card": {
+              "lines": [
+                "नाविक राजेश कुमार",
+                "आई.एन.एस. जहाज",
+                "मार्फत फ्लीट डाक कार्यालय, मुंबई"
+              ],
+              "corner": "",
+              "hl": 2
+            },
+            "say": {
+              "who": "postman",
+              "text": "फ्लीट डाक कार्यालय मुंबई लिखिए!"
+            },
+            "shot": "over",
+            "img": "clause_plans/chitra_img/049c5748cf_32742532_3.jpg",
+            "box": [
+              0.473,
+              0.595,
+              0.622,
+              0.69
+            ],
+            "bg_text": false,
+            "badge": [
+              0.36,
+              0.45,
+              0.424,
+              0.484
+            ],
+            "face": [
+              0.258,
+              0.191,
+              0.4,
+              0.354
+            ],
+            "pan": "rl",
+            "frames": [
+              "clause_plans/chitra_img/049c5748cf_32742532_3f1.jpg"
+            ]
           }
         ],
-        "reuse_n": 2
-      },
-      "chitra_v": {
-        "tries": 1,
-        "last_err": "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
+        "caps": [
+          "ग्राहक नौसेना जहाज के जवान को पत्र भेजना चाहता है।",
+          "नौसेना मुख्यालय या दिल्ली का पता लिखना बिल्कुल गलत है।",
+          "आईएनएस जहाज की डाक फ्लीट डाक कार्यालय मुंबई भेजें।"
+        ],
+        "score": 10.0,
+        "lesson": "When addressing a letter to a navy ship crew member, you must route it through the Fleet Mail Office in Mumbai instead of addressing it to Naval Headquarters in New Delhi.",
+        "pv": 4,
+        "ok": true,
         "v": 9,
-        "kit_try": "photo3"
+        "attempt": 1
       },
       "cf_spent": {
-        "2026-11-05": 22
+        "2026-11-06": 8
       },
       "trap_v": {
-        "tries": 1,
+        "tries": 2,
         "v": 3
-      }
+      },
+      "opt_pics": {
+        "none": true,
+        "ref": "clause_plans/chitra_img/049c5748cf_32742532_1.jpg"
+      },
+      "pyq_v": {
+        "items": [],
+        "searched": true,
+        "v": 2
+      },
+      "guide_line_v": {
+        "v": 1,
+        "sentence": "Mail for Navy Personnel on board I.N.S. ships should be addressed c/o the Fleet Mail Office, Bombay.",
+        "kind": "line"
+      },
+      "trick_v": {
+        "v": 1,
+        "ok": true,
+        "text": "समुद्र में INS तो डाक जाएगी फ्लीट डाक कार्यालय, मुंबई",
+        "key": [
+          "INS",
+          "फ्लीट डाक कार्यालय, मुंबई"
+        ],
+        "why": "The memory trick correctly points to the rule that mail for naval personnel on INS ships is sent to the Fleet Mail Office, Bombay, without adding any new facts,"
+      },
+      "published": "2026-11-06",
+      "published_round": 24
     },
     {
       "id": 2,

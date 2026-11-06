@@ -5,7 +5,7 @@ English title: Mails for Navy Personnel serving in INS Ships
 Sirf PASS wale parts ki reel banti hai. FAIL wale kabhi publish nahi hote.
 Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 
-## Part 1  [PASS | publish baaki]
+## Part 1  [PASS | publish: 2026-11-06]
 **Source (PO Guide):** Mail for Navy Personnel on board I.N.S. ships should be addressed c/o the Fleet Mail Office, Bombay.
 
 **Niyam:** INS जहाजों पर तैनात नौसेना कर्मियों की डाक फ्लीट डाक कार्यालय, मुंबई के पते पर भेजी जाती है।
