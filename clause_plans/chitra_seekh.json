@@ -1,14 +1,14 @@
 [
- "chitra saaf nahi bana (khaana 3): Viewpoint is wrong, showing front/side view instead of over-the-shoulder from behind the customer.",
- "chitra saaf nahi bana (khaana 2, 3): saaf nahi; View is not from behind the customer looking at the postman, and the postman is not pointing at an underlined city name in block let",
- "chitra saaf nahi bana (khaana 2, 3): saaf nahi; saaf nahi",
- "chitra saaf nahi bana (khaana 2, 3): saaf nahi; The postman is not pointing at the envelope, and the perspective is not from behind the customer.",
- "chitra saaf nahi bana (khaana 2, 3): saaf nahi; Not over-the-shoulder angle; postman is not pointing at envelope.",
- "chitra saaf nahi bana (khaana 2, 3): saaf nahi; Shot is too wide, not an over-the-shoulder shot pointing at the envelope name.",
  "chitra saaf nahi bana (khaana 3): Wrong camera angle, not over-the-shoulder from behind the customer, and postman is not pointing at the envelope.",
  "chitra saaf nahi bana (khaana 2, 3): The postman points at the bottom left corner instead of the top right corner where the sender address should be.; Shot shows a medium view of b",
  "chitra saaf nahi bana (khaana 2): Wrong key object; shows a large brown package instead of a small flat white envelope.",
  "chitra saaf nahi bana (khaana 3): The postman is holding the letter instead of pointing at the address card on the counter.",
  "chitra saaf nahi bana (khaana 3, 4): Missing the close-up of hands holding the envelope with harsh red lighting as requested in the prompt.; Has a giant distorted floating postman ",
- "pehla chitra saaf nahi bana: saaf nahi"
+ "pehla chitra saaf nahi bana: saaf nahi",
+ "examiner: Panel 1 caption states 'बिना निश्चित पता ना होने पर कोई भी लेख वितरित किया जाएगा।' (Any article will be delivered if there is no definite address), which directly contrad",
+ "chitra saaf nahi bana (khaana 3): The postman is holding the envelope but not pointing at it as requested.",
+ "chitra saaf nahi bana (khaana 3): The postman is pointing at the customer, not at an envelope placed on the counter.",
+ "chitra saaf nahi bana (khaana 3): The postman is not pointing at the envelope; he is just holding it.",
+ "chitra saaf nahi bana (khaana 2, 3): The envelope text 'saaff nahi' is not a name, and the customer's hands are blocking the view of the envelope content.; The envelope is not clea",
+ "chitra saaf nahi bana (khaana 3): saaf nahi"
 ]

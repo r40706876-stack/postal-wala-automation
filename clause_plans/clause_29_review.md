@@ -16,7 +16,7 @@ Kisi reel pe shak ho to yahan uska English source dekh sakte hain.
 - D. नष्ट करेंगे
 **Hint:** 
 **Trap:** वितरण किया जाएगा गलत, क्योंकि निश्चित पते के बिना लेख वितरित नहीं होता।
-**Yaad:** बिना निश्चित पते लेख वितरण नहीं
+**Yaad:** निश्चित पता नहीं → वितरण नहीं होगा
 **Hook:** काउंटर पर बिना पते का पत्र आया, क्या होगा?
 
 ## Part 2  [PASS | publish baaki]

@@ -20,7 +20,7 @@
       "fact": "कोई भी लेख तब तक वितरित नहीं किया जाएगा जब तक उस पर निश्चित पता ना हो।",
       "trap": "वितरण किया जाएगा गलत, क्योंकि निश्चित पते के बिना लेख वितरित नहीं होता।",
       "trap_quote": "",
-      "yaad": "बिना निश्चित पते लेख वितरण नहीं",
+      "yaad": "निश्चित पता नहीं → वितरण नहीं होगा",
       "hook": "काउंटर पर बिना पते का पत्र आया, क्या होगा?",
       "en": {
         "question": "What happens to an article without a definite address?",
@@ -54,11 +54,136 @@
       "_clause_no": 29,
       "hook_v": {
         "ok": true,
-        "text": "काउंटर पर बिना पते का पत्र आया, क्या होगा?"
+        "text": "डाक पर निश्चित पता न हो, तो क्या होगा?"
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "style_v": "2026-09-26c",
+      "punch_v": {
+        "ok": true,
+        "text": "पता अधूरा है, अब क्या?"
+      },
+      "chitra_keep": {
+        "scene": "A clean, bright post office counter with a wooden surface and plain walls.",
+        "seed0": 16741859,
+        "files": {
+          "0": "clause_plans/chitra_img/d78bdbbd40_keep_16741859_1.jpg",
+          "1": "clause_plans/chitra_img/d78bdbbd40_keep_16741859_2.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.365,
+            0.67,
+            0.597,
+            0.742
+          ],
+          "1": [
+            0.357,
+            0.563,
+            0.725,
+            0.742
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.381,
+              0.504,
+              0.432,
+              0.537
+            ],
+            "face": [
+              0.276,
+              0.278,
+              0.396,
+              0.404
+            ]
+          },
+          "1": {
+            "badge": [
+              0.237,
+              0.333,
+              0.347,
+              0.401
+            ],
+            "face": [
+              0.102,
+              0.0,
+              0.258,
+              0.178
+            ]
+          }
+        },
+        "bgt": {
+          "0": false,
+          "1": false
+        },
+        "fixes": {
+          "2": "The postman points his finger at the clear white envelope resting on the counter."
+        },
+        "panels": [
+          {
+            "prompt": "The postman in khaki uniform stands behind the wooden counter looking at the customer, who is holding a blank white envelope over the counter, warm indoor lighting.",
+            "target": "the blank white envelope",
+            "tag": "बिना पते का लिफाफा",
+            "tag_color": "dark",
+            "text": "ग्राहक पोस्टमैन को एक खाली लिफाफा डाक के लिए देता है।",
+            "desc": "The customer shows a blank envelope to the postman at the counter.",
+            "mark": "none",
+            "card": null,
+            "say": {
+              "who": "customer",
+              "text": "भैया, क्या इसे पोस्ट कर सकते हैं?"
+            },
+            "shot": "wide"
+          },
+          {
+            "prompt": "Close-up of the postman's hands holding the blank white envelope on the counter, no writing or address visible on it, sharp focus, slightly harsh lighting.",
+            "target": "the blank white envelope",
+            "tag": "पता नहीं है",
+            "tag_color": "red",
+            "text": "लिफाफे पर निश्चित पता नहीं है इसलिए यह वितरण नहीं होगा।",
+            "desc": "The postman looks at the blank envelope with a worried expression while it rests on the counter.",
+            "mark": "wrong",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "इसमें कोई पता नहीं लिखा है।"
+            },
+            "shot": "closeup"
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer looking at the postman, who is pointing his finger at the clear address written on a white envelope resting on the counter.",
+            "target": "the white envelope",
+            "tag": "निश्चित पता लिखा है",
+            "tag_color": "green",
+            "text": "निश्चित पता होने पर ही डाक वितरण किया जा सकता है।",
+            "desc": "The postman points at the address card on the envelope to explain the correct rule.",
+            "mark": "right",
+            "card": null,
+            "say": {
+              "who": "postman",
+              "text": "अब ठीक है, यह चला जाएगा।"
+            },
+            "shot": "over"
+          }
+        ],
+        "reuse_n": 0
+      },
+      "chitra_v": {
+        "tries": 1,
+        "last_err": "chitra saaf nahi bana (khaana 3): The postman is not pointing at the envelope; he is just holding it.",
+        "v": 9,
+        "kit_try": "photo3"
+      },
+      "cf_spent": {
+        "2026-11-07": 22
+      },
+      "trap_v": {
+        "tries": 1,
+        "v": 3
+      }
     },
     {
       "basis": "guide",
@@ -110,7 +235,87 @@
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "chitra_keep": {
+        "scene": "A clean, bright post office counter with a wooden surface.",
+        "seed0": 52304662,
+        "files": {
+          "0": "clause_plans/chitra_img/285e2174f9_keep_52304662_1.jpg"
+        },
+        "boxes": {
+          "0": [
+            0.22,
+            0.3,
+            0.78,
+            0.86
+          ]
+        },
+        "extra": {
+          "0": {
+            "badge": [
+              0.362,
+              0.452,
+              0.432,
+              0.497
+            ],
+            "face": [
+              0.292,
+              0.202,
+              0.411,
+              0.362
+            ]
+          }
+        },
+        "bgt": {
+          "0": false
+        },
+        "fixes": {
+          "1": "Make it clearly show: the white envelope - saaf nahi",
+          "2": "Make it clearly show: the addressed envelope - saaf nahi"
+        },
+        "panels": [
+          {
+            "prompt": "The postman stands behind a post office counter, observing the customer who is placing a plain white envelope on the counter, medium wide shot.",
+            "target": "the white envelope",
+            "tag": "",
+            "tag_color": "dark",
+            "text": "डाक पर सही पता लिखना बहुत जरूरी काम है।",
+            "desc": "Postman watching customer place an envelope on the counter.",
+            "mark": "none",
+            "card": null,
+            "say": null,
+            "shot": "wide"
+          },
+          {
+            "prompt": "Close-up view of the postman's hands pointing at a white envelope placed on the counter, which has only a first name written on it.",
+            "target": "the white envelope",
+            "tag": "बिना उपनाम के ईसाई नाम",
+            "tag_color": "red",
+            "text": "सिर्फ ईसाई नाम लिखने से पता अनिश्चित माना जाता है।",
+            "desc": "Postman pointing at an envelope that lacks a surname.",
+            "mark": "wrong",
+            "card": null,
+            "say": null,
+            "shot": "closeup"
+          },
+          {
+            "prompt": "Over-the-shoulder shot from behind the customer as the postman points to a correctly addressed envelope with both a name and a surname written on it.",
+            "target": "the addressed envelope",
+            "tag": "नाम और उपनाम",
+            "tag_color": "green",
+            "text": "पूरा नाम और उपनाम लिखने से पता निश्चित बनता है।",
+            "desc": "Postman showing a correctly addressed envelope with surname.",
+            "mark": "right",
+            "card": null,
+            "say": null,
+            "shot": "over"
+          }
+        ],
+        "reuse_n": 0
+      },
+      "cf_spent": {
+        "2026-11-07": 18
+      }
     },
     {
       "basis": "guide",
@@ -161,7 +366,10 @@
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "cf_spent": {
+        "2026-11-07": 0
+      }
     },
     {
       "basis": "guide",
@@ -214,7 +422,10 @@
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "cf_spent": {
+        "2026-11-07": 0
+      }
     },
     {
       "basis": "guide",
@@ -267,7 +478,10 @@
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "cf_spent": {
+        "2026-11-07": 0
+      }
     },
     {
       "basis": "guide",
@@ -320,7 +534,10 @@
       },
       "auto_check": true,
       "check_errors": [],
-      "simple": true
+      "simple": true,
+      "cf_spent": {
+        "2026-11-07": 0
+      }
     }
   ],
   "clause_text_en": "29. Articles bearing indefinite addresses  – (1) N o article will be delivered by the Post \nOffice unless it bears a definite address.  Articles addressed in a general way, i.e., address to a \nclass of persons in contradiction to a particular person or firm and articles addressed to initials or \nfigures or to clearly fictitious names, or to a Christian name without a surname, are regarded as not \nbearing a definite address unless they are to the care of some definite person or firm, or unless the \naddress specifies some definite place or delivery such as a particular house or a particular post box \nor a particular No. in a street.  Articles addressed in a general way or to initials figures.  Christian \nnames without surnames, fictitious names or conventional marks of any kind will not be delivered \nif addressed merely to a post office or “Poste Restante” or to the care of a postmaster. \n \n (2) The following are examples of definite and indefinite addresses : - \n \nDefinite and therefore Deliverable  Indefinite and therefore undeliverable  \n \n(a) The Chief Secreta ry to the Govt. of H.P. \nEllerelie Simla \n(a) Chief Secretary, Shimla  \n \n \n(b) The Occupant No. 10 Park Street, Calcutta -\n700016. \n \n(b) The non -commissioned Officer Meerut.  \n \n(c) The President of the Officers’ Mess, Mathura.  \n \n(This would be a definite address as  there is only \none Officers’ Mess at Mathura).  \n \n(c) The President of the Officer’s Mess Delhi.  \n \n(This address would be indefinite as Delhi has several \nOfficer’s Messes).  \n \n(d) E-97 Pioneer Press, Lucknow.  \n \n(d) The Station Master Lalpur, C.R.  \n \n(e) Invester  No. 2 Victoria Gardens, Bombay -\n400027. \n \n(This address could be definite because the Post office \nof destination is not given).  \n \n (3) Parcels or other articles tendered at a post office for transmission under the \nRegistration, Insurance, or Value -payable s ystem, as also Money Order, will not be accepted \n\n\nunless they are definitely addressed to a particular person or firm.  Such articles addressed to a \nparticular person or firm care of post box and the name of the office where post box stands \nregistered will also be accepted provided they are addressed to persons or firms in whose names \nthe post box stands registered.  In the office of delivery if it is found that there is no post box in the \nname of  the addressee or the addressee has ceased to be a renter of a post box the article will be \nreturned to the sender."
