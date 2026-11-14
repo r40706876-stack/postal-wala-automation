@@ -1,0 +1,36 @@
+name: Token chaukidaar (roz)
+
+# Roz subah: Instagram/Facebook token kharab ho ya 7 din me khatam hone wala ho -> ye run FAIL hota hai
+# aur GitHub email bhejta hai. Token kabhi log me nahi chhapta, sirf tareekh.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 3 * * *'      # ~9:07 AM IST
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 1
+          sparse-checkout: |
+            ig_post.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install -q requests
+      - name: Token jaanch
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: python ig_post.py tokencheck
