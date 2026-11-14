@@ -1,0 +1,63 @@
+name: Demo - kirdaaron ka rukh (v37)
+
+# Mode 1 (Bhaiya-Golu ek-doosre ki taraf) ka sudhra roop, har tarah ke drishya me: reaction par chehra camera ko.
+# set a = galti (purana + shot 1), b = galti shot 3 + kahani (Golu), c = kahani (Bhaiya) + sahi jawab. KUCH POST NAHI HOTA.
+# Nateeja: demo_out/rukh/mode1_a.mp4, mode1_b.mp4, mode1_c.mp4 (+ _contact.jpg)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/demo_rukh.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        v: [a, b, c]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Packages + Blender 4.2
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core libraqm0 poppler-utils \
+            libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6
+          pip install requests pypdf pillow numpy edge-tts
+          mkdir -p "$RUNNER_TEMP/blender"
+          curl -fL --retry 3 --retry-delay 3 --connect-timeout 25 -o "$RUNNER_TEMP/blender.tar.xz" \
+            "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+          tar -xJf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP/blender" --strip-components=1
+      - name: Taiyaari (variant ${{ matrix.v }})
+        run: B3D_DEMO_SET=${{ matrix.v }} python b3d_rukh_demo_prep.py
+      - name: Render
+        run: |
+          for c in 0 1 2 3 4 5; do
+            B3D_FACE_MODE=1 B3D_JOB=b3d_job B3D_CHUNK=$c xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 4 \
+              --python b3d_reel3d.py 2>&1 | { grep -E "B3D_|Error|Traceback" || true; } | tail -n 20
+          done
+          ls b3d_job/frames_0 b3d_job/frames_1 | wc -l
+      - name: Jodo -> demo_out/rukh/
+        run: |
+          mkdir -p demo_out/rukh
+          O=demo_out/rukh/mode1_${{ matrix.v }}.mp4
+          B3D_STRICT=1 B3D_NO_STRIP=1 B3D_OUT_MP4=$O python b3d_assemble.py
+          ffmpeg -v error -y -i $O -vf "fps=2,scale=270:480,tile=13x1" -frames:v 1 "${O%.mp4}_contact.jpg" || true
+      - name: Save
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add demo_out/rukh
+          git diff --staged --quiet || git commit -m "Demo: rukh mode 1 set ${{ matrix.v }} [skip ci]"
+          for i in 1 2 3 4 5 6; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep $((RANDOM % 20 + 5)); done

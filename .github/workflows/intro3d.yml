@@ -1,0 +1,55 @@
+name: Notes reel ka 3D galti intro (ek baar)
+
+# v29 (2026-11-08): assets/notes_intro_galti.mp4 banata hai (Blender 3D Bhaiya + Golu, "गलती!").
+# notes_reel.py isse har notes reel ke pehle ~2.4 sec me lagata hai. Dobara banana ho tabhi chalao.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  intro:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Packages + Blender 4.2
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core libraqm0 poppler-utils \
+            libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6
+          pip install requests pypdf pillow numpy edge-tts
+          mkdir -p "$RUNNER_TEMP/blender"
+          curl -fL --retry 3 --retry-delay 3 --connect-timeout 25 -o "$RUNNER_TEMP/blender.tar.xz" \
+            "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+          tar -xJf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP/blender" --strip-components=1
+      - name: Taiyaari
+        run: python b3d_intro_prep.py
+      - name: Render (2 tukde)
+        run: |
+          for c in 0 1 2; do
+            B3D_JOB=b3d_job B3D_CHUNK=$c xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 4 \
+              --python b3d_reel3d.py 2>&1 | { grep -E "B3D_|Error|Traceback" || true; } | tail -n 20
+          done
+          ls b3d_job/frames_0 | wc -l
+      - name: Jodo -> assets/notes_intro_galti.mp4
+        run: |
+          mkdir -p assets
+          B3D_STRICT=1 B3D_NO_STRIP=1 B3D_OUT_MP4=assets/notes_intro_galti.mp4 python b3d_assemble.py
+          ffmpeg -v error -y -i assets/notes_intro_galti.mp4 -vf "fps=4,scale=180:320,tile=10x1" -frames:v 1 \
+            assets/notes_intro_galti_contact.jpg || true
+      - name: Save
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/notes_intro_galti.mp4 assets/notes_intro_galti_contact.jpg
+          git diff --staged --quiet || git commit -m "Notes reel 3D galti intro [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done

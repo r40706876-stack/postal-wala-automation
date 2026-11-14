@@ -1,0 +1,17 @@
+name: Purani branch saaf (ek baar)
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  t:
+    runs-on: ubuntu-24.04
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          R: ${{ github.repository }}
+        run: |
+          for b in teacher-preview test-format test-pyq-voice test-talking v20-hook-saaf voice-v20.3 core-migr; do
+            gh api -X DELETE "repos/$R/git/refs/heads/$b" && echo "HATAYA $b" || echo "nahi mila $b"
+          done
+          gh api -X DELETE "repos/$R/git/refs/tags/reel-1789669602" && echo "HATAYA tag" || echo "tag nahi mila"
+          gh api "repos/$R/git/matching-refs/" --jq '.[].ref'

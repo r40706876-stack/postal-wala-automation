@@ -1,0 +1,70 @@
+name: Apni awaaz saaf karo (DeepFilterNet AI noise hatao)
+
+# deep/my_voice/raw/c{N}.<wav|mp3|m4a> -> deep/my_voice/c{N}.flac
+# 1) DeepFilterNet3 (AI) se shor/goonj hatao  2) EQ + de-esser + compressor + -16 LUFS
+# 3) shuru/aakhir ki khaamoshi kaato, 0.8s se lambe ruk 0.5s karo
+on:
+  workflow_dispatch:
+    inputs:
+      clause:
+        description: "clause number"
+        default: "7"
+
+permissions:
+  contents: write
+
+jobs:
+  clean:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: DeepFilterNet
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg
+          pip install -q torch==2.0.1 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cpu
+          pip install -q deepfilternet==0.5.6 "numpy<2" soundfile
+          # Resemble Enhance (AI se studio jaisi awaaz + 44kHz) - alag venv, fail ho to bina iske
+          python -m venv /tmp/re && (/tmp/re/bin/pip install -q resemble-enhance && echo RE_OK) || echo RE_INSTALL_FAIL
+      - name: Saaf karo
+        run: |
+          set -euo pipefail
+          N=${{ inputs.clause }}
+          SRC=$(ls deep/my_voice/raw/c${N}.* | head -1); echo "src: $SRC"
+          mkdir -p /tmp/v && ffmpeg -v error -y -i "$SRC" -ac 1 -ar 48000 -c:a pcm_s16le /tmp/v/in.wav
+          if deepFilter /tmp/v/in.wav -o /tmp/v/df --atten-lim 100 2>&1 | tail -n 5 && ls /tmp/v/df/*.wav; then
+            DF=$(ls /tmp/v/df/*.wav | head -1); echo "DeepFilterNet OK"
+          else
+            echo "DF_FALLBACK afftdn"; ffmpeg -v error -y -i /tmp/v/in.wav -af "afftdn=nr=25:nf=-50:tn=1" /tmp/v/af.wav; DF=/tmp/v/af.wav
+          fi
+          # Resemble Enhance: shor ke baad awaaz ko studio jaisa (sirf enhancer, CPU)
+          ENH="$DF"
+          if [ -x /tmp/re/bin/resemble-enhance ]; then
+            mkdir -p /tmp/v/rin /tmp/v/rout && cp "$DF" /tmp/v/rin/v.wav
+            if timeout 5400 /tmp/re/bin/resemble-enhance /tmp/v/rin /tmp/v/rout --device cpu --nfe 64 --lambd 0.1 --tau 0.5 2>&1 | tail -n 4 && [ -f /tmp/v/rout/v.wav ]; then
+              ENH=/tmp/v/rout/v.wav; echo "RESEMBLE OK"; else echo "RESEMBLE_FAIL"; fi
+          fi
+          ffmpeg -v error -y -i "$ENH" -af "adeclick,highpass=f=75:poles=2,lowshelf=f=140:g=1.5,equalizer=f=320:t=q:w=1.2:g=-2.5,equalizer=f=3000:t=q:w=1.4:g=2.5,equalizer=f=6500:t=q:w=1.5:g=1,deesser=i=0.35,acompressor=threshold=-20dB:ratio=3:attack=8:release=140:makeup=3,loudnorm=I=-16:TP=-1.5:LRA=8,aresample=44100" -ac 1 /tmp/v/pol.wav
+          python deep/voice_gate.py /tmp/v/pol.wav /tmp/v/gate.wav
+          ffmpeg -v error -y -i /tmp/v/gate.wav -c:a flac deep/my_voice/c${N}.flac
+          ffmpeg -v error -y -i deep/my_voice/c${N}.flac -c:a libmp3lame -b:a 192k deep/my_voice/c${N}_suno.mp3
+          python - <<PY
+          import subprocess, numpy as np
+          def st(f):
+              x = np.frombuffer(subprocess.run(["ffmpeg","-v","error","-i",f,"-ac","1","-ar","16000","-f","s16le","-"],capture_output=True).stdout, dtype="<i2").astype(np.float32)/32768
+              w=800; n=len(x)//w; db=20*np.log10(np.sqrt((x[:n*w].reshape(n,w)**2).mean(1))+1e-12)
+              return len(x)/16000, [round(float(np.percentile(db,p)),1) for p in (5,10,50,90)]
+          for f in ["/tmp/v/in.wav", "deep/my_voice/c${N}.flac"]: print(f, st(f))
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add deep/my_voice/c${{ inputs.clause }}.flac deep/my_voice/c${{ inputs.clause }}_suno.mp3
+          git diff --staged --quiet || git commit -m "Clause ${{ inputs.clause }}: awaaz saaf (DeepFilterNet) [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 8; done

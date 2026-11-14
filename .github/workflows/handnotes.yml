@@ -1,0 +1,46 @@
+name: Handwritten notes PDF
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "handnotes/*.html"
+      - "handnotes/style.css"
+      - "handnotes/build_pdf.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: handnotes-pdf
+  cancel-in-progress: true
+
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Chromium + Hindi fonts
+        run: |
+          pip install playwright==1.47.0 pypdf==4.3.1
+          python -m playwright install --with-deps chromium
+          sudo apt-get update -qq || true
+          sudo apt-get install -y fonts-noto-core fonts-noto-color-emoji >/dev/null || true
+          fc-cache -f >/dev/null || true
+      - name: Build PDFs
+        run: python handnotes/build_pdf.py
+      - name: Commit PDFs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add handnotes/out/*.pdf
+          git diff --cached --quiet || git commit -m "Handwritten notes PDF update [skip ci]"
+          git push

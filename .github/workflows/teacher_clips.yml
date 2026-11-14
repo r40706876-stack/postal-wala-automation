@@ -1,0 +1,138 @@
+name: Board class teacher 3D clips (asli roshni, honth ke 3 roop)
+
+# v49 (2026-11-13): board class ke Bhaiya - Cycles (asli roshni/chhaaya), paas ka shot, har harkat ke 3 munh
+# (band/aadha/khula) taaki video me honth awaaz ke shabdon ke saath chalein. Ek baar banao -> deep/clips/t_*.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "preview = sirf kuch tasveerein (jaanch), full = saare clips bana kar repo me"
+        type: choice
+        options: [preview, full]
+        default: preview
+      light:
+        description: "roshni ka gunak"
+        default: "1.0"
+      view:
+        description: "rang-roop (Standard / Filmic / AgX)"
+        default: "Filmic"
+
+permissions:
+  contents: write
+
+env:
+  B3D_LOOK: soft
+  LIGHT: ${{ inputs.light }}
+  VIEW: ${{ inputs.view }}
+
+jobs:
+  preview:
+    if: ${{ inputs.mode == 'preview' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - name: Blender 4.2
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6
+          mkdir -p "$RUNNER_TEMP/blender"
+          curl -fL --retry 3 --retry-delay 3 --connect-timeout 25 -o "$RUNNER_TEMP/blender.tar.xz" \
+            "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+          tar -xJf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP/blender" --strip-components=1
+      - name: Tasveerein
+        run: |
+          B="xvfb-run -a $RUNNER_TEMP/blender/blender -b -t 4 --python deep/b3d_deep_clips.py"
+          F='DEEP_CLIP|Error|Traceback|SKIP|FALLBACK|Time:'
+          for vl in Standard:0.3 Standard:0.45 Standard:0.6 Filmic:0.6; do v=${vl%%:*}; l=${vl##*:}
+            CLIP=t_board MOUTH=o STILL=20 VIEW=$v LIGHT=$l TAG=_${v}_$l $B 2>&1 | { grep -E "$F" || true; } | tail -n 6
+          done
+          for cm in t_batata:o t_khule:h t_shabaash:o t_sunta:c; do
+            CLIP=${cm%%:*} MOUTH=${cm##*:} STILL=30 $B 2>&1 | { grep -E "$F" || true; } | tail -n 4
+          done
+          find deep/clips_raw -name "*.png" | sort
+      - name: Tasveerein alag branch par (teacher-preview)
+        run: |
+          mkdir -p /tmp/o && for f in $(find deep/clips_raw -name "*.png"); do cp $f /tmp/o/$(basename $(dirname $f)).png; done
+          cd /tmp/o && git init -q && git checkout -q -b teacher-preview
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -qm "teacher preview (run ${{ github.run_id }})"
+          git push -f origin teacher-preview:teacher-preview
+
+  render:
+    if: ${{ inputs.mode == 'full' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        clip: [t_batata, t_board, t_khule, t_shabaash, t_sunta]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - name: Blender 4.2
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6 python3-pil
+          mkdir -p "$RUNNER_TEMP/blender"
+          curl -fL --retry 3 --retry-delay 3 --connect-timeout 25 -o "$RUNNER_TEMP/blender.tar.xz" \
+            "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+          tar -xJf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP/blender" --strip-components=1
+      - name: Render (band / aadha / khula munh)
+        run: |
+          MS="c h o"; [ "${{ matrix.clip }}" = "t_sunta" ] && MS="c"
+          for m in $MS; do
+            CLIP=${{ matrix.clip }} MOUTH=$m xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 4 --python deep/b3d_deep_clips.py 2>&1 \
+              | { grep -E "DEEP_CLIP|Error|Traceback" || true; } | tail -n 10
+            ls deep/clips_raw/${{ matrix.clip }}_$m | wc -l
+          done
+      - name: webp me (chhota)
+        run: |
+          python3 - <<'PY'
+          import os, glob
+          from PIL import Image
+          for d in sorted(glob.glob("deep/clips_raw/${{ matrix.clip }}_*")):
+              c = os.path.basename(d)
+              src = sorted(glob.glob(f"{d}/f_*.png"))
+              os.makedirs(f"out/{c}", exist_ok=True)
+              for i, f in enumerate(src):
+                  Image.open(f).save(f"out/{c}/f{i:03d}.webp", quality=84)   # RGBA - paardarshi
+              print("webp", c, len(src))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tclip-${{ matrix.clip }}
+          path: out/
+          retention-days: 3
+
+  save:
+    needs: render
+    if: ${{ inputs.mode == 'full' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: tclip-*
+          path: dl
+          merge-multiple: true
+      - name: Commit
+        run: |
+          mkdir -p deep/clips
+          for d in dl/t_*; do n=$(basename $d); rm -rf deep/clips/$n; mkdir -p deep/clips/$n; cp $d/* deep/clips/$n/; done
+          du -sh deep/clips; ls deep/clips
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add deep/clips
+          git diff --staged --quiet || git commit -m "Board class teacher 3D clips [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done

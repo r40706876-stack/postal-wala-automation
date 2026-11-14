@@ -1,0 +1,64 @@
+name: Deep class AUTO (Gemini script + GitHub animation)
+
+# v40 (2026-11-12): kisi bhi Clause ki deep class bina haath lagaaye:
+# Gemini (script + drishya yojna, jaanch ke saath) -> template animation -> wahi Postal Wala awaaz (ek baar me) -> MP4.
+# Post nahi hoti - sirf demo_out/deep/ me (dekh kar tay karo).
+on:
+  workflow_dispatch:
+    inputs:
+      clause:
+        description: "Clause number"
+        default: "7"
+      take:
+        description: "pehle bani awaaz (wav) dobara - khaali = nayi Gemini awaaz"
+        default: ""
+      replan:
+        description: "1 = script dobara likhwao (0 = pehle wali spec ho to wahi)"
+        default: "1"
+
+permissions:
+  contents: write
+
+jobs:
+  auto:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
+          pip install requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
+          python -m playwright install --with-deps chromium
+      - name: Script (Gemini)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          N=${{ inputs.clause }}
+          if [ "${{ inputs.replan }}" = "1" ] || [ ! -f deep/auto/c${N}_spec.json ]; then python deep/auto_plan.py $N; fi
+          python deep/build_auto.py $N
+          cat deep/auto/c${N}_script.md || true
+      - name: Banao (awaaz + animation + sound)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-training-1
+          DEEP_TAKE: ${{ inputs.take }}
+          DEEP_TAKE_SAVE: demo_out/deep/take_c${{ inputs.clause }}.wav
+        run: python deep/deep_demo.py deep/auto_c${{ inputs.clause }}.html demo_out/deep/clause${{ inputs.clause }}_auto.mp4
+      - name: Save
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add demo_out/deep/ deep/auto/ deep/auto_c*.html || true
+          git diff --staged --quiet || git commit -m "Deep class AUTO clause ${{ inputs.clause }} [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done

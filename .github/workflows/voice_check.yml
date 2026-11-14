@@ -1,0 +1,39 @@
+name: Voice Check (sirf test)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Kis branch ka code test karna hai"
+        default: "voice-v20.3"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          ref: ${{ inputs.branch }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install requests pypdf pillow numpy edge-tts
+      - name: Voice check
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python voice_check.py
+      - name: Nateeja usi test branch me rakho (main nahi chhuta)
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f voice_check_out/
+          git diff --staged --quiet || git commit -m "voice check nateeja [skip ci]"
+          git push origin HEAD:${{ inputs.branch }}

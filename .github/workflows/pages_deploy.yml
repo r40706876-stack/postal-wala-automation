@@ -1,0 +1,81 @@
+name: Website Cloudflare Pages par (postalwala.pages.dev)
+
+# Website ka source (docs/) ab private core repo me hai. Ye workflow har ghante core ka docs/ dekhta hai:
+# docs/ badla ho (naya tree hash) tabhi deploy karta hai, warna 10-15 sec me khatam.
+# Haath se turant deploy: Actions -> is workflow -> Run (force = true).
+# Secrets: CLOUDFLARE_PAGES_TOKEN / CLOUDFLARE_API_TOKEN(_2/_3) + CLOUDFLARE_ACCOUNT_ID(_2/_3), CORE_TOKEN
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "pages.dev naam"
+        default: "postalwala"
+      force:
+        description: "docs na badla ho to bhi deploy karo"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '41 * * * *'
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      T0: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
+      A0: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      T1: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      A1: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      T2: ${{ secrets.CLOUDFLARE_API_TOKEN_2 }}
+      A2: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_2 }}
+      T3: ${{ secrets.CLOUDFLARE_API_TOKEN_3 }}
+      A3: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_3 }}
+      PROJECT: ${{ inputs.project || 'postalwala' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 1
+          sparse-checkout: docs
+      - name: docs badla?
+        id: h
+        run: echo "hash=$(git rev-parse HEAD:docs)" >> "$GITHUB_OUTPUT"
+      - name: Pichla deploy (cache)
+        id: c
+        if: ${{ !inputs.force }}
+        uses: actions/cache/restore@v4
+        with:
+          path: .deployed
+          key: pages-docs-${{ steps.h.outputs.hash }}
+      - uses: actions/setup-node@v4
+        if: steps.c.outputs.cache-hit != 'true'
+        with:
+          node-version: "20"
+      - name: Deploy (jis token me Pages ki ijazat ho)
+        if: steps.c.outputs.cache-hit != 'true'
+        run: |
+          for k in 0 1 2 3; do
+            T=$(eval echo \$T$k); A=$(eval echo \$A$k)
+            [ -z "$T" ] || [ -z "$A" ] && { echo "token $k: nahi hai"; continue; }
+            export CLOUDFLARE_API_TOKEN="$T" CLOUDFLARE_ACCOUNT_ID="$A"
+            npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main >/tmp/c.log 2>&1 || true
+            grep -iE "Successfully|already exists|error|Authentication" /tmp/c.log | head -3 | sed "s/^/token $k create: /"
+            if npx --yes wrangler@4 pages deploy docs --project-name "$PROJECT" --branch main --commit-dirty=true >/tmp/d.log 2>&1; then
+              echo "DEPLOY_OK token $k"; grep -oE "https://[a-z0-9.-]+pages\.dev" /tmp/d.log | sort -u
+              echo "${{ steps.h.outputs.hash }}" > .deployed; exit 0
+            fi
+            grep -iE "error|Authentication|permission" /tmp/d.log | head -3 | sed "s/^/token $k deploy: /"
+          done
+          echo "Kisi token me Pages ki ijazat nahi"; exit 1
+      - name: Deploy yaad rakho
+        if: steps.c.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .deployed
+          key: pages-docs-${{ steps.h.outputs.hash }}

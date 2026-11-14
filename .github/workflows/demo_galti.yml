@@ -1,0 +1,63 @@
+name: Demo - galti opening ke naye shot (v37)
+
+# v37 (2026-11-11): har reel ka pehla 1.5 sec ek jaisa dikhta tha (wahi lifaafa-ud-ke-lauta shot).
+# Ye 3 naye opening shot banata hai (variant 1, 2, 3). KUCH POST NAHI HOTA, roz ki reel nahi badalti.
+# Nateeja: demo_out/galti_variants/galti_v1.mp4, galti_v2.mp4, galti_v3.mp4 (+ _contact.jpg)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/demo_galti.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        v: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Packages + Blender 4.2
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core libraqm0 poppler-utils \
+            libegl1 libgl1 libopengl0 xvfb libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6
+          pip install requests pypdf pillow numpy edge-tts
+          mkdir -p "$RUNNER_TEMP/blender"
+          curl -fL --retry 3 --retry-delay 3 --connect-timeout 25 -o "$RUNNER_TEMP/blender.tar.xz" \
+            "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+          tar -xJf "$RUNNER_TEMP/blender.tar.xz" -C "$RUNNER_TEMP/blender" --strip-components=1
+      - name: Taiyaari (variant ${{ matrix.v }})
+        run: B3D_GALTI_VARIANT=${{ matrix.v }} python b3d_intro_prep.py
+      - name: Render
+        run: |
+          for c in 0 1 2; do
+            B3D_JOB=b3d_job B3D_CHUNK=$c xvfb-run -a "$RUNNER_TEMP/blender/blender" -b -t 4 \
+              --python b3d_reel3d.py 2>&1 | { grep -E "B3D_|Error|Traceback" || true; } | tail -n 20
+          done
+          ls b3d_job/frames_0 | wc -l
+      - name: Jodo -> demo_out/galti_variants/
+        run: |
+          mkdir -p demo_out/galti_variants
+          O=demo_out/galti_variants/galti_v${{ matrix.v }}.mp4
+          B3D_STRICT=1 B3D_NO_STRIP=1 B3D_OUT_MP4=$O python b3d_assemble.py
+          ffmpeg -v error -y -i $O -vf "fps=4,scale=180:320,tile=10x1" -frames:v 1 "${O%.mp4}_contact.jpg" || true
+      - name: Save
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add demo_out/galti_variants
+          git diff --staged --quiet || git commit -m "Demo: galti opening variant ${{ matrix.v }} [skip ci]"
+          for i in 1 2 3 4 5 6; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep $((RANDOM % 20 + 5)); done

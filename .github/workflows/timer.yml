@@ -1,0 +1,56 @@
+name: Timer (theek samay par reel run)
+
+# GitHub ka apna schedule kabhi ghanton der / chhoot jaata hai. Ye timer khud sota hai, theek samay par
+# run.yml chalata hai, fir khud ko dobara chala deta hai (chain). Public repo = minute free.
+# Backup: har 6 ghante schedule bhi isi timer ko jaga deta hai (chain toot jaaye to bhi).
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '29 */6 * * *'
+
+concurrency:
+  group: postal-wala-timer
+  cancel-in-progress: true        # hamesha sirf ek timer zinda
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  timer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - name: Agla slot tak ruko, run chalao, timer dobara
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          # build ka samay (IST) -> run.yml khud post ke time (8:30 notes / 18:30 series / 21:30 pm) tak rukta hai
+          # v29 (2026-11-08): 8 AM quiz band (Instagram ne reach 140 -> 7 kar di thi, page ka skip badha raha tha)
+          # v36 (2026-11-11): Instagram "online followers" data (vidIQ, 4-9 Nov): sabse zyada 6:30-10:30 PM, subah 8:30
+          # -> post: notes 8:30 AM, series 6:30 PM, 7 PYQ list 9:30 PM (build itna pehle shuru)
+          SLOTS="07:28=notes 17:13=series 20:13=pm"
+          NOW=$(date +%s)
+          BEST=""; BESTT=0
+          for d in today tomorrow; do
+            for s in $SLOTS; do
+              T=${s%%=*}; J=${s##*=}
+              TS=$(TZ=Asia/Kolkata date -d "$d $T" +%s)
+              if [ $TS -gt $((NOW+60)) ] && { [ -z "$BEST" ] || [ $TS -lt $BESTT ]; }; then BEST=$J; BESTT=$TS; fi
+            done
+          done
+          W=$((BESTT-NOW))
+          echo "Agla kaam: $BEST, $(TZ=Asia/Kolkata date -d @$BESTT '+%d %b %H:%M IST') ($W sec baad)"
+          if [ $W -le 19800 ]; then
+            sleep $W
+            if [ "$BEST" = "notes" ]; then
+              gh workflow run notes_daily.yml -R "$REPO" --ref main -f demo= -f post=true && echo "notes_daily.yml chalaya"
+            else
+              gh workflow run run.yml -R "$REPO" --ref main -f job=$BEST && echo "run.yml ($BEST) chalaya"
+            fi
+            sleep 90
+          else
+            sleep 19800
+          fi
+          gh workflow run timer.yml -R "$REPO" --ref main && echo "timer dobara chalu"

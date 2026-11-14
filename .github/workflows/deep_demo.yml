@@ -1,0 +1,57 @@
+name: Deep class demo (Clause video)
+
+# v37 (2026-11-12): har Clause ki 1.5-2 min "deep class" video - pehle style sample (Clause 5, teen khidkiyan).
+# Post nahi hoti - sirf demo_out/deep/ me.
+on:
+  workflow_dispatch:
+    inputs:
+      scene:
+        description: "scene HTML (deep/ me)"
+        default: "deep/c5_full.html"
+      out:
+        description: "nateeja"
+        default: "demo_out/deep/clause5_full.mp4"
+      take:
+        description: "pehle bani awaaz (wav) dobara - khaali = nayi Gemini awaaz"
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
+          pip install requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
+          python -m playwright install --with-deps chromium
+      - name: Scene HTML taaza (3D clips ki soochi ke saath)
+        run: |
+          git pull -q origin main || true
+          [ -f deep/build_c5_full.py ] && python deep/build_c5_full.py || true
+      - name: Banao (awaaz + animation + sound)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts        # wahi model jo daily reels me (lite nahi)
+          GEMINI_TTS_VOICE: hi-in-training-1            # Postal Wala ki awaaz: Training Voiceover 1
+          DEEP_TAKE: ${{ inputs.take }}
+          DEEP_TAKE_SAVE: demo_out/deep/take_latest.wav  # awaaz sambhal lo (dobara render bina Gemini)
+        run: python deep/deep_demo.py "${{ inputs.scene }}" "${{ inputs.out }}"
+      - name: Save
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add demo_out/deep/ deep/c5_full.html
+          git diff --staged --quiet || git commit -m "Deep class demo [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done
