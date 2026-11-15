@@ -1,0 +1,51 @@
+name: Bani hui reel baad me post karo
+# Haath se: job (series/pm/am) + samay (IST) -> us samay tak ruk kar 'python ig_post.py <job>'
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        default: series
+      time:
+        description: "IST, jaise 20:00"
+        default: "20:00"
+concurrency:
+  group: postal-wala-reel
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  post:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install -q requests
+      - name: Samay tak ruko
+        run: |
+          TGT=$(TZ=Asia/Kolkata date -d "today ${{ inputs.time }}" +%s); W=$((TGT-$(date +%s)))
+          if [ $W -gt 0 ] && [ $W -lt 20000 ]; then echo "$W sec ruk rahe"; sleep $W; fi
+      - name: Post
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          MEDIA_REPO: ${{ github.repository }}
+          MEDIA_TOKEN: ${{ github.token }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: |
+          git pull --rebase -X theirs origin main || true
+          python ig_post.py ${{ inputs.job }}
+      - name: Hisaab save
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add generated_reels/ig_posted.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "Instagram post log [skip ci]"
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done
