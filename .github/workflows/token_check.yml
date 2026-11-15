@@ -22,6 +22,7 @@ jobs:
           fetch-depth: 1
           sparse-checkout: |
             ig_post.py
+            ig_comments.py
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
@@ -33,4 +34,6 @@ jobs:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
-        run: python ig_post.py tokencheck
+        run: |
+          python ig_post.py check 2>&1 | grep -E "^CHECK" || true
+          python ig_post.py tokencheck
