@@ -1,6 +1,6 @@
 name: Daily mock sawal reel
 
-# Roz: timer.yml 11:58 IST pe chalata hai (demo khaali, post=true) -> reel bane -> 1 PM IST pe Instagram post.
+# Roz: timer.yml 15:28 IST pe chalata hai (demo khaali, post=true) -> reel bane -> 4:30 PM IST pe Instagram post.
 # Haath se demo: demo me 'part:naam:lang' likho.
 on:
   workflow_dispatch:
@@ -16,6 +16,9 @@ on:
         description: "Nayi reel mat banao - aaj ki bani hui reel hi post karo"
         type: boolean
         default: false
+      post_time:
+        description: "Post ka samay IST (khaali = 16:30)"
+        default: ""
 
 permissions:
   contents: write
@@ -39,12 +42,15 @@ jobs:
       - name: Install
         run: |
           sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
-          pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts >/dev/null
+          pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts faster-whisper >/dev/null
           python -m playwright install --with-deps chromium >/dev/null
       - name: Reel banao
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-training-1
+          GEMINI_TTS_STYLE: "lively elder-brother teacher: warm, clear and expressive with natural ups and downs - curious on questions, firm and serious on warnings, happy on answers, calm on examples; small natural pauses"
         if: ${{ !inputs.only_post }}
         run: |
           if [ -n "${{ inputs.demo }}" ]; then python mock_reel.py build --id "${{ inputs.demo }}"; else python mock_reel.py build; fi
@@ -59,7 +65,7 @@ jobs:
         id: wait
         if: inputs.post && inputs.demo == ''
         run: |
-          TGT=$(TZ=Asia/Kolkata date -d "today ${{ vars.MOCK_TIME || '16:30' }}" +%s); NOW=$(date +%s); W=$((TGT-NOW))
+          TGT=$(TZ=Asia/Kolkata date -d "today ${{ inputs.post_time || vars.MOCK_TIME || '16:30' }}" +%s); NOW=$(date +%s); W=$((TGT-NOW))
           if [ $W -gt 0 ] && [ $W -lt 9000 ]; then echo "$W sec ruk rahe"; sleep $W; fi
           LATE=$(( $(date +%s) - TGT ))
           if [ $LATE -gt 3600 ]; then echo "post=no" >> "$GITHUB_OUTPUT"; echo "Mock slot nikal gaya - post nahi (reel repo me hai)"; else echo "post=yes" >> "$GITHUB_OUTPUT"; fi
