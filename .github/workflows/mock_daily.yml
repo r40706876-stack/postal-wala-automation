@@ -41,7 +41,7 @@ jobs:
           python-version: "3.10"
       - name: Install
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-noto-color-emoji fonts-freefont-ttf >/dev/null
           pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts faster-whisper >/dev/null
           python -m playwright install --with-deps chromium >/dev/null
       - name: Reel banao
