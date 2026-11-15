@@ -30,7 +30,8 @@ jobs:
           # v29 (2026-11-08): 8 AM quiz band (Instagram ne reach 140 -> 7 kar di thi, page ka skip badha raha tha)
           # v36 (2026-11-11): Instagram "online followers" data (vidIQ, 4-9 Nov): sabse zyada 6:30-10:30 PM, subah 8:30
           # -> post: notes 8:30 AM, series 6:30 PM, 7 PYQ list 9:30 PM (build itna pehle shuru)
-          SLOTS="07:28=notes 17:13=series 20:13=pm"
+          # v40 (2026-11-15): mock reel 4:30 PM (171 online, baaki posts ke beech khaali slot)
+          SLOTS="07:28=notes 15:28=mock 17:13=series 20:13=pm"
           NOW=$(date +%s)
           BEST=""; BESTT=0
           for d in today tomorrow; do
@@ -46,6 +47,8 @@ jobs:
             sleep $W
             if [ "$BEST" = "notes" ]; then
               gh workflow run notes_daily.yml -R "$REPO" --ref main -f demo= -f post=true && echo "notes_daily.yml chalaya"
+            elif [ "$BEST" = "mock" ]; then
+              gh workflow run mock_daily.yml -R "$REPO" --ref main -f demo= -f post=true && echo "mock_daily.yml chalaya"
             else
               gh workflow run run.yml -R "$REPO" --ref main -f job=$BEST && echo "run.yml ($BEST) chalaya"
             fi
