@@ -13,7 +13,6 @@ jobs:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: |
           pip install -q requests
-          ffprobe -v error -show_entries format=duration,size -of compact mock_reels/2026-11-15_p_cfd754505b.mp4 notes_reels/notes_2026-11-15_01-07_hi.mp4
           python - <<'P'
           import os, requests, time
           T=os.environ["IG_ACCESS_TOKEN"]; U=os.environ["IG_USER_ID"]; G="https://graph.facebook.com/v19.0/"
