@@ -43,6 +43,7 @@ jobs:
           DEEP_GAP_SCENE: '0.18'
         run: |
           set -euo pipefail
+          git pull --ff-only origin main
           python doubts_reel.py
           ffmpeg -y -v error -i doubts_reels/ep03_leave_gemini.mp4 -vf "fps=1/5,scale=216:384,tile=4x4" -frames:v 1 doubts_reels/ep03_leave_contact.jpg
       - name: Save preview in core
