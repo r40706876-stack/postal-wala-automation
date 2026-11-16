@@ -1,0 +1,88 @@
+name: Postal Edge rebrand - original 2D Gemini preview
+# Preview only: existing account identity, original 2D characters and Gemini voice.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/rebrand_preview.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: postal-rebrand-preview
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Existing renderer dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
+          pip install requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
+          python -m playwright install --with-deps chromium
+      - name: Build using existing Gemini voice and mock renderer
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-training-1
+          DEEP_PER_LINE: '0'
+          DEEP_STRICT_ONE_TAKE: '1'
+          DEEP_FAST_QUOTA_FAIL: '1'
+          DEEP_VOICE_CACHE: rebrand_reels/voice_cache
+          DEEP_TAKE: rebrand_reels/rebrand_gemini_take.wav
+          DEEP_TAKE_SAVE: rebrand_reels/rebrand_gemini_take.wav
+          DEEP_GAP_LINE: '0.07'
+          DEEP_GAP_SCENE: '0.10'
+        run: |
+          set -euo pipefail
+          git pull --ff-only origin main
+          python rebrand_reel.py
+
+      - name: Save preview in core
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rebrand_reels
+          git diff --cached --quiet || git commit -m "GDS doubts Gemini preview and provenance [skip ci]"
+          for i in 1 2 3; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 5; done
+      - name: Publish preview media for user review
+        env:
+          MEDIA_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import base64,json,os,urllib.request
+          from pathlib import Path
+          root=Path('rebrand_reels')
+          hdr={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          for name in ['postal_edge_announcement.mp4','rebrand_contact.jpg','postal_edge_announcement_provenance.json','postal_edge_announcement.mp4.cues.json','rebrand_motion_qa.json']:
+              p=root/name
+              ep='https://api.github.com/repos/'+os.environ['MEDIA_REPO']+'/contents/rebrand-preview/'+name
+              body={'message':'GDS doubt Gemini preview '+name,'branch':'media','content':base64.b64encode(p.read_bytes()).decode()}
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(ep+'?ref=media',headers=hdr)) as r: body['sha']=json.load(r)['sha']
+              except Exception: pass
+              with urllib.request.urlopen(urllib.request.Request(ep,data=json.dumps(body).encode(),headers=hdr,method='PUT')) as r: d=json.load(r)
+              print('PREVIEW_READY https://raw.githubusercontent.com/'+os.environ['MEDIA_REPO']+'/'+d['commit']['sha']+'/rebrand-preview/'+name)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postal-edge-rebrand-preview
+          path: rebrand_reels/
+          retention-days: 7
