@@ -1,0 +1,86 @@
+name: Notes reel dobara (Gemini awaaz) - 16 Nov
+
+# Ek baar: 16 Nov 2026 - 'काम के घंटे' notes reel Gemini quota aane ke baad (1:30 PM IST) asli Gemini awaaz me
+# dobara bane aur 4:30 PM IST par post ho. Quota na mile to agla schedule fir koshish karega.
+on:
+  schedule:
+    - cron: "10 8 16 11 *"
+    - cron: "40 8 16 11 *"
+    - cron: "10 9 16 11 *"
+    - cron: "40 9 16 11 *"
+    - cron: "10 10 16 11 *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notes-reel
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - name: Pehle ho chuka?
+        id: chk
+        run: |
+          if [ "$(TZ=Asia/Kolkata date +%F)" != "2026-11-16" ] || [ -f notes_reels/redo_2026-11-16.done ]; then echo "go=no" >> "$GITHUB_OUTPUT"; echo "Kaam ho chuka / din nikal gaya"; else echo "go=yes" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-python@v5
+        if: steps.chk.outputs.go == 'yes'
+        with:
+          python-version: "3.10"
+      - name: Install
+        if: steps.chk.outputs.go == 'yes'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
+          pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts >/dev/null
+          python -m playwright install --with-deps chromium >/dev/null
+      - name: Reel banao (sirf Gemini awaaz)
+        if: steps.chk.outputs.go == 'yes'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NOTES_GEMINI_ONLY: "1"
+        run: |
+          python - <<'PY'
+          import json
+          p = "notes_reels/state.json"; d = json.load(open(p)); d["next"] = 15
+          json.dump(d, open(p, "w"), ensure_ascii=False, indent=1)
+          PY
+          python notes_reel.py build
+          python -c "import json;t=json.load(open('notes_reels/state.json'))['today'];assert t['topic']=='काम के घंटे' and t['date']=='2026-11-16', t"
+          echo ok > notes_reels/redo_2026-11-16.done
+      - name: Save
+        if: steps.chk.outputs.go == 'yes'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes_reels
+          git diff --cached --quiet || git commit -m "Notes reel (Gemini awaaz) [skip ci]"
+          git pull --rebase -q origin main && git push
+      - name: 4:30 PM IST tak ruko
+        if: steps.chk.outputs.go == 'yes'
+        run: |
+          TGT=$(TZ=Asia/Kolkata date -d "today 16:30" +%s); W=$((TGT-$(date +%s)))
+          if [ $W -gt 0 ]; then echo "$W sec ruk rahe"; sleep $W; fi
+      - name: Instagram post
+        if: steps.chk.outputs.go == 'yes'
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          MEDIA_REPO: ${{ github.repository }}
+          MEDIA_TOKEN: ${{ github.token }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: |
+          git pull --rebase -q origin main || true
+          python notes_reel.py post
+          git add generated_reels/ig_posted.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Instagram post log [skip ci]"
+          git pull --rebase -q origin main && git push
