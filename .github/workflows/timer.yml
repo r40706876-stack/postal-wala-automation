@@ -31,7 +31,8 @@ jobs:
           # v36 (2026-11-11): Instagram "online followers" data (vidIQ, 4-9 Nov): sabse zyada 6:30-10:30 PM, subah 8:30
           # -> post: notes 8:30 AM, series 6:30 PM, 7 PYQ list 9:30 PM (build itna pehle shuru)
           # v40 (2026-11-15): mock reel 4:30 PM (171 online, baaki posts ke beech khaali slot)
-          SLOTS="07:28=notes 15:28=mock 17:13=series 20:13=pm"
+          # Old 18:30 series disabled at user request; Rule 3 replacement is configured separately.
+          SLOTS="07:28=notes 15:28=mock 20:13=pm"
           NOW=$(date +%s)
           BEST=""; BESTT=0
           for d in today tomorrow; do
