@@ -1,0 +1,42 @@
+name: Verify Postal Edge branding across video formats
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/branding_check.yml']
+permissions:
+  contents: read
+concurrency:
+  group: postal-branding-check
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Render verification dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
+          pip install pillow numpy requests pypdf edge-tts playwright==1.47.0
+          python -m playwright install --with-deps chromium
+      - name: Three-day policy and routing regression tests
+        run: python -m unittest test_branding -v
+      - name: Transition branding on actual representative formats
+        run: python branding_qa.py transition
+      - name: Final branding after automatic cutover
+        run: python branding_qa.py final
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postal-edge-branding-check
+          path: brand_qa/
+          retention-days: 7
