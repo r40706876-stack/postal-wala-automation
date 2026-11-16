@@ -1,0 +1,42 @@
+name: Review published mock animation
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/review_mock_animation.yml']
+permissions:
+  contents: write
+jobs:
+  reference:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - name: Export requested published reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MEDIA_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/mock-review
+          cp mock_reels/2026-11-15_p_2711f9d5e7.mp4 /tmp/mock-review/published_mock_reference.mp4
+          python - <<'PY'
+          import base64,json,os,subprocess,urllib.request
+          p='/tmp/mock-review/published_mock_reference.mp4'
+          endpoint='https://api.github.com/repos/'+os.environ['MEDIA_REPO']+'/contents/review/2026-11-16/published_mock_reference.mp4'
+          body={'message':'Published mock reference for requested animation review','branch':'media','content':base64.b64encode(open(p,'rb').read()).decode()}
+          hdr={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          try:
+              with urllib.request.urlopen(urllib.request.Request(endpoint+'?ref=media',headers=hdr)) as r: body['sha']=json.load(r)['sha']
+          except Exception: pass
+          with urllib.request.urlopen(urllib.request.Request(endpoint,data=json.dumps(body).encode(),headers=hdr,method='PUT')) as r:
+              d=json.load(r)
+          print('REFERENCE_READY https://raw.githubusercontent.com/'+os.environ['MEDIA_REPO']+'/'+d['commit']['sha']+'/review/2026-11-16/published_mock_reference.mp4')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: published-mock-reference
+          path: /tmp/mock-review/published_mock_reference.mp4
+          retention-days: 3
