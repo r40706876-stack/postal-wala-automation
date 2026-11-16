@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "scene": "h1",
+      "time": 1.00955,
+      "motion_change": 4.449,
+      "reverse_change": 0.0008
+    },
+    {
+      "scene": "s1",
+      "time": 5.6545499999999995,
+      "motion_change": 1.075,
+      "reverse_change": 0.0
+    },
+    {
+      "scene": "s2",
+      "time": 10.612,
+      "motion_change": 6.281,
+      "reverse_change": 0.0011
+    },
+    {
+      "scene": "s3",
+      "time": 15.033000000000001,
+      "motion_change": 4.946,
+      "reverse_change": 0.0001
+    },
+    {
+      "scene": "s4",
+      "time": 21.12035,
+      "motion_change": 11.262,
+      "reverse_change": 0.0011
+    }
+  ],
+  "page_errors": [],
+  "original_2d_characters": true
+}
