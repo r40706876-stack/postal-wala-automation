@@ -1,0 +1,15 @@
+{
+  "pipeline": "Existing deep/deep_demo.py -> deep/render_deep.py, GitHub Actions",
+  "visual_reference": "MOCK 01 Night Post Office, media id 18100746455394499, not the later registered-mail mock",
+  "tts_provider": "Gemini",
+  "tts_model": "gemini-3.8-flash-tts",
+  "tts_voice": "hi-in-training-1",
+  "source_order": "https://www.govtstaff.com/wp-content/uploads/2026/02/circle-welfare-fund-for-gramin-dak-sevaks-cwfgds-department-of-post-om.pdf",
+  "source_date": "2026-02-11",
+  "limit_effective_date": "2026-04-01",
+  "claim_is_up_to_limit_and_subject_to_eligibility": true,
+  "unverified_90_percent_claim_used": false,
+  "auto_publish": false,
+  "github_run_id": "43916532667",
+  "core_commit": "6da3c17cf61ef6ba71fe782819b574e1387a744c"
+}
