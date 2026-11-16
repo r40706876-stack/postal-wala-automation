@@ -1,0 +1,103 @@
+name: Postal Edge website check and deploy
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/website_branding_check.yml'
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      T0: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
+      A0: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      T1: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      A1: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      T2: ${{ secrets.CLOUDFLARE_API_TOKEN_2 }}
+      A2: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_2 }}
+      T3: ${{ secrets.CLOUDFLARE_API_TOKEN_3 }}
+      A3: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_3 }}
+      PROJECT: ${{ inputs.project || 'postalwala' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          ref: 4398e86a0be8ad52a336ec4cae724205ac050ecc
+          fetch-depth: 1
+          sparse-checkout: |
+            docs
+            functions
+            stats_key.txt
+            site
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify mobile branding before deployment
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python site/check_branding.py
+      - name: Keep mobile previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: postal-edge-website-preview
+          path: docs_*.png
+      - name: docs badla?
+        id: h
+        run: echo "hash=$(git rev-parse HEAD:docs)-$(git rev-parse HEAD:functions 2>/dev/null | cut -c1-12)" >> "$GITHUB_OUTPUT"
+      - name: Pichla deploy (cache)
+        id: c
+        if: ${{ !inputs.force }}
+        uses: actions/cache/restore@v4
+        with:
+          path: .deployed
+          key: pages-docs-${{ steps.h.outputs.hash }}
+      - uses: actions/setup-node@v4
+        if: steps.c.outputs.cache-hit != 'true'
+        with:
+          node-version: "20"
+      - name: Deploy (jis token me Pages ki ijazat ho)
+        if: steps.c.outputs.cache-hit != 'true'
+        run: |
+          for k in 0 1 2 3; do
+            T=$(eval echo \$T$k); A=$(eval echo \$A$k)
+            [ -z "$T" ] || [ -z "$A" ] && { echo "token $k: nahi hai"; continue; }
+            export CLOUDFLARE_API_TOKEN="$T" CLOUDFLARE_ACCOUNT_ID="$A"
+            npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main >/tmp/c.log 2>&1 || true
+            grep -iE "Successfully|already exists|error|Authentication" /tmp/c.log | head -3 | sed "s/^/token $k create: /"
+            # 2026-11-15: ginti (visit / mock shuru / jama) ke liye D1 database - na bane to site bina ginti ke deploy
+            rm -f wrangler.toml
+            if [ -d functions ]; then
+              DBN=postalwala-stats
+              dbid() { npx --yes wrangler@4 d1 list --json 2>/dev/null | python3 -c "import json,sys
+          try: d=json.load(sys.stdin)
+          except Exception: d=[]
+          print(next((x.get('uuid','') for x in d if x.get('name')=='$DBN'),''))"; }
+              ID=$(dbid); [ -z "$ID" ] && { npx --yes wrangler@4 d1 create $DBN >/tmp/d1.log 2>&1 || grep -iE "error|permission|auth" /tmp/d1.log | head -2 | sed "s/^/token $k d1: /"; ID=$(dbid); }
+              KEY=$(tr -d ' \n' < stats_key.txt 2>/dev/null)
+              if [ -n "$ID" ]; then
+                printf 'name = "%s"\npages_build_output_dir = "docs"\ncompatibility_date = "2024-09-01"\n\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "%s"\ndatabase_id = "%s"\n\n[vars]\nSTATS_KEY = "%s"\n' "$PROJECT" "$DBN" "$ID" "$KEY" > wrangler.toml
+                npx --yes wrangler@4 d1 execute $DBN --remote --file functions/schema.sql >/tmp/sq.log 2>&1 && echo "token $k: ginti DB taiyaar" || grep -iE "error" /tmp/sq.log | head -2
+              else echo "token $k: D1 ki ijazat nahi - ginti band rahegi"; fi
+            fi
+            if npx --yes wrangler@4 pages deploy docs --project-name "$PROJECT" --branch main --commit-dirty=true >/tmp/d.log 2>&1; then
+              echo "DEPLOY_OK token $k"; grep -oE "https://[a-z0-9.-]+pages\.dev" /tmp/d.log | sort -u
+              echo "${{ steps.h.outputs.hash }}" > .deployed; exit 0
+            fi
+            grep -iE "error|Authentication|permission" /tmp/d.log | head -3 | sed "s/^/token $k deploy: /"
+          done
+          echo "Kisi token me Pages ki ijazat nahi"; exit 1
+      - name: Deploy yaad rakho
+        if: steps.c.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .deployed
+          key: pages-docs-${{ steps.h.outputs.hash }}
