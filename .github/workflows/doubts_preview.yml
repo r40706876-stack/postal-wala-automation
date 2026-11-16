@@ -17,7 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,7 +38,12 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
           GEMINI_TTS_VOICE: hi-in-training-1
-          DEEP_PER_LINE: '1'
+          DEEP_PER_LINE: '0'
+          DEEP_STRICT_ONE_TAKE: '1'
+          DEEP_FAST_QUOTA_FAIL: '1'
+          DEEP_VOICE_CACHE: doubts_reels/voice_cache
+          DEEP_TAKE: doubts_reels/ep03_gemini_take.wav
+          DEEP_TAKE_SAVE: doubts_reels/ep03_gemini_take.wav
           DEEP_GAP_LINE: '0.08'
           DEEP_GAP_SCENE: '0.18'
         run: |
