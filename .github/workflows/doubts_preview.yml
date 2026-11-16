@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: postal-doubts-preview
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -44,7 +44,6 @@ jobs:
         run: |
           set -euo pipefail
           python doubts_reel.py
-          python deep/deep_demo.py doubts_reels/ep03_leave_gemini.html doubts_reels/ep03_leave_gemini.mp4
           ffmpeg -y -v error -i doubts_reels/ep03_leave_gemini.mp4 -vf "fps=1/5,scale=216:384,tile=4x4" -frames:v 1 doubts_reels/ep03_leave_contact.jpg
       - name: Save preview in core
         if: always()
