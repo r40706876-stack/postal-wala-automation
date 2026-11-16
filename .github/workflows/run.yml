@@ -19,6 +19,8 @@ concurrency:
 
 jobs:
   build-and-post:
+    # Retired old series: also block dispatches from timers already running on older commits.
+    if: github.event.inputs.job != 'series'
     runs-on: ubuntu-24.04          # pakka version (ubuntu-latest Oct 2026 se badal raha hai)
     timeout-minutes: 200           # banana + post ke time tak rukna
 
