@@ -1,5 +1,5 @@
 name: GDS doubts - existing Gemini mock pipeline
-# Re-render timing fix using the saved Gemini take; no new narration request.
+# Render topic action scenes using the saved Gemini take; no new narration request.
 
 on:
   workflow_dispatch:
