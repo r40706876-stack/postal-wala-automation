@@ -1,0 +1,15 @@
+{
+  "production_route": "Existing mock_reel.page30 -> deep/deep_demo.py -> deep/render_deep.py in GitHub Actions",
+  "tts_provider": "Gemini",
+  "tts_model": "gemini-3.8-flash-tts",
+  "tts_voice": "hi-in-training-1",
+  "github_run_id": "43870553758",
+  "workflow_commit": "035f27d4d6f1ab0c4f8387eeeba915870274f257",
+  "core_commit": "a798283106ef4accbd4408bd8f6296f33cdcf174",
+  "reference_mock_instagram_media_id": "18133949734772913",
+  "source": "Department of Posts OM 17-12/2025-GDS 30.12.2025, Rule7 and FAQ1/3/4",
+  "source_copy_url": "https://dhenkanalpostaldivision.org/updates/uploads/leave_accumulation_updated.pdf",
+  "publication_enabled": false,
+  "supersedes": "Rejected locally rendered Madhur/PIL episode03",
+  "review_note": "Use actual output preview to judge explanation/animation; do not imply user approval."
+}
