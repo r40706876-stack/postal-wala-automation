@@ -1,0 +1,82 @@
+name: GDS doubts - existing Gemini mock pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/doubts_preview.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: postal-doubts-preview
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Existing renderer dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
+          pip install requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
+          python -m playwright install --with-deps chromium
+      - name: Build using existing Gemini voice and mock renderer
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-training-1
+          DEEP_PER_LINE: '1'
+          DEEP_GAP_LINE: '0.08'
+          DEEP_GAP_SCENE: '0.18'
+        run: |
+          set -euo pipefail
+          python doubts_reel.py
+          python deep/deep_demo.py doubts_reels/ep03_leave_gemini.html doubts_reels/ep03_leave_gemini.mp4
+          ffmpeg -y -v error -i doubts_reels/ep03_leave_gemini.mp4 -vf "fps=1/5,scale=216:384,tile=4x4" -frames:v 1 doubts_reels/ep03_leave_contact.jpg
+      - name: Save preview in core
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add doubts_reels
+          git diff --cached --quiet || git commit -m "GDS doubts Gemini preview and provenance [skip ci]"
+          for i in 1 2 3; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 5; done
+      - name: Publish preview media for user review
+        env:
+          MEDIA_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import base64,json,os,urllib.request
+          from pathlib import Path
+          root=Path('doubts_reels')
+          hdr={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          for name in ['ep03_leave_gemini.mp4','ep03_leave_contact.jpg','ep03_leave_gemini_provenance.json','ep03_leave_gemini.mp4.cues.json']:
+              p=root/name
+              ep='https://api.github.com/repos/'+os.environ['MEDIA_REPO']+'/contents/doubts-preview/'+name
+              body={'message':'GDS doubt Gemini preview '+name,'branch':'media','content':base64.b64encode(p.read_bytes()).decode()}
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(ep+'?ref=media',headers=hdr)) as r: body['sha']=json.load(r)['sha']
+              except Exception: pass
+              with urllib.request.urlopen(urllib.request.Request(ep,data=json.dumps(body).encode(),headers=hdr,method='PUT')) as r: d=json.load(r)
+              print('PREVIEW_READY https://raw.githubusercontent.com/'+os.environ['MEDIA_REPO']+'/'+d['commit']['sha']+'/doubts-preview/'+name)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gds-doubts-gemini-preview
+          path: doubts_reels/
+          retention-days: 7
