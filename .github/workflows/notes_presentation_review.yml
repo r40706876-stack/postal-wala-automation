@@ -1,4 +1,4 @@
-name: Notes presentation review
+name: Notes presentation review - max 40 seconds
 on:
   push:
     paths: ['.github/workflows/notes_presentation_review.yml']
@@ -42,6 +42,7 @@ jobs:
           assert len(d['points']) == 5, d
           assert [x['k'] for x in d['timeline']][:4] == ['hook','line0','line1','overview']
           assert d['voice'] == ['gemini'], d['voice']
+          assert d['duration'] <= 40, d['duration']
           assert 'बायो' not in d['script']['cta']
           assert 'कमेंट' in d['script']['cta']
           PY
