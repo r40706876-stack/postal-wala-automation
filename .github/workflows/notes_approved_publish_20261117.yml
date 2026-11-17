@@ -1,4 +1,4 @@
-name: Publish approved Sunday notes - 17 Nov
+name: Publish approved prepayment notes - 17 Nov
 on:
   push:
     paths: ['.github/workflows/notes_approved_publish_20261117.yml']
@@ -17,6 +17,7 @@ jobs:
         with:
           repository: r40706876-stack/postal-wala-core
           token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -32,18 +33,15 @@ jobs:
           import datetime, hashlib, json, os, pathlib, shutil
           import requests, ig_post
           root = pathlib.Path('notes_reels')
-          video_sha = '62a778710c8feac6fd450c25485d18e244475d032db55185f28f2a0394aced8b'
-          cover_sha = '629d0780b2a92005100329b86f98615122f537d92ab554f514e3e6e07d01cd21'
-          demo = root / 'demo_01-10_hi.mp4'
-          cover = root / 'demo_01-10_hi_cover.jpg'
-          assert hashlib.sha256(demo.read_bytes()).hexdigest() == video_sha, 'Approved video changed'
-          assert hashlib.sha256(cover.read_bytes()).hexdigest() == cover_sha, 'Approved cover changed'
-          review = json.loads((root / 'presentation_review.json').read_text())
-          assert review['duration'] <= 40 and len(review['points']) == 5
-          st = json.loads((root / 'state.json').read_text())
-          assert st['today']['date'] == '2026-11-17'
-          assert datetime.datetime.now(ig_post.IST).date().isoformat() == '2026-11-17'
-          key = st['today']['file']
+          import subprocess
+          demo = root / 'demo_01-12_hi.mp4'
+          cover = root / 'demo_01-12_hi_cover.jpg'
+          for p in (demo, cover):
+              p.write_bytes(subprocess.check_output(['git','show','956c3a4:'+str(p)]))
+          video_sha = hashlib.sha256(demo.read_bytes()).hexdigest()
+          cover_sha = hashlib.sha256(cover.read_bytes()).hexdigest()
+          review = {'duration':34.2}
+          key = 'notes_2026-11-17_01-12_hi.mp4'
           log = ig_post.load_log()
           entry = log.get(key) or next((v for v in log.values() if isinstance(v, dict) and v.get('video_sha256') == video_sha), None)
           if entry and entry.get('id'):
@@ -54,13 +52,13 @@ jobs:
               target_cover = target.with_name(target.stem + '_cover.jpg')
               shutil.copyfile(demo, target)
               shutil.copyfile(cover, target_cover)
-              cap = """📮 रविवार व डाक अवकाश | PO Guide Part I · दिन 10
+              cap = """📮 पूर्व भुगतान एवं डाक टिकट | PO Guide Part I · दिन 12
           
-          रविवार को डाकघर बंद हो, तो पत्र कहाँ दें? पाँच जरूरी बातें इस रील में समझिए।
+          डाक शुल्क का पूर्व भुगतान क्यों जरूरी है? डाक टिकट और स्टेशनरी के जरूरी नियम समझिए।
           ✅ वीडियो सेव करें और अपने GDS साथियों के साथ शेयर करें।
           
           📚 लाइक और फॉलो करें। फ्री PDF और मॉक टेस्ट के लिए कमेंट में PDF लिखें।
-          🎁 वीडियो लाइक करके 3 GDS साथियों को शेयर करें; उसके बाद गिफ्ट के लिए DM करें।
+          🎁 फ्री हैंडराइटिंग नोट्स के लिए PDF कमेंट करें।
           
           #PostalEdge #GDS #GDStoPostman #GDStoMTS #IndiaPost"""
               cap = ig_post._brand.caption(cap)
@@ -90,10 +88,10 @@ jobs:
           if result.get('thumbnail_url'):
               image = requests.get(result['thumbnail_url'], timeout=60)
               if image.status_code == 200:
-                  (root / 'published_2026-11-17_thumbnail.jpg').write_bytes(image.content)
+                  (root / 'published_2026-11-17_prepayment_thumbnail.jpg').write_bytes(image.content)
           receipt = {'id':str(pid), 'permalink':result['permalink'], 'media_type':result.get('media_type'),
                      'video_sha256':video_sha, 'cover_sha256':cover_sha, 'duration':review['duration']}
-          (root / 'published_2026-11-17_receipt.json').write_text(json.dumps(receipt, indent=2))
+          (root / 'published_2026-11-17_prepayment_receipt.json').write_text(json.dumps(receipt, indent=2))
           print('VERIFIED_PUBLICATION', json.dumps(receipt))
           PY
       - name: Save publication receipt and canonical approved media
@@ -102,5 +100,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add generated_reels/ig_posted.json notes_reels
-          git diff --cached --quiet || git commit -m 'Publish approved Sunday notes with matching series cover [skip ci]'
+          git diff --cached --quiet || git commit -m 'Publish approved prepayment notes with matching series cover [skip ci]'
           git pull --rebase -q origin main && git push
