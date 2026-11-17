@@ -1,0 +1,16 @@
+name: Notes presentation review
+on:
+  push:
+    paths: ['.github/workflows/notes_presentation_review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  hold:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Hold rejected preview before scheduled publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST repos/r40706876-stack/postal-wala-automation/actions/runs/43999482046/cancel
