@@ -1,4 +1,4 @@
-name: Holiday full names and dates list preview
+name: Holiday full list - final readable calendar
 on:
   push:
     paths: ['.github/workflows/notes_presentation_review.yml']
