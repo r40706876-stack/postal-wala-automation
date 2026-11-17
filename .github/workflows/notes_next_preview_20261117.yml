@@ -57,6 +57,8 @@ jobs:
           topics=n.all_topics()
           state=json.load(open(n.STATE))
           k=(state['next']+1)//2 if state['next']%2 else state['next']//2
+          while k < len(topics) and ('अवकाश' in topics[k]['hi'] or 'छुट्ट' in topics[k]['hi']):
+              k+=1
           t=topics[k]
           print('NEXT SOURCE TOPIC:',t,flush=True)
           assert 'फ्रैंकिंग' not in t['hi'] and 'Franking' not in t['en'] and 'ज़रूरी बातें' not in t['hi'], 'Franking requires curated split before rendering'
