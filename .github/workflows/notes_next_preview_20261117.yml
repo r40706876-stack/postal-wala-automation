@@ -1,0 +1,71 @@
+name: Next notes professional preview
+
+# Roz: timer.yml 11:58 IST pe chalata hai (demo khaali, post=true) -> reel bane -> 1 PM IST pe Instagram post.
+# Haath se demo: demo me 'part:naam:lang' likho.
+on:
+  push:
+    paths: ['.github/workflows/notes_next_preview_20261117.yml']
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: "Demo topic(s), jaise 03:VPP:hi,03:VPP:en (khaali = aaj ki daily reel)"
+        default: ""
+      post:
+        description: "Instagram pe post kare? (sirf daily reel)"
+        type: boolean
+        default: false
+      only_post:
+        description: "Nayi reel mat banao - aaj ki bani hui reel hi post karo"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notes-reel
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
+          pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts >/dev/null
+          python -m playwright install --with-deps chromium >/dev/null
+      - name: Reel banao
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NOTES_GEMINI_ONLY: '1'
+          NOTES_LAYOUT_QA: '1'
+          NOTES_MAX_SEC: '40'
+        if: ${{ !inputs.only_post }}
+        run: |
+          python - <<'PY'
+          import json, notes_reel as n
+          topics=n.all_topics()
+          state=json.load(open(n.STATE))
+          k=(state['next']+1)//2 if state['next']%2 else state['next']//2
+          t=topics[k]
+          print('NEXT SOURCE TOPIC:',t,flush=True)
+          assert 'फ्रैंकिंग' not in t['hi'] and 'Franking' not in t['en'] and 'ज़रूरी बातें' not in t['hi'], 'Franking requires curated split before rendering'
+          n.build(t['part']+':'+t['hi']+':hi')
+          PY
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes_reels
+          git diff --cached --quiet || git commit -m "Notes reel [skip ci]"
+          git pull --rebase -q origin main && git push
