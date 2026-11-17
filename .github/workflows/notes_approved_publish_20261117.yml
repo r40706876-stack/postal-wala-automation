@@ -1,0 +1,106 @@
+name: Publish approved Sunday notes - 17 Nov
+on:
+  push:
+    paths: ['.github/workflows/notes_approved_publish_20261117.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: notes-reel
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install -q requests
+      - name: Publish exact approved video with matching automatic series cover
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          MEDIA_REPO: ${{ github.repository }}
+          MEDIA_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import datetime, hashlib, json, os, pathlib, shutil
+          import requests, ig_post
+          root = pathlib.Path('notes_reels')
+          video_sha = '62a778710c8feac6fd450c25485d18e244475d032db55185f28f2a0394aced8b'
+          cover_sha = '629d0780b2a92005100329b86f98615122f537d92ab554f514e3e6e07d01cd21'
+          demo = root / 'demo_01-10_hi.mp4'
+          cover = root / 'demo_01-10_hi_cover.jpg'
+          assert hashlib.sha256(demo.read_bytes()).hexdigest() == video_sha, 'Approved video changed'
+          assert hashlib.sha256(cover.read_bytes()).hexdigest() == cover_sha, 'Approved cover changed'
+          review = json.loads((root / 'presentation_review.json').read_text())
+          assert review['duration'] <= 40 and len(review['points']) == 5
+          st = json.loads((root / 'state.json').read_text())
+          assert st['today']['date'] == '2026-11-17'
+          assert datetime.datetime.now(ig_post.IST).date().isoformat() == '2026-11-17'
+          key = st['today']['file']
+          log = ig_post.load_log()
+          entry = log.get(key) or next((v for v in log.values() if isinstance(v, dict) and v.get('video_sha256') == video_sha), None)
+          if entry and entry.get('id'):
+              pid = entry['id']
+              print('Already published; verifying existing media:', pid)
+          else:
+              target = root / key
+              target_cover = target.with_name(target.stem + '_cover.jpg')
+              shutil.copyfile(demo, target)
+              shutil.copyfile(cover, target_cover)
+              cap = """📮 रविवार व डाक अवकाश | PO Guide Part I · दिन 10
+          
+          रविवार को डाकघर बंद हो, तो पत्र कहाँ दें? पाँच जरूरी बातें इस रील में समझिए।
+          ✅ वीडियो सेव करें और अपने GDS साथियों के साथ शेयर करें।
+          
+          📚 लाइक और फॉलो करें। फ्री PDF और मॉक टेस्ट के लिए कमेंट में PDF लिखें।
+          🎁 वीडियो लाइक करके 3 GDS साथियों को शेयर करें; उसके बाद गिफ्ट के लिए DM करें।
+          
+          #PostalEdge #GDS #GDStoPostman #GDStoMTS #IndiaPost"""
+              cap = ig_post._brand.caption(cap)
+              (target.with_name(target.stem + '_caption.txt')).write_text(cap + '\n-----\n📚 फ्री PDF और मॉक टेस्ट के लिए कमेंट में PDF लिखें।\n')
+              cover_url = ig_post.media_url(str(target_cover))
+              check = requests.get(cover_url, timeout=60)
+              check.raise_for_status()
+              assert hashlib.sha256(check.content).hexdigest() == cover_sha
+              # URL upload preserves the required cover; no coverless retry.
+              pid = ig_post._reel_by_url(str(target), cap, cover_url)
+              entry = {'id': pid, 'time': datetime.datetime.now(ig_post.IST).strftime('%Y-%m-%d %H:%M'),
+                       'video_sha256': video_sha, 'cover_sha256': cover_sha, 'approved_preview': demo.name}
+              log[key] = entry
+              ig_post.save_log(log)
+              try:
+                  entry['comment'] = ig_post.post_comment(pid, '📚 लाइक और फॉलो करें। फ्री PDF और मॉक टेस्ट के लिए PDF कमेंट करें।')
+              except Exception:
+                  entry['comment'] = None
+              ig_post.save_log(log)
+          result = requests.get(ig_post.GRAPH + str(pid), params={'fields':'id,permalink,media_type,timestamp,thumbnail_url',
+                                'access_token':ig_post.IG_ACCESS_TOKEN}, timeout=60).json()
+          assert result.get('id') == str(pid), result.get('error', 'Published media verification failed')
+          assert result.get('permalink'), 'Published permalink missing'
+          entry['permalink'] = result['permalink']
+          log[key] = entry
+          ig_post.save_log(log)
+          if result.get('thumbnail_url'):
+              image = requests.get(result['thumbnail_url'], timeout=60)
+              if image.status_code == 200:
+                  (root / 'published_2026-11-17_thumbnail.jpg').write_bytes(image.content)
+          receipt = {'id':str(pid), 'permalink':result['permalink'], 'media_type':result.get('media_type'),
+                     'video_sha256':video_sha, 'cover_sha256':cover_sha, 'duration':review['duration']}
+          (root / 'published_2026-11-17_receipt.json').write_text(json.dumps(receipt, indent=2))
+          print('VERIFIED_PUBLICATION', json.dumps(receipt))
+          PY
+      - name: Save publication receipt and canonical approved media
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add generated_reels/ig_posted.json notes_reels
+          git diff --cached --quiet || git commit -m 'Publish approved Sunday notes with matching series cover [skip ci]'
+          git pull --rebase -q origin main && git push
