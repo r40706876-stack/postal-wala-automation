@@ -1,4 +1,4 @@
-name: Holiday doubt - verified comparison preview
+name: Holiday full names and dates list preview
 on:
   push:
     paths: ['.github/workflows/notes_presentation_review.yml']
@@ -27,7 +27,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
           pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts >/dev/null
           python -m playwright install --with-deps chromium >/dev/null
-      - name: Render structured holiday lesson with Gemini
+      - name: Render full holiday calendar with readable names and dates
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -41,16 +41,17 @@ jobs:
           python - <<'PY'
           import json
           d=json.load(open('notes_reels/presentation_review.json'))
-          assert len(d['points']) == 2, d
-          assert d['editorial_plan'] == 'holidays_2026'
+          assert len(d['points']) == 3, d
+          assert len(d['holiday_rows']) == 14
+          assert len(set(x[0] for x in d['holiday_rows'])) == 14
+          assert d['editorial_plan'] == 'holidays_2026_list'
           assert len(d['sources']) == 2
-          assert d['script']['trap'] and d['script']['trick']
-          assert [x['k'] for x in d['timeline']] == ['hook','line0','line1','trap','trick','surprise','cta']
+          assert [x['k'] for x in d['timeline']] == ['hook','line0','line1','line2','overview','surprise','cta']
           assert d['voice'] == ['gemini'], d['voice']
           assert d['duration'] <= 40, d['duration']
           gift = next(x for x in d['timeline'] if x['k'] == 'surprise')
           assert 2 <= gift['d'] <= 3, gift
-          assert len(d['script']['written_explanations']) == 2
+          assert len(d['script']['written_explanations']) == 3
           assert 'बायो' not in d['script']['cta']
           assert 'कमेंट' in d['script']['cta']
           assert 'फॉलो' in d['script']['cta'] and 'मॉक' in d['script']['cta']
