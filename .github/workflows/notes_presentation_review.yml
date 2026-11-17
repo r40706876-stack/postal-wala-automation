@@ -1,4 +1,4 @@
-name: Holiday doubt - comparison trap and trick preview
+name: Holiday doubt - verified comparison preview
 on:
   push:
     paths: ['.github/workflows/notes_presentation_review.yml']
@@ -56,7 +56,6 @@ jobs:
           assert 'फॉलो' in d['script']['cta'] and 'मॉक' in d['script']['cta']
           PY
       - name: Save preview for review
-        if: always()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
