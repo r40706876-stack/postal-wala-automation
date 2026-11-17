@@ -1,4 +1,4 @@
-name: Notes review - 40 seconds with surprise
+name: Notes review - gift DM and PDF mock CTA
 on:
   push:
     paths: ['.github/workflows/notes_presentation_review.yml']
@@ -33,6 +33,7 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           NOTES_GEMINI_ONLY: '1'
           NOTES_JOIN: '0'
+          NOTES_REUSE_PREVIEW: '1'
           NOTES_TRIM_LINES: '0'
         run: |
           python notes_reel.py build --demo '01:रविवार व डाक अवकाश:hi'
@@ -48,6 +49,7 @@ jobs:
           assert len(d['script']['written_explanations']) == 5
           assert 'बायो' not in d['script']['cta']
           assert 'कमेंट' in d['script']['cta']
+          assert 'फॉलो' in d['script']['cta'] and 'मॉक' in d['script']['cta']
           PY
       - name: Save preview for review
         if: always()
