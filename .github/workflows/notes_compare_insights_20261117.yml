@@ -1,0 +1,64 @@
+name: Compare notes reel insights - read only
+on:
+  push:
+    paths: ['.github/workflows/notes_compare_insights_20261117.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  insights:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install -q requests
+      - name: Read latest notes reel metrics
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: |
+          python - <<'PY'
+          import concurrent.futures, datetime, json, pathlib
+          import ig_insights as ig
+          log=json.load(open('generated_reels/ig_posted.json'))
+          chosen=[(k,v) for k,v in log.items() if k.startswith('notes_2026-11-') and k[6:16]>='2026-11-11' and isinstance(v,dict) and v.get('id')]
+          out={'fetched':datetime.datetime.now(datetime.timezone.utc).isoformat(),'profile':ig.get(ig.UID,fields='username,followers_count,media_count'),'posts':[]}
+          permission_error=None
+          for key,entry in chosen:
+              md=ig.get(entry['id'],fields='id,caption,timestamp,permalink,like_count,comments_count,media_product_type')
+              row={'file':key,'media':md,'metrics':{},'errors':{}}
+              if permission_error:
+                  row['errors']['insights']=permission_error
+              else:
+                  v,err=ig.metric(entry['id'],'views')
+                  if err and ('(#10)' in err or 'permission' in err.lower()):
+                      permission_error=err
+                      row['errors']['insights']=err
+                  else:
+                      if err: row['errors']['views']=err
+                      else: row['metrics']['views']=v
+                      metrics=[m for m in ig.REEL_METRICS if m!='views']
+                      def read(m):
+                          value,error=ig.metric(entry['id'],m)
+                          return m,value,error
+                      with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+                          for m,value,error in pool.map(read,metrics):
+                              if error: row['errors'][m]=error
+                              else: row['metrics'][m]=value
+              out['posts'].append(row)
+              print(key, json.dumps(row['metrics']), json.dumps(row['errors']))
+          pathlib.Path('generated_reels/notes_comparison_20261117.json').write_text(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Save read-only analysis snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add generated_reels/notes_comparison_20261117.json
+          git diff --cached --quiet || git commit -m 'Refresh notes reel comparison insights [skip ci]'
+          git pull --rebase -q origin main && git push
