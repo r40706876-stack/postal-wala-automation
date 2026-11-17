@@ -26,6 +26,8 @@ jobs:
       - name: Render complete list then memory groups
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }}
+          PYTHONUNBUFFERED: '1'
           NOTES_GEMINI_ONLY: '1'
           NOTES_REUSE_PREVIEW: '1'
         run: python3 ops/screenshot_holidays.py
