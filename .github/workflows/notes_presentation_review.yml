@@ -1,4 +1,4 @@
-name: Edit original holiday video - add holiday names
+name: Holiday full screenshot and memory groups
 on:
   push:
     paths: ['.github/workflows/notes_presentation_review.yml']
@@ -8,28 +8,38 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           repository: r40706876-stack/postal-wala-core
           token: ${{ secrets.CORE_TOKEN }}
-      - name: Install video editor
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install renderer
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg >/dev/null
-      - name: Keep original opening and replace repeated explanation only
-        run: python3 ops/hybrid_holiday_edit.py
-      - name: Save corrected original preview
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core >/dev/null
+          pip install -q playwright==1.47.0 numpy requests pypdf pillow edge-tts
+          python -m playwright install --with-deps chromium >/dev/null
+      - name: Render complete list then memory groups
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NOTES_GEMINI_ONLY: '1'
+          NOTES_REUSE_PREVIEW: '1'
+        run: python3 ops/screenshot_holidays.py
+      - name: Save corrected preview
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add notes_reels/demo_01-11_hi* notes_reels/presentation_review.json
-          git diff --cached --quiet || git commit -m 'Original holiday video with actual holiday names replacing repeated breakdown [skip ci]'
+          git add notes_reels/demo_01-11_hi* notes_reels/presentation_review.json notes_reels/holiday_qa*
+          git diff --cached --quiet || git commit -m 'Full screenshot holiday list first, memory groups second [skip ci]'
           git pull --rebase -q origin main && git push
       - uses: actions/upload-artifact@v4
         with:
-          name: Original-video-with-holiday-list
+          name: Holiday-screenshot-and-groups
           path: |
             notes_reels/demo_01-11_hi*
             notes_reels/presentation_review.json
+            notes_reels/holiday_qa*
