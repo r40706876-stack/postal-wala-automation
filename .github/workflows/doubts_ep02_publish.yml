@@ -1,0 +1,60 @@
+name: Publish source-verified doubts ep02 at 18:30 IST
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/doubts_ep02_publish.yml']
+permissions:
+  contents: write
+concurrency:
+  group: postal-doubts-instagram-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: production
+          sparse-checkout: doubts_publish
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          sparse-checkout: |
+            ig_post.py
+            branding.py
+            brand_config.json
+            generated_reels/ig_posted.json
+            doubts_reels/ep01_publication_receipt.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install -q requests pillow
+      - name: Verify account, assets and duplicates then publish exact episode
+        working-directory: core
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          FB_POST: '0'
+        run: python -u ../production/doubts_publish/publish_ep02.py
+      - name: Persist actual publication receipt and deduplication log
+        if: always()
+        working-directory: core
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated_reels/ig_posted.json
+          test ! -f doubts_reels/ep02_container_checkpoint.json || git add --sparse doubts_reels/ep02_container_checkpoint.json
+          test ! -f doubts_reels/ep02_publication_receipt.json || git add --sparse doubts_reels/ep02_publication_receipt.json
+          git diff --cached --quiet || git commit -m "Record Postal doubts episode 02 Instagram result [skip ci]"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Postal-Doubts-Publication-Receipt
+          path: core/doubts_reels/ep02_publication_receipt.json
+          if-no-files-found: ignore
