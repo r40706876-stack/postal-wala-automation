@@ -1,0 +1,39 @@
+name: Notes reel - jeetne wala format demo (kal ka topic, post nahi)
+on:
+  push:
+    paths: ['.github/workflows/notes_format_demo_20261118.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: notes-reel
+  cancel-in-progress: false
+jobs:
+  demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
+          pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts >/dev/null
+          python -m playwright install --with-deps chromium >/dev/null
+      - name: Demo (kal wala topic, state nahi badlega)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python notes_reel.py build --demo next
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes_reels
+          git diff --cached --quiet || git commit -m "Notes reel demo (jeetne wala format) [skip ci]"
+          git pull --rebase -q origin main && git push
