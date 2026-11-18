@@ -1,4 +1,4 @@
-name: GDS doubts ep02 - Transfer Express (Gemini voice)
+name: GDS doubts ep02 - verified process (Gemini only)
 on:
   workflow_dispatch:
   push:
@@ -31,10 +31,10 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Build ep02 with Gemini one-take voice (tries every Gemini key)
         env:
-          K1: ${{ secrets.GEMINI_DEEP_KEY }}
-          K2: ${{ secrets.GEMINI_API_KEY_2 }}
-          K3: ${{ secrets.GEMINI_API_KEY_3 }}
-          K4: ${{ secrets.GEMINI_API_KEY_4 }}
+          K1: ${{ secrets.GEMINI_API_KEY4 || secrets.GEMINI_API_KEY_4 }}
+          K2: ${{ secrets.GEMINI_API_KEY2 || secrets.GEMINI_API_KEY_2 }}
+          K3: ${{ secrets.GEMINI_API_KEY3 || secrets.GEMINI_API_KEY_3 }}
+          K4: ${{ secrets.GEMINI_DEEP_KEY }}
           K5: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
           GEMINI_TTS_VOICE: hi-in-training-1
@@ -42,10 +42,18 @@ jobs:
           DEEP_STRICT_ONE_TAKE: '1'
           DEEP_FAST_QUOTA_FAIL: '1'
           DEEP_VOICE_CACHE: doubts_reels/voice_cache
+          DEEP_TAKE: doubts_reels/ep02_source_locked_20261118.wav
+          DEEP_TAKE_SAVE: doubts_reels/ep02_source_locked_20261118.wav
           DEEP_GAP_LINE: '0.08'
           DEEP_GAP_SCENE: '0.18'
         run: |
           set -uo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('deep/deep_demo.py')
+          s=p.read_text();s=s.replace('import main as M  # noqa: E402','import main as M  # noqa: E402\nM.TTS_WAITS = ()  # bounded quota retry for this build')
+          p.write_text(s)
+          PY
           ok=0
           for n in 1 2 3 4 5; do
             v="K$n"; key="${!v:-}"
