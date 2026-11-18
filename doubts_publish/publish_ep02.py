@@ -19,7 +19,7 @@ def duplicate(log,media):
         if k.startswith("doubts_ep02_") or v.get("series_episode")==2:return v
     for m in media:
         c="".join(m.get("caption","").split()).replace("०","0").replace("२","2")
-        if "डाकविभागकेडाउट्स" in c and any(x in c for x in ("भाग02","भाग2:","भाग2|")):
+        if any(x in c for x in ("डाकविभागकेडाउट्स|भाग02:", "डाकविभागकेडाउट्स|भाग2:", "डाकविभागकेडाउट्स—भाग02:")):
             return {"id":m["id"],"permalink":m.get("permalink"),"time":m.get("timestamp"),"duplicate_reconciled":True}
 def fetch(asset):
     d=M[asset];r=requests.get(d["url"],timeout=120);r.raise_for_status()
