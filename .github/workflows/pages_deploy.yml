@@ -35,6 +35,11 @@ jobs:
       T3: ${{ secrets.CLOUDFLARE_API_TOKEN_3 }}
       A3: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_3 }}
       PROJECT: ${{ inputs.project || 'postalwala' }}
+      # 2026-11-18: Postak login + payment (repo Settings > Secrets me daalo; na ho to login/payment band, site chalti rahe)
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      RZP_KEY_ID: ${{ secrets.RAZORPAY_KEY_ID }}
+      RZP_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
+      RZP_WEBHOOK_SECRET: ${{ secrets.RAZORPAY_WEBHOOK_SECRET }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,10 +84,11 @@ jobs:
               ID=$(dbid); [ -z "$ID" ] && { npx --yes wrangler@4 d1 create $DBN >/tmp/d1.log 2>&1 || grep -iE "error|permission|auth" /tmp/d1.log | head -2 | sed "s/^/token $k d1: /"; ID=$(dbid); }
               KEY=$(tr -d ' \n' < stats_key.txt 2>/dev/null)
               if [ -n "$ID" ]; then
-                printf 'name = "%s"\npages_build_output_dir = "docs"\ncompatibility_date = "2024-09-01"\n\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "%s"\ndatabase_id = "%s"\n\n[vars]\nSTATS_KEY = "%s"\n' "$PROJECT" "$DBN" "$ID" "$KEY" > wrangler.toml
+                printf 'name = "%s"\npages_build_output_dir = "docs"\ncompatibility_date = "2024-09-01"\n\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "%s"\ndatabase_id = "%s"\n\n[vars]\nSTATS_KEY = "%s"\nGOOGLE_CLIENT_ID = "%s"\nRZP_KEY_ID = "%s"\n' "$PROJECT" "$DBN" "$ID" "$KEY" "$GOOGLE_CLIENT_ID" "$RZP_KEY_ID" > wrangler.toml
                 npx --yes wrangler@4 d1 execute $DBN --remote --file functions/schema.sql >/tmp/sq.log 2>&1 && echo "token $k: ginti DB taiyaar" || grep -iE "error" /tmp/sq.log | head -2
               else echo "token $k: D1 ki ijazat nahi - ginti band rahegi"; fi
             fi
+            for sn in RZP_KEY_SECRET RZP_WEBHOOK_SECRET; do v=$(eval echo \$$sn); [ -n "$v" ] && { printf '%s' "$v" | npx --yes wrangler@4 pages secret put $sn --project-name "$PROJECT" >/tmp/sec.log 2>&1 && echo "token $k: $sn rakha" || grep -iE "error" /tmp/sec.log | head -1; }; done
             if npx --yes wrangler@4 pages deploy docs --project-name "$PROJECT" --branch main --commit-dirty=true >/tmp/d.log 2>&1; then
               echo "DEPLOY_OK token $k"; grep -oE "https://[a-z0-9.-]+pages\.dev" /tmp/d.log | sort -u
               echo "${{ steps.h.outputs.hash }}" > .deployed; exit 0
