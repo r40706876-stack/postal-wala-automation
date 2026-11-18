@@ -29,22 +29,31 @@ jobs:
           sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
           pip install requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
           python -m playwright install --with-deps chromium
-      - name: Build ep02 with Gemini one-take voice
+      - name: Build ep02 with Gemini one-take voice (tries every Gemini key)
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          K1: ${{ secrets.GEMINI_DEEP_KEY }}
+          K2: ${{ secrets.GEMINI_API_KEY_2 }}
+          K3: ${{ secrets.GEMINI_API_KEY_3 }}
+          K4: ${{ secrets.GEMINI_API_KEY_4 }}
+          K5: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
           GEMINI_TTS_VOICE: hi-in-training-1
           DEEP_PER_LINE: '0'
           DEEP_STRICT_ONE_TAKE: '1'
           DEEP_FAST_QUOTA_FAIL: '1'
           DEEP_VOICE_CACHE: doubts_reels/voice_cache
-          DEEP_TAKE: doubts_reels/ep02_gemini_take.wav
-          DEEP_TAKE_SAVE: doubts_reels/ep02_gemini_take.wav
           DEEP_GAP_LINE: '0.08'
           DEEP_GAP_SCENE: '0.18'
         run: |
-          set -euo pipefail
-          python doubts_ep02.py
+          set -uo pipefail
+          ok=0
+          for n in 1 2 3 4 5; do
+            v="K$n"; key="${!v:-}"
+            [ -z "$key" ] && { echo "key $n khali"; continue; }
+            echo "=== Gemini key $n ==="
+            if GEMINI_API_KEY="$key" python doubts_ep02.py; then ok=1; break; fi
+          done
+          [ "$ok" = 1 ] || { echo "Sabhi Gemini keys ka TTS quota khatam"; exit 1; }
           ffmpeg -y -v error -i doubts_reels/ep02_transfer_kram.mp4 -vf "fps=1/4,scale=216:384,tile=5x3" -frames:v 1 doubts_reels/ep02_contact.jpg
       - name: Save in core
         if: always()
