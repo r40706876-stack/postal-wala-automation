@@ -66,6 +66,8 @@ jobs:
           DEEP_VOICE_CACHE: demo_out/deep/vcache_c${{ steps.n.outputs.n }}
         run: |
           mkdir -p demo_out/deep
+          T=demo_out/deep/take_premium_c${{ steps.n.outputs.n }}.wav
+          if [ -z "$DEEP_TAKE" ] && [ -f "$T" ]; then export DEEP_TAKE="$T"; echo "pehle wali awaaz dobara: $T (Gemini bachat)"; fi
           python deep/deep_demo.py deep/premium_c${{ steps.n.outputs.n }}.html demo_out/deep/clause${{ steps.n.outputs.n }}_premium.mp4
       - name: Save (core repo)
         if: always()
