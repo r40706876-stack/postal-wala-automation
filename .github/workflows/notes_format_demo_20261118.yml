@@ -30,7 +30,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          NOTES_CUSTOM=notes_reels/custom_franking_rang.json python notes_reel.py build --demo "01:ज़रूरी बातें:hi"
+          python notes_reel.py build --demo next
       - name: Save
         run: |
           git config user.name "github-actions[bot]"
