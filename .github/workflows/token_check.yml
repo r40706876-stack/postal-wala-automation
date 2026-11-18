@@ -4,6 +4,9 @@ name: Token chaukidaar (roz)
 # aur GitHub email bhejta hai. Token kabhi log me nahi chhapta, sirf tareekh.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/token_check.yml']
   schedule:
     - cron: '37 3 * * *'      # ~9:07 AM IST
 
@@ -22,6 +25,8 @@ jobs:
           fetch-depth: 1
           sparse-checkout: |
             ig_post.py
+            branding.py
+            brand_config.json
             ig_comments.py
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
