@@ -45,6 +45,8 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }}
+          NOTES_GEMINI_ONLY: "1"
         if: ${{ !inputs.only_post }}
         run: |
           if [ -n "${{ inputs.demo }}" ]; then python notes_reel.py build --demo "${{ inputs.demo }}"; else python notes_reel.py build; fi
