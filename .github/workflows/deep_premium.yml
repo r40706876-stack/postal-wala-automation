@@ -36,7 +36,7 @@ jobs:
         id: n
         run: |
           N="${{ inputs.clause }}"
-          if [ -z "$N" ]; then N=$(tr -dc '0-9' < pub/premium_trigger.txt | head -c 3); fi
+          if [ -z "$N" ]; then N=$(grep -o '[0-9]\+' pub/premium_trigger.txt | head -1); fi
           echo "n=${N:-1}" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
