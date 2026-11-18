@@ -1,0 +1,41 @@
+{
+  "episode": 2,
+  "qa_passed": true,
+  "target_ist": "2026-11-18T18:30:00+05:30",
+  "title": "GDS ट्रांसफर का पूरा क्रम — पिछले आधिकारिक चक्र के उदाहरण",
+  "source_url": "https://utilities.cept.gov.in/dop/pdfbind.ashx?id=14939",
+  "source_scope": "21 May 2026 order; June/July cycle dates explicitly historical examples, no December forecast",
+  "run_id": 44307610504,
+  "tts_model": "gemini-3.8-flash-tts",
+  "tts_voice": "hi-in-training-1",
+  "video": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/05215799825e92ccafbc13e2dabdfdc5ac7117bd/doubts-preview/ep02_transfer_kram.mp4",
+    "filename": "ep02_transfer_kram.mp4",
+    "sha256": "1408ef71364534c0a8a85fb91d107ce1786be0b44a0b2c5c03614b0a720ea781"
+  },
+  "caption": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/05215799825e92ccafbc13e2dabdfdc5ac7117bd/doubts-preview/ep02_transfer_kram_caption.txt",
+    "filename": "ep02_transfer_kram_caption.txt",
+    "sha256": "0e105aac29a1481132d7070bfb737bc0f646e001924b95d347fe4c0d85ea45f7"
+  },
+  "cover": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/9bfc856832bee96bfa9c4438a2e77e0815c3e29e/doubts-preview/ep02_cover.jpg",
+    "filename": "ep02_cover.jpg",
+    "sha256": "9cd47e5a9f0f685a7ea5aca8759b65002b2c7c7f6bcbb6a51e77f64bb089f18a",
+    "source_png_sha256": "5088a179b7683f922739c640fa7fde638dd40be1a6c0c3b29642cc58390f020f"
+  },
+  "qa": {
+    "dimensions": [
+      1080,
+      1920
+    ],
+    "duration_seconds": 56.566667,
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "audio_rate": 48000,
+    "full_decode": "pass",
+    "narration_cues": 10,
+    "last_cue_end": 55.299,
+    "contact_sheet": "visually inspected; calendar, train stations, cancellation gate, postman, series identity and next-episode teaser"
+  }
+}
