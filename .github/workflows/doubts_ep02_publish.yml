@@ -51,7 +51,10 @@ jobs:
           test ! -f doubts_reels/ep02_container_checkpoint.json || git add --sparse doubts_reels/ep02_container_checkpoint.json
           test ! -f doubts_reels/ep02_publication_receipt.json || git add --sparse doubts_reels/ep02_publication_receipt.json
           git diff --cached --quiet || git commit -m "Record Postal doubts episode 02 Instagram result [skip ci]"
-          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
+          git diff --quiet || git stash push -m "Temporary downloaded publication assets"
+          ok=0
+          for i in 1 2 3; do if git pull --rebase origin main && git push origin HEAD:main; then ok=1; break; fi; sleep 5; done
+          [ "$ok" = 1 ]
       - uses: actions/upload-artifact@v4
         if: always()
         with:
