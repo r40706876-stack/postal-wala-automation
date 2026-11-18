@@ -1,0 +1,54 @@
+name: Mock special reel (Claude script, no publish)
+
+# Haath se likhi mock reel: core repo ke mock_special/<naam>.html -> Gemini awaaz -> mock_reels/special/<naam>.mp4
+# Roz ki mock reel / Instagram post ko nahi chhoota.
+on:
+  push:
+    paths:
+      - '.github/workflows/mock_special.yml'
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "mock_special/<naam>.html"
+        default: "date_stamp_2"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mock-special
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-noto-color-emoji fonts-freefont-ttf >/dev/null
+          pip install playwright==1.47.0 numpy requests pypdf pillow edge-tts faster-whisper >/dev/null
+          python -m playwright install --with-deps chromium >/dev/null
+      - name: Reel banao
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-training-1
+          GEMINI_TTS_STYLE: "lively elder-brother teacher: warm, clear and expressive with natural ups and downs - curious on questions, firm and serious on warnings, happy on answers, calm on examples; small natural pauses"
+        run: python mock_special.py "${{ inputs.name || 'date_stamp_2' }}"
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f mock_reels/special/*.html
+          git add mock_reels/special
+          git diff --cached --quiet || git commit -m "Mock special reel [skip ci]"
+          git pull --rebase -q origin main && git push
