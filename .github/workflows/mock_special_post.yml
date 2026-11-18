@@ -1,0 +1,69 @@
+name: Mock special reel POST (18 Nov 4:30 PM)
+
+# User ki manzoori se: Claude wali mock reel (tarikh mohar) aaj 4:30 PM IST par, final cover ke saath.
+# Ek baar ka post: is file ke push par chalta hai; aaj ki tarikh nahi to kuch nahi karta.
+on:
+  push:
+    paths:
+      - '.github/workflows/mock_special_post.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mock-special-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install requests >/dev/null
+      - name: 4:30 PM IST tak ruko
+        run: |
+          [ "$(TZ=Asia/Kolkata date +%F)" = "2026-11-18" ] || { echo "aaj ki tarikh nahi"; exit 1; }
+          TGT=$(TZ=Asia/Kolkata date -d "today 16:30" +%s); W=$((TGT-$(date +%s)))
+          if [ $W -gt 0 ]; then echo "$W sec ruk rahe"; sleep $W; fi
+      - name: Instagram post
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          MEDIA_REPO: ${{ github.repository }}
+          MEDIA_TOKEN: ${{ github.token }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          python - <<'PY'
+          import datetime, ig_post
+          v = "mock_reels/special/date_stamp_2.mp4"
+          lg = ig_post.load_log()
+          if v in lg:
+              raise SystemExit(f"pehle hi post: {lg[v]}")
+          cap, com = ig_post.split_caption("mock_reels/special/date_stamp_2_caption.txt")
+          pid = ig_post.post_reel(v, cap, "mock_reels/special/date_stamp_2_cover.jpg")
+          cid = None
+          try:
+              cid = ig_post.post_comment(pid, com)
+          except Exception as exc:
+              print("comment nahi hua:", str(exc)[:200])
+          lg[v] = {"id": pid, "comment": cid, "time": datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5, minutes=30))).strftime("%Y-%m-%d %H:%M")}
+          ig_post.save_log(lg)
+          print("POST HO GAYA:", pid)
+          PY
+      - name: Log save
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated_reels/ig_posted.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Instagram post log [skip ci]"
+          git pull --rebase -q origin main && git push || true
