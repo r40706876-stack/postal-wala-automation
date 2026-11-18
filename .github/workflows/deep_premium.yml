@@ -63,24 +63,27 @@ jobs:
           GEMINI_TTS_VOICE: hi-in-training-1
           DEEP_TAKE: ${{ inputs.take }}
           DEEP_TAKE_SAVE: demo_out/deep/take_premium_c${{ steps.n.outputs.n }}.wav
-          DEEP_VOICE_CACHE: demo_out/deep/vcache_c${{ steps.n.outputs.n }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
+          WHISPER_MODEL: medium
         run: |
           mkdir -p demo_out/deep
           T=demo_out/deep/take_premium_c${{ steps.n.outputs.n }}.wav
           if [ -z "$DEEP_TAKE" ] && [ -f "$T" ]; then export DEEP_TAKE="$T"; echo "pehle wali awaaz dobara: $T (Gemini bachat)"; fi
-          python deep/deep_demo.py deep/premium_c${{ steps.n.outputs.n }}.html demo_out/deep/clause${{ steps.n.outputs.n }}_premium.mp4
+          python deep/premium/voice_premium.py deep/premium_c${{ steps.n.outputs.n }}.html demo_out/deep/clause${{ steps.n.outputs.n }}_premium.mp4
       - name: Save (core repo)
         if: always()
         working-directory: core
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add demo_out/deep/clause*_premium.mp4* demo_out/deep/take_premium_c*.wav || true
+          for f in demo_out/deep/clause*_premium.mp4 demo_out/deep/clause*_premium.mp4.cues.json demo_out/deep/take_premium_c*.wav; do [ -f "$f" ] && git add "$f"; done
           git diff --staged --quiet || git commit -m "Premium deep class clause ${{ steps.n.outputs.n }} [skip ci]"
           for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: clause${{ steps.n.outputs.n }}_premium
-          path: core/demo_out/deep/clause${{ steps.n.outputs.n }}_premium.mp4
+          path: |
+            core/demo_out/deep/clause${{ steps.n.outputs.n }}_premium.mp4
+            core/demo_out/deep/take_premium_c${{ steps.n.outputs.n }}.wav
           if-no-files-found: ignore
