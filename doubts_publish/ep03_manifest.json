@@ -1,0 +1,12 @@
+{
+  "episode": 3,
+  "qa_passed": true,
+  "target_ist": "2026-11-19T18:28:00+05:30",
+  "title": "GDS की बची छुट्टी के पैसे मिलते हैं? — नहीं",
+  "source": "DoP OM No. 17-12/2025-GDS dated 30.12.2025",
+  "run_id": 44510393730,
+  "video": {"url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_chutti_paise.mp4", "filename": "ep03_chutti_paise.mp4", "sha256": "ca88627cfd11bc04af03a740292d4b48e08fd6a982f39fd695ebe60a4738b736"},
+  "caption": {"url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_chutti_paise_caption.txt", "filename": "ep03_chutti_paise_caption.txt", "sha256": "388904039a44eb45ac7b4147b2186240afa0be80a8d575ab6c3b2f55e8ce029b"},
+  "cover": {"url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_cover.jpg", "filename": "ep03_cover.jpg", "sha256": "45b18ffe08f5d5fc1fadc227cb4f9e7b03e113d12e9131d3ceea1eb59166d256"},
+  "qa": {"dimensions": [1080, 1920], "duration_seconds": 50.63, "approved_by_user": "2026-11-19 17:52 IST"}
+}
