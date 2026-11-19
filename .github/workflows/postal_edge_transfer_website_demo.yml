@@ -1,0 +1,65 @@
+name: Postal Edge Rule 3 with website walkthrough
+on:
+  push:
+    branches:
+      - production/website-reel-20261119
+    paths:
+      - .github/workflows/postal_edge_transfer_website_demo.yml
+      - rule3-motion/promo/**
+permissions:
+  actions: read
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out the transfer page snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          ref: eb836f2328eb4b5ac0a4857f20f256f1646df034
+          path: core
+          sparse-checkout: |
+            /docs/transfer/
+            /docs/icon-192.png
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44593709103
+          name: postal-edge-transfer-demo-voice
+          path: rule3-motion/promo
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44591946311
+          name: postal-edge-rule3-story-animated
+          path: rule3-motion/promo
+      - name: Install render dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core ffmpeg
+          python -m pip install -q Pillow numpy scipy playwright
+          python -m playwright install --with-deps chromium
+      - name: Capture the site with example routes
+        run: |
+          python -m http.server 8779 --bind 127.0.0.1 --directory core/docs > /tmp/pe-demo-http.log 2>&1 &
+          mv rule3-motion/promo/narration.wav rule3-motion/promo/narration_raw.wav
+          python rule3-motion/promo/timing.py
+          python rule3-motion/promo/capture.py
+      - name: Render and validate the final reel
+        run: |
+          python rule3-motion/promo/render_demo.py
+          ffmpeg -v error -xerror -i rule3-motion/promo/Postal_Edge_Rule3_Transfer_Website_Demo.mp4 -f null -
+          ffprobe -v error -show_entries stream=codec_name,width,height -show_entries format=duration rule3-motion/promo/Postal_Edge_Rule3_Transfer_Website_Demo.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postal-edge-rule3-transfer-website-demo
+          path: |
+            rule3-motion/promo/Postal_Edge_Rule3_Transfer_Website_Demo.mp4
+            rule3-motion/promo/preview.jpg
+          if-no-files-found: error
