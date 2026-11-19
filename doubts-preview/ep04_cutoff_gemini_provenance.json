@@ -1,0 +1,15 @@
+{
+  "episode": 4,
+  "source_url": "https://utilities.cept.gov.in/dop/pdfbind.ashx?id=14981",
+  "source_date": "2026-06-01",
+  "source_scope": "AP Circle2026 notification para3B(ii); historical example, not a new exam announcement",
+  "example_joining": "2023-02-19",
+  "example_completion": "2026-02-19",
+  "notification_cutoff": "2026-01-01",
+  "tts_provider": "Gemini",
+  "tts_model": "gemini-3.8-flash-tts",
+  "tts_voice": "hi-in-training-1",
+  "github_run_id": "44526303103",
+  "route": "mock_reel.page30 -> deep/deep_demo.py -> deep/render_deep.py",
+  "publish_enabled": false
+}
