@@ -1,0 +1,52 @@
+name: Verify Postal account identity and prevent premature doubts publish
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/doubts_identity_20261119.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Stop only conflicting pending episode03 publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh api -X POST "repos/$GH_REPO/actions/runs/44523877466/cancel"
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          sparse-checkout: |
+            ig_post.py
+            branding.py
+            brand_config.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install -q requests
+      - name: Read account and prove known episode ownership without posting
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          FB_POST: '0'
+        run: |
+          python - <<'PY'
+          import json,requests,ig_post as P
+          def api(path,params):
+              d=requests.get(P.GRAPH+path,params={**params,"access_token":P.IG_ACCESS_TOKEN},timeout=45).json()
+              if "error" in d:raise RuntimeError(d["error"].get("message"))
+              return d
+          u=api(P.IG_USER_ID,{"fields":"username,name,media_count"})
+          media=api(P.IG_USER_ID+"/media",{"fields":"id,permalink,timestamp","limit":100})["data"]
+          ids={m["id"] for m in media}
+          known=["17913191694482463","18022627493949734"]
+          print("ACCOUNT_IDENTITY "+json.dumps({"username":u.get("username"),"name":u.get("name"),"media_count":u.get("media_count"),"known_episode_ids":known,"matched":[x for x in known if x in ids],"recent_media":media[:3]},ensure_ascii=False),flush=True)
+          assert all(x in ids for x in known),"Known Postal Wala episodes not owned by this account"
+          print("SAME_POSTAL_WALA_ACCOUNT_PROVEN",flush=True)
+          PY
