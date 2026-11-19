@@ -1,0 +1,72 @@
+name: Postal Edge native 08:30 Notes preview with 2D characters
+on:
+  push:
+    branches: [preview/native-notes-2d-20261121]
+    paths:
+      - .github/workflows/native_notes_2d_preview.yml
+      - notes-2d-preview/**
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: automation
+          sparse-checkout: notes-2d-preview
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          ref: 3eb47fae010705252af08ac57cf0d04887f423b1
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*.py
+            /brand_config.json
+            /assets/notes_intro_galti.mp4
+            /assets/web_band.png
+            /handnotes/*.html
+            /handnotes/style.css
+            /handnotes/brand/**
+            /notes_reels/state.json
+            /reels/src/notes_scene.html
+            /reels/src/render.py
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install native Notes render dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-core fonts-freefont-ttf >/dev/null
+          python -m pip install playwright==1.47.0 numpy scipy requests pypdf pillow edge-tts
+          python -m playwright install --with-deps chromium
+      - name: Build with the morning Notes workflow and animate only the characters
+        working-directory: core
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
+          NOTES_GEMINI_ONLY: "1"
+        run: |
+          python ../automation/notes-2d-preview/prepare.py
+          python notes_reel.py build --demo "01:खराब और नकली टिकट:hi"
+          mkdir -p ../result
+          videos=(notes_reels/demo_*_hi.mp4)
+          test "${#videos[@]}" -eq 1
+          preview=../result/Postal_Edge_Morning_Notes_Clause_13_14_2D.mp4
+          cp "${videos[0]}" "$preview"
+          cp "${videos[0]%.mp4}_cover.jpg" ../result/cover.jpg
+          cp "${videos[0]%.mp4}_caption.txt" ../result/caption.txt
+          ffmpeg -v error -xerror -i "$preview" -f null -
+          ffprobe -v error -show_entries stream=codec_name,width,height:format=duration -of compact "$preview"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postal-edge-native-notes-clause-13-14-2d
+          path: result/
+          if-no-files-found: error
+          retention-days: 7
