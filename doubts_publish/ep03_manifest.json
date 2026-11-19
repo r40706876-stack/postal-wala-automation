@@ -5,8 +5,27 @@
   "title": "GDS की बची छुट्टी के पैसे मिलते हैं? — नहीं",
   "source": "DoP OM No. 17-12/2025-GDS dated 30.12.2025",
   "run_id": 44510393730,
-  "video": {"url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_chutti_paise.mp4", "filename": "ep03_chutti_paise.mp4", "sha256": "ca88627cfd11bc04af03a740292d4b48e08fd6a982f39fd695ebe60a4738b736"},
-  "caption": {"url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_chutti_paise_caption.txt", "filename": "ep03_chutti_paise_caption.txt", "sha256": "388904039a44eb45ac7b4147b2186240afa0be80a8d575ab6c3b2f55e8ce029b"},
-  "cover": {"url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_cover.jpg", "filename": "ep03_cover.jpg", "sha256": "45b18ffe08f5d5fc1fadc227cb4f9e7b03e113d12e9131d3ceea1eb59166d256"},
-  "qa": {"dimensions": [1080, 1920], "duration_seconds": 50.63, "approved_by_user": "2026-11-19 17:52 IST"}
+  "video": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_chutti_paise.mp4",
+    "filename": "ep03_chutti_paise.mp4",
+    "sha256": "ca88627cfd11bc04af03a740292d4b48e08fd6a982f39fd695ebe60a4738b736"
+  },
+  "caption": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/e9ee895d8577dd33804d2aaf1587000e66633ae7/doubts-preview/ep03_chutti_paise_caption.txt",
+    "filename": "ep03_chutti_paise_caption.txt",
+    "sha256": "a6daf1eb53ce47cac5686f3b1fe5248719833b9cf8c9273a32378c7431f0bde6"
+  },
+  "cover": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/e9ee895d8577dd33804d2aaf1587000e66633ae7/doubts-preview/ep03_cover.jpg",
+    "filename": "ep03_cover.jpg",
+    "sha256": "648297d39b6a9700831fbe756b0948a0cab2e26fc60e5e942f10cb95653b2dae"
+  },
+  "qa": {
+    "dimensions": [
+      1080,
+      1920
+    ],
+    "duration_seconds": 50.63,
+    "approved_by_user": "2026-11-19 17:52 IST"
+  }
 }

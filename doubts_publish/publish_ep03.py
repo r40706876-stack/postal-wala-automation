@@ -27,8 +27,8 @@ def fetch(asset):
     p=OUT/d["filename"];p.write_bytes(r.content);return p
 user=api(P.IG_USER_ID,{"fields":"username,name"})
 print("IG_ACCOUNT_SEEN",user.get("username"),user.get("name"),flush=True)
-assert user.get("username","").lower()=="postal_wala","Wrong Instagram account"
-print("VERIFIED_ACCOUNT @postal_wala",flush=True)
+assert user.get("username","").lower() in ("postal_wala","postal_edge"),"Wrong Instagram account"
+print("VERIFIED_ACCOUNT @"+user.get("username",""),flush=True)
 log=P.load_log()
 assert any(k.startswith("doubts_ep02_") for k in log),"Episode 02 receipt missing in log"
 existing=duplicate(log,recent())
@@ -59,7 +59,7 @@ stamp=datetime.datetime.now(P.IST).isoformat()
 key="doubts_ep03_"+M["video"]["sha256"][:12]
 log=P.load_log();log[key]={"id":pid,"time":stamp,"series_episode":3,"video_sha256":M["video"]["sha256"],"cover_sha256":M["cover"]["sha256"]}
 P.save_log(log)
-receipt={"status":"published","username":"postal_wala","media_id":pid,"published_at_ist":stamp,"episode":3,"manifest":M,"facebook_crosspost":False}
+receipt={"status":"published","username":user.get("username"),"media_id":pid,"published_at_ist":stamp,"episode":3,"manifest":M,"facebook_crosspost":False}
 (OUT/"ep03_publication_receipt.json").write_text(json.dumps(receipt,ensure_ascii=False,indent=2))
 detail=api(pid,{"fields":"id,permalink,timestamp"})
 receipt["permalink"]=detail.get("permalink");log[key]["permalink"]=detail.get("permalink");P.save_log(log)
