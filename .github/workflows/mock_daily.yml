@@ -79,7 +79,7 @@ jobs:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: |
-          if [ "$(TZ=Asia/Kolkata date +%F)" = '2026-11-17' ]; then echo 'User requested manual upload today; automatic post skipped'; exit 0; fi
+          case "$(TZ=Asia/Kolkata date +%F)" in 2026-11-17|2026-11-19) true;; *) false;; esac && { echo 'User: aaj mock post nahi'; exit 0; }; if false; then echo 'User requested manual upload today; automatic post skipped'; exit 0; fi
           python mock_reel.py post
           git add generated_reels/ig_posted.json 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Instagram post log [skip ci]"
