@@ -1,4 +1,4 @@
-name: Postal Edge Rule 3 transfer story narration
+name: Postal Edge transfer website demo narration
 on:
   push:
     branches: [production/website-reel-20261119]
@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   voice:
-    if: "contains(github.event.head_commit.message, '[rule3 story voice]')"
+    if: "contains(github.event.head_commit.message, '[transfer demo voice]')"
     runs-on: ubuntu-24.04
     timeout-minutes: 9
     steps:
@@ -48,7 +48,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: postal-edge-rule3-story-voice
+          name: postal-edge-transfer-demo-voice
           path: voice/narration.wav
           retention-days: 5
           if-no-files-found: error
