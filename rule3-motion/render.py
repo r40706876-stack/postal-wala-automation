@@ -3,6 +3,8 @@ from functools import lru_cache
 from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw,ImageFont,ImageFilter
+from lip_shapes import measure_mouth
+from puppet import puppet, ramp
 P=Path(__file__).parent
 W,H=720,1280
 NAVY='#1a292d'; WINE='#661c2d'; RED='#a53141'; GOLD='#ffd178'; CREAM='#ffefd4'; MINT='#d7e5ae'; WHITE='#fff9ee'
@@ -33,24 +35,23 @@ def ease(v):
 def rr(d,x,y,w,h,c,edge=None,r=18):
     d.rounded_rectangle((int(x),int(y),int(x+w),int(y+h)),r,fill=c,outline=edge,width=2)
 
-def cutout(src):
-    return Image.open(P/'assets'/src).convert('RGBA')
-chars={k:cutout(k+'.png') for k in ('golu','golu_think','bhaiya','bhaiya_yes')}
-@lru_cache(maxsize=100)
-def sprite(name,height,flip):
-    raw=chars[name]; w=round(height*raw.width/raw.height); raw=raw.resize((w,height),Image.Resampling.LANCZOS)
-    return raw.transpose(Image.Transpose.FLIP_LEFT_RIGHT) if flip else raw
+FPS=30
+VOICE=None
+def animate_mouth():
+    sound=subprocess.check_output(['ffmpeg','-v','error','-i',str(P/'narration.wav'),'-vn','-ac','1','-ar','16000','-f','f32le','-'])
+    return measure_mouth(np.frombuffer(sound,dtype='<f4'),FPS,END)
 
-def actor(im,name,x,y,h,l,walking=False,flip=False):
-    bounce=math.sin(l*(15 if walking else 5.4))
-    h=int(h*(1+.012*bounce))
-    pic=sprite(name,h,flip)
-    turn=3.8*bounce if walking else 1.3*math.sin(l*3.2)
-    pic=pic.rotate(turn,Image.Resampling.BICUBIC,expand=True)
-    sh=Image.new('L',(pic.width+44,100))
-    ImageDraw.Draw(sh).ellipse((18,28,pic.width+28,65),fill=133)
-    sh=sh.filter(ImageFilter.GaussianBlur(13));im.paste('#211611',(int(x-sh.width/2),int(y-50)),sh)
-    im.paste(pic,(int(x-pic.width/2),int(y-pic.height-8*bounce)),pic)
+def actor(im,is_golu,x,y,h,t,*,walk=0,talk=False,mood='rest',gesture='open',strength=0,air=0,shift=0):
+    facing=.68 if is_golu else -.63
+    voice=VOICE[min(round(t*FPS),len(VOICE)-1)] if talk and VOICE is not None else None
+    character=puppet(is_golu,t,walk,facing,voice,mood,(strength,gesture),facing,air,shift)
+    scale=h/471
+    character=character.resize((round(340*scale),round(520*scale)),Image.Resampling.BICUBIC)
+    shade=Image.new('L',(128,52))
+    ImageDraw.Draw(shade).ellipse((13+10*air,10,115-10*air,36),fill=int(132-55*air))
+    shade=shade.filter(ImageFilter.GaussianBlur(8))
+    im.paste('#2c211f',(round(x-64),round(y-28+air*38)),shade)
+    im.paste(character,(round(x-170*scale),round(y-495*scale)),character)
 def envelope(d,x,y,w,tint=CREAM,seal=True):
     h=w*.61; rr(d,x,y,w,h,tint,'#d2a480',max(5,round(w*.11)))
     d.line((x+5,y+6,x+w/2,y+h*.57,x+w-5,y+6),fill='#bd8e6b',width=max(2,round(w*.025)))
@@ -113,8 +114,12 @@ def scene0(t):
     word(d,360,170,'GDS में 1 साल पूरा?',57,WHITE,True)
     word(d,360,259,'फॉर्म भर दूँ?',79,GOLD,True)
     x=389-179*ease((l+.25)/.95)
-    actor(im,'golu' if l<1.15 or l>3.2 else 'golu_think',x,1057,498,l,l<1.05)
-    actor(im,'bhaiya',568,1006,393,l)
+    walk=ramp(l,-.28,.12,.65,1.06)
+    asking=ramp(l,.73,1.15,3.77,4.35)
+    actor(im,True,x,1057,462,t,walk=walk,talk=True,mood='think',
+          gesture='chin' if 1.15<l<2.6 else 'open',strength=asking)
+    actor(im,False,568,1006,359,t,mood='surprise' if l>2.8 else 'rest',
+          gesture='stop',strength=.47*ramp(l,2.7,3.05,3.8,4.35))
     d=ImageDraw.Draw(im)
     if l>.58:
         z=ease((l-.58)/.64)
@@ -124,8 +129,13 @@ def scene0(t):
 def scene1(t):
     l=t-times[1];span=times[2]-times[1];im=cinema(t,1)
     x=636-130*ease(l/.85)
-    actor(im,'bhaiya' if l<span*.65 else 'bhaiya_yes',x,1090,550,l,l<.85)
-    actor(im,'golu_think',143,1049,332,l)
+    stop=l<span*.27
+    actor(im,False,x,1090,465,t,walk=ramp(l,-.2,.08,.45,.92),talk=True,
+          mood='rest',gesture='stop' if stop else 'left',
+          strength=.83*ramp(l,-.16,.27,span-.43,span),
+          shift=.22*math.sin(l*3.4))
+    actor(im,True,143,1049,327,t,mood='think',gesture='chin',
+          strength=.77*ramp(l,.2,.54,span-.4,span))
     d=ImageDraw.Draw(im);bar(d,t)
     rr(d,50,148,620,117,'#38272d','#f7c78a',18)
     word(d,360,174,'रुक गोलू! कौन-सा ट्रांसफ़र?',42,WHITE,True)
@@ -151,8 +161,11 @@ def circle_scene(t):
         word(d,x+31,y+48,label,41,WHITE,maxw=380)
         rr(d,x+405,y+20,172,106,CREAM,None,16)
         word(d,x+490,y+40,number+' साल',46,color,True,maxw=150)
-    actor(im,'golu' if l>span*.75 else 'golu_think',140,1125,316,l)
-    actor(im,'bhaiya_yes',579,1129,323,l)
+    quick=ramp(l,.04,.29,.90,1.27)
+    actor(im,True,140,1125,314,t,mood='happy' if l>span*.72 else 'think',
+          gesture='open' if l>span*.72 else 'chin',strength=.35+.3*quick)
+    actor(im,False,579,1129,326,t,talk=True,mood='happy',gesture='left',
+          strength=.53+.34*abs(math.sin(l*2.28)))
     d=ImageDraw.Draw(im);rr(d,220,940,279,66,'#f2c676',None,15)
     word(d,359,958,'अन्य शर्तें भी लागू',26,WINE,True)
     return im
@@ -173,7 +186,8 @@ def files(t):
         d.ellipse((x+15,y+15,x+66,y+66),fill='#35664d')
         d.line((x+27,y+43,x+36,y+50,x+51,y+33),fill=WHITE,width=4)
         word(d,x+86,y+19,label,34,NAVY)
-    actor(im,'bhaiya',574,1119,302,l)
+    actor(im,False,574,1119,302,t,talk=True,mood='rest',gesture='left',
+          strength=.56+.30*abs(math.sin(l*2.6)),shift=.3*math.sin(3*l))
     return im
 def finish(t):
     l=t-times[4];im=cinema(t,4);d=ImageDraw.Draw(im);bar(d,t)
@@ -186,8 +200,14 @@ def finish(t):
     x=102+506*ease(l/1.42)
     envelope(d,x-34,411,74,GOLD,True)
     word(d,360,508,'उलटी दिशा वाले साथी खोजें',29,NAVY,True)
-    actor(im,'golu',181,960,365,l,l<.6)
-    actor(im,'bhaiya_yes',548,962,365,l)
+    question=l<1.02
+    hop=max(0,min(1,(l-4)/.64))
+    air=4*hop*(1-hop)
+    actor(im,True,181+19*ease((l-4)/.65),960-45*air,345,t,walk=ramp(l,-.03,.13,.36,.66),
+          talk=question,mood='think' if question else 'happy',
+          gesture='hop' if air else 'open',strength=.46+.45*air,air=air,shift=air)
+    actor(im,False,548,962,345,t,talk=not question,mood='happy',gesture='welcome',
+          strength=.72*ramp(l,1,1.35,END-times[4]-.24,END-times[4]))
     d=ImageDraw.Draw(im);rr(d,50,935,620,139,WINE,'#f8cd93',21)
     word(d,360,953,'postaledge.in/transfer',44,WHITE,True)
     word(d,360,1019,'अपना रूट मुफ़्त डालो',32,GOLD,True)
@@ -229,10 +249,11 @@ def preview():
         out.paste(frame(t).resize((200,355)),(i*200,0))
     out.save(P/'preview.jpg',quality=91)
 if __name__=='__main__':
+    VOICE=animate_mouth()
     preview()
     if 'preview' in sys.argv:sys.exit()
     score()
-    output=P/'Postal_Edge_Rule3_Transfer_Story.mp4'
+    output=P/'Postal_Edge_Rule3_Transfer_Story_Animated.mp4'
     ff=subprocess.Popen(['ffmpeg','-y','-loglevel','error','-f','rawvideo','-pix_fmt','rgb24','-s','720x1280','-r','30','-i','-','-i',str(P/'narration.wav'),'-i',str(P/'music.wav'),
       '-filter_complex','[0:v]scale=1080:1920:flags=lanczos[v];[1:a]highpass=f=80,acompressor=threshold=.14:ratio=2.3:attack=7:release=150:makeup=1.47,apad[a];[2:a]volume=.33[m];[a][m]amix=inputs=2:duration=longest:normalize=0,alimiter=limit=.85:level=false[o]',
       '-map','[v]','-map','[o]','-t',str(END),'-threads','4','-pix_fmt','yuv420p','-c:v','libx264','-preset','fast','-crf','18','-c:a','aac','-b:a','192k','-movflags','+faststart',str(output)],stdin=subprocess.PIPE)

@@ -1,4 +1,4 @@
-name: Postal Edge animate and render Rule 3 story
+name: Postal Edge render Rule 3 with approved 2D characters
 on:
   push:
     branches: [production/website-reel-20261119]
@@ -22,18 +22,18 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-noto-core ffmpeg
-          python -m pip install -q Pillow numpy
+          python -m pip install -q Pillow numpy scipy
           mv rule3-motion/narration.wav rule3-motion/narration_raw.wav
           python rule3-motion/timing.py
           python rule3-motion/render.py
-          VIDEO=rule3-motion/Postal_Edge_Rule3_Transfer_Story.mp4
+          VIDEO=rule3-motion/Postal_Edge_Rule3_Transfer_Story_Animated.mp4
           ffmpeg -v error -xerror -i "$VIDEO" -f null -
           ffprobe -v error -show_entries stream=codec_name,width,height:format=duration -of compact "$VIDEO"
       - uses: actions/upload-artifact@v4
         with:
-          name: postal-edge-rule3-story-final-video
+          name: postal-edge-rule3-story-animated
           path: |
-            rule3-motion/Postal_Edge_Rule3_Transfer_Story.mp4
+            rule3-motion/Postal_Edge_Rule3_Transfer_Story_Animated.mp4
             rule3-motion/preview.jpg
           retention-days: 7
           if-no-files-found: error
