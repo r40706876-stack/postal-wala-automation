@@ -1,0 +1,88 @@
+name: Postal Edge website feature film assets
+on:
+  push:
+    branches: [production/website-reel-20261119]
+    paths: ['.github/workflows/postal_edge_feature_film.yml']
+permissions:
+  contents: read
+jobs:
+  voice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          sparse-checkout: |
+            main.py
+            branding.py
+            brand_config.json
+          sparse-checkout-cone-mode: false
+      - name: Generate narration in the approved Concierge 10 voice
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-concierge-10
+        run: |
+          pip install -q numpy requests pillow pypdf edge-tts lameenc
+          mkdir voice
+          cd core
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import numpy as np, wave
+          import main
+          lines=json.loads(Path('../reel-inputs/voice_lines.json').read_text())
+          main.TTS_WAITS=(8,)
+          assert main.pick_gemini_voice()=='hi-in-concierge-10'
+          audio=main.gemini_tts_audio(lines,voice='hi-in-concierge-10')
+          pcm=(np.clip(audio,-1,1)*32767).astype('<i2')
+          with wave.open('../voice/narration.wav','wb') as f:
+              f.setparams((1,2,main.SR,0,'NONE','not compressed'))
+              f.writeframes(pcm.tobytes())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postal-edge-feature-narration
+          path: voice/narration.wav
+          retention-days: 5
+          if-no-files-found: error
+  screens:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          sparse-checkout: |
+            /docs/index.html
+            /docs/d/
+            /docs/img/
+            /docs/notes/
+            /docs/icon-192.png
+            /docs/hn/1-hi.html
+            /docs/sw.js
+          sparse-checkout-cone-mode: false
+      - name: Capture actual site screens
+        run: |
+          pip install -q playwright
+          python -m playwright install chromium
+          sudo apt-get install -y --no-install-recommends fonts-noto-core
+          export PW_TEST_SCREENSHOT_NO_FONTS_READY=1
+          python -m http.server 8871 --directory core/docs >/tmp/demo-server.log 2>&1 &
+          cd core
+          python ../reel-inputs/capture.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postal-edge-feature-screens
+          path: core/reel-inputs/*
+          retention-days: 5
+          if-no-files-found: error
