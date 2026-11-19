@@ -1,0 +1,68 @@
+{
+  "episode": 4,
+  "status": "READY_FOR_NEXT_SLOT",
+  "qa_passed": true,
+  "publishable": true,
+  "publish_now": false,
+  "review_hold": false,
+  "series_publication_authorized": true,
+  "target_ist": "2026-11-20T18:30:00+05:30",
+  "title": "डाक विभाग के डाउट्स | भाग 04: जॉइनिंग तारीख या कटऑफ तारीख?",
+  "source_url": "https://utilities.cept.gov.in/dop/pdfbind.ashx?id=14981",
+  "source_verified_on": "2026-11-19",
+  "source_scope": "AP Circle notification01.06.2026 para3B(ii), page3; explicitly historical2026 GDS→MTS service-condition example; future exams use their own notifications",
+  "source_example": {
+    "joining": "2023-02-19",
+    "three_year_completion": "2026-02-19",
+    "notification_cutoff": "2026-01-01"
+  },
+  "run_id": 44528174421,
+  "initial_gemini_voice_run_id": 44526303103,
+  "tts_model": "gemini-3.8-flash-tts",
+  "tts_voice": "hi-in-training-1",
+  "production": "Existing mock_reel.page30 and deep/deep_demo.py/deep/render_deep.py on GitHub; final visual rebuild reused saved take and blocked new TTS",
+  "video": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/516443a758190381b311e984854a7c6dac36787d/doubts-preview/ep04_cutoff_gemini.mp4",
+    "filename": "ep04_cutoff_gemini.mp4",
+    "sha256": "a93efefb2c33d2325da64c8d07bb00456c3ce9defcc7c94e943f258d2bb6bb49"
+  },
+  "caption": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/3b6cd53aa3788a22fe46ab6f3231fb7dc57f8524/doubts_publish/ep04_caption.txt",
+    "filename": "ep04_caption.txt",
+    "sha256": "74971b3b5c29d1f4919bc202d78131221065656f65d88c5d8976df9862514769"
+  },
+  "cover": {
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/184508dd111fed6349d931f9676934e5060b8401/doubts-preview/ep04_cover.jpg",
+    "filename": "ep04_cover.jpg",
+    "sha256": "5f078986d0a743d0d153126d054c57c59455c4af75df6938285e0d922f72ee2d",
+    "source_png_sha256": "26fd66dbd10dc04e097996d6c4f0bd3005f7bfcbf537960a2d09fe2dbfdfda29",
+    "dimensions": [
+      941,
+      1671
+    ],
+    "style": "Approved blue/yellow/red, same friendly postman, भाग04, correct joining-or-cutoff wording;2026 example badge"
+  },
+  "qa": {
+    "dimensions": [
+      1080,
+      1920
+    ],
+    "duration_seconds": 44.9,
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "decode": "pass",
+    "cue_lines": 10,
+    "last_cue_end": 43.501,
+    "page_errors": [],
+    "visual_review": "Pass19Nov: correct JAN01/FEB19 example calendar cards, legible date labels, cutoff marker, animated timeline and postman, save-first prompt clear of question text, series identity,18:30 follow CTA",
+    "new_tts_requests_for_visual_rebuild": 0
+  },
+  "website_demo": "Not included; clearly labelled official-notification rule illustration, no claim to website capture or PYQ",
+  "next_topic": "Only MTS: is local-language PaperIII required?",
+  "next_topic_source": "Same official notification page3, para4 note(i)",
+  "require_cover": true,
+  "facebook_crosspost": false,
+  "no_people_tags": true,
+  "no_collaborator": true,
+  "instagram_username": "postal_edge"
+}
