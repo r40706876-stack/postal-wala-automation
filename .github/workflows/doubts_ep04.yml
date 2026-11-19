@@ -8,7 +8,7 @@ permissions:
   contents: write
 concurrency:
   group: postal-doubts-ep04-preview
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -46,8 +46,13 @@ jobs:
           DEEP_GAP_SCENE: '0.18'
         run: |
           python - <<'PY'
-          import re
+          import re,json,ast
           from pathlib import Path
+          import subprocess
+          subprocess.run(['git','pull','--ff-only','origin','main'],check=True)
+          tree=ast.parse(Path('doubts_ep04.py').read_text())
+          lines=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='LINES' for t in n.targets))
+          assert lines==json.loads(Path('doubts_reels/ep04_cutoff_gemini_script.json').read_text())['lines'],'Narration changed; cached voice cannot be reused'
           p=Path('deep/deep_demo.py');s=p.read_text()
           s=re.sub(r'^M\.TTS_WAITS = .+$','M.TTS_WAITS = ()',s,flags=re.M)
           s=s.replace('import main as M  # noqa: E402','import main as M  # noqa: E402\nM.gemini_tts_audio = lambda *a, **k: (_ for _ in ()).throw(RuntimeError("Saved take only; no new TTS"))')
