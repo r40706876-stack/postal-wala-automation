@@ -1,0 +1,119 @@
+name: Prepare doubts episode04 cutoff example - Gemini preview only
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/doubts_ep04.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: postal-doubts-ep04-preview
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Existing renderer dependencies through official mirrors
+        timeout-minutes: 5
+        run: |
+          if [ -f /etc/apt/apt-mirrors.txt ]; then printf '%s\n' 'https://archive.ubuntu.com/ubuntu/' | sudo tee /etc/apt/apt-mirrors.txt >/dev/null; fi
+          if [ -f /etc/apt/apt-mirrors-security.txt ]; then printf '%s\n' 'https://security.ubuntu.com/ubuntu/' | sudo tee /etc/apt/apt-mirrors-security.txt >/dev/null; fi
+          sudo timeout 90 apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update -qq
+          sudo timeout 120 apt-get -o Acquire::Retries=1 install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
+          pip install -q requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
+          timeout 120 python -m playwright install --with-deps chromium
+      - name: One Gemini take through existing mock HTML deep renderer
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-training-1
+          DEEP_PER_LINE: '0'
+          DEEP_STRICT_ONE_TAKE: '1'
+          DEEP_FAST_QUOTA_FAIL: '1'
+          DEEP_VOICE_CACHE: doubts_reels/voice_cache
+          DEEP_TAKE: doubts_reels/ep04_cutoff_training_take.wav
+          DEEP_TAKE_SAVE: doubts_reels/ep04_cutoff_training_take.wav
+          DEEP_GAP_LINE: '0.08'
+          DEEP_GAP_SCENE: '0.18'
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          p=Path('deep/deep_demo.py');s=p.read_text()
+          s=re.sub(r'^M\.TTS_WAITS = .+$','M.TTS_WAITS = ()',s,flags=re.M)
+          p.write_text(s)
+          PY
+          python doubts_ep04.py
+          ffmpeg -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -f null -
+          ffmpeg -y -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -vf "fps=1/5,scale=216:384,tile=4x3" -frames:v 1 doubts_reels/ep04_contact.jpg
+      - name: Check decode, timings and actual browser scenes
+        run: |
+          python - <<'PY'
+          import json,hashlib,subprocess
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          p=Path('doubts_reels/ep04_cutoff_gemini.mp4')
+          meta=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(p)]))
+          streams=meta['streams'];v=next(x for x in streams if x['codec_type']=='video');a=next(x for x in streams if x['codec_type']=='audio')
+          assert(v['width'],v['height'],v['codec_name'],a['codec_name'])==(1080,1920,'h264','aac')
+          cues=json.loads(Path(str(p)+'.cues.json').read_text());duration=float(meta['format']['duration'])
+          assert len(cues)==10 and max(x['t']+x['d'] for x in cues.values())<duration
+          html=Path('doubts_reels/ep04_cutoff_gemini.html').read_text()
+          html=html.replace('<head>','<head><script>window.CUES='+json.dumps(cues)+';</script>',1)
+          errors=[]
+          with sync_playwright() as pw:
+              b=pw.chromium.launch(headless=True,args=['--no-sandbox'])
+              pg=b.new_page(viewport={'width':540,'height':960});pg.on('pageerror',lambda e:errors.append(str(e)))
+              pg.set_content(html,wait_until='networkidle');pg.evaluate('document.fonts.ready')
+              for k in ['h1','z1','z2','z3','z4','d1','m1']:
+                  pg.evaluate('(t)=>window.seek(t)',cues[k]['t']+.5)
+              b.close()
+          assert not errors,errors
+          qa={'status':'technical_pass_needs_visual_review','duration_seconds':duration,'dimensions':[1080,1920],'video_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'cue_lines':len(cues),'last_cue_end':max(x['t']+x['d'] for x in cues.values()),'decode':'pass','page_errors':errors,'tts_model':'gemini-3.8-flash-tts','tts_voice':'hi-in-training-1'}
+          Path('doubts_reels/ep04_qa.json').write_text(json.dumps(qa,indent=2))
+          print('EP04_TECHNICAL_QA '+json.dumps(qa),flush=True)
+          PY
+      - name: Save episode04 checkpoints and output in core
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git restore deep/deep_demo.py
+          git add doubts_reels/ep04_*
+          git diff --cached --quiet || git commit -m "Prepare official cutoff doubt episode04 [skip ci]"
+          ok=0
+          for i in 1 2 3; do if git pull --rebase origin main && git push origin HEAD:main; then ok=1; break; fi; sleep 3; done
+          [ "$ok" = 1 ]
+      - name: Make only episode04 preview assets available
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MEDIA_REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import base64,json,os,requests
+          from pathlib import Path
+          h={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          names=['ep04_cutoff_gemini.mp4','ep04_contact.jpg','ep04_cutoff_gemini_caption.txt','ep04_cutoff_gemini.mp4.cues.json','ep04_cutoff_gemini_provenance.json','ep04_qa.json']
+          for n in names:
+              p=Path('doubts_reels')/n;url='https://api.github.com/repos/'+os.environ['MEDIA_REPO']+'/contents/doubts-preview/'+n
+              old=requests.get(url,headers=h,params={'ref':'media'},timeout=30)
+              data={'message':'Episode04 preview '+n,'branch':'media','content':base64.b64encode(p.read_bytes()).decode()}
+              if old.status_code==200:data['sha']=old.json()['sha']
+              r=requests.put(url,headers=h,json=data,timeout=90);r.raise_for_status()
+              print('EP04_ASSET https://raw.githubusercontent.com/'+os.environ['MEDIA_REPO']+'/'+r.json()['commit']['sha']+'/doubts-preview/'+n,flush=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Postal-doubts-episode04-preview
+          path: doubts_reels/ep04_*
+          retention-days: 7
