@@ -41,7 +41,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
-          GEMINI_TTS_VOICE: hi-in-training-1
+          GEMINI_TTS_VOICE: hi-in-concierge-10
           GEMINI_TTS_STYLE: "lively elder-brother teacher: warm, clear and expressive with natural ups and downs - curious on questions, firm and serious on warnings, happy on answers, calm on examples; small natural pauses"
         run: python mock_special.py "${{ inputs.name || 'date_stamp_2' }}"
       - name: Save

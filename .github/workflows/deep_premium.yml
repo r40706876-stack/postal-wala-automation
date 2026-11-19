@@ -60,7 +60,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
-          GEMINI_TTS_VOICE: hi-in-training-1
+          GEMINI_TTS_VOICE: hi-in-concierge-10
           DEEP_TAKE: ${{ inputs.take }}
           DEEP_TAKE_SAVE: demo_out/deep/take_premium_c${{ steps.n.outputs.n }}.wav
           GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
@@ -76,7 +76,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          for f in demo_out/deep/clause*_premium.mp4 demo_out/deep/clause*_premium.mp4.cues.json demo_out/deep/take_premium_c*.wav; do [ -f "$f" ] && git add "$f"; done
+          for f in demo_out/deep/clause*_premium.mp4 demo_out/deep/clause*_premium.mp4.cues.json demo_out/deep/take_premium_c*.wav demo_out/deep/take_premium_c*.wav.voice.json; do [ -f "$f" ] && git add "$f"; done
           git diff --staged --quiet || git commit -m "Premium deep class clause ${{ steps.n.outputs.n }} [skip ci]"
           for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; sleep 10; done
       - uses: actions/upload-artifact@v4

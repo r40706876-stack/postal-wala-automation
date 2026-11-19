@@ -1,10 +1,10 @@
 {
   "episode": 4,
-  "status": "READY_FOR_NEXT_SLOT",
-  "qa_passed": true,
-  "publishable": true,
+  "status": "WAITING_FOR_CONCIERGE_10_RENDER",
+  "qa_passed": false,
+  "publishable": false,
   "publish_now": false,
-  "review_hold": false,
+  "review_hold": true,
   "series_publication_authorized": true,
   "target_ist": "2026-11-20T18:30:00+05:30",
   "title": "डाक विभाग के डाउट्स | भाग 04: जॉइनिंग तारीख या कटऑफ तारीख?",
@@ -64,5 +64,6 @@
   "facebook_crosspost": false,
   "no_people_tags": true,
   "no_collaborator": true,
-  "instagram_username": "postal_edge"
+  "instagram_username": "postal_edge",
+  "required_tts_voice": "hi-in-concierge-10"
 }

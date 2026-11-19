@@ -31,41 +31,38 @@ jobs:
           sudo timeout 120 apt-get -o Acquire::Retries=1 install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
           pip install -q requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
           timeout 120 python -m playwright install --with-deps chromium
-      - name: Re-render visual fixes from existing Gemini take only
+      - name: Render episode04 with approved Postal Edge voice #18
         env:
-          GEMINI_API_KEY: ''
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
-          GEMINI_TTS_VOICE: hi-in-training-1
+          GEMINI_TTS_VOICE: hi-in-concierge-10
           DEEP_PER_LINE: '0'
           DEEP_STRICT_ONE_TAKE: '1'
           DEEP_FAST_QUOTA_FAIL: '1'
           DEEP_VOICE_CACHE: doubts_reels/voice_cache
-          DEEP_TAKE: doubts_reels/ep04_cutoff_training_take.wav
-          DEEP_TAKE_SAVE: doubts_reels/ep04_cutoff_training_take.wav
+          DEEP_TAKE: doubts_reels/ep04_cutoff_concierge10_take.wav
+          DEEP_TAKE_SAVE: doubts_reels/ep04_cutoff_concierge10_take.wav
           DEEP_GAP_LINE: '0.08'
           DEEP_GAP_SCENE: '0.18'
         run: |
           python - <<'PY'
-          import re,json,ast
+          import json,ast
           from pathlib import Path
           import subprocess
           subprocess.run(['git','pull','--ff-only','origin','main'],check=True)
           tree=ast.parse(Path('doubts_ep04.py').read_text())
           lines=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='LINES' for t in n.targets))
-          assert lines==json.loads(Path('doubts_reels/ep04_cutoff_gemini_script.json').read_text())['lines'],'Narration changed; cached voice cannot be reused'
-          p=Path('deep/deep_demo.py');s=p.read_text()
-          s=re.sub(r'^M\.TTS_WAITS = .+$','M.TTS_WAITS = ()',s,flags=re.M)
-          s=s.replace('import main as M  # noqa: E402','import main as M  # noqa: E402\nM.gemini_tts_audio = lambda *a, **k: (_ for _ in ()).throw(RuntimeError("Saved take only; no new TTS"))')
-          p.write_text(s)
+          assert lines==json.loads(Path('doubts_reels/ep04_cutoff_gemini_script.json').read_text())['lines'],'Episode04 approved script changed'
           PY
-          test -s doubts_reels/ep04_cutoff_training_take.wav
           python doubts_ep04.py
+          test -s doubts_reels/ep04_cutoff_concierge10_take.wav.voice.json
           ffmpeg -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -f null -
           ffmpeg -y -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -vf "fps=1/5,scale=216:384,tile=4x3" -frames:v 1 doubts_reels/ep04_contact.jpg
       - name: Check decode, timings and actual browser scenes
         run: |
           python - <<'PY'
-          import json,hashlib,subprocess
+          import json,hashlib,os,subprocess
           from pathlib import Path
           from playwright.sync_api import sync_playwright
           p=Path('doubts_reels/ep04_cutoff_gemini.mp4')
@@ -85,7 +82,9 @@ jobs:
                   pg.evaluate('(t)=>window.seek(t)',cues[k]['t']+.5)
               b.close()
           assert not errors,errors
-          qa={'status':'technical_pass_needs_visual_review','duration_seconds':duration,'dimensions':[1080,1920],'video_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'cue_lines':len(cues),'last_cue_end':max(x['t']+x['d'] for x in cues.values()),'decode':'pass','page_errors':errors,'tts_model':'gemini-3.8-flash-tts','tts_voice':'hi-in-training-1'}
+          provenance=json.loads(Path('doubts_reels/ep04_cutoff_gemini_provenance.json').read_text())
+          assert provenance['tts_voice']=='hi-in-concierge-10' and provenance['github_run_id']==os.environ['GITHUB_RUN_ID']
+          qa={'status':'technical_pass_needs_visual_review','duration_seconds':duration,'dimensions':[1080,1920],'video_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'cue_lines':len(cues),'last_cue_end':max(x['t']+x['d'] for x in cues.values()),'decode':'pass','page_errors':errors,'tts_model':'gemini-3.8-flash-tts','tts_voice':'hi-in-concierge-10'}
           Path('doubts_reels/ep04_qa.json').write_text(json.dumps(qa,indent=2))
           print('EP04_TECHNICAL_QA '+json.dumps(qa),flush=True)
           PY
@@ -94,7 +93,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git restore deep/deep_demo.py
           git add doubts_reels/ep04_*
           git diff --cached --quiet || git commit -m "Prepare official cutoff doubt episode04 [skip ci]"
           ok=0
@@ -124,5 +122,3 @@ jobs:
           name: Postal-doubts-episode04-preview
           path: doubts_reels/ep04_*
           retention-days: 7
-
-# Visual QA correction only; saved Gemini take is mandatory and new TTS is blocked.
