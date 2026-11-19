@@ -1,31 +1,49 @@
 {
   "episode": 3,
   "qa_passed": true,
-  "target_ist": "2026-11-19T18:28:00+05:30",
-  "title": "GDS की बची छुट्टी के पैसे मिलते हैं? — नहीं",
-  "source": "DoP OM No. 17-12/2025-GDS dated 30.12.2025",
-  "run_id": 44510393730,
+  "target_ist": "2026-11-19T18:30:00+05:30",
+  "title": "बची GDS Paid Leave का नकद भुगतान?",
+  "source_url": "https://utilities.cept.gov.in/dop/pdfbind.ashx?id=14477",
+  "source_verified_on": "2026-11-19",
+  "source_document": "DoP OM17-12/2025-GDS dated30.12.2025; Rule7 and FAQ1,3,4; effective01.01.2026",
+  "tts_model": "gemini-3.8-flash-tts",
+  "tts_voice": "hi-in-training-1",
+  "run_id": 43908734831,
   "video": {
-    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/af3bcb3ebc7a8a312f49611a7e55affbc7190d6c/doubts-preview/ep03_chutti_paise.mp4",
-    "filename": "ep03_chutti_paise.mp4",
-    "sha256": "ca88627cfd11bc04af03a740292d4b48e08fd6a982f39fd695ebe60a4738b736"
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/feb45480a6a440cb0413c1f6377d1c2fb587e77e/doubts-preview/ep03_leave_gemini.mp4",
+    "filename": "ep03_leave_gemini.mp4",
+    "sha256": "281e33972a0b22a3583a5f5927878a3bf361e266a8cbf791bb30895168d7d797"
   },
   "caption": {
-    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/e9ee895d8577dd33804d2aaf1587000e66633ae7/doubts-preview/ep03_chutti_paise_caption.txt",
-    "filename": "ep03_chutti_paise_caption.txt",
-    "sha256": "a6daf1eb53ce47cac5686f3b1fe5248719833b9cf8c9273a32378c7431f0bde6"
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/4d3b4850230c409010d87b4f5e99a732bca2619c/doubts_publish/ep03_caption.txt",
+    "filename": "ep03_caption.txt",
+    "sha256": "49bfd019f2c29bfc4068c319ea02e5dd9d883cc1bb42ae8a7432c236c175eccb"
   },
   "cover": {
-    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/e9ee895d8577dd33804d2aaf1587000e66633ae7/doubts-preview/ep03_cover.jpg",
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/2af93d27fc0ad155d84d5664b19f41b9e6d4ad40/doubts-preview/ep03_cover.jpg",
     "filename": "ep03_cover.jpg",
-    "sha256": "648297d39b6a9700831fbe756b0948a0cab2e26fc60e5e942f10cb95653b2dae"
+    "sha256": "d9eab6377cca6da7c301306b3e14b9999e700811ec463f5ae01d072e89fb6eda",
+    "source_sha256": "8ccb8d5a27217266108a0ec2d3d10a64b7ed51f2339cc899bf2fa23e270ec8c3"
   },
   "qa": {
     "dimensions": [
       1080,
       1920
     ],
-    "duration_seconds": 50.63,
-    "approved_by_user": "2026-11-19 17:52 IST"
+    "duration_seconds": 46.3,
+    "full_decode": "pass18Nov; bytes unchanged19Nov",
+    "cue_lines": 10,
+    "last_cue_end": 44.903,
+    "motion_qa_run": 43908734831
+  },
+  "account_identity": {
+    "requested_old_username": "postal_wala",
+    "verified_current_username": "postal_edge",
+    "identity_proof_run": 44524984317,
+    "predecessor_media_ids": [
+      "17913191694482463",
+      "18022627493949734"
+    ],
+    "same_account_verified": true
   }
 }
