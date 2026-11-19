@@ -29,6 +29,8 @@ jobs:
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
           GEMINI_TTS_VOICE: hi-in-training-1
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg > /dev/null
           pip install --quiet numpy requests pillow pypdf edge-tts
           python - <<'PY'
           import time, wave
@@ -70,4 +72,69 @@ jobs:
                   raise
           with urllib.request.urlopen(urllib.request.Request(base, data=json.dumps(body).encode(), headers=headers, method="PUT")) as response:
               print("Voice ready:", name, response.status)
+          PY
+  screenshots:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Capture public Postal Edge views
+        run: |
+          pip install --quiet playwright
+          python -m playwright install --with-deps chromium > /dev/null
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          from pathlib import Path
+          from zipfile import ZipFile
+          base = "https://postaledge.in/"
+          with sync_playwright() as p:
+              b = p.chromium.launch()
+              pg = b.new_page(viewport={"width": 412, "height": 804}, device_scale_factor=2, is_mobile=True, has_touch=True)
+              def snap(name):
+                  pg.screenshot(path=name+".jpg",type="jpeg",quality=82,animations="disabled")
+                  print("Captured",name,flush=True)
+              for name,route in [("home",""),("mts","#exam-mts"),("pm","#exam-pm"),("notes","#notes"),("quiz","#quiz")]:
+                  pg.goto(base+route,wait_until="domcontentloaded",timeout=25000)
+                  pg.wait_for_selector("#app > :not(.seo-pre)",timeout=20000)
+                  pg.wait_for_timeout(700)
+                  pg.evaluate("window.scrollTo(0,0)")
+                  snap(name)
+              pg.locator("#go").click(timeout=5000)
+              question=pg.locator(".qtext").first
+              question.wait_for(timeout=5000)
+              pg.evaluate("window.scrollTo(0,0)")
+              snap("question")
+              pg.locator(".opt").first.click(timeout=5000)
+              pg.wait_for_timeout(500)
+              anchor=pg.locator(".anx,.an,.deep,.wrong").first
+              if anchor.count():
+                  anchor.evaluate("el => window.scrollTo(0,el.getBoundingClientRect().top + scrollY - 115)")
+              snap("answer")
+              b.close()
+          with ZipFile("screens.zip","w") as z:
+              for f in Path(".").glob("*.jpg"):
+                  z.write(f)
+          PY
+      - name: Store screenshots in private production repo
+        env:
+          GH_TOKEN: ${{ secrets.CORE_TOKEN }}
+        run: |
+          python - <<'PY'
+          import base64,json,os,time,urllib.request,urllib.error
+          name="rebrand_reels/website_demo_"+os.environ["GITHUB_RUN_ID"]+"_screens.zip"
+          url="https://api.github.com/repos/r40706876-stack/postal-wala-core/contents/"+name
+          headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],"Accept":"application/vnd.github+json"}
+          body={"message":"Save Postal Edge feature captures [skip ci]","content":base64.b64encode(open("screens.zip","rb").read()).decode()}
+          for n in range(3):
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url,headers=headers)) as r:
+                      body["sha"]=json.load(r)["sha"]
+              except urllib.error.HTTPError as e:
+                  if e.code!=404: raise
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url,data=json.dumps(body).encode(),headers=headers,method="PUT")) as r:
+                      print("Screens ready:",name,r.status)
+                  break
+              except urllib.error.HTTPError as e:
+                  if e.code!=409 or n==2: raise
+                  time.sleep(2)
           PY
