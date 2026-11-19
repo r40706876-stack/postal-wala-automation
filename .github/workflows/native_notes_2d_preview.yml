@@ -54,7 +54,7 @@ jobs:
           NOTES_GEMINI_ONLY: "1"
         run: |
           python ../automation/notes-2d-preview/prepare.py
-          python notes_reel.py build --demo "01:खराब और नकली टिकट:hi"
+          NOTES_CUSTOM=../automation/notes-2d-preview/clause_13_14.json python notes_reel.py build --demo "01:खराब और नकली टिकट:hi"
           mkdir -p ../result
           videos=(notes_reels/demo_*_hi.mp4)
           test "${#videos[@]}" -eq 1

@@ -37,3 +37,10 @@ replace_once(renderer, "    b.close()",
              '        raise RuntimeError(f"Both characters must appear without covering the notes: {seen}")\n'
              '    print("Notes characters rendered clear of the text:", seen, flush=True)\n'
              '    b.close()')
+
+shutil.copyfile(EXTRAS / "preview_voice.py", ROOT / "preview_voice.py")
+replace_once(notes, "    auds, sr, used = voice([s for _, s in order], lang)",
+             '    from preview_voice import voice as preview_voice\n'
+             '    auds, sr, used = preview_voice([s for _, s in order], lang)')
+replace_once(notes, '    try:\n        res = main.as_dict(main._llm_json(prompt))\n',
+             '    try:\n        res = {} if CUSTOM else main.as_dict(main._llm_json(prompt))\n')
