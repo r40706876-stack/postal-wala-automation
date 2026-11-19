@@ -1,6 +1,11 @@
 name: Postal Edge Hindi male voice auditions
 on:
   workflow_dispatch:
+    inputs:
+      seed_run:
+        description: Actions run ID with earlier audition MP3s
+        type: string
+        default: '44508376732'
   push:
     branches: [main]
     paths:
@@ -28,7 +33,7 @@ jobs:
         continue-on-error: true
         with:
           name: postal-edge-hindi-male-voice-demos
-          run-id: 43933978228
+          run-id: ${{ inputs.seed_run || 44508376732 }}
           github-token: ${{ github.token }}
           path: male_voice_demos
       - name: Render missing male voice samples
