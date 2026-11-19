@@ -1,4 +1,4 @@
-name: Postal Edge website feature film assets
+name: Postal Edge website film final package check
 on:
   push:
     branches: [production/website-reel-20261119]
@@ -87,3 +87,4 @@ jobs:
           path: core/reel-inputs/*
           retention-days: 5
           if-no-files-found: error
+

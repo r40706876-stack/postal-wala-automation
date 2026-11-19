@@ -64,6 +64,8 @@ with sync_playwright() as p:
     go("#plans")
     grab("mts","#pl-mts",112)
     grab("postman","#pl-pm",112)
+    grab("mockpass","#pass",112)
+    grab("notemocks","#pl-nmts",112)
     b.close()
 (out/"points.json").write_text(json.dumps(points))
 for name in ("bhaiya.webp", "bhaiya_shabaash.webp","bhaiya_batata.webp","golu.webp","golu_chauka.webp"):
