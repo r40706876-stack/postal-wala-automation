@@ -1,4 +1,4 @@
-name: Publish source-verified doubts ep03 at 18:28 IST
+name: Publish source-verified doubts ep03 at 18:30 IST
 on:
   workflow_dispatch:
   push:
@@ -41,20 +41,12 @@ jobs:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           FB_POST: '0'
         run: python -u ../production/doubts_publish/publish_ep03.py
-      - name: Persist actual publication receipt and deduplication log
+      - name: Persist actual publication receipt and merge fresh deduplication state
         if: always()
         working-directory: core
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add generated_reels/ig_posted.json
-          test ! -f doubts_reels/ep03_container_checkpoint.json || git add --sparse doubts_reels/ep03_container_checkpoint.json
-          test ! -f doubts_reels/ep03_publication_receipt.json || git add --sparse doubts_reels/ep03_publication_receipt.json
-          git diff --cached --quiet || git commit -m "Record Postal doubts episode 03 Instagram result [skip ci]"
-          git diff --quiet || git stash push -m "Temporary downloaded publication assets"
-          ok=0
-          for i in 1 2 3; do if git pull --rebase origin main && git push origin HEAD:main; then ok=1; break; fi; sleep 5; done
-          [ "$ok" = 1 ]
+        env:
+          CORE_TOKEN: ${{ secrets.CORE_TOKEN }}
+        run: python -u ../production/doubts_publish/persist_episode03_20261119.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -62,3 +54,4 @@ jobs:
           path: core/doubts_reels/ep03_publication_receipt.json
           if-no-files-found: ignore
 
+# Exact task-selected episode03; previously conflicting early job was cancelled.
