@@ -1,13 +1,13 @@
 {
   "status": "technical_pass_needs_visual_review",
-  "duration_seconds": 44.933333,
+  "duration_seconds": 44.9,
   "dimensions": [
     1080,
     1920
   ],
-  "video_sha256": "8d01e05c9ebed175338e9531e408c78f542f4e39a41e54430aa938de61dc97f3",
+  "video_sha256": "a93efefb2c33d2325da64c8d07bb00456c3ce9defcc7c94e943f258d2bb6bb49",
   "cue_lines": 10,
-  "last_cue_end": 43.549,
+  "last_cue_end": 43.501000000000005,
   "decode": "pass",
   "page_errors": [],
   "tts_model": "gemini-3.8-flash-tts",
