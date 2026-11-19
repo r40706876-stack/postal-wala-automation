@@ -1,0 +1,39 @@
+name: Postal Edge animate and render Rule 3 story
+on:
+  push:
+    branches: [production/website-reel-20261119]
+    paths: ['.github/workflows/postal_edge_rule3_story.yml']
+permissions:
+  actions: read
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44587336456
+          name: postal-edge-rule3-story-voice
+          path: rule3-motion/
+      - name: Render animated footage with the approved voice
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core ffmpeg
+          python -m pip install -q Pillow numpy
+          mv rule3-motion/narration.wav rule3-motion/narration_raw.wav
+          python rule3-motion/timing.py
+          python rule3-motion/render.py
+          VIDEO=rule3-motion/Postal_Edge_Rule3_Transfer_Story.mp4
+          ffmpeg -v error -xerror -i "$VIDEO" -f null -
+          ffprobe -v error -show_entries stream=codec_name,width,height:format=duration -of compact "$VIDEO"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postal-edge-rule3-story-final-video
+          path: |
+            rule3-motion/Postal_Edge_Rule3_Transfer_Story.mp4
+            rule3-motion/preview.jpg
+          retention-days: 7
+          if-no-files-found: error
