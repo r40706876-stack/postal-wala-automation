@@ -1,0 +1,56 @@
+name: Postal Edge 08:30 notes preview with Golu and Bhaiya
+
+on:
+  push:
+    branches: [preview/notes-clause-13-14-2d-20261121]
+    paths:
+      - .github/workflows/notes_clause_13_14_2d_preview.yml
+      - rule3-motion/render_notes_preview.py
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          sparse-checkout: |
+            main.py
+            branding.py
+            brand_config.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Install the approved rig's render dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core ffmpeg
+          python -m pip install -q Pillow numpy scipy requests pypdf edge-tts lameenc
+      - name: Generate the Concierge 10 narration and animate the approved pair
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-concierge-10
+        run: python rule3-motion/render_notes_preview.py
+      - name: Validate video and audio
+        run: |
+          video=rule3-motion/Postal_Edge_Clause_13_14_2D_Preview.mp4
+          ffmpeg -v error -xerror -i "$video" -f null -
+          ffprobe -v error -show_entries stream=codec_name,width,height:format=duration,size -of json "$video"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postal-edge-clause-13-14-2d-preview
+          path: |
+            rule3-motion/Postal_Edge_Clause_13_14_2D_Preview.mp4
+            rule3-motion/notes_preview.jpg
+          retention-days: 7
+          if-no-files-found: error
