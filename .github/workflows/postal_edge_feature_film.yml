@@ -1,4 +1,4 @@
-name: Postal Edge website film final package check
+name: Postal Edge Golu story voice
 on:
   push:
     branches: [production/website-reel-20261119]
@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   voice:
-    if: "!contains(github.event.head_commit.message, '[screens only]')"
+    if: "contains(github.event.head_commit.message, '[golu story]')"
     runs-on: ubuntu-24.04
     timeout-minutes: 9
     steps:
@@ -48,43 +48,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: postal-edge-feature-narration
+          name: postal-edge-golu-story-narration
           path: voice/narration.wav
           retention-days: 5
           if-no-files-found: error
-  screens:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 9
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: r40706876-stack/postal-wala-core
-          token: ${{ secrets.CORE_TOKEN }}
-          path: core
-          sparse-checkout: |
-            /docs/index.html
-            /docs/d/
-            /docs/img/
-            /docs/notes/
-            /docs/icon-192.png
-            /docs/hn/1-hi.html
-            /docs/sw.js
-          sparse-checkout-cone-mode: false
-      - name: Capture actual site screens
-        run: |
-          pip install -q playwright
-          python -m playwright install chromium
-          sudo apt-get install -y --no-install-recommends fonts-noto-core
-          export PW_TEST_SCREENSHOT_NO_FONTS_READY=1
-          python -m http.server 8871 --directory core/docs >/tmp/demo-server.log 2>&1 &
-          cd core
-          python ../reel-inputs/capture.py
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: postal-edge-feature-screens
-          path: core/reel-inputs/*
-          retention-days: 5
-          if-no-files-found: error
-
