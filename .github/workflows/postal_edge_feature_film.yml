@@ -1,4 +1,4 @@
-name: Postal Edge Golu story voice
+name: Postal Edge Rule 3 transfer eligibility voice
 on:
   push:
     branches: [production/website-reel-20261119]
@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   voice:
-    if: "contains(github.event.head_commit.message, '[golu story]')"
+    if: "contains(github.event.head_commit.message, '[rule3 eligibility]')"
     runs-on: ubuntu-24.04
     timeout-minutes: 9
     steps:
@@ -48,7 +48,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: postal-edge-golu-story-narration
+          name: postal-edge-rule3-eligibility-narration
           path: voice/narration.wav
           retention-days: 5
           if-no-files-found: error
