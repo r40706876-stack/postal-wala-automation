@@ -31,9 +31,9 @@ jobs:
           sudo timeout 120 apt-get -o Acquire::Retries=1 install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
           pip install -q requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
           timeout 120 python -m playwright install --with-deps chromium
-      - name: One Gemini take through existing mock HTML deep renderer
+      - name: Re-render visual fixes from existing Gemini take only
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ''
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
           GEMINI_TTS_VOICE: hi-in-training-1
           DEEP_PER_LINE: '0'
@@ -50,8 +50,10 @@ jobs:
           from pathlib import Path
           p=Path('deep/deep_demo.py');s=p.read_text()
           s=re.sub(r'^M\.TTS_WAITS = .+$','M.TTS_WAITS = ()',s,flags=re.M)
+          s=s.replace('import main as M  # noqa: E402','import main as M  # noqa: E402\nM.gemini_tts_audio = lambda *a, **k: (_ for _ in ()).throw(RuntimeError("Saved take only; no new TTS"))')
           p.write_text(s)
           PY
+          test -s doubts_reels/ep04_cutoff_training_take.wav
           python doubts_ep04.py
           ffmpeg -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -f null -
           ffmpeg -y -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -vf "fps=1/5,scale=216:384,tile=4x3" -frames:v 1 doubts_reels/ep04_contact.jpg
@@ -117,3 +119,5 @@ jobs:
           name: Postal-doubts-episode04-preview
           path: doubts_reels/ep04_*
           retention-days: 7
+
+# Visual QA correction only; saved Gemini take is mandatory and new TTS is blocked.
