@@ -1,0 +1,15 @@
+{
+  "status": "technical_pass_needs_visual_review",
+  "duration_seconds": 44.933333,
+  "dimensions": [
+    1080,
+    1920
+  ],
+  "video_sha256": "8d01e05c9ebed175338e9531e408c78f542f4e39a41e54430aa938de61dc97f3",
+  "cue_lines": 10,
+  "last_cue_end": 43.549,
+  "decode": "pass",
+  "page_errors": [],
+  "tts_model": "gemini-3.8-flash-tts",
+  "tts_voice": "hi-in-training-1"
+}
