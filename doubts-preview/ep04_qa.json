@@ -1,15 +1,15 @@
 {
   "status": "technical_pass_needs_visual_review",
-  "duration_seconds": 44.9,
+  "duration_seconds": 42.033333,
   "dimensions": [
     1080,
     1920
   ],
-  "video_sha256": "a93efefb2c33d2325da64c8d07bb00456c3ce9defcc7c94e943f258d2bb6bb49",
+  "video_sha256": "377af56b46b4bc8fa00ed85358e6bc9314faef5ad003474103e68cb66c103d53",
   "cue_lines": 10,
-  "last_cue_end": 43.501000000000005,
+  "last_cue_end": 40.644,
   "decode": "pass",
   "page_errors": [],
   "tts_model": "gemini-3.8-flash-tts",
-  "tts_voice": "hi-in-training-1"
+  "tts_voice": "hi-in-concierge-10"
 }
