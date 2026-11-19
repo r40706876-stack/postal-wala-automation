@@ -1,6 +1,6 @@
 {
   "episode": 4,
-  "status": "WAITING_FOR_CONCIERGE_10_RENDER",
+  "status": "CONCIERGE_10_PREVIEW_PENDING_NARRATION_QA",
   "qa_passed": false,
   "publishable": false,
   "publish_now": false,
@@ -16,15 +16,15 @@
     "three_year_completion": "2026-02-19",
     "notification_cutoff": "2026-01-01"
   },
-  "run_id": 44528174421,
-  "initial_gemini_voice_run_id": 44526303103,
+  "run_id": 44553315005,
+  "initial_gemini_voice_run_id": 44553315005,
   "tts_model": "gemini-3.8-flash-tts",
-  "tts_voice": "hi-in-training-1",
-  "production": "Existing mock_reel.page30 and deep/deep_demo.py/deep/render_deep.py on GitHub; final visual rebuild reused saved take and blocked new TTS",
+  "tts_voice": "hi-in-concierge-10",
+  "production": "Fresh Gemini Concierge 10 narration through the existing GitHub mock and deep-render pipeline",
   "video": {
-    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/516443a758190381b311e984854a7c6dac36787d/doubts-preview/ep04_cutoff_gemini.mp4",
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/3b3cda98dcf347175d4f89df3f0e4484e2879745/doubts-preview/ep04_cutoff_gemini.mp4",
     "filename": "ep04_cutoff_gemini.mp4",
-    "sha256": "a93efefb2c33d2325da64c8d07bb00456c3ce9defcc7c94e943f258d2bb6bb49"
+    "sha256": "377af56b46b4bc8fa00ed85358e6bc9314faef5ad003474103e68cb66c103d53"
   },
   "caption": {
     "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/3b6cd53aa3788a22fe46ab6f3231fb7dc57f8524/doubts_publish/ep04_caption.txt",
@@ -47,15 +47,15 @@
       1080,
       1920
     ],
-    "duration_seconds": 44.9,
+    "duration_seconds": 42.033333,
     "video_codec": "h264",
     "audio_codec": "aac",
     "decode": "pass",
     "cue_lines": 10,
-    "last_cue_end": 43.501,
+    "last_cue_end": 40.644,
     "page_errors": [],
-    "visual_review": "Pass19Nov: correct JAN01/FEB19 example calendar cards, legible date labels, cutoff marker, animated timeline and postman, save-first prompt clear of question text, series identity,18:30 follow CTA",
-    "new_tts_requests_for_visual_rebuild": 0
+    "visual_review": "Contact sheet reviewed after new narration: answer, dated timeline and eligibility scene are present.",
+    "narration_review": "Automatic character match was low; confirm spoken script and scene sync before enabling publication."
   },
   "website_demo": "Not included; clearly labelled official-notification rule illustration, no claim to website capture or PYQ",
   "next_topic": "Only MTS: is local-language PaperIII required?",
@@ -65,5 +65,7 @@
   "no_people_tags": true,
   "no_collaborator": true,
   "instagram_username": "postal_edge",
-  "required_tts_voice": "hi-in-concierge-10"
+  "required_tts_voice": "hi-in-concierge-10",
+  "narration_take_sha256": "a8853176d0b6777d96a9402a55496e4d580220b90b64a3cee78a5234252b2050",
+  "voice_provenance_url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/f7b2690bb1c7c5a92dfaf752c78023e62e6c0f69/doubts-preview/ep04_cutoff_gemini_provenance.json"
 }
