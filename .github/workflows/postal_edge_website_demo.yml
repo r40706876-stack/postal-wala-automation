@@ -93,7 +93,8 @@ jobs:
       - name: Capture public Postal Edge views
         run: |
           pip install --quiet playwright
-          python -m playwright install --with-deps chromium > /dev/null
+          python -m playwright install chromium > /dev/null
+          export PW_TEST_SCREENSHOT_NO_FONTS_READY=1
           python -m http.server 8871 --directory docs >/tmp/demo-server.log 2>&1 &
           python - <<'PY'
           from playwright.sync_api import sync_playwright
@@ -104,6 +105,7 @@ jobs:
               b = p.chromium.launch()
               pg = b.new_page(viewport={"width": 412, "height": 804}, device_scale_factor=2, is_mobile=True, has_touch=True)
               pg.on("pageerror",lambda e: print("Browser error:",str(e),flush=True))
+              pg.route("https://fonts.**",lambda route: route.abort())
               pg.route("**/api/**",lambda route: route.fulfill(json={"ok":False,"user":None}))
               def snap(name):
                   pg.screenshot(path=name+".jpg",type="jpeg",quality=82,animations="disabled")
