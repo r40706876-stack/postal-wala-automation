@@ -1,0 +1,70 @@
+name: Postal Edge website promo v2 (voice 18 = Concierge 10)
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/postal_edge_promo_v2.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: postal-edge-promo-v2
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Renderer dependencies
+        timeout-minutes: 6
+        run: |
+          if [ -f /etc/apt/apt-mirrors.txt ]; then printf '%s\n' 'https://archive.ubuntu.com/ubuntu/' | sudo tee /etc/apt/apt-mirrors.txt >/dev/null; fi
+          if [ -f /etc/apt/apt-mirrors-security.txt ]; then printf '%s\n' 'https://security.ubuntu.com/ubuntu/' | sudo tee /etc/apt/apt-mirrors-security.txt >/dev/null; fi
+          sudo timeout 90 apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 update -qq
+          sudo timeout 120 apt-get -o Acquire::Retries=1 install -y --no-install-recommends ffmpeg fonts-noto-core libraqm0 poppler-utils
+          pip install -q requests pypdf pillow numpy edge-tts playwright==1.47.0 faster-whisper
+          timeout 120 python -m playwright install --with-deps chromium
+      - name: Voice (Gemini Concierge 10, one take) + animation render
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-concierge-10
+          DEEP_PER_LINE: '0'
+          DEEP_STRICT_ONE_TAKE: '1'
+          DEEP_FAST_QUOTA_FAIL: '1'
+          DEEP_TAKE: rebrand_reels/promo_v2/out/promo_v2_concierge10_take.wav
+          DEEP_TAKE_SAVE: rebrand_reels/promo_v2/out/promo_v2_concierge10_take.wav
+          DEEP_GAP_LINE: '0.08'
+          DEEP_GAP_SCENE: '0.18'
+        run: |
+          mkdir -p rebrand_reels/promo_v2/out
+          python -u deep/deep_demo.py rebrand_reels/promo_v2/promo.html rebrand_reels/promo_v2/out/postal_edge_promo_v2.mp4
+          ffmpeg -v error -i rebrand_reels/promo_v2/out/postal_edge_promo_v2.mp4 -f null -
+          ffprobe -v error -show_entries format=duration -of csv=p=0 rebrand_reels/promo_v2/out/postal_edge_promo_v2.mp4
+          ffmpeg -y -v error -i rebrand_reels/promo_v2/out/postal_edge_promo_v2.mp4 -vf "fps=1/3,scale=216:384,tile=5x3" -frames:v 1 rebrand_reels/promo_v2/out/contact.jpg
+          cp rebrand_reels/promo_v2/caption.txt rebrand_reels/promo_v2/out/
+      - name: Save in private core repo
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rebrand_reels/promo_v2/out || true
+          git diff --cached --quiet || git commit -m "Postal Edge promo v2 render [skip ci]"
+          for i in 1 2 3; do if git pull --rebase origin main && git push origin HEAD:main; then break; fi; sleep 3; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PostalEdge-promo-v2
+          path: |
+            rebrand_reels/promo_v2/out/postal_edge_promo_v2.mp4
+            rebrand_reels/promo_v2/out/contact.jpg
+            rebrand_reels/promo_v2/out/caption.txt
+          retention-days: 14
