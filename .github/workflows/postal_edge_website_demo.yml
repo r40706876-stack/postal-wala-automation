@@ -1,0 +1,73 @@
+name: Postal Edge website demo voice
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/postal_edge_website_demo.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  voice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          sparse-checkout: |
+            main.py
+            branding.py
+            brand_config.json
+          sparse-checkout-cone-mode: false
+      - name: Render approved Hindi voice
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-training-1
+        run: |
+          pip install --quiet numpy requests pillow pypdf edge-tts
+          python - <<'PY'
+          import time, wave
+          import numpy as np
+          import main as engine
+
+          script = [
+              "मॉक में जवाब गलत हुआ? अगली बार वही गलती कैसे बचेगी?",
+              "पोस्टल एज पर देखो, सही जवाब क्यों सही है, और बाकी विकल्प क्यों गलत हैं।",
+              "जी डी एस से एम टी एस और पोस्टमैन की तैयारी के लिए, फ्री मॉक और पिछले साल के पेपर।",
+              "नियम अटका? पी ओ गाइड के चित्रों वाले नोट्स में क्लॉज़ ढूँढो।",
+              "और हमारी रील में, गोलू और भैया के साथ समझो परीक्षा में होने वाली गलतियाँ।",
+              "अभी पोस्टल एज डॉट इन खोलो। अपना पहला फ्री मॉक शुरू करो।",
+          ]
+          engine.TTS_WAITS = (15,)
+          audio = engine.gemini_tts_audio(script)
+          with wave.open("website-demo.wav", "w") as wav:
+              wav.setnchannels(1)
+              wav.setsampwidth(2)
+              wav.setframerate(engine.SR)
+              wav.writeframes((np.clip(audio,-1,1) * 32767).astype("<i2").tobytes())
+          PY
+          ffmpeg -v error -y -i website-demo.wav -b:a 48k website-demo.mp3
+      - name: Store voice in private production repo
+        env:
+          GH_TOKEN: ${{ secrets.CORE_TOKEN }}
+        run: |
+          python - <<'PY'
+          import base64, json, os, urllib.request, urllib.error
+          name = "rebrand_reels/website_demo_" + os.environ["GITHUB_RUN_ID"] + ".mp3"
+          base = "https://api.github.com/repos/r40706876-stack/postal-wala-core/contents/" + name
+          headers = {"Authorization": "Bearer " + os.environ["GH_TOKEN"], "Accept": "application/vnd.github+json"}
+          body = {"message": "Save website demo voice preview [skip ci]", "content": base64.b64encode(open("website-demo.mp3", "rb").read()).decode()}
+          try:
+              with urllib.request.urlopen(urllib.request.Request(base, headers=headers)) as previous:
+                  body["sha"] = json.load(previous)["sha"]
+          except urllib.error.HTTPError as e:
+              if e.code != 404:
+                  raise
+          with urllib.request.urlopen(urllib.request.Request(base, data=json.dumps(body).encode(), headers=headers, method="PUT")) as response:
+              print("Voice ready:", name, response.status)
+          PY
