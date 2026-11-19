@@ -6,6 +6,7 @@ on:
       - .github/workflows/native_notes_2d_preview.yml
       - notes-2d-preview/**
 permissions:
+  actions: read
   contents: read
 jobs:
   preview:
@@ -36,6 +37,12 @@ jobs:
             /reels/src/notes_scene.html
             /reels/src/render.py
           persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44596940769
+          name: postal-edge-clause-13-14-2d-preview
+          path: approved-voice
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"

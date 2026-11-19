@@ -42,5 +42,5 @@ shutil.copyfile(EXTRAS / "preview_voice.py", ROOT / "preview_voice.py")
 replace_once(notes, "    auds, sr, used = voice([s for _, s in order], lang)",
              '    from preview_voice import voice as preview_voice\n'
              '    auds, sr, used = preview_voice([s for _, s in order], lang)')
-replace_once(notes, '    try:\n        res = main.as_dict(main._llm_json(prompt))\n',
-             '    try:\n        res = {} if CUSTOM else main.as_dict(main._llm_json(prompt))\n')
+replace_once(notes, '    try:\n        res = main.as_dict(main._llm_json(prompt))\n    except Exception as exc:\n        print("  script AI fail',
+             '    try:\n        res = {} if CUSTOM else main.as_dict(main._llm_json(prompt))\n    except Exception as exc:\n        print("  script AI fail')
