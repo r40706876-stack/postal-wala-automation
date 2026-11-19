@@ -55,8 +55,9 @@ jobs:
           lines=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='LINES' for t in n.targets))
           assert lines==json.loads(Path('doubts_reels/ep04_cutoff_gemini_script.json').read_text())['lines'],'Episode04 approved script changed'
           PY
-          python doubts_ep04.py
+          python -u doubts_ep04.py
           test -s doubts_reels/ep04_cutoff_concierge10_take.wav.voice.json
+          sha256sum doubts_reels/ep04_cutoff_concierge10_take.wav
           ffmpeg -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -f null -
           ffmpeg -y -v error -i doubts_reels/ep04_cutoff_gemini.mp4 -vf "fps=1/5,scale=216:384,tile=4x3" -frames:v 1 doubts_reels/ep04_contact.jpg
       - name: Check decode, timings and actual browser scenes
