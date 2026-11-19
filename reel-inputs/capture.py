@@ -46,10 +46,20 @@ with sync_playwright() as p:
     if explain.count(): center(explain,165)
     grab("answer")
     go("#papers")
-    grab("papers")
+    grab("papers", ".prow[href='#exam-mts']")
+    pg.locator(".prow[href='#exam-mts']").click()
+    pg.wait_for_timeout(450)
+    tab=pg.locator("button[data-etab='p']").first
+    if tab.count(): tab.click()
+    pg.wait_for_timeout(300)
+    grab("paperlist")
     go("#notes")
-    grab("notes")
-    go("#note-2")
+    link=".book.cl"
+    grab("notes",link,270)
+    pg.locator(link).first.click()
+    pg.wait_for_timeout(600)
+    if pg.locator(".thead").count()==0:
+        raise RuntimeError("Clause page did not open")
     grab("clause")
     go("#plans")
     grab("mts","#pl-mts",112)
