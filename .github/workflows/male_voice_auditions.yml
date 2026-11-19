@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/male_voice_auditions.yml'
 permissions:
+  actions: read
   contents: read
 concurrency:
   group: postal-male-voice-auditions
@@ -13,7 +14,7 @@ concurrency:
 jobs:
   audition:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,31 +24,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Dependencies
-        run: |
-          pip install requests
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg
-      - uses: actions/cache/restore@v4
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
+          name: postal-edge-hindi-male-voice-demos
+          run-id: 43933978228
+          github-token: ${{ github.token }}
           path: male_voice_demos
-          key: male-auditions-v1-${{ hashFiles('tools/gemini_male_audition.py') }}
-          restore-keys: male-auditions-v1-
-      - name: Discover and render all Hindi male auditions
+      - name: Render missing male voice samples
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
           GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
           GEMINI_API_KEY_4: ${{ secrets.GEMINI_API_KEY_4 }}
-        run: python -u tools/gemini_male_audition.py
-      - uses: actions/cache/save@v4
-        if: always()
-        with:
-          path: male_voice_demos
-          key: male-auditions-v1-${{ hashFiles('tools/gemini_male_audition.py') }}
+          GEMINI_API_KEY2: ${{ secrets.GEMINI_API_KEY2 }}
+          GEMINI_API_KEY3: ${{ secrets.GEMINI_API_KEY3 }}
+        run: |
+          pip install --quiet requests lameenc
+          python -u tools/gemini_male_audition_resume.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: postal-edge-hindi-male-voice-demos
-          path: male_voice_demos/
+          path: |
+            male_voice_demos/*.mp3
+            male_voice_demos/*.json
           retention-days: 30
