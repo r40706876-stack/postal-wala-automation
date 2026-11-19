@@ -25,7 +25,8 @@ def fetch(asset):
     d=M[asset];r=requests.get(d["url"],timeout=120);r.raise_for_status()
     assert hashlib.sha256(r.content).hexdigest()==d["sha256"],asset+" hash mismatch"
     p=OUT/d["filename"];p.write_bytes(r.content);return p
-user=api(P.IG_USER_ID,{"fields":"username"})
+user=api(P.IG_USER_ID,{"fields":"username,name"})
+print("IG_ACCOUNT_SEEN",user.get("username"),user.get("name"),flush=True)
 assert user.get("username","").lower()=="postal_wala","Wrong Instagram account"
 print("VERIFIED_ACCOUNT @postal_wala",flush=True)
 log=P.load_log()
