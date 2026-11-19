@@ -8,8 +8,8 @@
   "notification_cutoff": "2026-01-01",
   "tts_provider": "Gemini",
   "tts_model": "gemini-3.8-flash-tts",
-  "tts_voice": "hi-in-training-1",
-  "github_run_id": "44528174421",
+  "tts_voice": "hi-in-concierge-10",
+  "github_run_id": "44553315005",
   "route": "mock_reel.page30 -> deep/deep_demo.py -> deep/render_deep.py",
   "publish_enabled": false
 }
