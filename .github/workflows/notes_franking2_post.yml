@@ -30,7 +30,7 @@ jobs:
       - run: pip install requests >/dev/null
       - name: 4:28 PM IST tak ruko
         run: |
-          [ "$(TZ=Asia/Kolkata date +%F)" = "2026-11-18" ] || { echo "aaj ki tarikh nahi"; exit 1; }
+          [ "$(TZ=Asia/Kolkata date +%F)" = "2026-11-19" ] || { echo "aaj ki tarikh nahi"; exit 1; }
           TGT=$(TZ=Asia/Kolkata date -d "today 16:28" +%s); W=$((TGT-$(date +%s)))
           if [ $W -gt 0 ]; then echo "$W sec ruk rahe"; sleep $W; fi
       - name: Instagram post
