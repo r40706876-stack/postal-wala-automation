@@ -1,0 +1,74 @@
+name: Audit episode04 Concierge10 narration without TTS
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/ep04_narration_audit_20261120.yml']
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          sparse-checkout: |
+            /doubts_reels/ep04_cutoff_concierge10_take.wav
+            /doubts_reels/ep04_cutoff_concierge10_take.wav.voice.json
+            /doubts_reels/ep04_cutoff_gemini_script.json
+            /doubts_reels/ep04_cutoff_gemini.mp4.cues.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q faster-whisper requests numpy
+      - name: Strong Hindi VAD transcription of existing take and actual preview
+        run: |
+          python -u - <<'PY'
+          import json,hashlib,re,difflib,os,requests
+          from pathlib import Path
+          from faster_whisper import WhisperModel
+          root=Path('doubts_reels');take=root/'ep04_cutoff_concierge10_take.wav'
+          assert hashlib.sha256(take.read_bytes()).hexdigest()=='a8853176d0b6777d96a9402a55496e4d580220b90b64a3cee78a5234252b2050'
+          p=root/'ep04_audit_preview.mp4';r=requests.get('https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/3b3cda98dcf347175d4f89df3f0e4484e2879745/doubts-preview/ep04_cutoff_gemini.mp4',timeout=90);r.raise_for_status();p.write_bytes(r.content)
+          assert hashlib.sha256(r.content).hexdigest()=='377af56b46b4bc8fa00ed85358e6bc9314faef5ad003474103e68cb66c103d53'
+          lines=json.loads((root/'ep04_cutoff_gemini_script.json').read_text())['lines']
+          model=WhisperModel('large-v3',device='cpu',compute_type='int8',cpu_threads=4)
+          def norm(x):return re.sub(r'[^\u0900-\u097Fa-z0-9]','',x.lower()).replace('़','')
+          report={'model':'large-v3','language':'hi','vad':True,'voice':'hi-in-concierge-10','take_sha256':hashlib.sha256(take.read_bytes()).hexdigest(),'new_tts_requests':0,'run_id':os.environ['GITHUB_RUN_ID'],'script':lines,'results':{}}
+          for key,path in [('raw_take',take),('published_candidate',p)]:
+              segs,info=model.transcribe(str(path),language='hi',beam_size=5,word_timestamps=True,vad_filter=True,condition_on_previous_text=False)
+              arr=[{'start':s.start,'end':s.end,'text':s.text,'words':[{'start':w.start,'end':w.end,'text':w.word} for w in s.words or []]} for s in segs]
+              text=' '.join(s['text'] for s in arr)
+              script=''.join(norm(t) for _,t in lines);heard=norm(text)
+              matched=sum(b.size for b in difflib.SequenceMatcher(None,script,heard,autojunk=False).get_matching_blocks())
+              report['results'][key]={'text':text,'segments':arr,'character_match':matched,'script_characters':len(script),'coverage':matched/max(1,len(script))}
+              print('TRANSCRIPT '+key+' '+text,flush=True)
+              print('COVERAGE '+key+' '+str(matched)+'/'+str(len(script)),flush=True)
+          out=root/'ep04_concierge10_narration_qa_20261120.json';out.write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: episode04-Concierge10-narration-audit
+          path: doubts_reels/ep04_concierge10_narration_qa_20261120.json
+      - name: Save the audit report only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json,base64,os,requests
+          from pathlib import Path
+          p=Path('doubts_reels/ep04_concierge10_narration_qa_20261120.json')
+          h={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          url='https://api.github.com/repos/'+os.environ['GH_REPO']+'/contents/doubts-preview/'+p.name
+          old=requests.get(url,headers=h,params={'ref':'media'},timeout=30)
+          d={'message':'Read-only Concierge10 narration audit','branch':'media','content':base64.b64encode(p.read_bytes()).decode()}
+          if old.status_code==200:d['sha']=old.json()['sha']
+          r=requests.put(url,headers=h,json=d,timeout=60);r.raise_for_status()
+          print('AUDIT_READY https://raw.githubusercontent.com/'+os.environ['GH_REPO']+'/'+r.json()['commit']['sha']+'/doubts-preview/'+p.name)
+          PY
