@@ -1,0 +1,74 @@
+name: Refresh pending episode04 approved 2D visuals - no TTS or publish
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/ep04_2d_refresh.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: postal-ep04-2d-preview
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: production
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo sed -i 's|http://|https://|g' /etc/apt/sources.list.d/ubuntu.sources
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core fonts-noto-color-emoji
+          pip install -q requests pypdf pillow numpy scipy playwright==1.47.0 edge-tts
+          playwright install --with-deps chromium
+      - name: Existing HTML/deep renderer with same verified Concierge10 audio
+        working-directory: core
+        env:
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-concierge-10
+          FB_POST: '0'
+          FPS: '30'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('deep/render_deep.py')
+          s=p.read_text().replace("document.querySelectorAll('#cutImg,#estImg')","document.querySelectorAll('#cutImg,#estImg,#chr img')")
+          p.write_text(s)
+          PY
+          python -u ../production/doubts_publish/ep04_2d_refresh.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: episode04-approved-2d-concierge10-preview
+          path: |
+            core/doubts_reels/ep04_cutoff_concierge10_2d.mp4
+            core/doubts_reels/ep04_2d_cover.jpg
+            core/doubts_reels/ep04_2d_contact.jpg
+            core/doubts_reels/ep04_2d_build.json
+      - name: Persist preview assets only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import requests,os,base64,json
+          from pathlib import Path
+          headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          base='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/contents/doubts-preview/'
+          for name in ['ep04_cutoff_concierge10_2d.mp4','ep04_2d_cover.jpg','ep04_2d_contact.jpg','ep04_2d_build.json']:
+              p=Path('core/doubts_reels')/name
+              old=requests.get(base+name,headers=headers,params={'ref':'media'},timeout=30)
+              data={'message':'Episode04 exact approved 2D preview; unchanged Concierge10 audio','branch':'media','content':base64.b64encode(p.read_bytes()).decode()}
+              if old.status_code==200:data['sha']=old.json()['sha']
+              r=requests.put(base+name,headers=headers,json=data,timeout=120);r.raise_for_status()
+              print('ASSET_READY '+name+' https://raw.githubusercontent.com/'+os.environ['GITHUB_REPOSITORY']+'/'+r.json()['commit']['sha']+'/doubts-preview/'+name,flush=True)
+          PY
