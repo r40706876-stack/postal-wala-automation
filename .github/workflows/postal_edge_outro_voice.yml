@@ -1,0 +1,77 @@
+name: Postal Edge recurring website outro voice
+on:
+  push:
+    branches: [preview/native-notes-2d-20261121]
+    paths: ['.github/workflows/postal_edge_outro_voice.yml']
+permissions:
+  contents: read
+jobs:
+  voice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          sparse-checkout: |
+            main.py
+            branding.py
+            brand_config.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Generate the four outro beats in the approved voice
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -m pip install -q --timeout 25 numpy requests pillow pypdf edge-tts
+          mkdir outro
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import wave
+
+          import main
+          import numpy as np
+
+          voice = 'hi-in-concierge-10'
+          assert main.pick_gemini_voice() == voice
+          main.TTS_WAITS = (6, 18)
+          main.GEMINI_TTS_STYLE = 'Upbeat, inviting Hindi, concise, natural and brisk. Read verbatim.'
+          lines = [
+              'पोस्टल एज डॉट इन।',
+              'फ्री वीडियो क्लास देखो।',
+              'हाथ से लिखे नोट्स पढ़ो।',
+              'मॉक लगाओ। अभी खोलो!',
+          ]
+          specs = [{"name": f"outro-{i}", "segs": [("voice", line)]} for i, line in enumerate(lines)]
+          raw = main.gemini_tts_audio(lines, voice=voice)
+          split = main.split_gemini_audio(raw, specs)
+          if split:
+              clips = [part[0] for part in split]
+          else:
+              clips = []
+              for line in lines:
+                  raw = main.gemini_tts_audio([line], voice=voice)
+                  a, b = main._speech_bounds(raw)
+                  clips.append(raw[round(a * main.SR):round(b * main.SR)])
+          timings = []
+          for i, clip in enumerate(clips):
+              timings.append(len(clip) / main.SR)
+              pcm = (np.clip(clip, -1, 1) * 32767).astype('<i2')
+              with wave.open(f'outro/line-{i}.wav', 'wb') as output:
+                  output.setparams((1, 2, main.SR, 0, 'NONE', 'not compressed'))
+                  output.writeframes(pcm.tobytes())
+          Path('outro/timing.json').write_text(json.dumps(timings))
+          print(timings)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: postal-edge-website-outro-voice
+          path: outro/
+          if-no-files-found: error
+          retention-days: 7
