@@ -3,6 +3,7 @@ name: Website Cloudflare Pages par (postalwala.pages.dev)
 # Website ka source (docs/) ab private core repo me hai. Ye workflow har ghante core ka docs/ dekhta hai:
 # docs/ badla ho (naya tree hash) tabhi deploy karta hai, warna 10-15 sec me khatam.
 # Haath se turant deploy: Actions -> is workflow -> Run (force = true).
+# ANALYTICS_VIEWER_EMAILS optional: comma-separated Google emails. Run with force after changing it.
 # Secrets: CLOUDFLARE_PAGES_TOKEN / CLOUDFLARE_API_TOKEN(_2/_3) + CLOUDFLARE_ACCOUNT_ID(_2/_3), CORE_TOKEN
 on:
   workflow_dispatch:
@@ -41,6 +42,7 @@ jobs:
       RZP_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
       RZP_WEBHOOK_SECRET: ${{ secrets.RAZORPAY_WEBHOOK_SECRET }}
       OWNER_EMAILS: ${{ secrets.OWNER_EMAILS }}
+      ANALYTICS_VIEWER_EMAILS: ${{ secrets.ANALYTICS_VIEWER_EMAILS }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,7 +88,7 @@ jobs:
               ID=$(dbid); [ -z "$ID" ] && { npx --yes wrangler@4 d1 create $DBN >/tmp/d1.log 2>&1 || grep -iE "error|permission|auth" /tmp/d1.log | head -2 | sed "s/^/token $k d1: /"; ID=$(dbid); }
               KEY=$(tr -d ' \n' < stats_key.txt 2>/dev/null)
               if [ -n "$ID" ]; then
-                printf 'name = "%s"\npages_build_output_dir = "docs"\ncompatibility_date = "2024-09-01"\n\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "%s"\ndatabase_id = "%s"\n\n[vars]\nSTATS_KEY = "%s"\nGOOGLE_CLIENT_ID = "%s"\nRZP_KEY_ID = "%s"\nOWNER_EMAILS = "%s"\n' "$PROJECT" "$DBN" "$ID" "$KEY" "$GOOGLE_CLIENT_ID" "$RZP_KEY_ID" "$OWNER_EMAILS" > wrangler.toml
+                printf 'name = "%s"\npages_build_output_dir = "docs"\ncompatibility_date = "2024-09-01"\n\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "%s"\ndatabase_id = "%s"\n\n[vars]\nSTATS_KEY = "%s"\nGOOGLE_CLIENT_ID = "%s"\nRZP_KEY_ID = "%s"\nOWNER_EMAILS = "%s"\nANALYTICS_VIEWER_EMAILS = %s\n' "$PROJECT" "$DBN" "$ID" "$KEY" "$GOOGLE_CLIENT_ID" "$RZP_KEY_ID" "$OWNER_EMAILS" "$(python3 -c 'import json, os; print(json.dumps(os.environ.get("ANALYTICS_VIEWER_EMAILS", ""), ensure_ascii=False))')" > wrangler.toml
                 npx --yes wrangler@4 d1 execute $DBN --remote --file functions/schema.sql >/tmp/sq.log 2>&1 && echo "token $k: ginti DB taiyaar" || grep -iE "error" /tmp/sq.log | head -2
               else echo "token $k: D1 ki ijazat nahi - ginti band rahegi"; fi
             fi
