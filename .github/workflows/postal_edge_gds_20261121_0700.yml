@@ -1,0 +1,50 @@
+name: Postal Edge GDS reel on 21 November at 07:00 IST
+run-name: Postal Edge Instagram | 21 November · 07:00 IST
+on:
+  push:
+    branches: [release/gds-postman-20261121-0700-ist]
+    paths: [postal_release/gds_20261121_0700.py]
+permissions:
+  contents: read
+concurrency:
+  group: postal-edge-gds-20261121-0700-ist
+  cancel-in-progress: false
+jobs:
+  publish-at-0700:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: production
+          persist-credentials: false
+          sparse-checkout: postal_release
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          persist-credentials: false
+          sparse-checkout: |
+            /ig_post.py
+            /branding.py
+            /brand_config.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -q requests
+      - name: Verify reel with Meta then publish only at 07:00 IST
+        working-directory: core
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          APPROVED_SOURCE_URL: 'https://raw.githubusercontent.com/r40706876-stack/CHATPATE-NEWS/fc09f1466145db051a49c0dc3692c5b21697cd46/release_20261121'
+          FB_POST: '0'
+        run: python -u ../production/postal_release/gds_20261121_0700.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postal-edge-gds-21-nov-release-receipt
+          path: release-result/receipt.json
+          if-no-files-found: ignore
