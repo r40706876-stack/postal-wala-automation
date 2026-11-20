@@ -48,26 +48,13 @@ jobs:
               'हाथ से लिखे नोट्स पढ़ो।',
               'मॉक लगाओ। अभी खोलो!',
           ]
-          specs = [{"name": f"outro-{i}", "segs": [("voice", line)]} for i, line in enumerate(lines)]
           raw = main.gemini_tts_audio(lines, voice=voice)
-          split = main.split_gemini_audio(raw, specs)
-          if split:
-              clips = [part[0] for part in split]
-          else:
-              clips = []
-              for line in lines:
-                  raw = main.gemini_tts_audio([line], voice=voice)
-                  a, b = main._speech_bounds(raw)
-                  clips.append(raw[round(a * main.SR):round(b * main.SR)])
-          timings = []
-          for i, clip in enumerate(clips):
-              timings.append(len(clip) / main.SR)
-              pcm = (np.clip(clip, -1, 1) * 32767).astype('<i2')
-              with wave.open(f'outro/line-{i}.wav', 'wb') as output:
-                  output.setparams((1, 2, main.SR, 0, 'NONE', 'not compressed'))
-                  output.writeframes(pcm.tobytes())
-          Path('outro/timing.json').write_text(json.dumps(timings))
-          print(timings)
+          pcm = (np.clip(raw, -1, 1) * 32767).astype('<i2')
+          with wave.open('outro/narration.wav', 'wb') as output:
+              output.setparams((1, 2, main.SR, 0, 'NONE', 'not compressed'))
+              output.writeframes(pcm.tobytes())
+          Path('outro/script.json').write_text(json.dumps(lines, ensure_ascii=False))
+          print(f'Concierge 10 website outro: {len(raw)/main.SR:.2f}s')
           PY
       - uses: actions/upload-artifact@v4
         with:
