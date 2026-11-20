@@ -18,7 +18,7 @@ jobs:
         with:
           repository: r40706876-stack/postal-wala-core
           token: ${{ secrets.CORE_TOKEN }}
-          ref: 34d56f5ea6469fc4cce6e55f678b99fef9396ae1
+          ref: 0af1cb2cedc4d687d5411427e1cc6c7813b5ee66
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*.py
