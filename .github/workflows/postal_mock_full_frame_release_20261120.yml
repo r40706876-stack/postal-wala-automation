@@ -1,0 +1,189 @@
+name: Postal Edge full-frame mock release at 4 PM IST
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/postal_mock_full_frame_release_20261120.yml
+      - postal_release/mock_full_frame_20261120.txt
+  schedule:
+    - cron: '10 10 20 11 *'
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  group: postal-edge-full-frame-mock-20261120
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 38
+    steps:
+      - name: Resolve release window
+        id: slot
+        run: |
+          now=$(date +%s)
+          earliest=$(date -d '2026-11-20 15:35:00 +0530' +%s)
+          latest=$(date -d '2026-11-20 16:02:00 +0530' +%s)
+          if [ "$now" -ge "$earliest" ] && [ "$now" -le "$latest" ]; then
+            echo mode=publish >> "$GITHUB_OUTPUT"
+          elif [ "$GITHUB_EVENT_NAME" = push ] && [ "$now" -lt "$earliest" ]; then
+            echo mode=verify >> "$GITHUB_OUTPUT"
+          else
+            echo mode=skip >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.slot.outputs.mode != 'skip'
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          fetch-depth: 20
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /ig_post.py
+            /branding.py
+            /brand_config.json
+            /generated_reels/ig_posted.json
+            /generated_reels/mock_full_frame_receipt_20261120.json
+      - uses: actions/download-artifact@v4
+        if: steps.slot.outputs.mode != 'skip'
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44670279023
+          name: Postal-Edge-Mock-Animated-25-PYQ-V3
+          path: source
+      - name: Prepare release client
+        if: steps.slot.outputs.mode != 'skip'
+        run: python -c 'import requests' || python -m pip install --retries 1 --timeout 12 requests
+      - name: Verify or publish the approved mock
+        if: steps.slot.outputs.mode != 'skip'
+        working-directory: core
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          MEDIA_REPO: ${{ github.repository }}
+          MEDIA_TOKEN: ${{ github.token }}
+          FB_POST: '0'
+          RELEASE_MODE: ${{ steps.slot.outputs.mode }}
+        run: |
+          python -u - <<'PY'
+          from datetime import datetime, timedelta, timezone
+          from hashlib import sha256
+          import json
+          import os
+          from pathlib import Path
+          import time
+
+          import requests
+          import ig_post as ig
+
+          target = datetime.fromisoformat("2026-11-20T16:00:00+05:30")
+          deadline = target + timedelta(minutes=2)
+          expected = "7073551124130a565d5f6c2a9a2f5b4cb930589e9b39cbb1f167ad9eea2c4ba5"
+          cover_hash = "1d05a97d047028a11c4262757ce2b5019d6796d96801a53ff0f010faae5b535e"
+          key = "postal_edge_mock_full_frame_" + expected[:12]
+          video = Path("../source/Postal_Edge_Mock_Animated_25_PYQ_V3.mp4")
+          cover = Path("../source/cover.jpg")
+          receipt = Path("generated_reels/mock_full_frame_receipt_20261120.json")
+          title = "मॉक सवाल | बुक पैकेट में क्या नहीं भेज सकते?"
+          caption = (
+              title + "\n\n"
+              "सही विकल्प क्यों सही है और बाकी विकल्प क्यों गलत हैं, रील में देखें।\n"
+              "25 PYQ का फ्री डेली मॉक वेबसाइट पर उपलब्ध है।\n\n"
+              "#PostalEdge #PostalWala #IndiaPost #GDS #PostalExam"
+          )
+
+          def get(path, **params):
+              response = requests.get(ig.GRAPH + path, params={**params, "access_token": ig.IG_ACCESS_TOKEN}, timeout=25)
+              if not response.ok:
+                  raise RuntimeError(f"Instagram read failed (HTTP {response.status_code})")
+              return response.json()
+
+          def recent():
+              return get(ig.IG_USER_ID + "/media", fields="id,caption,timestamp,permalink", limit=50)["data"]
+
+          def existing():
+              for entry in ig.load_log().values():
+                  if isinstance(entry, dict) and entry.get("video_sha256") == expected and entry.get("id"):
+                      return entry
+              return next((item for item in recent() if title in (item.get("caption") or "")), None)
+
+          def record(media_id, media=None):
+              media = media or {}
+              entry = {
+                  "id": str(media_id), "username": "postal_edge", "video_sha256": expected,
+                  "cover_sha256": cover_hash, "scheduled_at_ist": target.isoformat(),
+                  "time": media.get("timestamp", datetime.now(timezone.utc).isoformat()),
+                  "permalink": media.get("permalink"),
+              }
+              log = ig.load_log()
+              log[key] = entry
+              ig.save_log(log)
+              receipt.parent.mkdir(parents=True, exist_ok=True)
+              receipt.write_text(json.dumps(entry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+              print(json.dumps(entry, ensure_ascii=False))
+
+          assert sha256(video.read_bytes()).hexdigest() == expected, "Final approved MP4 differs"
+          assert sha256(cover.read_bytes()).hexdigest() == cover_hash, "Original mock cover differs"
+          assert get(ig.IG_USER_ID, fields="username")["username"].lower() == "postal_edge", "Wrong Instagram account"
+          assert "18473971030188777" in {item["id"] for item in recent()}, "Instagram account ownership not verified"
+          prior = existing()
+          print("Verified @postal_edge, exact V3 video and original cover, expected slot 2026-11-20 16:00 IST")
+          if os.environ["RELEASE_MODE"] == "verify":
+              if prior:
+                  raise RuntimeError("This mock reel is already posted")
+              raise SystemExit(0)
+
+          if prior:
+              media_id = prior["id"]
+          else:
+              assert datetime.now(timezone.utc) <= deadline, "Scheduled publishing window expired"
+              cover_url = ig.media_url(str(cover))
+              original_publish = ig._publish
+
+              def publish_at_target(container):
+                  print(f"Instagram container processed. Release at {target.isoformat()}.")
+                  while (seconds := (target - datetime.now(timezone.utc)).total_seconds()) > 0:
+                      time.sleep(min(seconds, 10))
+                  if datetime.now(timezone.utc) > deadline:
+                      raise RuntimeError("Scheduled publishing window expired")
+                  saved = existing()
+                  return saved["id"] if saved else original_publish(container)
+
+              ig._publish = publish_at_target
+              try:
+                  media_id = ig._reel_by_url(str(video), caption, cover_url)
+              except (requests.RequestException, RuntimeError):
+                  saved = existing()
+                  if not saved:
+                      raise
+                  media_id = saved["id"]
+              record(media_id)
+
+          detail = get(str(media_id), fields="id,timestamp,permalink")
+          assert detail.get("permalink"), "Instagram did not return a permalink"
+          record(media_id, detail)
+          PY
+      - name: Store the verified Instagram receipt
+        if: always() && steps.slot.outputs.mode == 'publish'
+        working-directory: core
+        run: |
+          receipt=generated_reels/mock_full_frame_receipt_20261120.json
+          [ -f "$receipt" ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --sparse -f "$receipt" generated_reels/ig_posted.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Record Postal Edge 4 PM mock Instagram publication [skip ci]"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 4
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.slot.outputs.mode == 'publish'
+        with:
+          name: postal-edge-mock-4pm-publication-receipt
+          path: core/generated_reels/mock_full_frame_receipt_20261120.json
+          if-no-files-found: ignore
