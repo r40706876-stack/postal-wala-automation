@@ -1,0 +1,60 @@
+{
+  "episode": 5,
+  "status": "SCRIPT_PREPARED_NOT_RENDERED",
+  "earliest_normal_slot": "2026-11-22T18:30:00+05:30",
+  "reserved_20261121": "Only approved Rule3 website transfer demo; do not replace",
+  "depends_on": "Actual episode04 publication",
+  "source": {
+    "url": "https://utilities.cept.gov.in/dop/pdfbind.ashx?id=14981",
+    "scope": "AP Circle01June2026 GDS->MTS/Postman/MailGuard notification page3 para4 note(i);historical example;verify exact text before synthesis"
+  },
+  "voice": "hi-in-concierge-10",
+  "model": "gemini-3.8-flash-tts",
+  "route": "Existing GitHub mock_reel.page30/deep renderer only",
+  "character_assets": "Exact approved2D Golu/Bhaiya from transferdemo44594468241; postal_edge_puppet.py; natural audio-driven mouth and gestures",
+  "lines": [
+    [
+      "h1",
+      "एमटीएस के लिए स्थानीय भाषा का पेपर देना पड़ेगा? ये ज़रूरी बात पहले सेव कर लो।"
+    ],
+    [
+      "q1",
+      "डाक विभाग के डाउट्स, भाग पाँच।"
+    ],
+    [
+      "z0",
+      "आंध्र परिमंडल की दो हज़ार छब्बीस की अधिसूचना का उदाहरण समझें।"
+    ],
+    [
+      "z1",
+      "इसमें सिर्फ़ एमटीएस पद चाहने वाले जीडीएस को स्थानीय भाषा का पेपर तीन नहीं देना था।"
+    ],
+    [
+      "z2",
+      "लेकिन पोस्टमैन या मेल गार्ड भी चाहते हैं? इसी अधिसूचना में उनके लिए पेपर तीन ज़रूरी था।"
+    ],
+    [
+      "z3",
+      "यानी छूट सिर्फ़ एमटीएस के लिए थी। इसे हर डाक परीक्षा का नियम मत समझें।"
+    ],
+    [
+      "d1",
+      "अपनी परीक्षा की नई अधिसूचना में पद और पेपर की शर्तें ज़रूर पढ़ें।"
+    ],
+    [
+      "m1",
+      "ऐसे काम के डाउट्स के लिए पोस्टल एज को फ़ॉलो करें। रोज़ शाम साढ़े छह बजे।"
+    ]
+  ],
+  "visual_plan": [
+    "Spoken and animated save badge;Golu asks with exam form",
+    "Historical2026 source badge visible; no new-cycle announcement",
+    "MTS-only lane highlights PaperIII not required",
+    "Postman/MailGuard secondlane shows PaperIII required; Bhaiya points between lanes",
+    "Two-column recap held legibly; exact approved puppet pair avoids text",
+    "New notification caution +18:30 followCTA"
+  ],
+  "website_demo": "None: don't invent website UI or questions",
+  "cover_plan": "Blue/yellow/red;भाग05;MTS में भाषा पेपर?;exact final2D pair;historical2026 example badge",
+  "publishable": false
+}
