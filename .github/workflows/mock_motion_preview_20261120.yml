@@ -1,10 +1,11 @@
-name: Render the daily mock with character reactions and website
+name: Render the mock reel with scene-specific character placement
 on:
   push:
     branches: [preview/mock-motion-20261120]
     paths: [.github/workflows/mock_motion_preview_20261120.yml]
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: postal-edge-mock-motion-preview
   cancel-in-progress: false
@@ -17,7 +18,7 @@ jobs:
         with:
           repository: r40706876-stack/postal-wala-core
           token: ${{ secrets.CORE_TOKEN }}
-          ref: ce23785f28cd7b36afb3816f3ff62064c657cb9d
+          ref: 34d56f5ea6469fc4cce6e55f678b99fef9396ae1
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*.py
@@ -37,7 +38,7 @@ jobs:
       - name: Prepare Chromium, fonts and video tools
         timeout-minutes: 6
         run: |
-          python -m pip install -q --retries 1 --timeout 20 requests pypdf pillow numpy scipy edge-tts playwright==1.47.0 faster-whisper imageio-ffmpeg
+          python -m pip install -q --retries 1 --timeout 20 requests pypdf pillow numpy edge-tts playwright==1.47.0 imageio-ffmpeg
           python -m playwright install chromium
           mkdir -p "$RUNNER_TEMP/bin" "$HOME/.local/share/fonts"
           ln -sf "$(python -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')" "$RUNNER_TEMP/bin/ffmpeg"
@@ -45,21 +46,13 @@ jobs:
           curl -fsSL --max-time 20 'https://raw.githubusercontent.com/google/fonts/main/ofl/baloo2/Baloo2%5Bwght%5D.ttf' -o "$HOME/.local/share/fonts/Baloo2.ttf"
           curl -fsSL --max-time 20 'https://raw.githubusercontent.com/google/fonts/main/ofl/hind/Hind-Bold.ttf' -o "$HOME/.local/share/fonts/Hind-Bold.ttf"
           fc-cache -f
-      - name: Rebuild the archived 19 November mock using Concierge 10
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
-          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
-          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
-          GEMINI_TTS_VOICE: hi-in-concierge-10
-          GEMINI_TTS_STYLE: "Warm Hindi postal exam teacher. Curious questions, firm trap warning, upbeat correct answer. Natural brief pauses."
-          DEEP_PER_LINE: '0'
-          DEEP_STRICT_ONE_TAKE: '1'
-          DEEP_TAKE_SAVE: out/mock_concierge10_full.wav
-          DEEP_WHISPER_VAD: '1'
-          DEEP_FAST_QUOTA_FAIL: '1'
-          DEEP_GAP_SCENE: '0.22'
-          DEEP_VOICE_CACHE: 'out/voice-cache'
-          FPS: '30'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44667067905
+          name: Postal-Edge-Mock-Animated-25-PYQ
+          path: confirmed
+      - name: Build the updated scene layout
         run: |
           mkdir -p out
           python -u - <<'PY'
@@ -71,77 +64,89 @@ jobs:
           script = json.loads(Path("mock_reels/2026-11-19_p_d1a16a3cf2_script.json").read_text(encoding="utf-8"))
           Path("out/mock.html").write_text(page30(question, script, with_motion=True), encoding="utf-8")
           PY
-          cp mock_reels/2026-11-19_p_d1a16a3cf2_cover.jpg out/cover.jpg
-          python -u - <<'PY'
-          from playwright.sync_api import sync_playwright
-          from deep.render_deep import open_page
-          with sync_playwright() as playwright:
-              browser, page = open_page(playwright, "out/mock.html", None)
-              assert page.evaluate("window.MOCK_MOTION === true && typeof window.seek === 'function'")
-              for time in (.5, 2.8, 5.2, 25):
-                  page.evaluate("(t) => window.seek(t)", time)
-              assert page.locator("#pe-golu").get_attribute("data-pose")
-              browser.close()
-          PY
-          python -u deep/deep_demo.py out/mock.html out/Postal_Edge_Mock_Animated_25_PYQ.mp4
-      - name: Verify duration, video, narration cues and movement
+          cp confirmed/cover.jpg out/cover.jpg
+          cp confirmed/Postal_Edge_Mock_Animated_25_PYQ.mp4.cues.json out/cues.json
+      - name: Check actor visibility, content clearance and demo timing
         run: |
-          video=out/Postal_Edge_Mock_Animated_25_PYQ.mp4
-          ffmpeg -v error -xerror -i "$video" -map 0:v:0 -map 0:a:0 -f null -
-          ffmpeg -y -v error -i "$video" -vf 'fps=1/2.5,scale=216:384,tile=5x3' -frames:v 1 out/contact.jpg
-          python -u - <<'PY'
+          python - <<'PY'
           import json
           from pathlib import Path
           from playwright.sync_api import sync_playwright
           from deep.render_deep import open_page
-          video = Path("out/Postal_Edge_Mock_Animated_25_PYQ.mp4")
-          cues = json.loads(Path(str(video) + ".cues.json").read_text())
-          assert all(cues[name]["mouth"] and any(cues[name]["mouth"]) for name in ("web", "h1", "q1", "z0", "z1", "o1", "d1", "m1"))
-          start = lambda name: cues[name]["t"]
-          with sync_playwright() as playwright:
-              browser, page = open_page(playwright, "out/mock.html", cues)
-              assert 24 < page.evaluate("window.TOTAL") < 46
-              assert page.locator("#webTicker").inner_text().count("postaledge.in") == 2
-              def visit(time):
-                  page.evaluate("(t) => window.seek(t)", time)
-              visit(start("web") + .2)
-              assert page.locator("#demoQuestion").evaluate("(el) => Number(el.style.opacity)") > .9
-              visit(start("h1") - .15)
-              assert page.locator("#demoResultLabel").inner_text() == "गलत क्यों?"
-              assert page.locator("#demoAnswers").evaluate("(el) => Number(el.style.opacity)") > .9
-              visit(start("h1") + .12)
-              golu = page.locator("#pe-golu")
-              before = golu.evaluate("(el) => el.style.transform")
-              visit(start("h1") + .48)
-              assert golu.evaluate("(el) => el.style.transform") != before
-              assert golu.get_attribute("data-pose") == "surprise"
-              visit(start("d1") + .35)
-              assert golu.get_attribute("data-pose") == "celebrate"
-              visit(start("m1") + .35)
-              assert page.locator("#pe-bhaiya").get_attribute("data-pose") == "explain"
-              assert page.locator("#peCtaLink").inner_text() == "postaledge.in"
+
+          cues = json.loads(Path("out/cues.json").read_text())
+          with sync_playwright() as browser_api:
+              browser, page = open_page(browser_api, "out/mock.html", cues)
+              result = page.evaluate("""() => {
+                const panel = document.querySelector('#pan');
+                const paper = document.querySelector('#paper');
+                const caption = document.querySelector('#cap');
+                const actors = [...document.querySelectorAll('.peActor')];
+                const demo = document.querySelector('#peIntro');
+                const label = document.querySelector('#demoResultLabel');
+                const phases = new Set(), slots = new Set(), pairs = new Set();
+                let silentMouths = 0, soloSpeech = 0, pairSpeech = 0, failures = [];
+                const hits = (a,b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+                for (let i=0; i<window.TOTAL*15; i++) {
+                    const t=i/15;
+                    window.seek(t);
+                    const visible = actors.filter(actor => !actor.hidden);
+                    if (demo.style.display === 'block') {
+                        phases.add(label.dataset.phase);
+                        if (visible.length) failures.push([t,'actor covers website intro']);
+                    }
+                    if (visible.length === 2) {
+                        if (!visible.every(actor => actor.dataset.gaze === 'partner')) failures.push([t,'incorrect partner gaze']);
+                        if (hits(visible[0].getBoundingClientRect(), visible[1].getBoundingClientRect())) failures.push([t,'overlapping actors']);
+                        if (visible[0].dataset.mouth !== '0') silentMouths++;
+                        if (visible[1].dataset.mouth !== '0') pairSpeech++;
+                        pairs.add(panel.dataset.actorSpace);
+                    } else if (visible.length === 1) {
+                        if (visible[0].dataset.gaze !== 'audience') failures.push([t,'incorrect audience gaze']);
+                        if (visible[0].dataset.mouth !== '0') soloSpeech++;
+                        slots.add(panel.dataset.actorSpace);
+                    }
+                    for (const actor of visible) {
+                        const rect = actor.getBoundingClientRect();
+                        if ([panel,paper,caption].some(el => hits(rect, el.getBoundingClientRect()) && Number(getComputedStyle(el).opacity) > .1)) failures.push([t,'content overlap']);
+                        if (rect.left < 0 || rect.right > 540 || rect.top < 62 || rect.bottom > 760) failures.push([t,'actor outside assigned area']);
+                    }
+                }
+                return {phases:[...phases],slots:[...slots],pairs:[...pairs],silentMouths,soloSpeech,pairSpeech,failures:failures.slice(0,15)};
+              }""")
+              print(result)
+              assert not result["failures"], result
+              assert result["phases"] == ["question", "correct", "wrong"], result
+              assert set(result["slots"]) == {"left", "right", "below"}, result
+              assert result["pairs"] == ["below"] and not result["silentMouths"], result
+              assert result["soloSpeech"] > 20 and result["pairSpeech"] > 5, result
               browser.close()
-          print("VERIFIED: website, actual answer captures, both actors, cue-linked motion and spoken CTA")
           PY
+      - name: Render revised visuals with the same original audio
+        run: |
+          old=confirmed/Postal_Edge_Mock_Animated_25_PYQ.mp4
+          video=out/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4
+          test "$(sha256sum "$old" | cut -d' ' -f1)" = df23adf328bca62fb8a0f6c75a2920e724bc048bb66e5fd9db387a7db4daeec2
+          python -u deep/render_deep.py out/mock.html out/picture.mp4 out/cues.json
+          ffmpeg -y -v error -i out/picture.mp4 -i "$old" -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart "$video"
+          test "$(ffmpeg -v error -i "$old" -map 0:a:0 -c copy -f hash -)" = "$(ffmpeg -v error -i "$video" -map 0:a:0 -c copy -f hash -)"
+          ffmpeg -v error -xerror -i "$video" -map 0:v:0 -map 0:a:0 -f null -
+          ffmpeg -y -v error -i "$video" -vf 'fps=1/2.5,scale=216:384,tile=5x3' -frames:v 1 out/contact.jpg
           sha256sum "$video"
-      - name: Save the verified MP4 for direct GitHub download
+      - name: Save verified MP4 for direct GitHub download
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          cp out/Postal_Edge_Mock_Animated_25_PYQ.mp4 mock_reels/
-          git add --sparse -f mock_reels/Postal_Edge_Mock_Animated_25_PYQ.mp4
-          git commit -m 'Save verified animated daily mock MP4 [skip ci]'
+          cp out/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4 mock_reels/
+          git add --sparse -f mock_reels/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4
+          git commit -m 'Save mock reel with revised character placement [skip ci]'
           git push origin HEAD:refs/heads/preview/mock-motion-20261120
           git rev-parse HEAD
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: Postal-Edge-Mock-Animated-25-PYQ
+          name: Postal-Edge-Mock-Animated-25-PYQ-V2
           path: |
-            out/Postal_Edge_Mock_Animated_25_PYQ.mp4
-            out/Postal_Edge_Mock_Animated_25_PYQ.mp4.cues.json
+            out/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4
             out/contact.jpg
             out/cover.jpg
-            out/mock_concierge10_full.wav
-            out/mock_concierge10_full.wav.voice.json
-          if-no-files-found: ignore
+          if-no-files-found: error
