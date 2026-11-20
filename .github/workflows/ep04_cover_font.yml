@@ -1,0 +1,42 @@
+name: Final episode04 cover font correction only
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/ep04_cover_font.yml']
+permissions:
+  contents: write
+jobs:
+  cover:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo sed -i 's|http://|https://|g' /etc/apt/sources.list.d/ubuntu.sources
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core
+          pip install -q requests pillow
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import requests,os,base64,hashlib,io
+          from PIL import Image,ImageDraw,ImageFont
+          u='https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/18f78018ad1611ed3b014ca7c6634315e91c7ada/doubts-preview/ep04_2d_cover.jpg'
+          r=requests.get(u,timeout=45);r.raise_for_status()
+          assert hashlib.sha256(r.content).hexdigest()=='dd77e69bfa713ae7b9ca4c91b45eb637134f3818cbf18a5e3710ff1877a60b11'
+          im=Image.open(io.BytesIO(r.content)).convert('RGB');d=ImageDraw.Draw(im)
+          d.rectangle((0,1840,1080,1920),fill='#ffdc36')
+          f=ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSansDevanagari-Bold.ttf',32)
+          s='पोस्टल एज • पोस्टल वाला की पेशकश';box=d.textbbox((0,0),s,font=f)
+          d.text(((1080-box[2]+box[0])/2,1850),s,font=f,fill='#153579')
+          b=io.BytesIO();im.save(b,format='JPEG',quality=96);data=b.getvalue()
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/contents/doubts-preview/ep04_2d_cover_final.jpg'
+          h={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
+          old=requests.get(url,headers=h,params={'ref':'media'},timeout=30)
+          p={'message':'Fix episode04 cover branding glyphs, exact approved2D models preserved','branch':'media','content':base64.b64encode(data).decode()}
+          if old.status_code==200:p['sha']=old.json()['sha']
+          res=requests.put(url,headers=h,json=p,timeout=60);res.raise_for_status()
+          print('COVER_FINAL https://raw.githubusercontent.com/'+os.environ['GITHUB_REPOSITORY']+'/'+res.json()['commit']['sha']+'/doubts-preview/ep04_2d_cover_final.jpg SHA256 '+hashlib.sha256(data).hexdigest())
+          PY
