@@ -6,6 +6,9 @@ name: Website Cloudflare Pages par (postalwala.pages.dev)
 # ANALYTICS_VIEWER_EMAILS optional: comma-separated Google emails. Run with force after changing it.
 # Secrets: CLOUDFLARE_PAGES_TOKEN / CLOUDFLARE_API_TOKEN(_2/_3) + CLOUDFLARE_ACCOUNT_ID(_2/_3), CORE_TOKEN
 on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/pages_deploy.yml']
   workflow_dispatch:
     inputs:
       project:
@@ -59,7 +62,7 @@ jobs:
         run: echo "hash=$(git rev-parse HEAD:docs)-$(git rev-parse HEAD:functions 2>/dev/null | cut -c1-12)" >> "$GITHUB_OUTPUT"
       - name: Pichla deploy (cache)
         id: c
-        if: ${{ !inputs.force }}
+        if: ${{ github.event_name != 'push' && !inputs.force }}
         uses: actions/cache/restore@v4
         with:
           path: .deployed
