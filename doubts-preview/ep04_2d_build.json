@@ -1,0 +1,12 @@
+{
+  "voice": "hi-in-concierge-10",
+  "audio_source_sha256": "377af56b46b4bc8fa00ed85358e6bc9314faef5ad003474103e68cb66c103d53",
+  "tts_calls": 0,
+  "route": "mock_reel.page30 -> deep/render_deep.py; exact approved puppet; original verified Concierge10 MP4 audio stream copied",
+  "character_source": "postal_edge_puppet.py approved transfer-demo models",
+  "run": "44737704508",
+  "narration_audit_run": "44736881625",
+  "qa_pending": "final visual review",
+  "video_sha256": "c9a3c73c4a89edc1589dd08bc552668a7fb67b58ce5d3ef190847705321d8b0c",
+  "cover_sha256": "dd77e69bfa713ae7b9ca4c91b45eb637134f3818cbf18a5e3710ff1877a60b11"
+}
