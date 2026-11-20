@@ -17,7 +17,7 @@ jobs:
         with:
           repository: r40706876-stack/postal-wala-core
           token: ${{ secrets.CORE_TOKEN }}
-          ref: 4c6c0fd3f25b3feead312bc2caf1eb0b3d82d1a6
+          ref: ce23785f28cd7b36afb3816f3ff62064c657cb9d
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*.py
@@ -30,6 +30,7 @@ jobs:
             /rebrand_reels/promo_v2/img/wrong.jpg
             /mock_reels/2026-11-19_p_d1a16a3cf2.html
             /mock_reels/2026-11-19_p_d1a16a3cf2_script.json
+            /mock_reels/2026-11-19_p_d1a16a3cf2_cover.jpg
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -51,7 +52,10 @@ jobs:
           GEMINI_TTS_MODEL: gemini-3.8-flash-tts
           GEMINI_TTS_VOICE: hi-in-concierge-10
           GEMINI_TTS_STYLE: "Warm Hindi postal exam teacher. Curious questions, firm trap warning, upbeat correct answer. Natural brief pauses."
-          DEEP_PER_LINE: '1'
+          DEEP_PER_LINE: '0'
+          DEEP_STRICT_ONE_TAKE: '1'
+          DEEP_TAKE_SAVE: out/mock_concierge10_full.wav
+          DEEP_WHISPER_VAD: '1'
           DEEP_FAST_QUOTA_FAIL: '1'
           DEEP_GAP_SCENE: '0.22'
           DEEP_VOICE_CACHE: 'out/voice-cache'
@@ -65,7 +69,19 @@ jobs:
           archive = Path("mock_reels/2026-11-19_p_d1a16a3cf2.html").read_text(encoding="utf-8")
           question = json.loads(re.search(r"window\.SPEC = (.+);", archive).group(1))
           script = json.loads(Path("mock_reels/2026-11-19_p_d1a16a3cf2_script.json").read_text(encoding="utf-8"))
-          Path("out/mock.html").write_text(page30(question, script), encoding="utf-8")
+          Path("out/mock.html").write_text(page30(question, script, with_motion=True), encoding="utf-8")
+          PY
+          cp mock_reels/2026-11-19_p_d1a16a3cf2_cover.jpg out/cover.jpg
+          python -u - <<'PY'
+          from playwright.sync_api import sync_playwright
+          from deep.render_deep import open_page
+          with sync_playwright() as playwright:
+              browser, page = open_page(playwright, "out/mock.html", None)
+              assert page.evaluate("window.MOCK_MOTION === true && typeof window.seek === 'function'")
+              for time in (.5, 2.8, 5.2, 25):
+                  page.evaluate("(t) => window.seek(t)", time)
+              assert page.locator("#pe-golu").get_attribute("data-pose")
+              browser.close()
           PY
           python -u deep/deep_demo.py out/mock.html out/Postal_Edge_Mock_Animated_25_PYQ.mp4
       - name: Verify duration, video, narration cues and movement
@@ -125,4 +141,7 @@ jobs:
             out/Postal_Edge_Mock_Animated_25_PYQ.mp4
             out/Postal_Edge_Mock_Animated_25_PYQ.mp4.cues.json
             out/contact.jpg
+            out/cover.jpg
+            out/mock_concierge10_full.wav
+            out/mock_concierge10_full.wav.voice.json
           if-no-files-found: ignore
