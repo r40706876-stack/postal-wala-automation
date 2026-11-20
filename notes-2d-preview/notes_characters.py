@@ -18,15 +18,15 @@ def make_sprites(tmp, timeline, narration, rate):
     sound = resample_poly(narration, 16_000, rate)
     scenes = [s for s in timeline if s["k"] in ("hook", "trap", "trick")
               or s["k"].startswith("line")]
-    selected = scenes[:4]
+    selected = scenes
     if len(selected) < 2:
         raise RuntimeError("The Notes preview needs at least two spoken notes segments")
     sprites = []
     for i, segment in enumerate(selected):
-        role_is_golu = i % 2 == 0
+        role_is_golu = segment["k"] in ("hook", "line1")
         name = "golu" if role_is_golu else "postman"
         start = segment["t"] + 0.37
-        duration = min(4.9, segment["d"] - 0.39)
+        duration = min(8.0, segment["d"] - 0.39)
         count = round(FPS * duration)
         if count < FPS // 2:
             continue
@@ -34,6 +34,11 @@ def make_sprites(tmp, timeline, narration, rate):
         offset = round(16_000 * start)
         sample = sound[offset:offset + round(16_000 * duration)]
         shapes = measure_mouth(sample, FPS, duration)
+        family = Image.new("RGBA", (WIDTH, HEIGHT))
+        listener = puppet(not role_is_golu, 0, 0, -facing, None, "think", (.42, "chin"), -facing, 0, 0)
+        family.paste(listener.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS))
+        still = f"notes-listener-{i}.webp"
+        family.save(work / still, lossless=True)
         atlas = Image.new("RGBA", (WIDTH * COLUMNS, HEIGHT * ((count + COLUMNS - 1) // COLUMNS)))
         for f, shape in enumerate(shapes):
             t = f / FPS
@@ -46,5 +51,5 @@ def make_sprites(tmp, timeline, narration, rate):
         atlas.save(work / image, lossless=True)
         sprites.append({"segment": segment["k"], "role": name, "start": start,
                         "count": count, "fps": FPS, "width": WIDTH, "height": HEIGHT,
-                        "columns": COLUMNS, "image": image})
+                        "columns": COLUMNS, "image": image, "listener": still})
     return sprites

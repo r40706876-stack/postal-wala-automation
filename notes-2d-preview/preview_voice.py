@@ -1,25 +1,28 @@
-"""Reuse the corresponding approved Concierge 10 dialogue after the TTS quota error."""
+"""Synthesize the revised Notes script in the established Postal Edge voice."""
 
-from pathlib import Path
-import subprocess
 import numpy as np
 
-RATE = 24000
-BOUNDARIES = (0.0, 4.20, 10.03, 14.34, 20.79, 28.42)
+VOICE = "hi-in-concierge-10"
 
 
 def voice(segments, lang):
-    if lang != "hi" or len(segments) != len(BOUNDARIES):
-        raise ValueError("The source voice is specific to the six Hindi Notes scenes")
-    original = Path("../approved-voice/Postal_Edge_Clause_13_14_2D_Preview.mp4")
-    pcm = subprocess.check_output([
-        "ffmpeg", "-v", "error", "-i", str(original), "-vn", "-ac", "1",
-        "-ar", str(RATE), "-f", "f32le", "-"
-    ])
-    samples = np.frombuffer(pcm, dtype="<f4")
-    if abs(len(samples) / RATE - BOUNDARIES[-1]) > .15:
-        raise ValueError("Unexpected duration for the approved source voice")
-    chunks = [samples[round(a * RATE):round(b * RATE)].copy()
-              for a, b in zip(BOUNDARIES, BOUNDARIES[1:])]
-    chunks.append(np.zeros(round(2.0 * RATE), dtype=np.float32))
-    return chunks, RATE, {"approved-concierge-10-dialogue"}
+    import main
+
+    if lang != "hi" or main.pick_gemini_voice() != VOICE:
+        raise ValueError("This revision requires the approved Hindi narration voice")
+    main.TTS_WAITS = (6, 18)
+    main.GEMINI_TTS_STYLE = "Energetic Hindi teacher, conversational, clear and brisk. Read the script verbatim."
+    specs = [
+        {"name": "hook" if i == 0 else f"note-{i}", "segs": [("line", text)]}
+        for i, text in enumerate(segments)
+    ]
+    parts = main.split_gemini_audio(main.gemini_tts_audio(segments, voice=VOICE), specs)
+    if parts:
+        audio = [part[0] for part in parts]
+    else:
+        audio = []
+        for text in segments:
+            sample = main.gemini_tts_audio([text], voice=VOICE)
+            start, stop = main._speech_bounds(sample)
+            audio.append(np.asarray(sample[round(start * main.SR):round(stop * main.SR)]))
+    return audio, main.SR, {VOICE}
