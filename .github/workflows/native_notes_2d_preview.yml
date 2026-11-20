@@ -75,7 +75,7 @@ jobs:
           test "${#videos[@]}" -eq 1
           preview=../result/Postal_Edge_Morning_Notes_Clause_13_14_2D.mp4
           python ../automation/notes-2d-preview/website_badge.py ../result/website-badge.png
-          ffmpeg -y -v error -i "${videos[0]}" -i ../result/website-badge.png -filter_complex "[0:v][1:v]overlay=W-w-28:28[out]" -map "[out]" -map 0:a -c:v libx264 -threads 4 -preset fast -crf 18 -c:a copy -movflags +faststart "$preview"
+          ffmpeg -y -v error -i "${videos[0]}" -i ../result/website-badge.png -filter_complex "[0:v][1:v]overlay=(W-w)/2:100[out]" -map "[out]" -map 0:a -c:v libx264 -threads 4 -preset fast -crf 18 -c:a copy -movflags +faststart "$preview"
           rm ../result/website-badge.png
           cp "${videos[0]%.mp4}_cover.jpg" ../result/cover.jpg
           cp "${videos[0]%.mp4}_caption.txt" ../result/caption.txt
