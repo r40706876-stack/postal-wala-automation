@@ -1,0 +1,123 @@
+name: Publish the confirmed Clause 13–14 reel
+on:
+  push:
+    branches: [production/clause-13-14-release-20261120]
+    paths: [.github/workflows/clause_13_14_release_20261120.yml]
+permissions:
+  contents: write
+concurrency:
+  group: postal-edge-clause-13-14-release-20261120
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          sparse-checkout: |
+            /ig_post.py
+            /branding.py
+            /brand_config.json
+            /generated_reels/ig_posted.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          ref: 8602da22a7480c0c643dde68b39eba3da0ce37bc
+          path: source
+          persist-credentials: false
+      - run: |
+          python -m pip install -q requests pillow
+          command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
+      - name: Publish the verified video on Instagram
+        working-directory: core
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          MEDIA_REPO: ${{ github.repository }}
+          MEDIA_TOKEN: ${{ github.token }}
+          FB_POST: '0'
+        run: |
+          python -u - <<'PY'
+          from datetime import datetime, timezone
+          from hashlib import sha256
+          import json
+          from pathlib import Path
+          import subprocess
+          import requests
+          import ig_post as ig
+
+          expected = "2da29a868bd017695b15c61e6d20067b525b97260e2431fff512ddc67fdb4532"
+          key = "postal_edge_clause_13_14_" + expected[:12]
+          video = Path("../source/Postal_Edge_Clause_13_14_2D_Preview.mp4")
+          cover = video.with_name("Postal_Edge_Clause_13_14_2D_Cover.jpg")
+          receipt = Path("generated_reels/clause_13_14_receipt_20261120.json")
+          title = "खराब और नकली डाक टिकट | Clause 13–14"
+
+          def get(path, **fields):
+              r = requests.get(ig.GRAPH + path, params={**fields, "access_token": ig.IG_ACCESS_TOKEN}, timeout=25)
+              r.raise_for_status()
+              return r.json()
+
+          def recent():
+              return get(ig.IG_USER_ID + "/media", fields="id,caption,timestamp,permalink", limit=50)["data"]
+
+          def record(media_id, media=None):
+              media = media or {}
+              entry = {"id": str(media_id), "username": "postal_edge", "video_sha256": expected,
+                       "time": media.get("timestamp", datetime.now(timezone.utc).isoformat()),
+                       "permalink": media.get("permalink")}
+              log = ig.load_log()
+              log[key] = entry
+              ig.save_log(log)
+              receipt.write_text(json.dumps(entry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+              print(json.dumps(entry, ensure_ascii=False))
+
+          assert sha256(video.read_bytes()).hexdigest() == expected, "Media SHA256 mismatch"
+          assert get(ig.IG_USER_ID, fields="username")["username"].lower() == "postal_edge", "Wrong Instagram account"
+          media = recent()
+          assert "18185947558425623" in {item["id"] for item in media}, "Account ownership could not be verified"
+          existing = ig.load_log().get(key)
+          prior = next((item for item in media if title in (item.get("caption") or "")), None)
+          if existing or prior:
+              media_id = (existing or prior)["id"]
+          else:
+              subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "0.9", "-i", str(video), "-frames:v", "1", "-q:v", "2", str(cover)], check=True)
+              caption = (
+                  title + "\n\n"
+                  "डाक परीक्षा के लिए Clause 13–14 का यह वीडियो सेव कर लें।\n\n"
+                  "मुफ़्त वीडियो क्लास और हाथ से लिखे नोट्स के लिए postaledge.in देखें।\n\n"
+                  "#PostalEdge #PostalWala #IndiaPost #GDS #PostalExam"
+              )
+              media_id = ig._reel_by_url(str(video), caption, ig.media_url(str(cover)))
+              record(media_id)
+          detail = get(str(media_id), fields="id,timestamp,permalink")
+          assert detail.get("permalink"), "Instagram did not return a permalink"
+          record(media_id, detail)
+          PY
+      - name: Save the publication receipt
+        if: always()
+        working-directory: core
+        run: |
+          receipt=generated_reels/clause_13_14_receipt_20261120.json
+          [ -f "$receipt" ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$receipt" generated_reels/ig_posted.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Record Postal Edge Clause 13–14 Instagram publication [skip ci]"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postal-edge-clause-13-14-instagram-receipt
+          path: core/generated_reels/clause_13_14_receipt_20261120.json
+          if-no-files-found: ignore
