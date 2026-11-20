@@ -1,0 +1,128 @@
+name: Render the daily mock with character reactions and website
+on:
+  push:
+    branches: [preview/mock-motion-20261120]
+    paths: [.github/workflows/mock_motion_preview_20261120.yml]
+permissions:
+  contents: read
+concurrency:
+  group: postal-edge-mock-motion-preview
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          ref: 4c6c0fd3f25b3feead312bc2caf1eb0b3d82d1a6
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*.py
+            /brand_config.json
+            /deep/
+            /mock_tpl/
+            /mock_tpl30/
+            /rebrand_reels/promo_v2/img/q.jpg
+            /rebrand_reels/promo_v2/img/ans.jpg
+            /rebrand_reels/promo_v2/img/wrong.jpg
+            /mock_reels/2026-11-19_p_d1a16a3cf2.html
+            /mock_reels/2026-11-19_p_d1a16a3cf2_script.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prepare Chromium, fonts and video tools
+        timeout-minutes: 6
+        run: |
+          python -m pip install -q --retries 1 --timeout 20 requests pypdf pillow numpy scipy edge-tts playwright==1.47.0 faster-whisper imageio-ffmpeg
+          python -m playwright install chromium
+          mkdir -p "$RUNNER_TEMP/bin" "$HOME/.local/share/fonts"
+          ln -sf "$(python -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')" "$RUNNER_TEMP/bin/ffmpeg"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+          curl -fsSL --max-time 20 'https://raw.githubusercontent.com/google/fonts/main/ofl/baloo2/Baloo2%5Bwght%5D.ttf' -o "$HOME/.local/share/fonts/Baloo2.ttf"
+          curl -fsSL --max-time 20 'https://raw.githubusercontent.com/google/fonts/main/ofl/hind/Hind-Bold.ttf' -o "$HOME/.local/share/fonts/Hind-Bold.ttf"
+          fc-cache -f
+      - name: Rebuild the archived 19 November mock using Concierge 10
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_DEEP_KEY || secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_KEYS: ${{ secrets.GEMINI_API_KEY_2 }},${{ secrets.GEMINI_API_KEY_3 }},${{ secrets.GEMINI_API_KEY_4 }},${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_VOICE: hi-in-concierge-10
+          GEMINI_TTS_STYLE: "Warm Hindi postal exam teacher. Curious questions, firm trap warning, upbeat correct answer. Natural brief pauses."
+          DEEP_PER_LINE: '1'
+          DEEP_FAST_QUOTA_FAIL: '1'
+          DEEP_GAP_SCENE: '0.22'
+          DEEP_VOICE_CACHE: 'out/voice-cache'
+          FPS: '30'
+        run: |
+          mkdir -p out
+          python -u - <<'PY'
+          from pathlib import Path
+          import json, re
+          from mock_reel import page30
+          archive = Path("mock_reels/2026-11-19_p_d1a16a3cf2.html").read_text(encoding="utf-8")
+          question = json.loads(re.search(r"window\.SPEC = (.+);", archive).group(1))
+          script = json.loads(Path("mock_reels/2026-11-19_p_d1a16a3cf2_script.json").read_text(encoding="utf-8"))
+          Path("out/mock.html").write_text(page30(question, script), encoding="utf-8")
+          PY
+          python -u deep/deep_demo.py out/mock.html out/Postal_Edge_Mock_Animated_25_PYQ.mp4
+      - name: Verify duration, video, narration cues and movement
+        run: |
+          video=out/Postal_Edge_Mock_Animated_25_PYQ.mp4
+          ffmpeg -v error -xerror -i "$video" -map 0:v:0 -map 0:a:0 -f null -
+          ffmpeg -y -v error -i "$video" -vf 'fps=1/2.5,scale=216:384,tile=5x3' -frames:v 1 out/contact.jpg
+          python -u - <<'PY'
+          import json
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          from deep.render_deep import open_page
+          video = Path("out/Postal_Edge_Mock_Animated_25_PYQ.mp4")
+          cues = json.loads(Path(str(video) + ".cues.json").read_text())
+          assert all(cues[name]["mouth"] and any(cues[name]["mouth"]) for name in ("web", "h1", "q1", "z0", "z1", "o1", "d1", "m1"))
+          start = lambda name: cues[name]["t"]
+          with sync_playwright() as playwright:
+              browser, page = open_page(playwright, "out/mock.html", cues)
+              assert 24 < page.evaluate("window.TOTAL") < 46
+              assert page.locator("#webTicker").inner_text().count("postaledge.in") == 2
+              def visit(time):
+                  page.evaluate("(t) => window.seek(t)", time)
+              visit(start("web") + .2)
+              assert page.locator("#demoQuestion").evaluate("(el) => Number(el.style.opacity)") > .9
+              visit(start("h1") - .15)
+              assert page.locator("#demoResultLabel").inner_text() == "गलत क्यों?"
+              assert page.locator("#demoAnswers").evaluate("(el) => Number(el.style.opacity)") > .9
+              visit(start("h1") + .12)
+              golu = page.locator("#pe-golu")
+              before = golu.evaluate("(el) => el.style.transform")
+              visit(start("h1") + .48)
+              assert golu.evaluate("(el) => el.style.transform") != before
+              assert golu.get_attribute("data-pose") == "surprise"
+              visit(start("d1") + .35)
+              assert golu.get_attribute("data-pose") == "celebrate"
+              visit(start("m1") + .35)
+              assert page.locator("#pe-bhaiya").get_attribute("data-pose") == "explain"
+              assert page.locator("#peCtaLink").inner_text() == "postaledge.in"
+              browser.close()
+          print("VERIFIED: website, actual answer captures, both actors, cue-linked motion and spoken CTA")
+          PY
+          sha256sum "$video"
+      - name: Save the verified MP4 for direct GitHub download
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cp out/Postal_Edge_Mock_Animated_25_PYQ.mp4 mock_reels/
+          git add --sparse -f mock_reels/Postal_Edge_Mock_Animated_25_PYQ.mp4
+          git commit -m 'Save verified animated daily mock MP4 [skip ci]'
+          git push origin HEAD:refs/heads/preview/mock-motion-20261120
+          git rev-parse HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Postal-Edge-Mock-Animated-25-PYQ
+          path: |
+            out/Postal_Edge_Mock_Animated_25_PYQ.mp4
+            out/Postal_Edge_Mock_Animated_25_PYQ.mp4.cues.json
+            out/contact.jpg
+          if-no-files-found: ignore
