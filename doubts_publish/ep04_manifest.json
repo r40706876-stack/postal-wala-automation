@@ -1,30 +1,30 @@
 {
   "episode": 4,
-  "status": "CONCIERGE_10_PREVIEW_PENDING_NARRATION_QA",
-  "qa_passed": false,
-  "publishable": false,
+  "status": "READY_FOR_2026_11_20_1830_IST",
+  "qa_passed": true,
+  "publishable": true,
   "publish_now": false,
-  "review_hold": true,
+  "review_hold": false,
   "series_publication_authorized": true,
   "target_ist": "2026-11-20T18:30:00+05:30",
   "title": "डाक विभाग के डाउट्स | भाग 04: जॉइनिंग तारीख या कटऑफ तारीख?",
   "source_url": "https://utilities.cept.gov.in/dop/pdfbind.ashx?id=14981",
-  "source_verified_on": "2026-11-19",
+  "source_verified_on": "2026-11-20",
   "source_scope": "AP Circle notification01.06.2026 para3B(ii), page3; explicitly historical2026 GDS→MTS service-condition example; future exams use their own notifications",
   "source_example": {
     "joining": "2023-02-19",
     "three_year_completion": "2026-02-19",
     "notification_cutoff": "2026-01-01"
   },
-  "run_id": 44553315005,
+  "run_id": 44737704508,
   "initial_gemini_voice_run_id": 44553315005,
   "tts_model": "gemini-3.8-flash-tts",
   "tts_voice": "hi-in-concierge-10",
-  "production": "Fresh Gemini Concierge 10 narration through the existing GitHub mock and deep-render pipeline",
+  "production": "Existing GitHub mock_reel.page30/deep renderer; verified Concierge10 original audio copied without new TTS; exact approved2D Golu/Bhaiya models",
   "video": {
-    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/3b3cda98dcf347175d4f89df3f0e4484e2879745/doubts-preview/ep04_cutoff_gemini.mp4",
-    "filename": "ep04_cutoff_gemini.mp4",
-    "sha256": "377af56b46b4bc8fa00ed85358e6bc9314faef5ad003474103e68cb66c103d53"
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/61e577183ff46999ebc79be18b776b8898e644af/doubts-preview/ep04_cutoff_concierge10_2d.mp4",
+    "filename": "ep04_cutoff_concierge10_2d.mp4",
+    "sha256": "c9a3c73c4a89edc1589dd08bc552668a7fb67b58ce5d3ef190847705321d8b0c"
   },
   "caption": {
     "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/3b6cd53aa3788a22fe46ab6f3231fb7dc57f8524/doubts_publish/ep04_caption.txt",
@@ -32,30 +32,37 @@
     "sha256": "74971b3b5c29d1f4919bc202d78131221065656f65d88c5d8976df9862514769"
   },
   "cover": {
-    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/184508dd111fed6349d931f9676934e5060b8401/doubts-preview/ep04_cover.jpg",
-    "filename": "ep04_cover.jpg",
-    "sha256": "5f078986d0a743d0d153126d054c57c59455c4af75df6938285e0d922f72ee2d",
-    "source_png_sha256": "26fd66dbd10dc04e097996d6c4f0bd3005f7bfcbf537960a2d09fe2dbfdfda29",
+    "url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/5aae8cacac0a16d6ba30b27b9505518037b33668/doubts-preview/ep04_cover_release_20261120.jpg",
+    "filename": "ep04_cover_release_20261120.jpg",
+    "sha256": "ae8d4b5acc46aeffabacb3b9d3c2d28cc43b207dcf0252d1f14dd6915e04eeb0",
     "dimensions": [
-      941,
-      1671
+      1080,
+      1920
     ],
-    "style": "Approved blue/yellow/red, same friendly postman, भाग04, correct joining-or-cutoff wording;2026 example badge"
+    "style": "Approved blue/yellow/red topic-specific Joining/Cutoff,भाग04,historical2026 badge; exact approved2D Golu/Bhaiya; readable Hindi branding"
   },
   "qa": {
     "dimensions": [
       1080,
       1920
     ],
-    "duration_seconds": 42.033333,
+    "duration_seconds": 42.026,
     "video_codec": "h264",
     "audio_codec": "aac",
     "decode": "pass",
     "cue_lines": 10,
     "last_cue_end": 40.644,
     "page_errors": [],
-    "visual_review": "Contact sheet reviewed after new narration: answer, dated timeline and eligibility scene are present.",
-    "narration_review": "Automatic character match was low; confirm spoken script and scene sync before enabling publication."
+    "visual_review": "Fresh full decode;contactsheet and18s/23s full-size frames reviewed;exactapproved2D pair;clearhistoricalsource,joining/completion/cutoffdates,saveprompt,answerand18:30CTA;finalcover visuallyreviewed afterfontcorrection",
+    "narration_review": "All10 lines and both19February dates confirmed in unprompted large-v3 Hindi VAD transcription of actualMP4. OriginalsmallASR warning resolved; numeral transcription differs fromscript but semantics present.",
+    "narration_passed": true,
+    "approved_2d_characters": true,
+    "full_decode": "pass",
+    "narration_audit_run": 44736881625,
+    "aac_stream_sha256": "196ef5981a2b494338b5c63ef3c5c91f6c66b8cada01eebf17514a5f728cbdc2",
+    "audio_stream_unchanged": true,
+    "character_crop_motion_mad": 19.11934,
+    "cover_passed": true
   },
   "website_demo": "Not included; clearly labelled official-notification rule illustration, no claim to website capture or PYQ",
   "next_topic": "Only MTS: is local-language PaperIII required?",
