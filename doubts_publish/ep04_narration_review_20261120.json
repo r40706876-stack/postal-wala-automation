@@ -1,0 +1,23 @@
+{
+  "episode": 4,
+  "checked_ist": "2026-11-20",
+  "voice": "hi-in-concierge-10",
+  "audio_preview_sha256": "377af56b46b4bc8fa00ed85358e6bc9314faef5ad003474103e68cb66c103d53",
+  "audit_run": 44736881625,
+  "model": "large-v3",
+  "vad": true,
+  "script_prompt": false,
+  "narration_content": "pass",
+  "method": "Compared all ten script lines and existing timed cues with unprompted large-v3 Hindi transcription of the actual MP4, not raw_take transcription alone.",
+  "semantic_checks": [
+    "Save-first prompt and episode04 identity present",
+    "AP Circle2026 MTS notification,3years regularGDS engagement and01January cutoff present",
+    "Joining19February2023 and3year completion19February2026 both explicitly transcribed",
+    "Cutoff precedes completion,not eligible on that service condition",
+    "Other conditions and future own notification caution present",
+    "MTS-only local-language paper teaser anddaily18:30 CTA present"
+  ],
+  "alignment": "All10 cue starts match corresponding spoken clauses within approximately0.75s in unprompted transcription. Word timing metadata remains from original verified take. Dates and core conclusion not omitted.",
+  "raw_asr_limitation": "Raw take large-v3 dropped central words at30s boundary; MP4 segmentation transcribed both exact dates and entire argument. Hindi numerals converted toArabic andEnglish labels lower character-level similarity; character match alone is not a correctness threshold.",
+  "publication_gate": "Only release after exact2D character refresh,final decode and visual QA,manifest pins anddedupe/account verification. No old Training audio allowed."
+}
