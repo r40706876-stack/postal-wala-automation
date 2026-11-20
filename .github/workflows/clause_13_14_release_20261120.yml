@@ -7,7 +7,7 @@ permissions:
   contents: write
 concurrency:
   group: postal-edge-clause-13-14-release-20261120
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   release:
     runs-on: ubuntu-24.04
@@ -28,12 +28,10 @@ jobs:
         with:
           repository: r40706876-stack/postal-wala-core
           token: ${{ secrets.CORE_TOKEN }}
-          ref: 8602da22a7480c0c643dde68b39eba3da0ce37bc
+          ref: 61f4833491ae8fb739539b1deedb303c88091765
           path: source
           persist-credentials: false
-      - run: |
-          python -m pip install -q requests pillow
-          command -v ffmpeg >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
+      - run: python -c 'import requests' || python -m pip install --retries 1 --timeout 12 requests
       - name: Publish the verified video on Instagram
         working-directory: core
         env:
@@ -48,7 +46,6 @@ jobs:
           from hashlib import sha256
           import json
           from pathlib import Path
-          import subprocess
           import requests
           import ig_post as ig
 
@@ -87,7 +84,7 @@ jobs:
           if existing or prior:
               media_id = (existing or prior)["id"]
           else:
-              subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "0.9", "-i", str(video), "-frames:v", "1", "-q:v", "2", str(cover)], check=True)
+              assert cover.is_file(), "Prepared cover is missing"
               caption = (
                   title + "\n\n"
                   "डाक परीक्षा के लिए Clause 13–14 का यह वीडियो सेव कर लें।\n\n"
