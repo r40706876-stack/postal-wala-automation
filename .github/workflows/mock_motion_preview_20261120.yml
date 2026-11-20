@@ -1,4 +1,4 @@
-name: Render the mock reel with scene-specific character placement
+name: Render the full-frame mock reel
 on:
   push:
     branches: [preview/mock-motion-20261120]
@@ -18,7 +18,7 @@ jobs:
         with:
           repository: r40706876-stack/postal-wala-core
           token: ${{ secrets.CORE_TOKEN }}
-          ref: 0af1cb2cedc4d687d5411427e1cc6c7813b5ee66
+          ref: b1ab5d962def079084fe5c702566ed80a62cf1a7
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*.py
@@ -84,48 +84,57 @@ jobs:
                 const actors = [...document.querySelectorAll('.peActor')];
                 const demo = document.querySelector('#peIntro');
                 const label = document.querySelector('#demoResultLabel');
-                const phases = new Set(), slots = new Set(), pairs = new Set();
-                let silentMouths = 0, soloSpeech = 0, pairSpeech = 0, failures = [];
+                const phases = new Set();
+                let noActors = 0, soloSpeech = 0, pairSpeech = 0, failures = [];
                 const hits = (a,b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
-                for (let i=0; i<window.TOTAL*15; i++) {
-                    const t=i/15;
+                const visible = el => {
+                    for (let node=el; node && node.id!=="root"; node=node.parentElement) {
+                        const style=getComputedStyle(node);
+                        if (node.hidden || style.display==="none" || Number(style.opacity)<.08) return false;
+                    }
+                    return true;
+                };
+                const contents = [...document.querySelectorAll("#vZ .tag, #vZ .lbl, #vZ .gi, #vZ .ga, #vZ .e, #vZ .trk, #vZ .pig, #vZ .road, #zT, #stn, #bigT, #vA .tag, #aB, #aT, #vA .cf")];
+                for (let i=0; i<window.TOTAL*30; i++) {
+                    const t=i/30;
                     window.seek(t);
-                    const visible = actors.filter(actor => !actor.hidden);
-                    if (demo.style.display === 'block') {
+                    const board = panel.getBoundingClientRect(), root = document.querySelector("#root").getBoundingClientRect();
+                    if (getComputedStyle(panel).transform !== "none" || Math.abs(board.width-508)>.15 || Math.abs(board.left-root.left-16)>.15) failures.push([t,"panel resized"]);
+                    const appearing = actors.filter(actor => !actor.hidden);
+                    if (demo.style.display === "block") {
                         phases.add(label.dataset.phase);
-                        if (visible.length) failures.push([t,'actor covers website intro']);
+                        if (appearing.length) failures.push([t,"actor covers demo"]);
                     }
-                    if (visible.length === 2) {
-                        if (!visible.every(actor => actor.dataset.gaze === 'partner')) failures.push([t,'incorrect partner gaze']);
-                        if (hits(visible[0].getBoundingClientRect(), visible[1].getBoundingClientRect())) failures.push([t,'overlapping actors']);
-                        if (visible[0].dataset.mouth !== '0') silentMouths++;
-                        if (visible[1].dataset.mouth !== '0') pairSpeech++;
-                        pairs.add(panel.dataset.actorSpace);
-                    } else if (visible.length === 1) {
-                        if (visible[0].dataset.gaze !== 'audience') failures.push([t,'incorrect audience gaze']);
-                        if (visible[0].dataset.mouth !== '0') soloSpeech++;
-                        slots.add(panel.dataset.actorSpace);
+                    if (!appearing.length) noActors++;
+                    if (appearing.length === 2) {
+                        if (!appearing.every(actor => actor.dataset.gaze === "partner")) failures.push([t,"partner gaze"]);
+                        if (appearing[0].dataset.mouth !== "0") failures.push([t,"listener speaking"]);
+                        if (appearing[1].dataset.mouth !== "0") pairSpeech++;
+                        if (hits(appearing[0].getBoundingClientRect(),appearing[1].getBoundingClientRect())) failures.push([t,"actor overlap"]);
+                    } else if (appearing.length === 1) {
+                        if (appearing[0].dataset.gaze !== "audience") failures.push([t,"audience gaze"]);
+                        if (appearing[0].dataset.mouth !== "0") soloSpeech++;
                     }
-                    for (const actor of visible) {
-                        const rect = actor.getBoundingClientRect();
-                        if ([panel,paper,caption].some(el => hits(rect, el.getBoundingClientRect()) && Number(getComputedStyle(el).opacity) > .1)) failures.push([t,'content overlap']);
-                        if (rect.left < 0 || rect.right > 540 || rect.top < 62 || rect.bottom > 760) failures.push([t,'actor outside assigned area']);
+                    if (!appearing.length) continue;
+                    const occupied = [paper,caption,...contents].filter(visible).map(el => el.getBoundingClientRect());
+                    for (const actor of appearing) {
+                        const rect=actor.getBoundingClientRect();
+                        if (occupied.some(box => hits(rect,box))) failures.push([t,"text or picture overlap"]);
+                        if (rect.left<board.left || rect.right>board.right || rect.top<board.top || rect.bottom>board.bottom) failures.push([t,"actor outside original panel"]);
                     }
                 }
-                return {phases:[...phases],slots:[...slots],pairs:[...pairs],silentMouths,soloSpeech,pairSpeech,failures:failures.slice(0,15)};
+                return {phases:[...phases],noActors,soloSpeech,pairSpeech,failures:failures.slice(0,15)};
               }""")
               print(result)
               assert not result["failures"], result
               assert result["phases"] == ["question", "correct", "wrong"], result
-              assert set(result["slots"]) == {"left", "right", "below"}, result
-              assert result["pairs"] == ["below"] and not result["silentMouths"], result
-              assert result["soloSpeech"] > 20 and result["pairSpeech"] > 5, result
+              assert result["noActors"] > 450 and result["soloSpeech"] > 20 and result["pairSpeech"] > 5, result
               browser.close()
           PY
       - name: Render revised visuals with the same original audio
         run: |
           old=confirmed/Postal_Edge_Mock_Animated_25_PYQ.mp4
-          video=out/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4
+          video=out/Postal_Edge_Mock_Animated_25_PYQ_V3.mp4
           test "$(sha256sum "$old" | cut -d' ' -f1)" = df23adf328bca62fb8a0f6c75a2920e724bc048bb66e5fd9db387a7db4daeec2
           python -u deep/render_deep.py out/mock.html out/picture.mp4 out/cues.json
           ffmpeg -y -v error -i out/picture.mp4 -i "$old" -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart "$video"
@@ -137,16 +146,16 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          cp out/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4 mock_reels/
-          git add --sparse -f mock_reels/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4
-          git commit -m 'Save mock reel with revised character placement [skip ci]'
+          cp out/Postal_Edge_Mock_Animated_25_PYQ_V3.mp4 mock_reels/
+          git add --sparse -f mock_reels/Postal_Edge_Mock_Animated_25_PYQ_V3.mp4
+          git commit -m 'Save full-frame mock reel with optional character appearances [skip ci]'
           git push origin HEAD:refs/heads/preview/mock-motion-20261120
           git rev-parse HEAD
       - uses: actions/upload-artifact@v4
         with:
-          name: Postal-Edge-Mock-Animated-25-PYQ-V2
+          name: Postal-Edge-Mock-Animated-25-PYQ-V3
           path: |
-            out/Postal_Edge_Mock_Animated_25_PYQ_V2.mp4
+            out/Postal_Edge_Mock_Animated_25_PYQ_V3.mp4
             out/contact.jpg
             out/cover.jpg
           if-no-files-found: error
