@@ -1,8 +1,8 @@
 {
   "episode": 4,
-  "status": "READY_FOR_2026_11_20_1830_IST",
+  "status": "PUBLISHED",
   "qa_passed": true,
-  "publishable": true,
+  "publishable": false,
   "publish_now": false,
   "review_hold": false,
   "series_publication_authorized": true,
@@ -74,5 +74,10 @@
   "instagram_username": "postal_edge",
   "required_tts_voice": "hi-in-concierge-10",
   "narration_take_sha256": "a8853176d0b6777d96a9402a55496e4d580220b90b64a3cee78a5234252b2050",
-  "voice_provenance_url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/f7b2690bb1c7c5a92dfaf752c78023e62e6c0f69/doubts-preview/ep04_cutoff_gemini_provenance.json"
+  "voice_provenance_url": "https://raw.githubusercontent.com/r40706876-stack/postal-wala-automation/f7b2690bb1c7c5a92dfaf752c78023e62e6c0f69/doubts-preview/ep04_cutoff_gemini_provenance.json",
+  "media_id": "18100028564449038",
+  "permalink": "https://www.instagram.com/reel/Df9s34tiqNK/",
+  "published_at_ist": "2026-11-20T18:30:12.569831+05:30",
+  "publish_workflow_run": 44739513245,
+  "never_republish": true
 }
