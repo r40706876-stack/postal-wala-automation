@@ -1,9 +1,6 @@
 name: Publish source-verified doubts ep04 at 18:30 IST
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/doubts_ep04_publish.yml']
 permissions:
   contents: write
 concurrency:
@@ -46,7 +43,7 @@ jobs:
         working-directory: core
         env:
           CORE_TOKEN: ${{ secrets.CORE_TOKEN }}
-        run: python -u ../production/doubts_publish/persist_episode03_20261120.py
+        run: python -u ../production/doubts_publish/persist_episode04_20261120.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
