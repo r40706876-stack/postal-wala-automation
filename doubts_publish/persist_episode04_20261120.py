@@ -35,3 +35,16 @@ if receipt.exists():
     put("doubts_reels/ep04_publication_receipt.json",r)
 p=ROOT/"ep04_container_checkpoint.json"
 if p.exists():put("doubts_reels/ep04_container_checkpoint.json",json.loads(p.read_text()))
+
+if receipt.exists():
+    r=json.loads(receipt.read_text())
+    previous,_=get("doubts_reels/series_readiness_2026-11-19.json")
+    state=previous or {}
+    state["checked_at"]="2026-11-20"
+    state["episode04"]={"status":"PUBLISHED","media_id":r["media_id"],"permalink":r.get("permalink"),"published_at_ist":r["published_at_ist"],"manifest":r["manifest"],"receipt":"doubts_reels/ep04_publication_receipt.json"}
+    state["reserved_2026_11_21"]={"target_ist":"2026-11-21T18:30:00+05:30","only_media":"approved40sRule3+PostalEdgewebsite transferdemo","run":44594468241,"sha256":"762bee6cc40df5a5ed5312430ba29010de794191f2437cb7e62b77a9369eb033","workflow":".github/workflows/postal_edge_transfer_release.yml","marker":"postal_release/start_20261121.txt","no_other_series_publisher":True}
+    state["next_normal_episode"]={"episode":5,"topic":"MTS-only local-language PaperIII","preproduction":"doubts_publish/ep05_preproduction.json","earliest_ist":"2026-11-22T18:30:00+05:30","rendered":False}
+    state["standing_voice"]="hi-in-concierge-10"
+    state["standing_characters"]="Only exact approved2D Golu/Bhaiya models from approved transferdemo"
+    state["ongoing_series_active"]=True
+    put("doubts_reels/series_readiness_2026-11-20.json",state)
