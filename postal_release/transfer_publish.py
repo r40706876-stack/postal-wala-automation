@@ -1,19 +1,17 @@
-"""Publish the approved transfer reel in its reserved Instagram slot."""
-from datetime import datetime, timedelta, timezone
+"""Publish the approved transfer reel once on November 20."""
+from datetime import datetime, timezone
 from hashlib import sha256
 import json
 import os
 from pathlib import Path
 import sys
-import time
 
 import requests
 
 sys.path.insert(0, os.getcwd())
 import ig_post as instagram
 
-TARGET = datetime.fromisoformat("2026-11-21T18:30:00+05:30")
-DEADLINE = TARGET + timedelta(seconds=90)
+RELEASE_DAY = "2026-11-20"
 APPROVED_HASH = "762bee6cc40df5a5ed5312430ba29010de794191f2437cb7e62b77a9369eb033"
 KEY = "postal_edge_transfer_demo_" + APPROVED_HASH[:12]
 TITLE = "गोलू और भैया के साथ | Postal Edge ट्रांसफ़र डेमो"
@@ -58,7 +56,7 @@ def record(media, username, reconciled=False):
         "media_id": media["id"],
         "permalink": media.get("permalink"),
         "published_at": media.get("timestamp") or media.get("time") or datetime.now(timezone.utc).isoformat(),
-        "scheduled_at_ist": TARGET.isoformat(),
+        "release_date_ist": RELEASE_DAY,
         "sha256": APPROVED_HASH,
         "reconciled": reconciled,
     }
@@ -72,7 +70,8 @@ def record(media, username, reconciled=False):
 
 def main():
     video, cover = map(Path, sys.argv[1:3])
-    verify = sys.argv[3] == "verify"
+    if sys.argv[3] != "now":
+        raise RuntimeError("Immediate publication mode required")
     if sha256(video.read_bytes()).hexdigest() != APPROVED_HASH:
         raise RuntimeError("The video is not the approved render")
     if not cover.is_file():
@@ -82,33 +81,33 @@ def main():
     if user != "postal_edge" or "18185947558425623" not in known:
         raise RuntimeError("Postal Edge Instagram account ownership not verified")
     print(f"Verified approved video hash, cover and Instagram account @{user}", flush=True)
-    if verify:
-        return
     prior = existing()
     if prior:
-        record(prior, user, reconciled=True)
+        record(get(prior["id"], fields="id,timestamp,permalink"), user, reconciled=True)
         return
-    if not TARGET - timedelta(minutes=50) <= datetime.now(timezone.utc) < TARGET:
-        raise RuntimeError("Preparation is outside the approved publishing window")
     cover_url = instagram.media_url(str(cover))
     original_publish = instagram._publish
 
-    def publish_at_target(container):
-        print(f"Instagram processed reel {container}. Release at {TARGET.isoformat()}", flush=True)
-        while (seconds := (TARGET - datetime.now(timezone.utc)).total_seconds()) > 0:
-            time.sleep(min(seconds, 15))
+    def publish_once(container):
         prior_media = existing()
         if prior_media:
             return prior_media["id"]
-        if datetime.now(timezone.utc) > DEADLINE:
-            raise RuntimeError("Instagram publication window expired")
         return original_publish(container)
 
-    instagram._publish = publish_at_target
-    media_id = instagram._reel_by_url(str(video), CAPTION, cover_url)
+    instagram._publish = publish_once
+    try:
+        media_id = instagram._reel_by_url(str(video), CAPTION, cover_url)
+    except (requests.RequestException, RuntimeError):
+        prior = existing()
+        if not prior:
+            raise
+        record(get(prior["id"], fields="id,timestamp,permalink"), user, reconciled=True)
+        return
     # Persist the media ID even if the follow-up permalink read fails.
     record({"id": media_id}, user)
     media = get(media_id, fields="id,timestamp,permalink")
+    if not media.get("permalink"):
+        raise RuntimeError("Instagram has not returned a permalink")
     record(media, user)
 
 

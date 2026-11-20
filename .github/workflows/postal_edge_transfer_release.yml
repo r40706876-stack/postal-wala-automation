@@ -1,14 +1,9 @@
-name: Release approved Postal Edge transfer reel on 21 November
+name: Publish the approved Postal Edge transfer reel now
 on:
-  schedule:
-    - cron: '32 12 21 11 *'
-  workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - .github/workflows/postal_edge_transfer_release.yml
-      - postal_release/start_20261121.txt
-      - postal_release/transfer_publish.py
+      - postal_release/start_20261120_now.txt
 permissions:
   actions: read
   contents: write
@@ -20,13 +15,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     steps:
-      - name: Resolve verify or publish mode
+      - name: Resolve one-time release
         id: slot
         run: |
-          if [ "$(TZ=Asia/Kolkata date +%F)" = "2026-11-21" ]; then
-            echo mode=publish >> "$GITHUB_OUTPUT"
-          elif [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            echo mode=verify >> "$GITHUB_OUTPUT"
+          if [ "$(TZ=Asia/Kolkata date +%F)" = "2026-11-20" ]; then
+            echo mode=now >> "$GITHUB_OUTPUT"
           else
             echo mode=skip >> "$GITHUB_OUTPUT"
           fi
@@ -65,7 +58,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
           ffmpeg -v error -y -ss 1.8 -i source/Postal_Edge_Rule3_Transfer_Website_Demo.mp4 -frames:v 1 -q:v 2 source/Postal_Edge_Rule3_Transfer_Cover.jpg
-      - name: Verify or publish the approved reel
+      - name: Publish the approved reel once
         if: steps.slot.outputs.mode != 'skip'
         working-directory: core
         env:
@@ -80,14 +73,14 @@ jobs:
             ../source/Postal_Edge_Rule3_Transfer_Website_Demo.mp4 \
             ../source/Postal_Edge_Rule3_Transfer_Cover.jpg "$RELEASE_MODE"
       - name: Save publication receipt
-        if: always() && steps.slot.outputs.mode == 'publish'
+        if: always() && steps.slot.outputs.mode == 'now'
         working-directory: core
         run: |
           receipt=doubts_reels/transfer_demo_20261121_receipt.json
           [ -f "$receipt" ] || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- "$receipt" generated_reels/ig_posted.json
+          git add --sparse -f -- "$receipt" generated_reels/ig_posted.json
           git diff --cached --quiet && exit 0
           git commit -m "Record Postal Edge transfer demo Instagram publication [skip ci]"
           for attempt in 1 2 3; do
@@ -96,7 +89,7 @@ jobs:
           done
           exit 1
       - uses: actions/upload-artifact@v4
-        if: always() && steps.slot.outputs.mode == 'publish'
+        if: always() && steps.slot.outputs.mode == 'now'
         with:
           name: postal-edge-transfer-release-receipt
           path: core/doubts_reels/transfer_demo_20261121_receipt.json
