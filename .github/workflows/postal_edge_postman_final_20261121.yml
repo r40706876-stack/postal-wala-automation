@@ -1,0 +1,49 @@
+name: Publish Postal Edge Postman final reel
+run-name: "Postal Edge Instagram | Postman final cut + green cover"
+on:
+  push:
+    branches: [release/postal-edge-postman-final-20261121]
+    paths: ['.github/workflows/postal_edge_postman_final_20261121.yml']
+permissions:
+  contents: read
+concurrency:
+  group: postal-edge-postman-final-20261121
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: production
+          persist-credentials: false
+          sparse-checkout: postal_release/postman_final_20261121
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          path: core
+          persist-credentials: false
+          sparse-checkout: |
+            /ig_post.py
+            /branding.py
+            /brand_config.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -q requests
+      - name: Publish the approved cut and cover to @postal_edge
+        working-directory: core
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          FB_POST: '0'
+        run: python -u ../production/postal_release/postman_final_20261121/publish.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postal-edge-postman-final-publication-receipt
+          path: release-result/receipt.json
+          if-no-files-found: ignore
