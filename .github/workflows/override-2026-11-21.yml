@@ -1,0 +1,32 @@
+name: Apply 21 November Instagram schedule
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/override-2026-11-21.yml']
+permissions:
+  actions: write
+  contents: read
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Stop the morning release and refresh the timer
+        run: |
+          set -euo pipefail
+          if [ "$(TZ=Asia/Kolkata date +%F)" != 2026-11-21 ]; then exit 0; fi
+          RUN=44853204424
+          STATUS=$(gh api "repos/$REPO/actions/runs/$RUN" --jq '.status')
+          if [ "$STATUS" != completed ]; then
+            gh run cancel "$RUN" -R "$REPO"
+            for i in $(seq 1 12); do
+              STATUS=$(gh api "repos/$REPO/actions/runs/$RUN" --jq '.status')
+              if [ "$STATUS" = completed ]; then break; fi
+              sleep 5
+            done
+          fi
+          gh api "repos/$REPO/actions/runs/$RUN" --jq '{status,conclusion}'
+          gh workflow run timer.yml -R "$REPO" --ref main
+          test "$STATUS" = completed

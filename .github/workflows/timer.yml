@@ -36,7 +36,10 @@ jobs:
           NOW=$(date +%s)
           BEST=""; BESTT=0
           for d in today tomorrow; do
-            for s in $SLOTS; do
+            DAY=$(TZ=Asia/Kolkata date -d "$d" +%F)
+            DAY_SLOTS="$SLOTS"
+            if [ "$DAY" = 2026-11-21 ]; then DAY_SLOTS="15:04=notes 20:13=pm"; fi
+            for s in $DAY_SLOTS; do
               T=${s%%=*}; J=${s##*=}
               TS=$(TZ=Asia/Kolkata date -d "$d $T" +%s)
               if [ $TS -gt $((NOW+60)) ] && { [ -z "$BEST" ] || [ $TS -lt $BESTT ]; }; then BEST=$J; BESTT=$TS; fi
@@ -47,7 +50,11 @@ jobs:
           if [ $W -le 19800 ]; then
             sleep $W
             if [ "$BEST" = "notes" ]; then
-              gh workflow run notes_daily.yml -R "$REPO" --ref main -f demo= -f post=true && echo "notes_daily.yml chalaya"
+              if [ "$(TZ=Asia/Kolkata date +%F)" = 2026-11-21 ]; then
+                gh workflow run notes_daily.yml -R "$REPO" --ref main -f post=true -f only_post=true
+              else
+                gh workflow run notes_daily.yml -R "$REPO" --ref main -f demo= -f post=true
+              fi
             elif [ "$BEST" = "mock" ]; then
               gh workflow run mock_daily.yml -R "$REPO" --ref main -f demo= -f post=true && echo "mock_daily.yml chalaya"
             else
