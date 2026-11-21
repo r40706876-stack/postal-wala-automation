@@ -97,15 +97,15 @@ jobs:
                   echo "token $k: ginti DB taiyaar"
                 else
                   grep -iE "error" /tmp/sq.log | head -2
-                  if [ -n "$ANALYTICS_VIEWER_EMAILS" ]; then
-                    echo "token $k: skipping deploy because the Analytics Viewer schema could not be applied"
+                  if [ -n "$GOOGLE_CLIENT_ID" ] || [ -n "$ANALYTICS_VIEWER_EMAILS" ]; then
+                    echo "token $k: skipping deploy because the account schema could not be applied"
                     continue
                   fi
                 fi
               else echo "token $k: D1 ki ijazat nahi - ginti band rahegi"; fi
             fi
-            if [ -n "$ANALYTICS_VIEWER_EMAILS" ] && [ ! -f wrangler.toml ]; then
-              echo "token $k: skipping deploy because Analytics Viewer needs the D1 binding"
+            if { [ -n "$GOOGLE_CLIENT_ID" ] || [ -n "$ANALYTICS_VIEWER_EMAILS" ]; } && [ ! -f wrangler.toml ]; then
+              echo "token $k: skipping deploy because account access needs the D1 binding"
               continue
             fi
             export CONTENT_KEY=$(tr -d ' \n' < content_key.txt 2>/dev/null)
