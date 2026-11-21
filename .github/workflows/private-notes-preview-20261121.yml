@@ -1,0 +1,30 @@
+name: Prepare private notes preview copy
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/private-notes-preview-20261121.yml']
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: r40706876-stack/postal-wala-core
+          token: ${{ secrets.CORE_TOKEN }}
+          ref: main
+      - name: Export review bytes inside the private repository
+        run: |
+          set -euo pipefail
+          SOURCE=notes_reels/notes_2026-11-21_01-17_hi.mp4
+          test "$(git hash-object "$SOURCE")" = c0f8af83f051de675eda49b727220941c09f655a
+          git switch -c private-notes-preview-20261121
+          mkdir -p .review-notes
+          base64 -w0 "$SOURCE" | split -b 440000 -d -a 3 - .review-notes/part-
+          (cd .review-notes && ls part-* > manifest.txt)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .review-notes
+          git commit -m "Prepare exact notes video bytes for private review"
+          git push origin HEAD:refs/heads/private-notes-preview-20261121
