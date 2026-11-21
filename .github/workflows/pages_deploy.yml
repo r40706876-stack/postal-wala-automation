@@ -3,6 +3,7 @@ name: Website Cloudflare Pages par (postalwala.pages.dev)
 # Website ka source (docs/) ab private core repo me hai. Ye workflow har ghante core ka docs/ dekhta hai:
 # docs/ badla ho (naya tree hash) tabhi deploy karta hai, warna 10-15 sec me khatam.
 # Haath se turant deploy: Actions -> is workflow -> Run (force = true).
+# A push changing this file also deploys the latest core main without waiting for the hourly schedule.
 # ANALYTICS_VIEWER_EMAILS optional: comma-separated Google emails. Run with force after changing it.
 # Secrets: CLOUDFLARE_PAGES_TOKEN / CLOUDFLARE_API_TOKEN(_2/_3) + CLOUDFLARE_ACCOUNT_ID(_2/_3), CORE_TOKEN
 on:
